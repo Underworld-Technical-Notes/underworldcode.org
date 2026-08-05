@@ -43,3 +43,21 @@ Changes from upstream:
   apparatus rather than body text.
 - **Abstract no longer required** — migrated Ghost posts have an excerpt rather
   than a formal abstract, and a missing one must not fail the build.
+
+
+## Known mystmd limitations affecting these documents
+
+Both established by rendering minimal cases in isolation, not by reading docs.
+
+- **`:target:` on an `{image}` directive is silently ignored** by the HTML *and*
+  Typst renderers — the target URL appears nowhere in either output. Linked
+  badges therefore render but are not clickable. The converter still emits
+  `:target:` so the link survives in the MyST source.
+- **A markdown linked image with a `doi.org` target is rewritten into a
+  citation**, destroying the image. `[![DOI](status.svg)](https://doi.org/…)`
+  renders as "Moresi et al. (2025)" plus a bibliography entry. This is fine for
+  text links and wrong for badges.
+- **Image attribute syntax (`![alt](img){width=…}`) is not honoured**, so the
+  markdown form cannot be sized.
+- **Page slugs are truncated to 50 characters** — see the repository README;
+  `scripts/fix_slugs.py` repairs this after every build.

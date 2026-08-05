@@ -23,8 +23,10 @@ exports:
 parts:
   abstract: "The aim of underworld3 is to provide strong support to users in developing sophisticated mathematical models, and provide the ability to interrogate those models during development and at run-time. Underworld3 encodes the mathematical structure of the equations it solves in symbolic form."
 ---
-```{figure} figures/status.svg
+```{image} figures/status.svg
 :alt: DOI
+:target: https://doi.org/10.21105/joss.07831
+:width: 168px
 ```
 
 A recent paper in the Journal of Open Source Software describes the implementation details of Underworld3 and a brief motivation for the rewritten codebase (Moresi et al, 2025).

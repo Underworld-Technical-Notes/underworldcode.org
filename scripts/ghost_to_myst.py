@@ -155,6 +155,8 @@ class GhostToMyst(HTMLParser):
         self._fig = None           # {'src','alt','caption'}
         self._in_caption = False
         self.unbolded_captions = 0
+        self.inline_images = 0
+        self.linked_images = 0
 
     # -- helpers ---------------------------------------------------------
 
@@ -235,13 +237,63 @@ class GhostToMyst(HTMLParser):
             self._fig = {"src": "", "alt": "", "caption": ""}
         elif tag == "img":
             src = attrs.get("src", "")
-            alt = attrs.get("alt", "") or ""
+            alt = " ".join((attrs.get("alt") or "").split())
             if self._fig is not None:
+                # Inside <figure>: a numbered figure with a caption.
                 self._fig["src"], self._fig["alt"] = src, alt
             else:
-                self._flush()
-                self._fig = {"src": src, "alt": alt, "caption": ""}
-                self._close_figure()
+                # A bare <img> is a badge or an inline graphic, not a figure --
+                # numbering it would put "Figure 1:" under a JOSS status badge.
+                name = self._asset_name(src)
+                self.figures.append((src, name, alt, ""))
+                self.inline_images += 1
+                # Small graphics keep their own size; anything large is left to
+                # scale to the measure, so genuine photographs are unaffected.
+                path, _err = cached_asset(src)
+                width = intrinsic_width(path)
+                small = width is not None and width <= 400
+
+                if self._href is not None:
+                    # A linked badge. Neither MyST construct does everything,
+                    # verified by rendering both in isolation:
+                    #
+                    #   [![alt](img)](url)      keeps the link, ignores width --
+                    #                           and with a doi.org target MyST
+                    #                           rewrites the whole thing into a
+                    #                           citation, destroying the image.
+                    #   {image} + :target:      honours :width:, but :target: is
+                    #                           silently dropped by BOTH the HTML
+                    #                           and Typst renderers.
+                    #
+                    # Size wins for badges: a 168x20 status badge stretched to
+                    # the full measure is a visible defect on the page, while a
+                    # badge that is not clickable is a minor loss -- these ones
+                    # display their own DOI. :target: is still emitted so the
+                    # link survives in the source and would work if mystmd ever
+                    # honours it. Large linked images take the markdown form
+                    # below instead, keeping their link.
+                    href = self._clean_href(self._href)
+                    self._flush()
+                    block = ["```{image} figures/%s" % name]
+                    if alt:
+                        block.append(":alt: %s" % alt)
+                    block.append(":target: %s" % href)
+                    if small:
+                        block.append(":width: %dpx" % width)
+                    block.append("```")
+                    self._emit("\n".join(block))
+                    self._href, self._link_text = None, []
+                    self.linked_images += 1
+                elif small:
+                    self._flush()
+                    block = ["```{image} figures/%s" % name]
+                    if alt:
+                        block.append(":alt: %s" % alt)
+                    block.append(":width: %dpx" % width)
+                    block.append("```")
+                    self._emit("\n".join(block))
+                else:
+                    self._write("![%s](figures/%s)" % (alt, name))
         elif tag == "figcaption":
             self._in_caption = True
         elif tag == "sup":
@@ -298,12 +350,16 @@ class GhostToMyst(HTMLParser):
 
     # -- figures ---------------------------------------------------------
 
+    @staticmethod
+    def _asset_name(src):
+        return urllib.parse.unquote(src.rsplit("/", 1)[-1].split("?")[0])
+
     def _close_figure(self):
         if not self._fig or not self._fig["src"]:
             self._fig = None
             return
         src = self._fig["src"]
-        name = urllib.parse.unquote(src.rsplit("/", 1)[-1].split("?")[0])
+        name = self._asset_name(src)
         alt = " ".join(self._fig["alt"].split())
         caption = " ".join(self._fig["caption"].split())
         self.figures.append((src, name, alt, caption))
@@ -455,6 +511,51 @@ def frontmatter(rec, doi, article_id):
     return "\n".join(lines)
 
 
+def cached_asset(src):
+    """Local path for an image, fetching and caching an external one.
+
+    Site-hosted images come from the Stage 0 mirror. External ones are cached
+    once: an archival PDF has to be self-contained, and a figure loaded from
+    someone else's server is a figure that will disappear -- as fifteen of this
+    corpus's own figures already have.
+    """
+    parts = urllib.parse.urlsplit(src)
+    if parts.netloc in ("www.underworldcode.org", "underworldcode.org") or not parts.netloc:
+        return MIRROR / parts.path.lstrip("/"), None
+
+    cache = MIRROR / "external" / parts.netloc / parts.path.lstrip("/")
+    if cache.exists():
+        return cache, None
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    request = urllib.request.Request(src, headers={"User-Agent": "uwtn-migration/1.0"})
+    try:
+        with urllib.request.urlopen(request, timeout=60) as response:
+            cache.write_bytes(response.read())
+    except Exception as exc:  # noqa: BLE001
+        return cache, "%s: %s" % (type(exc).__name__, exc)
+    return cache, None
+
+
+def intrinsic_width(path):
+    """Pixel width of an SVG or PNG, or None.
+
+    MyST scales an image to the text measure unless told otherwise, which turns
+    a 168x20 status badge into a full-width banner. Sizing from the file keeps
+    small graphics small without hard-coding a guess -- and without shrinking
+    the linked images that are genuinely photographs.
+    """
+    try:
+        head = path.read_bytes()[:1024]
+    except OSError:
+        return None
+    if head[:8] == b"\x89PNG\r\n\x1a\n":
+        return int.from_bytes(head[16:20], "big")
+    match = re.search(rb"<svg[^>]*?\bwidth=['\"](\d+(?:\.\d+)?)", head)
+    if match:
+        return int(float(match.group(1)))
+    return None
+
+
 def copy_figure(src, name, dest_dir):
     """Place a figure beside the article.
 
@@ -463,28 +564,17 @@ def copy_figure(src, name, dest_dir):
     loaded from someone else's server is a figure that will disappear -- as
     fifteen of this corpus's own figures already have.
     """
-    parts = urllib.parse.urlsplit(src)
     dest_dir.mkdir(parents=True, exist_ok=True)
-
-    if parts.netloc in ("www.underworldcode.org", "underworldcode.org") or not parts.netloc:
-        rel = parts.path.lstrip("/")
-        source = MIRROR / rel
-        if source.exists():
-            shutil.copy2(source, dest_dir / name)
-            return "copied"
-        return "MISSING from mirror: %s" % rel
-
-    cache = MIRROR / "external" / parts.netloc / parts.path.lstrip("/")
-    if not cache.exists():
-        cache.parent.mkdir(parents=True, exist_ok=True)
-        request = urllib.request.Request(src, headers={"User-Agent": "uwtn-migration/1.0"})
-        try:
-            with urllib.request.urlopen(request, timeout=60) as response:
-                cache.write_bytes(response.read())
-        except Exception as exc:  # noqa: BLE001
-            return "EXTERNAL, could not fetch (%s): %s" % (type(exc).__name__, src)
-    shutil.copy2(cache, dest_dir / name)
-    return "localised from %s" % parts.netloc
+    source, error = cached_asset(src)
+    if error:
+        return "EXTERNAL, could not fetch (%s)" % error
+    if not source.exists():
+        return "MISSING from mirror: %s" % src
+    shutil.copy2(source, dest_dir / name)
+    external = urllib.parse.urlsplit(src).netloc
+    if external and "underworldcode.org" not in external:
+        return "localised from %s" % external
+    return "copied"
 
 
 def main():
@@ -519,6 +609,8 @@ def main():
     all_unknown, all_dropped, problems = collections.Counter(), collections.Counter(), []
     applied, stale = [], []
     unbolded = 0
+    inline = 0
+    linked = 0
 
     for rec in selected:
         slug = rec["slug"]
@@ -552,6 +644,8 @@ def main():
 
         all_unknown.update(conv.unknown)
         unbolded += conv.unbolded_captions
+        inline += conv.inline_images
+        linked += conv.linked_images
         all_dropped.update(conv.dropped)
 
         flags = []
@@ -576,6 +670,12 @@ def main():
         print("  %d problem(s) needing attention:" % len(problems), file=sys.stderr)
         for slug, note in problems:
             print("    %-52s %s" % (slug[:52], note), file=sys.stderr)
+    if linked:
+        print("  %d linked image(s) emitted as {image} with :target:" % linked,
+              file=sys.stderr)
+    if inline:
+        print("  %d inline image(s) kept inline rather than numbered as figures"
+              % inline, file=sys.stderr)
     if unbolded:
         print("  %d caption(s) bolded end-to-end in the source: outer bold removed"
               % unbolded, file=sys.stderr)
