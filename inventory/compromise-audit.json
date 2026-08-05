@@ -1,0 +1,1508 @@
+{
+  "records": [
+    {
+      "kind": "post",
+      "slug": "2-11-scaling",
+      "title": "Underworld 2.11 Scaling",
+      "published": "2021-09-30",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "cloudstor.aarnet.edu.au"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "30-years-of-citcom-ellipsis-and-underworld",
+      "title": "30 Years of Citcom, Ellipsis and Underworld",
+      "published": "2024-01-16",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "account",
+      "title": "Manage your account",
+      "published": "2001-01-01",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "adding-zotero-references-to-a-webpage",
+      "title": "An automated (zotero) bibliography in a webpage",
+      "published": "2019-10-23",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "script-like tag",
+          "detail": "1 occurrence(s)"
+        },
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "www.zotero.org"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "ai-and-scientific-software-what-we-learned-rebuilding-underworld3",
+      "title": "AI and Scientific Software: What We Learned Rebuilding Underworld3",
+      "published": "2026-03-23",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "alaska-moho-model-reproducible-research-with-containers",
+      "title": "Alaska Moho Model (Reproducible research with containers)",
+      "published": "2018-10-12",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "auscope-cloud",
+      "title": "About the AuScope Cloud",
+      "published": "2019-08-29",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "www.mybinder.org"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it",
+      "title": "Australian cities are quiet during lockdown. Earthquake scientists are making the most of it",
+      "published": "2020-07-17",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "ausis.edu.au, images.theconversation.com, theconversation.com"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "authors",
+      "title": "Authors",
+      "published": "2019-08-22",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "build-conda-packages",
+      "title": "How to build Conda packages?",
+      "published": "2020-11-23",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "docs.conda.io"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "compressible-convection-in-cartesian-coordinates-in-underworld3",
+      "title": "Compressible convection in cartesian coordinates with Underworld3",
+      "published": "2023-10-04",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "congested-subduction-workshop",
+      "title": "Congested Subduction Workshop",
+      "published": "2020-02-07",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "script-like tag",
+          "detail": "1 occurrence(s)"
+        },
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "anu.zoom.us, trendsideas.com, www.dropbox.com, www.eventbrite.com.au"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "constitutive-models-in-symbolic-form",
+      "title": "Constitutive Models in Symbolic Form",
+      "published": "2026-04-13",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "content",
+      "title": "Index by date",
+      "published": "2020-08-25",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "covid-quiet-time",
+      "title": "COVID-19 lockdown leads to seismic noise \u201cquiet period\u201d",
+      "published": "2020-07-24",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "au.finance.yahoo.com, rses.anu.edu.au, science.sciencemag.org, www.google.com"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "craton-formation-and-the-onset-of-plate-tectonics",
+      "title": "Craton Formation and the Onset of Plate Tectonics",
+      "published": "2018-04-01",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "script-like tag",
+          "detail": "1 occurrence(s)"
+        },
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "credits",
+      "title": "Credits",
+      "published": "2019-09-06",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "www.arc.gov.au, www.earthbyte.org"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "finding-particles-in-a-distributed-unstructured-mesh",
+      "title": "Finding Particles in a Distributed, Unstructured Mesh",
+      "published": "2026-06-04",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "free-surface-in-underworld",
+      "title": "Free surface in Underworld",
+      "published": "2021-12-03",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "getting-started-60-seconds-to-underworld",
+      "title": "Getting started: 60 seconds to Underworld",
+      "published": "2019-11-21",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "en.wiktionary.org, macpaw.com, medium.com, underworldcode.ghost.io, www.apple.com, www.computerhope.com, www.facebook.com, www.google.com, www.infoworld.com, www.mozilla.org, www.responsibletravel.com, www.techopedia.com ..."
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "getting-started-with-pull-requests",
+      "title": "Getting started with Pull requests",
+      "published": "2020-11-17",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "group-publications",
+      "title": "Our Publications",
+      "published": "2019-08-27",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "script-like tag",
+          "detail": "1 occurrence(s)"
+        },
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "www.zotero.org"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "here-comes-conda",
+      "title": "Here comes Conda...",
+      "published": "2020-11-16",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "docs.conda.io, www.anaconda.com"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "how-many-processors-should-we-use-to-solve-problem-x",
+      "title": "How many processors should we use to solve Problem X?",
+      "published": "2025-07-27",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "inline event handler",
+          "detail": "1 occurrence(s)"
+        },
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "how-to-cite-underworld",
+      "title": "How to cite underworld codes",
+      "published": "2019-10-14",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "how-to-install-underworld-on-mac-osx-big-sur-apple-silicon-m1",
+      "title": "How to install Underworld on Mac OSX (Apple Silicon M1)",
+      "published": "2021-09-07",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "how-underworld3-turns-sympy-into-c",
+      "title": "How Underworld3 Turns SymPy into C",
+      "published": "2026-04-01",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "intro-to-underworld",
+      "title": "Underworld",
+      "published": "2019-08-13",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "disqus.com, www.arc.gov.au, www.moresi.info, www.nectar.org.au, www.unimelb.edu.au, www.vpac.org"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "ismip-hom-benchmark-experiments-using-underworld",
+      "title": "ISMIP-HOM benchmark experiments using Underworld",
+      "published": "2023-02-20",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "frank.pattyn.web.ulb.be"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "joss-publication-underworld-2",
+      "title": "JOSS publication - Underworld 2",
+      "published": "2020-03-11",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "lavavu",
+      "title": "Lavavu",
+      "published": "2019-09-11",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "lavavu.github.io, monash.edu.au, www.anaconda.com, www.dannyruijters.nl, www.sqlite.org, www.swig.org"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "lm-publications",
+      "title": "Publications by Louis Moresi",
+      "published": "2019-10-11",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "script-like tag",
+          "detail": "1 occurrence(s)"
+        },
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "www.zotero.org"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "mesh-variables-and-petsc-vectors-keeping-arrays-in-sync",
+      "title": "Mesh Variables and PETSc Vectors: Keeping Arrays in Sync",
+      "published": "2026-04-03",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "new-features-of-the-surface-coupling-framework-in-underworld-2",
+      "title": "New features of the surface-coupling framework in Underworld 2",
+      "published": "2025-08-25",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "our-journey-from-underworld2-to-underworld3",
+      "title": "Our Journey from Underworld2 to Underworld3",
+      "published": "2026-03-23",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "particles-in-underworld3",
+      "title": "Particles in Underworld3",
+      "published": "2026-06-03",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop",
+      "title": "Underworld Geodynamic Modelling Workshop. Perth, 7 May 2025",
+      "published": "2025-04-29",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "inline event handler",
+          "detail": "2 occurrence(s)"
+        },
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "anu-rses-education.github.io, campusmap.curtin.edu.au, forms.gle"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "physical-units-in-computational-geodynamics",
+      "title": "Physical Units in Computational Geodynamics",
+      "published": "2026-04-08",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "publication-news",
+      "title": "Underworld publication news: Crustal thickness anomalies in stable continents.",
+      "published": "2020-07-09",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "script-like tag",
+          "detail": "1 occurrence(s)"
+        },
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "uwgeodynamics.readthedocs.io"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "publications-using-uw",
+      "title": "Who's Using Underworld",
+      "published": "2019-10-14",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "script-like tag",
+          "detail": "1 occurrence(s)"
+        },
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "mailto:underworld_publications@agora.geophysics-down-under.geoscience.education, www.zotero.org"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "scaling-in-underworld",
+      "title": "Scaling in Underworld",
+      "published": "2021-03-09",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "self-updating-repositories",
+      "title": "Australian Seismometers in Schools - Noise monitoring dashboard",
+      "published": "2020-07-17",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "auspass.edu.au, images.theconversation.com, theconversation.com"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "setting-up-underworld-dependencies",
+      "title": "Configuring and Installing PETSc for Underworld",
+      "published": "2022-01-20",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "shear-bands-with-dilatancy-modelled-with-underworld",
+      "title": "Shear Bands with Dilatancy modelled with Underworld",
+      "published": "2017-05-05",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "link.springer.com"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "stress-recovery-in-underworld",
+      "title": "Stress recovery in Underworld",
+      "published": "2021-01-11",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "www.sciencedirect.com"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "stripy",
+      "title": "Stripy",
+      "published": "2019-08-27",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "links.underworldcode.org, underworldcode.github.io"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "stripy-2-0-released",
+      "title": "Stripy 2.0 released",
+      "published": "2020-08-26",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "symbolic-time-derivatives-in-underworld3",
+      "title": "Symbolic Time Derivatives in Underworld3",
+      "published": "2026-04-16",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "tags",
+      "title": "Collections of articles by subject",
+      "published": "2019-08-21",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "the-dynamics-of-continental-accretion",
+      "title": "The Dynamics of Continental Accretion",
+      "published": "2014-04-01",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "www.nature.com"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "ugcomm",
+      "title": "About us",
+      "published": "2019-08-27",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "bgh.org.au"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "underworld-2",
+      "title": "Underworld 2",
+      "published": "2015-08-11",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "www.facebook.com"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "underworld-2-10",
+      "title": "Underworld 2.10",
+      "published": "2020-09-04",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "underworld-2-9",
+      "title": "Underworld 2.9",
+      "published": "2020-04-03",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "singularity.lbl.gov, www.mpich.org, www.open-mpi.org"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "underworld-and-docker-part-1",
+      "title": "Underworld and Docker (part 1)",
+      "published": "2015-09-01",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "192.168.99.100:8888, docs.docker.com, localhost:8888"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "underworld-and-docker-part-2",
+      "title": "Underworld and Docker (part 2)",
+      "published": "2015-09-15",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "kitematic.com"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "underworld-and-singularity",
+      "title": "Underworld and Singularity",
+      "published": "2025-04-09",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "script-like tag",
+          "detail": "1 occurrence(s)"
+        },
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "opus.nci.org.au, pawsey.atlassian.net"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "underworld-geodynamics-community",
+      "title": "Underworld Geodynamics Community",
+      "published": "2023-10-18",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "underworld-low-fat-cloud",
+      "title": "Underworld's  lightweight cloud for online classrooms.",
+      "published": "2020-04-06",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "demon.underworldcloud.org, jupyterhub.github.io, tljh.jupyter.org, www.mybinder.org"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "underworld-model-exchange",
+      "title": "Underworld Model Exchange",
+      "published": "2020-08-28",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "underworld-on-zenodo",
+      "title": "Cite Underworld from Zenodo",
+      "published": "2018-10-03",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "www.zenodo.org"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "underworld-release-2-8",
+      "title": "Underworld Release\u00a02.8",
+      "published": "2019-09-03",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "script-like tag",
+          "detail": "4 occurrence(s)"
+        },
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "portal.tacc.utexas.edu, pythonclock.org, sebastianraschka.com, singularity.lbl.gov"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "underworld-steering-committee",
+      "title": "Underworld Steering Committee",
+      "published": "2021-03-17",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "underworld2-workshop-at-cig-2016-meeting",
+      "title": "Underworld2 Workshop at CIG 2016 Meeting",
+      "published": "2016-02-29",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "docs.docker.com, kitematic.com"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "underworld3-come-and-get-it",
+      "title": "Underworld3",
+      "published": "2024-12-08",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "underworldcode.github.io"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "underworld3-published-in-journal-of-open-source-software",
+      "title": "Underworld3 published in Journal of Open Source Software",
+      "published": "2025-08-25",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "arxiv.org"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "untitled",
+      "title": "Modelling Drips and Delamination with Underworld",
+      "published": "2017-06-29",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "academic.oup.com"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "untitled-2",
+      "title": "Using physical units in Underworld",
+      "published": "2017-05-24",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "script-like tag",
+          "detail": "1 occurrence(s)"
+        },
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "imgs.xkcd.com, pint.readthedocs.io"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "using-python-virtual-environment-for-underworld-development",
+      "title": "Developing Underworld using Python Virtual Environments",
+      "published": "2022-01-20",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "uw-mailing-lists",
+      "title": "Underworld Community Mailing list and Discussion Forum",
+      "published": "2020-08-24",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "script-like tag",
+          "detail": "2 occurrence(s)"
+        },
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "forums.geophysics-down-under.geoscience.education"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "uwgeodynamics-and-underworld-merge",
+      "title": "Folding UWGeodynamics into Underworld",
+      "published": "2022-05-24",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "viscoelasticity",
+      "title": "Viscoelasticity in Underworld2",
+      "published": "2019-08-12",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "onlinelibrary.wiley.com"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "who-is-using-stripy",
+      "title": "Who's using stripy",
+      "published": "2020-09-03",
+      "updated": "2026-07-07",
+      "findings": [
+        {
+          "severity": "high",
+          "check": "script-like tag",
+          "detail": "1 occurrence(s)"
+        },
+        {
+          "severity": "high",
+          "check": "codeinjection_foot",
+          "detail": "'\u0441\u0441\u0441'"
+        },
+        {
+          "severity": "review",
+          "check": "outbound domain not in expected set",
+          "detail": "www.zotero.org"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "rce",
+      "title": "S",
+      "published": "2026-07-31",
+      "updated": "2026-07-31",
+      "findings": [
+        {
+          "severity": "review",
+          "check": "written during compromise window",
+          "detail": "updated_at 2026-07-31"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "rce-10",
+      "title": "S",
+      "published": "2026-07-30",
+      "updated": "2026-07-30",
+      "findings": [
+        {
+          "severity": "review",
+          "check": "written during compromise window",
+          "detail": "updated_at 2026-07-30"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "rce-11",
+      "title": "S",
+      "published": "2026-07-30",
+      "updated": "2026-07-30",
+      "findings": [
+        {
+          "severity": "review",
+          "check": "written during compromise window",
+          "detail": "updated_at 2026-07-30"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "rce-12",
+      "title": "S",
+      "published": "2026-07-31",
+      "updated": "2026-07-31",
+      "findings": [
+        {
+          "severity": "review",
+          "check": "written during compromise window",
+          "detail": "updated_at 2026-07-31"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "rce-13",
+      "title": "S",
+      "published": "2026-07-31",
+      "updated": "2026-07-31",
+      "findings": [
+        {
+          "severity": "review",
+          "check": "written during compromise window",
+          "detail": "updated_at 2026-07-31"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "rce-2",
+      "title": "S",
+      "published": "2026-07-30",
+      "updated": "2026-07-30",
+      "findings": [
+        {
+          "severity": "review",
+          "check": "written during compromise window",
+          "detail": "updated_at 2026-07-30"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "rce-3",
+      "title": "S",
+      "published": "2026-07-30",
+      "updated": "2026-07-30",
+      "findings": [
+        {
+          "severity": "review",
+          "check": "written during compromise window",
+          "detail": "updated_at 2026-07-30"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "rce-4",
+      "title": "S",
+      "published": "2026-07-30",
+      "updated": "2026-07-30",
+      "findings": [
+        {
+          "severity": "review",
+          "check": "written during compromise window",
+          "detail": "updated_at 2026-07-30"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "rce-5",
+      "title": "V",
+      "published": "2026-07-30",
+      "updated": "2026-07-30",
+      "findings": [
+        {
+          "severity": "review",
+          "check": "written during compromise window",
+          "detail": "updated_at 2026-07-30"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "rce-6",
+      "title": "V",
+      "published": "2026-07-30",
+      "updated": "2026-07-30",
+      "findings": [
+        {
+          "severity": "review",
+          "check": "written during compromise window",
+          "detail": "updated_at 2026-07-30"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "rce-7",
+      "title": "S",
+      "published": "2026-07-30",
+      "updated": "2026-07-30",
+      "findings": [
+        {
+          "severity": "review",
+          "check": "written during compromise window",
+          "detail": "updated_at 2026-07-30"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "rce-8",
+      "title": "S",
+      "published": "2026-07-30",
+      "updated": "2026-07-30",
+      "findings": [
+        {
+          "severity": "review",
+          "check": "written during compromise window",
+          "detail": "updated_at 2026-07-30"
+        }
+      ]
+    },
+    {
+      "kind": "page",
+      "slug": "rce-9",
+      "title": "S",
+      "published": "2026-07-30",
+      "updated": "2026-07-30",
+      "findings": [
+        {
+          "severity": "review",
+          "check": "written during compromise window",
+          "detail": "updated_at 2026-07-30"
+        }
+      ]
+    },
+    {
+      "kind": "post",
+      "slug": "sysinfo-3c8a5c38",
+      "title": "SYSINFO-underworldcode.org",
+      "published": "2026-07-31",
+      "updated": "2026-07-31",
+      "findings": [
+        {
+          "severity": "review",
+          "check": "written during compromise window",
+          "detail": "updated_at 2026-07-31"
+        }
+      ]
+    }
+  ],
+  "severity_counts": {
+    "review": 54,
+    "high": 87
+  },
+  "check_counts": {
+    "written during compromise window": 14,
+    "codeinjection_foot": 73,
+    "outbound domain not in expected set": 40,
+    "inline event handler": 2,
+    "script-like tag": 12
+  },
+  "update_dates": {
+    "2026-07-31": 4,
+    "2026-07-07": 73,
+    "2026-07-30": 10
+  }
+}

@@ -1,0 +1,7 @@
+# Mirrored site binaries: 69 MB, re-fetchable while the droplet is up,
+# checksummed in inventory/asset-manifest.csv. Placed under version control
+# properly when the site tree is laid out in Stage 2.
+assets/
+_cache/
+__pycache__/
+*.pyc
