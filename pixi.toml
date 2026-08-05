@@ -1,0 +1,32 @@
+[workspace]
+name = "underworld-technical-notes"
+description = "Underworld Technical Notes — MyST sources, archival PDFs and migration tooling"
+channels = ["conda-forge"]
+platforms = ["osx-arm64", "osx-64", "linux-64"]
+
+[dependencies]
+python = ">=3.11,<3.13"
+mystmd = ">=1.6,<2"
+typst = ">=0.13,<0.14"
+nodejs = ">=20"
+
+[tasks]
+# One documented entry point. CI runs exactly these.
+convert = "python3 scripts/ghost_to_myst.py --since 2025-08-05"
+
+# `myst build --html` truncates slugs to 50 characters, which breaks 12 of the
+# 50 registered DOIs. fix-slugs restores them; the DOI test proves it worked.
+# Never publish a build that has not been through both.
+build-html = { cmd = "myst build --html && python3 scripts/fix_slugs.py", depends-on = [] }
+build-pdf = "myst build --typst"
+build = { depends-on = ["build-html", "build-pdf"] }
+
+validate = "python3 scripts/validate_metadata.py"
+test-dois = "python3 scripts/test_doi_urls.py"
+test-links = "python3 scripts/check_links.py"
+test = { depends-on = ["validate", "test-dois"] }
+
+# Stage 0 migration tooling. Read-only against the live Ghost site.
+inventory = "python3 scripts/inventory_site.py"
+audit = "python3 scripts/audit_content.py"
+mirror = "python3 scripts/fetch_assets.py"

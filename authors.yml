@@ -1,0 +1,56 @@
+# Author registry for Underworld Technical Notes.
+#
+# Ghost stores no ORCIDs (Louis's happens to sit in the author "website" field;
+# nobody else has one recorded). DOI-bearing articles should carry ORCIDs, so
+# they are collected here once rather than repeated per article.
+#
+# ORCIDs are left null rather than guessed: attaching a wrong ORCID attributes
+# someone's work to a stranger. Fill these in from the people themselves.
+# `scripts/validate_metadata.py` warns about nulls on DOI-bearing articles and
+# rejects anything that is present but malformed.
+
+authors:
+  louis:
+    name: Louis Moresi
+    orcid: 0000-0003-3685-174X
+    affiliation: Australian National University
+  john:
+    name: John Mansour
+    orcid: null
+    affiliation: null
+  julian:
+    name: Julian Giordani
+    orcid: null
+    affiliation: null
+  benknight:
+    name: Ben Knight
+    orcid: null
+    affiliation: null
+  romain:
+    name: Romain Beucher
+    orcid: null
+    affiliation: null
+  neng:
+    name: Neng Lu
+    orcid: null
+    affiliation: null
+  juan:
+    name: Juan Carlos Graciosa
+    orcid: null
+    affiliation: null
+  haibin:
+    name: Haibin Yang
+    orcid: null
+    affiliation: null
+  ben-mather:
+    name: Ben Mather
+    orcid: null
+    affiliation: null
+  rohan:
+    name: Rohan Byrne
+    orcid: null
+    affiliation: null
+  rebecca:
+    name: Rebecca Farrington
+    orcid: null
+    affiliation: null

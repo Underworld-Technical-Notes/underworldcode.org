@@ -1,0 +1,29 @@
+# Declared corrections applied during Ghost -> MyST conversion.
+#
+# The migration policy is "convert all, re-edit none": the articles keep their
+# original text. These are not edits to the prose -- they are defects that
+# break the build or resolve to nothing, fixed here rather than by hand so that
+# every change is declared, reviewable and reproducible. The converter reports
+# each one it applies; if a correction stops matching, it says so rather than
+# passing silently.
+#
+# Format:
+#   <slug>:
+#     - find: <exact substring in the Ghost HTML>
+#       replace: <replacement>
+#       why: <one line>
+
+underworld3-published-in-journal-of-open-source-software:
+  - find: "https://doi.org/10.21105/joss.07831."
+    replace: "https://doi.org/10.21105/joss.07831"
+    why: >-
+      Trailing full stop captured into the URL, so the DOI 404s at doi.org.
+      MyST also fails to resolve it as a citation, which breaks the PDF build.
+      This is Underworld3's own JOSS citation.
+
+ismip-hom-benchmark-experiments-using-underworld:
+  - find: "https://doi.org/10.5194/gmd-15-8749-2022,%202022."
+    replace: "https://doi.org/10.5194/gmd-15-8749-2022"
+    why: >-
+      Trailing ", 2022." captured into the URL, so the DOI 404s at doi.org.
+      (Article not yet migrated; correction recorded for when it is.)

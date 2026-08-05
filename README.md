@@ -6,16 +6,36 @@ technical publication series with DOI-backed archival PDFs.
 Design brief: `~/Downloads/underworld-technical-notes-implementation-brief.md`
 Implementation plan: `~/.claude/plans/the-job-i-have-peppy-origami.md`
 
-**Status: Stage 0 (inventory, DOI register, compromise audit) — complete.**
-This is a local working repository. It has not yet been pushed to a GitHub
-organisation; see *Blocked on Louis* below.
+**Status: Stage 1 complete — a working pilot of the twelve most recent months.**
+Eleven articles converted from Ghost, building as a MyST site and as eleven
+archival PDFs. This is a local working repository; it has not yet been pushed to
+a GitHub organisation. See *Blocked on Louis* below.
+
+```bash
+pixi run convert      # Ghost export -> articles/
+pixi run build        # HTML site + archival PDFs
+pixi run test         # metadata validation + the DOI URL test
+pixi run myst start   # preview the site locally
+```
 
 ---
 
 ## What is here
 
 ```
+articles/<slug>/        one directory per article
+  <slug>.md             MyST source -- the FILENAME sets the URL
+  metadata.yml          schema-validated article metadata
+  figures/              local copies, including localised external images
+templates/pdf/          archival PDF template (fork of lapreprint-typst)
+schemas/                article metadata JSON Schema
+authors.yml             author registry: names, ORCIDs, affiliations
+corrections.yml         declared content fixes applied during conversion
 scripts/
+  ghost_to_myst.py      strict, sanitising Ghost -> MyST converter
+  fix_slugs.py          restores full URLs after MyST's 50-char truncation
+  validate_metadata.py  schema + cross-file invariants
+  test_doi_urls.py      THE critical test: no registered DOI may 404
   inventory_site.py     read-only inventory via Ghost's public Content API
   audit_content.py      compromise audit of the exported corpus
   fetch_assets.py       verifiable mirror of every site-hosted asset
@@ -83,7 +103,14 @@ Full detail in `inventory/STAGE-0-FINDINGS.md`.
    and the Internet Archive never captured the image bytes — only the redirect.
    They are broken on the live site today.
 
-6. **57 of 327 outbound links are dead.** The Discourse estate behind
+6. **MyST truncates page slugs to 50 characters** — documented behaviour, and it
+   silently breaks **12 of the 50 registered DOIs**. Neither a frontmatter
+   `slug:` nor a toc entry overrides it, so `scripts/fix_slugs.py` restores the
+   full paths after each build and rewrites internal references. It discovers
+   the truncation rather than assuming the rule, and still applies under
+   mystmd 1.10.1. `pixi run test-dois` is what proves a build is safe to publish.
+
+7. **57 of 327 outbound links are dead.** The Discourse estate behind
    `uw-mailing-lists` no longer resolves in DNS, so that page is wholly dead and
    should be retired rather than migrated. Two DOI links are malformed by
    trailing punctuation — one of them Underworld3's own JOSS citation.

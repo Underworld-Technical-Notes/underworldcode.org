@@ -1,0 +1,25 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2026-006
+slug: constitutive-models-in-symbolic-form
+title: Constitutive Models in Symbolic Form
+article_type: technical-note
+status: migrated
+authors:
+  - name: Louis Moresi
+    orcid: 0000-0003-3685-174X
+    affiliation: Australian National University
+publication_date: 2026-04-13
+version: 1.0.0
+doi: 10.59350/5fe9q-8ps48
+doi_registrant: rogue-scholar
+license: CC-BY-4.0
+canonical_path: /constitutive-models-in-symbolic-form/
+legacy_paths:
+  - /constitutive-models-in-symbolic-form/
+tags:
+  - Underworld Code
+  - Tricks of the Trade
+  - development
+figures: 0
+source: ghost-migration
+ghost_uuid: 137d7c0a-1a6b-412b-a605-069137faac95
