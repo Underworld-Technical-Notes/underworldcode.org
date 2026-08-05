@@ -26,7 +26,6 @@ parts:
 ---
 ```{figure} figures/status.svg
 :alt: DOI
-
 ```
 
 A recent paper in the Journal of Open Source Software describes the implementation details of Underworld3 and a brief motivation for the rewritten codebase (Moresi et al, 2025).

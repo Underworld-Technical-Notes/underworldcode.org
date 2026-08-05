@@ -71,7 +71,7 @@ These are ordinary SymPy expressions. You can inspect them and they render beaut
 
 ```{figure} figures/Screenshot-2026-03-30-at-3.53.35-pm.png
 
-**Screenshot: F0 and F1 as rendered in a Jupyter notebook — the full mathematical form of the body force and constitutive stress, with the Frank-Kamenetskii viscosity visible inside the flux.**
+Screenshot: F0 and F1 as rendered in a Jupyter notebook — the full mathematical form of the body force and constitutive stress, with the Frank-Kamenetskii viscosity visible inside the flux.
 ```
 
 The solver does not evaluate these expressions. It stores them symbolically and defers everything until the moment they are converted (compiled) into C functions.

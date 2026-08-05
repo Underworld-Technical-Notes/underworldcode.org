@@ -52,7 +52,7 @@ Given a particle position, the KDTree returns the nearest control point, which m
 ```{figure} figures/mesh-demo.png
 :alt: Inside/outside test for a triangular cell
 
-**An unstructured triangulation with a highlighted element. Each face carries a pair of control points: one just inside the cell (black) and one just outside (rust). A test point is connected to the marker on the same side of each face as the centroid: $x _ q$ — interior — lands on three black markers; $x _ p$ — exterior — lands on a rust marker for the face it has crossed. A point is inside the cell iff every connection is black.**
+An unstructured triangulation with a highlighted element. Each face carries a pair of control points: one just inside the cell (black) and one just outside (rust). A test point is connected to the marker on the same side of each face as the centroid: $x _ q$ — interior — lands on three black markers; $x _ p$ — exterior — lands on a rust marker for the face it has crossed. A point is inside the cell iff every connection is black.
 ```
 
 To confirm that a particle is inside its candidate cell, UW3 uses precomputed control point pairs on each face. During mesh setup, each face gets two markers: one placed just inside the cell (offset by a small distance along the inward normal from the face centroid) and one just outside. These are the black and rust-coloured dots in the diagram.
@@ -82,7 +82,7 @@ After advection, particles that are outside their local domain need new owners. 
 ```{figure} figures/domain-demo.png
 :alt: Domain centroid ambiguity in a parallel mesh
 
-**A mesh decomposed into four processor domains. The particle $x _ p$ is inside domain B but closer to domain A's centroid $c _ A$ than to $c _ B$. A nearest-centroid assignment would send the particle to the wrong processor. Dashed lines show distances to all four domain centroids. The domain shapes here are exaggerated for illustration. Real decomposition tools like METIS produce more compact domains that minimise boundary surface area, but the centroid ambiguity still arises near irregular partition boundaries.**
+A mesh decomposed into four processor domains. The particle $x _ p$ is inside domain B but closer to domain A's centroid $c _ A$ than to $c _ B$. A nearest-centroid assignment would send the particle to the wrong processor. Dashed lines show distances to all four domain centroids. The domain shapes here are exaggerated for illustration. Real decomposition tools like METIS produce more compact domains that minimise boundary surface area, but the centroid ambiguity still arises near irregular partition boundaries.
 ```
 
 The centroid ambiguity illustrated above is the parallel analogue of the elongated-triangle problem at the element level. Domain decompositions are irregular, and a domain's centroid does not represent all of its territory equally. So the centroid KDTree gives a candidate, not a final answer. Once a particle arrives at its candidate processor, it needs to be verified.
@@ -96,7 +96,7 @@ For a given particle, the nearest boundary control point is found. If it is an i
 ```{figure} figures/boundary-demo.png
 :alt: Boundary ownership test from each domain's perspective
 
-**Each panel shows one domain's view. Dark shading marks the region that is clearly inside (far from any boundary control point). Light shading marks the boundary zone where the sign of the nearest control point is not reliable. White is clearly outside. Black dots are inside control points; grey dots are outside control points. The particle $x _ a$ is clearly inside A and clearly outside B. The particle $x _ b$ is the reverse. The particle $x _ p$ falls in the boundary zone of both domains and requires the more expensive cell-location test to resolve.**
+Each panel shows one domain's view. Dark shading marks the region that is clearly inside (far from any boundary control point). Light shading marks the boundary zone where the sign of the nearest control point is not reliable. White is clearly outside. Black dots are inside control points; grey dots are outside control points. The particle $x _ a$ is clearly inside A and clearly outside B. The particle $x _ b$ is the reverse. The particle $x _ p$ falls in the boundary zone of both domains and requires the more expensive cell-location test to resolve.
 ```
 
 The boundary zone exists because processor subdomains are typically non-convex. For a convex domain, the nearest-control-point sign would always give the correct answer. But when the boundary folds back on itself, a particle near one part of the boundary might have its nearest control point on a different, unrelated part of the boundary. The sign of that control point tells you nothing useful about which side of the nearby boundary the particle is on. In this zone, UW3 falls back to the full cell-location test from the element-level algorithm: find the candidate cell via the KDTree, confirm with the face control point pairs.

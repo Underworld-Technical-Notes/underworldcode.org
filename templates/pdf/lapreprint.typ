@@ -148,6 +148,15 @@
     text(size: 8.5pt, it),
   )
 
+  // Figure captions read as apparatus, not body text: sans-serif for contrast
+  // against the serif body, smaller and lighter.
+  show figure.caption: it => text(
+    font: ("Helvetica Neue", "Helvetica", "Arial"),
+    size: 8pt,
+    fill: luma(90),
+    it,
+  )
+
   // Configure equation numbering and spacing.
   set math.equation(numbering: "(1)")
   show math.equation: set block(spacing: 1em)
@@ -252,71 +261,80 @@
   }
 
 
-  place(
-    left + bottom,
-    dx: -27%,
-    dy: -10pt,
-    box(width: 24%, {
-      if (kind != none) {
-        show par: set par(spacing: 0em)
-        text(11pt, fill: theme, weight: "semibold", smallcaps(kind))
-        parbreak()
+  // First-page information block, rotated to run bottom-to-top up the left
+  // margin as a single multi-column strip. Rotation is decorative but it also
+  // buys space: label/value pairs that would stack down a narrow column sit
+  // side by side along the page's long axis instead.
+  let field(label, value, link-target: none, size: 7pt) = {
+    box({
+      text(size: 6.5pt, fill: theme, weight: "bold", upper(label))
+      linebreak()
+      if (link-target != none) {
+        text(size: size, link(link-target, value))
+      } else {
+        text(size: size, value)
       }
-      if (dates != none) {
-        let formatted-dates
+    })
+  }
 
-        grid(columns: (40%, 60%), gutter: 7pt,
-          ..dates.zip(range(dates.len())).map((formatted-dates) => {
-            let d = formatted-dates.at(0);
-            let i = formatted-dates.at(1);
-            let weight = "light"
-            if (i == 0) {
-              weight = "bold"
-            }
-            return (
-              text(size: 7pt, fill: theme, weight: weight, d.title),
-              text(size: 7pt, d.date.display("[month repr:short] [day], [year]"))
-            )
-          }).flatten()
-        )
-      }
-      // Archival identity. Printed on the page so the PDF stays self-describing
-      // even if the site and the repository record are both gone.
-      let identity = (
-        if (article-id != none) { ("Article", article-id) },
-        if (article-version != none) { ("Version", article-version) },
-        if (license != none) { ("Licence", license) },
-        if (software-version != none) { ("Underworld", software-version) },
-      ).filter(row => row != none)
-      if (identity.len() > 0) {
-        v(1.4em)
-        grid(columns: (40%, 60%), gutter: 7pt,
-          ..identity.map(row => (
-            text(size: 7pt, fill: theme, weight: "bold", row.at(0)),
-            text(size: 7pt, row.at(1)),
-          )).flatten()
-        )
-      }
-      if (live-url != none) {
-        v(1.4em)
-        text(size: 7pt, fill: theme, weight: "bold")[Live article]
+  // The strip runs up the page, so its total length is bounded by page height.
+  // Show the URL without its scheme and www: the link still targets the full
+  // address, but the visible text is short enough not to run off the top.
+  let short-url(url) = {
+    let s = url
+    for prefix in ("https://", "http://") { s = s.trim(prefix, at: start) }
+    s = s.trim("www.", at: start)
+    s
+  }
+
+  let cells = ()
+  if (kind != none) {
+    cells.push(text(11pt, fill: theme, weight: "semibold", smallcaps(kind)))
+  }
+  if (dates != none) {
+    for d in dates {
+      cells.push(field(d.title, d.date.display("[month repr:short] [day], [year]")))
+    }
+  }
+  // Archival identity. Printed on the page so the PDF stays self-describing
+  // even if the site and the repository record are both gone.
+  if (article-id != none) { cells.push(field("Article", article-id)) }
+  if (article-version != none) { cells.push(field("Version", article-version)) }
+  if (license != none) { cells.push(field("Licence", license)) }
+  if (software-version != none) { cells.push(field("Underworld", software-version)) }
+  if (live-url != none) {
+    // 6pt keeps even the longest slug in this corpus (84 characters) on one
+    // line; a wrapped cell would push its label off the edge of the page.
+    cells.push(field("Live article", short-url(live-url),
+                     link-target: live-url, size: 6pt))
+  }
+  for side in margin {
+    if ("title" in side) {
+      cells.push({
+        text(size: 6.5pt, fill: theme, weight: "bold", upper(side.title))
         linebreak()
-        text(size: 6.5pt, link(live-url, live-url))
-      }
-      v(2em)
-      grid(columns: 1, gutter: 2em, ..margin.map(side => {
-        text(size: 7pt, {
-          if ("title" in side) {
-            text(fill: theme, weight: "bold", side.title)
-            [\ ]
-          }
-          set enum(indent: 0.1em, body-indent: 0.25em)
-          set list(indent: 0.1em, body-indent: 0.25em)
-          side.content
-        })
-      }))
-    }),
-  )
+        text(size: 7pt, side.content)
+      })
+    }
+  }
+
+  if (cells.len() > 0) {
+    place(
+      left + bottom,
+      dx: -27%,
+      dy: 0pt,
+      rotate(-90deg, origin: left + bottom, box(
+        width: 200mm,
+        height: 22%,
+        grid(
+          columns: cells.map(_ => auto),
+          column-gutter: 1.6em,
+          align: bottom + left,
+          ..cells,
+        ),
+      )),
+    )
+  }
 
 
   let abstracts

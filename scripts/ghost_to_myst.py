@@ -154,6 +154,7 @@ class GhostToMyst(HTMLParser):
         self._link_text = []
         self._fig = None           # {'src','alt','caption'}
         self._in_caption = False
+        self.unbolded_captions = 0
 
     # -- helpers ---------------------------------------------------------
 
@@ -310,8 +311,17 @@ class GhostToMyst(HTMLParser):
         block = ["```{figure} figures/%s" % name]
         if alt:
             block.append(":alt: %s" % alt)
-        block.append("")
         if caption:
+            # A caption bolded end to end is not emphasis -- it conveys nothing
+            # and fights the lighter caption style. Strip the outer bold only
+            # when it wraps the whole caption, so partial emphasis (panel
+            # labels and the like) survives untouched.
+            stripped = caption.strip()
+            if (stripped.startswith("**") and stripped.endswith("**")
+                    and stripped.count("**") == 2):
+                caption = stripped[2:-2].strip()
+                self.unbolded_captions += 1
+            block.append("")
             block.append(caption)
         block.append("```")
         self._emit("\n".join(block))
@@ -509,6 +519,7 @@ def main():
     print("converting %d article(s)\n" % len(selected), file=sys.stderr)
     all_unknown, all_dropped, problems = collections.Counter(), collections.Counter(), []
     applied, stale = [], []
+    unbolded = 0
 
     for rec in selected:
         slug = rec["slug"]
@@ -541,6 +552,7 @@ def main():
                 problems.append((slug, result))
 
         all_unknown.update(conv.unknown)
+        unbolded += conv.unbolded_captions
         all_dropped.update(conv.dropped)
 
         flags = []
@@ -565,6 +577,9 @@ def main():
         print("  %d problem(s) needing attention:" % len(problems), file=sys.stderr)
         for slug, note in problems:
             print("    %-52s %s" % (slug[:52], note), file=sys.stderr)
+    if unbolded:
+        print("  %d caption(s) bolded end-to-end in the source: outer bold removed"
+              % unbolded, file=sys.stderr)
     if applied:
         print("  %d declared correction(s) applied:" % len(applied), file=sys.stderr)
         for slug, find in applied:
