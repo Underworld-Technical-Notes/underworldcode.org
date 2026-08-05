@@ -117,6 +117,41 @@ Full detail in `inventory/STAGE-0-FINDINGS.md`.
 
 ---
 
+## Provenance of the recent posts
+
+The nine most recent notes were drafted as markdown in the underworld3
+repository (`publications/blog-posts/`) and published through Ghost. **Neither
+copy is uniformly the later one** — `pixi run compare-originals` reports the
+drift per article, measured on sentences rather than paragraphs because Ghost
+re-chunks paragraphs around `<br>`:
+
+| drafted original | same | note |
+|---|---:|---|
+| `physical-units.md` | 100% | identical prose |
+| `uw2-to-uw3-journey.md` | 96% | repo edited after publication |
+| `ai-development-strategy.md` | 94% | repo edited after publication |
+| `sympy-to-c-pipeline.md` | 89% | both diverge |
+| `time-derivatives.md` | 88% | both diverge |
+| `constitutive-models.md` | 69% | both diverge |
+| `arrays-in-sync.md` | 67% | both diverge |
+| `particles-as-symbols.md` | 60% | both diverge |
+| `finding-particles.md` | 34% | published six weeks after the last repo commit |
+
+So the drafted originals are **not** a drop-in replacement for what was
+published. The Ghost version is the version of record: it is what the
+registered DOI resolves to, and substituting an unpublished draft for it would
+change a published article. The migration therefore keeps the Ghost text.
+
+The figures are the opposite case, and an unambiguous win. Several were drawn
+in Typst/cetz and committed with the data that generates them, but Ghost only
+ever held the exported PNG. `pixi run rebuild-figures` rebuilds those as vector
+— sharp at any zoom, traceable to their data, and much smaller (the
+`finding-particles` PDF went from 994 KB to 338 KB, with its maths labels
+typeset rather than rasterised).
+
+For notes written from now on this problem disappears: author in this
+repository with `pixi run new`, and there is only one copy.
+
 ## Blocked on Louis
 
 - **Create the GitHub organisation** and add a second owner. The local `gh`
@@ -129,5 +164,8 @@ Full detail in `inventory/STAGE-0-FINDINGS.md`.
 - **Ghost admin export + droplet snapshot** as the belt-and-braces incident
   record. Not blocking — the Content API already yielded the full corpus — but
   the snapshot should be taken before anything on the droplet is touched.
+- **`element-location-demo.png`** (in `finding-particles`) has no source in
+  `publications/blog-posts/figures/` — it is the one diagram there that cannot
+  be rebuilt as vector. Worth committing its source if it exists.
 - **Rotate credentials** the droplet held, and treat the 2026-07-07 write as the
   earliest confirmed compromise date when scoping that.

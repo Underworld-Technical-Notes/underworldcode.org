@@ -58,7 +58,7 @@ The user sees a NumPy array. Behind it, every write triggers:
 
 After step 3, every rank has consistent data including ghost values. The solver can proceed safely.
 
-```{figure} figures/arrays-sync-flow.png
+```{figure} figures/arrays-sync-flow.svg
 
 The data synchronisation pipeline: a write to .data or .array triggers a callback that packs values into the PETSc local vector, scatters to the global vector, and fills ghost regions from neighbouring MPI ranks.
 ```

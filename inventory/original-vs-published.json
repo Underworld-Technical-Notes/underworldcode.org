@@ -1,0 +1,236 @@
+[
+  {
+    "original": "ai-development-strategy.md",
+    "slug": "ai-and-scientific-software-what-we-learned-rebuilding-underworld3",
+    "verdict": "repo is a superset -- edited after publication",
+    "similarity": 0.9394,
+    "only_in_original": [
+      "underworld3 has about 50 000 lines of python cython wrapping petsc sympy and a just in time compiler i began a trial of ai coding tools in 2025 and they have gradually become central to the way our team works this is a story of co evolution as much as it is about adoption of a new set of tools",
+      "user the stokes solver converges but the velocity field is symmetric top to bottom when it shouldn t be the viscosity should vary with depth can you check what the solver actually sees",
+      "the viscosity is 1 the default value your depth dependent expression isn t reaching the solver you defined",
+      "but this was never assigned to the constitutive model"
+    ],
+    "only_in_ghost": []
+  },
+  {
+    "original": "arrays-in-sync.md",
+    "slug": "mesh-variables-and-petsc-vectors-keeping-arrays-in-sync",
+    "verdict": "both diverge -- read before choosing",
+    "similarity": 0.6667,
+    "only_in_original": [
+      "one of the less glamorous but most important problems in a finite element framework is this how does the user assign values to a field variable and how does the framework ensure that petsc which actually owns the data sees those values correctly in parallel without the user needing to think about it",
+      "in underworld2 the answer was context managers you wrapped every data access in a with block and the framework synchronised the arrays on exit it was safe but verbose and forgetting the context manager was a silent bug",
+      "the challenge is bridging these two worlds without introducing bugs if the user modifies an array but petsc doesn t see the change the solver works with stale data if petsc rebuilds its internal data structures because the mesh adapted or a new variable was added the user s cached array view points at freed memory",
+      "1 values are written into the petsc local vector 2 a local to global scatter copies owned values to the global vector 3 a global to local scatter fills ghost regions from neighbouring ranks",
+      "a new meshvariable is added to the mesh triggers a dm rebuild the mesh adapts new topology new vectors",
+      "uw3 solves this with a single line of defence on every data access it checks whether id self lvec matches the cached value python s id returns the memory address of an object if petsc has replaced the local vector the new object has a different id the check fails and the cache rebuilds automatically",
+      "for most user code data is sufficient array is there when you want the structured shape or unit handling",
+      "the division is clean users work through data safe synchronised cached solvers work through vec direct fast petsc native the two paths share the same underlying memory the petsc local vector so there is no data duplication",
+      "the underworld project is supported by auscope and the australian government through the national collaborative research infrastructure strategy ncris source code github com underworldcode underworld3"
+    ],
+    "only_in_ghost": [
+      "in underworld2 the answer was context managers you would wrap every data access in a with block and the framework synchronised the arrays on exit it was safe but verbose",
+      "this post explains how we make that work",
+      "the challenge is bridging these two worlds without introducing bugs if the user modifies an array but petsc doesn t see the change the solver works with stale data if petsc rebuilds its internal data structures because the mesh adapted or a new variable was added the user s cached array might try to view points at freed memory locations",
+      "values are written into the petsc local vector",
+      "a local to global scatter copies owned values to the global vector",
+      "a global to local scatter fills ghost regions from neighbouring ranks",
+      "a new meshvariable is added to the mesh triggers a dm rebuild",
+      "uw3 solves this with a single line of defence on every data or array access it checks whether id self lvec matches the cached value python s id returns the memory address of an object if petsc has replaced the local vector the new object has a different id the check fails and the cache rebuilds automatically",
+      "for most user code array is a good choice data is there when you want to avoid the overhead of unit converstions or resizing for example copying from one array to another",
+      "the division is clean users work through array safe synchronised cached solvers work through vec direct fast petsc native the two paths share the same underlying memory the petsc local vector so there is no data duplication"
+    ]
+  },
+  {
+    "original": "constitutive-models.md",
+    "slug": "constitutive-models-in-symbolic-form",
+    "verdict": "both diverge -- read before choosing",
+    "similarity": 0.6869,
+    "only_in_original": [
+      "a constitutive model in underworld3 defines the relationship between a flux e g stress a momentum flux and gradients of the unknowns e g strain rate gradients of velocity for a stokes flow problem the solver needs a flux term mathbff 1 that expresses the deviatoric stress",
+      "where c ijkl is the constitutive tensor viscosity in this case and dotvarepsilon is the symmetric strain rate tensor derived from the velocity gradient for isotropic viscous flow c ijkl reduces to 2eta i ijkl where eta is the viscosity and i is the symmetric identity tensor for more complex rheologies the constitutive tensor can depend on the strain rate itself on pressure temperature stress history or material orientation",
+      "c ijkl 2eta 0 i ijkl 2 eta 0 eta 1 a ijkl mathbfn",
+      "where a ijkl is the anisotropic correction involving products of the director components when eta 0 eta 1 the correction vanishes and you recover isotropic flow when eta 1 eta 0 the material is weak along planes perpendicular to the director",
+      "building this tensor correctly requires care with index symmetries the rank 4 constitutive tensor c ijkl has 81 components in 3d 16 in 2d but the symmetries of stress and strain rate reduce the independent entries the standard approach in finite element work is to flatten the symmetric tensors into vectors and the constitutive tensor into a matrix there are two common ways to do this and the difference matters",
+      "tau i tau 11 tau 22 tau 12 quad dotvarepsilon i dotvarepsilon 11 dotvarepsilon 22 2dotvarepsilon 12",
+      "note the factor of 2 on the off diagonal strain rate the constitutive matrix c ij is then the rearrangement of the rank 4 tensor without scaling for isotropic viscosity in 2d",
+      "left beginmatrix tau 11 tau 22 tau 12 endmatrixright left beginmatrix eta 0 0 0 eta 0 0 0 eta 2 endmatrixright left beginmatrix dotvarepsilon 11 dotvarepsilon 22 2dotvarepsilon 12 endmatrixright",
+      "this is what you will find in most finite element textbooks it works for computing stress from strain rate but it has a problem tau i dotvarepsilon i neq tau ijdotvarepsilon ij the vector inner product does not reproduce the tensor inner product and c ij does not transform correctly under rotations",
+      "where mathbfp textdiag 1 1 sqrt2 in 2d or textdiag 1 1 1 sqrt2 sqrt2 sqrt2 in 3d in mandel form the isotropic constitutive matrix becomes",
+      "the internal representation is the full rank 4 tensor c ijkl the mandel form is available to the user through the c property capital c for inspection and for supplying custom anisotropic tensors the raw rank 4 tensor is available through c lowercase if you provide a scalar viscosity the model builds the rank 4 tensor directly if you provide a mandel matrix the model converts it stress is passed to petsc in voigt form via flux1d to match its symmetric tensor storage conventions the conversions between these representations are handled by utility functions in maths tensors py and the index book keeping is automatic and dimension independent",
+      "the effective viscosity is the lesser of the viscous and plastic values eta textrmeff min eta textrmv eta textrmpl the model provides several other ways to combine them because the choice affects newton solver convergence the default smooth form uses a corrected harmonic blend eta textrmeff eta v cdot frac1 f1 f f 2 quad f fraceta textrmveta textrmpl",
+      "this function is smooth everywhere approaches eta v when f to 0 below yield and approaches eta pl exactly when f to infty fully yielded other modes include harmonic averaging a soft min approximation and a sharp min the smooth default works well with newton iteration because the jacobian is continuous",
+      "if you don t want to use particles for",
+      "for vep problems the viscoelastic effective strain rate includes contributions from the stress history and the plastic yield criterion is evaluated against this total deformation rate the min mode plasticity has a non smooth kink at the yield surface which historically caused twitchy snes behaviour at yield onset two safeguards keep the solver well behaved there a picard style retry on snes divergence divergenceretries and a snapshot based projection in the stress history machinery that prevents an implicit feedback loop between the projection s source and target under variable timestep",
+      "the underworld project is supported by auscope and the australian government through the national collaborative research infrastructure strategy ncris source code github com underworldcode underworld3"
+    ],
+    "only_in_ghost": [
+      "a constitutive model in underworld3 defines the relationship between a flux e g stress a momentum flux and gradients of the unknowns e g strain rate gradients of velocity for a stokes flow problem the solver needs a flux term mathbff1 that expresses the deviatoric stress",
+      "where cijkl is the constitutive tensor viscosity in this case and dotvarepsilon is the symmetric strain rate tensor derived from the velocity gradient for isotropic viscous flow cijkl reduces to 2eta iijkl where eta is the viscosity and i is the symmetric identity tensor for more complex rheologies the constitutive tensor can depend on the strain rate itself on pressure temperature stress history or material orientation",
+      "cijkl 2eta0 iijkl 2 eta0 eta1 aijkl mathbfn",
+      "where aijkl is the anisotropic correction involving products of the director components when eta0 eta1 the correction vanishes and you recover isotropic flow when eta1 eta0 the material is weak along planes perpendicular to the director",
+      "building this tensor correctly requires care with index symmetries the rank 4 constitutive tensor cijkl has 81 components in 3d 16 in 2d but the symmetries of stress and strain rate reduce the independent entries the standard approach in finite element work is to flatten the symmetric tensors into vectors and the constitutive tensor into a matrix there are two common ways to do this and the difference matters",
+      "taui tau11 tau22 tau12 quad dotvarepsiloni dotvarepsilon11 dotvarepsilon22 2dotvarepsilon12",
+      "note the factor of 2 on the off diagonal strain rate the constitutive matrix cij is then the rearrangement of the rank 4 tensor without scaling for isotropic viscosity in 2d",
+      "left beginmatrix tau11 tau22 tau12 endmatrixright left beginmatrix eta 0 0 0 eta 0 0 0 eta 2 endmatrixright left beginmatrix dotvarepsilon11 dotvarepsilon22 2dotvarepsilon12 endmatrixright",
+      "this is what you will find in most finite element textbooks it works for computing stress from strain rate but it has a problem taui dotvarepsiloni neq tauijdotvarepsilonij the vector inner product does not reproduce the tensor inner product and cij does not transform correctly under rotations",
+      "where mathbfp textrmdiag 1 1 sqrt2 in 2d or textrmdiag 1 1 1 sqrt2 sqrt2 sqrt2 in 3d in mandel form the isotropic constitutive matrix becomes",
+      "the internal representation is the full rank 4 tensor cijkl the mandel form is available to the user through the c property capital c for inspection and for supplying custom anisotropic tensors the raw rank 4 tensor is available through c lowercase if you provide a scalar viscosity the model builds the rank 4 tensor directly if you provide a mandel matrix the model converts it stress is passed to petsc in voigt form via flux1d to match its symmetric tensor storage conventions the conversions between these representations are handled by utility functions in maths tensors py and the index book keeping is automatic and dimension independent",
+      "the effective viscosity is the lesser of the viscous and plastic values etatextrmeff min etatextrmv etatextrmpl the model provides several other ways to combine them because the choice affects newton solver convergence the default smooth form uses a corrected harmonic blend etatextrmeff etav cdot frac1 f1 f f 2 quad f fracetatextrmvetatextrmpl",
+      "this function is smooth everywhere approaches etav when f to 0 below yield and approaches etapl exactly when f to infty fully yielded other modes include harmonic averaging a soft min approximation and a sharp min the smooth default works well with newton iteration because the jacobian is continuous",
+      "if you don t want to use particles for tracking the stress history you can use a semi lagrangian version of the dfdt which is a drop in replacement at the user level",
+      "for vep problems the viscoelastic effective strain rate includes contributions from the stress history and the plastic yield criterion is evaluated against this total deformation rate the bdfblend parameter controls blending between bdf 1 and bdf 2 near the yield surface where pure bdf 2 can produce oscillations the model auto detects the appropriate blend pure ve problems get full bdf 2 accuracy while vep problems get a stable near optimal blend"
+    ]
+  },
+  {
+    "original": "finding-particles.md",
+    "slug": "finding-particles-in-a-distributed-unstructured-mesh",
+    "verdict": "both diverge -- read before choosing",
+    "similarity": 0.3429,
+    "only_in_original": [
+      "given a point x and an unstructured mesh of convex cells which cell contains x on a structured grid you compute an index on an unstructured mesh you have to test cells until you find one that contains the point",
+      "testing whether a point is inside a convex cell is straightforward in principle each face of the cell defines a half space if the point is on the interior side of every face it is inside the cell for a triangle with three edges that is three half space tests for a tetrahedron with four faces four tests",
+      "a naive approach would be to find the cell whose centroid is nearest to the particle this fails for unstructured meshes in a delaunay triangulation cells can be far from equilateral a long thin triangle has its centroid near the middle of the long axis far from a point that sits inside the triangle near one of its acute vertices a neighbouring more equilateral triangle may have a closer centroid even though the point is not inside it",
+      "given a particle position the kdtree returns the nearest control point which maps to a candidate cell the vertex nudged points make this a much better guess than centroid only lookup but it is still not guaranteed correct for points near cell boundaries",
+      "an unstructured triangulation with a highlighted element each face carries a pair of control points one just inside the cell black and one just outside rust a test point is connected to the marker on the same side of each face as the centroid xq interior lands on three black markers xp exterior lands on a rust marker for the face it has crossed a point is inside the cell iff every connection is black",
+      "to confirm that a particle is inside its candidate cell uw3 uses precomputed control point pairs on each face during mesh setup each face gets two markers one placed just inside the cell offset by a small distance along the inward normal from the face centroid and one just outside these are the black and orange dots in the diagram",
+      "if the particle is closer to the inner point it is on the centroid side of that face a particle is inside the cell if and only if this holds for all faces",
+      "no normals no dot products no plane equations at query time the geometry was baked into the control point positions during mesh setup the computation is vectorised over all particles and all faces using numpy for a triangle this is three distance comparisons per particle for a tetrahedron four",
+      "this approach is exact for linear meshes where faces are planar for higher order elements with curved faces it is approximate but sufficient for particle location",
+      "on a single processor the algorithm above is sufficient on a parallel mesh each processor owns a subset of cells a particle that has moved outside its processor s domain needs to be found relocated to the correct processor and have all its variable data transferred",
+      "a mesh decomposed into four processor domains the particle x p is inside domain b but closer to domain a s centroid c a than to c b a nearest centroid assignment would send the particle to the wrong processor dashed lines show distances to all four domain centroids the domain shapes here are exaggerated for illustration real decomposition tools like metis produce more compact domains that minimise boundary surface area but the centroid ambiguity still arises near irregular partition boundaries",
+      "boundary ownership test from each domain s perspective",
+      "each panel shows one domain s view dark shading marks the region that is clearly inside far from any boundary control point light shading marks the boundary zone where the sign of the nearest control point is not reliable white is clearly outside black dots are inside control points grey dots are outside control points the particle x a is clearly inside a and clearly outside b the particle x b is the reverse the particle x p falls in the boundary zone of both domains and requires the more expensive cell location test to resolve",
+      "1 check which particles are still inside the local domain using the ownership test",
+      "2 for particles that are outside query the domain centroid kdtree to find the closest rank assign the particle to that rank",
+      "3 call petsc s dm migrate to exchange particles between ranks petsc handles the mpi communication packing particle coordinates and all swarm variable data sending to the target rank unpacking on arrival",
+      "4 the receiving rank runs the ownership test some particles may have been sent to the wrong rank nearest centroid but not the owning domain for these query the next closest centroid and repeat",
+      "5 after a fixed number of iterations any particles still unlocated are deleted these are typically particles that have left the mesh entirely",
+      "in practice most particles arrive at the correct rank on the first attempt the iteration catches the edge cases near irregular boundaries",
+      "particles are created by populating a swarm on the mesh",
+      "the fillparam controls density it places particles at the locations of discontinuous basis functions of degree fillparam within each cell at fillparam 3 this gives roughly 10 particles per cell in 2d and 20 in 3d the distribution is designed to be well suited for numerical integration and rbf interpolation",
+      "this is a local operation each rank adds particles in its own domain for placing particles across all ranks from a single coordinate array addparticleswithglobalcoordinates handles the distribution and migration collectively",
+      "particles carry data through swarm variables each variable is stored as a petsc field on the dmswarm so when particles migrate their data travels with them automatically how that data participates in the finite element solver projection onto the mesh lazy evaluation symbolic integration is the subject of a separate post",
+      "uw3 does not currently perform active population control if particles cluster in a convergence zone or deplete in a divergence zone the user is responsible for adding or removing particles the addparticleswithcoordinates method handles insertion but deciding when and where to add particles is a modelling decision that the framework does not make for you",
+      "this is a known limitation and an area where contributions are welcome population control strategies exist in the literature but implementing them well in parallel without introducing artefacts is non trivial",
+      "from this post s perspective the particle relevant part of a timestep is",
+      "1 advect particle coordinates are updated using the velocity solution",
+      "2 locate each particle is tested against its current cell using the face control point test particles that have left their cell are relocated using the kdtree lookup",
+      "3 migrate particles that crossed processor boundaries are sent to their new owners via the centroid hinting and ownership verification described above petsc exchanges particle coordinates and all swarm variable data between ranks",
+      "how the solver uses particle data and how swarm variables participate in the weak form is the subject of a companion post",
+      "the underworld project is supported by auscope and the australian government through the national collaborative research infrastructure strategy ncris source code github com underworldcode underworld3"
+    ],
+    "only_in_ghost": [
+      "given a point mathbfx and an unstructured mesh of convex cells which cell contains mathbfx",
+      "on a structured grid you compute an index on an unstructured mesh you have to test cells until you find one that contains the point testing whether a point is inside a convex cell is straightforward in principle each face of the cell defines a half space if the point is on the interior side of every face it is inside the cell for a triangle with three edges that is three half space tests for a tetrahedron with four faces four tests",
+      "a first pass approach might be to find the cell whose centroid is nearest to the particle this is likely to be very close to the actual cell containing the particle but it is not guaranteed in a delaunay triangulation cells can be far from equilateral a long thin triangle has its centroid near the middle of the long axis far from a point that sits inside the triangle near one of its acute vertices a neighbouring more equilateral triangle may have a closer centroid even though the point is not inside it",
+      "given a particle position the kdtree returns the nearest control point which maps to a candidate cell the vertex nudged points make this a much better guess than centroid only lookup but it is still not guaranteed correct for points near cell boundaries if a point lies outside the domain boundary there is no containing cell but there is still a nearest cell for these cells we need a validation test is this point within this cell or not it is important to be able to identify this situation cleanly and pass this point to a different domain to handle",
+      "to confirm that a particle is inside its candidate cell uw3 uses precomputed control point pairs on each face during mesh setup each face gets two markers one placed just inside the cell offset by a small distance along the inward normal from the face centroid and one just outside these are the black and rust coloured dots in the diagram",
+      "if the particle is closer to the inner point it is on the centroid side of that face a particle is inside the cell if and only if this holds for all faces no normals no dot products no plane equations at query time the geometry was baked into the control point positions during mesh setup the computation is vectorised over all particles and all faces using numpy for a triangle this is three distance comparisons per particle for a tetrahedron it is four",
+      "this approach is exact for linear meshes where faces are planar",
+      "on a single processor the algorithm above is sufficient on a parallel mesh each processor owns a subset of cells a particle that has moved outside its processor s domain needs to be found relocated to the correct processor and have all its variable data transferred it is important in this situation for the algorithm to be categorical about not owning a particle",
+      "migration is the parallel only cost of working with particles as particles move through the physical domain they will often change their owning process they and their data container must then be sent efficiently from the old to the new owner to determine the new owner we need to be able to ask a small likely candidate subset of processes whether they categorically own the landing point and when we find the correct target transfer the particle and its data the uw3 algorithms above are able to 1 relliably guess which processes to ask for each point 2 uniquely guarantee ownership through cell queries 3 negotiate all locations prior to efficient data transfer with petsc s dm migrate",
+      "the global centroid kdtree is the key piece each rank computes its own domain centroid and shares it once a small array replicated on every rank refreshed only when the decomposition changes that one time exchange is the only communication needed before per step migration can start working after advection each rank runs the ownership test against its own boundary control points to identify the particles that need to leave for each of those the centroid kdtree gives the nearest rank as a purely local lookup by the time per step communication begins every rank already knows which of its particles are leaving the destination rank of each one and how many are going to every other rank the ranks with non zero counts are its candidate peers the typically small set of other ranks it actually needs to talk to this step",
+      "what follows is a short negotiation scoped to the candidate peers each rank tells its candidates how many particles are coming and learns the same from any candidate sending to it then a single coordinated transfer moves the bulk data point to point sender to receiver the communication is sparse only candidate pairs participate and the data block is one round rather than a sequence of probes the work each rank does scales with its own departing particle count no p dependent inner loop no central coordinator no all to all probe phase petsc handles the mpi plumbing",
+      "some particles still arrive at the wrong rank the centroid prediction is a heuristic and can be imprecise near irregular boundary zones see the figure above the receiving rank s ownership test catches these they are repacked with the next closest centroid and the call repeats the iteration converges quickly because each round only re processes the leftover boundary zone particles after a few attempts any particle still unaccounted for has left the mesh entirely and is usually removed from the simulation",
+      "the centroid kdtree is a cheap ingredient that buys the whole architecture cost is local communication is point to point no rank ever needs to know what any other rank is holding that is what makes dm migrate fast",
+      "the same predict then send pattern underlies uw function globalevaluate expr coords which evaluates a symbolic expression at a set of points that may live on any rank interpolating a field requires the values of the underlying mesh variables and those are only available on the rank that owns the relevant cells so the query points have to travel to their owners get evaluated and come back carrying the evaluation data",
+      "uw3 implements this as a round trip migrate each rank wraps its query points in a temporary evaluation swarm with each point labelled by its origin rank and original index the same centroid kdtree we built for migration gives the owning rank of every query point as a local lookup and again each rank learns its candidate peers before any per step communication begins the first migrate sends the points to their owning ranks each owner evaluates the expression at its local set of points and stores the result on a swarm variable the destination of each result is then set back to the origin rank recorded at outbound time and a second migrate sends the results home origin ranks unpack results by index and reassemble the answer in the original order the return rank is guaranteed it is the originating rank so ownership tests can be skipped"
+    ]
+  },
+  {
+    "original": "particles-as-symbols.md",
+    "slug": "particles-in-underworld3",
+    "verdict": "both diverge -- read before choosing",
+    "similarity": 0.6,
+    "only_in_original": [
+      "lagrangian particles in a fixed mesh finite element code can be used to carry material properties with the flow composition strain history stress memory damage finite element solvers operate on fields defined on the mesh not scattered data on particles in underworld 1 and underworld 2 we created dynamic integration schemes for particle swarms on an element by element basis this option is not available with the petsc point wise function approach for this we need to project particle data onto the available interpolating functions before each solve",
+      "we also need to be able to represent the particle based data and its derivatives symbolically for the underworld3 representation to be composable with mesh based data when we contruct the weak form",
+      "in underworld3 swarm variables are symbolic objects a particle carried quantity has a sym property that returns a sympy symbol just like a mesh variable that symbol participates in the solver s weak form the constitutive model the boundary conditions the solver does not know whether it is reading a field computed on the mesh or a field projected from particles the distinction is invisible at the symbolic level",
+      "in uw2 the user managed this explicitly you would call a projection routine before each solve mapping particle data onto the mesh forget the projection and the solver uses stale data call it too often and you waste time on redundant work",
+      "uw3 automates this through the proxy mesh variable pattern",
+      "each swarm variable is stored as a petsc field on a dmswarm when particles migrate between processors their variable data travels with them automatically the array property provides access to the underlying array with the same ndarraywithcallback mechanism described in the arrays in sync post behind the array is a data variable that has non dimensional raw information in petsc form",
+      "the proxydegree parameter is optional and sets the polynomial degree of the companion mesh variable that uw3 uses to project particle data onto the mesh it defaults to 1 linear interpolation higher values give a smoother proxy at the cost of more mesh degrees of freedom every swarm variable gets a proxy by default you do not have to ask for one",
+      "1 build a kdtree of all particle positions on the local rank 2 for each mesh node at position x n find the k nearest particles k textdim 1 by default giving neighbour positions x p i and values phi p i for i 1 ldots k 3 compute weights from the squared distances d i 2 x n x p i 2 and take the normalised weighted average",
+      "4 store the result phi n on the proxy mesh variable",
+      "this means the user never calls a projection routine modify particle data use the symbol the framework will handle everything behind the scenes",
+      "the same pattern works for stress history in viscoelastic models where the dfdt infrastructure stores previous stress values on swarm variables with proxies the constitutive model reads stressstar sym as part of its effective strain rate expression the projection from particles to mesh is lazy the symbol is sympy and the jacobian derivation is automatic"
+    ],
+    "only_in_ghost": [
+      "lagrangian particles in a fixed mesh finite element code can be used to carry material properties with the flow composition strain history stress memory damage finite element solvers operate on fields defined on the mesh so scattered data on particles always demand special treatment of some kind in underworld 1 and underworld 2 we created dynamic integration schemes for particle swarms on an element by element basis this option is not available with the petsc point wise function approach that uw3 uses for this we need to project particle data onto the available interpolating functions before each solve",
+      "we also need to be able to represent the particle based data and its derivatives symbolically for the underworld3 representation to be composable with mesh based data when we construct the weak form in underworld3 we create swarmvariables as natural symbolic objects to fulfil this requirement",
+      "a swarm variable has a sym property that returns a sympy symbol just like a mesh variable that symbol participates in the solver s weak form the constitutive model the boundary conditions the solver does not know whether it is reading a field computed on the mesh or a field projected from particles the distinction is invisible at the symbolic level",
+      "in underworld2 the user managed this explicitly you would call a projection routine before each solve mapping particle data onto the mesh forget the projection and the solver would use stale data",
+      "uw3 automates this through a proxy mesh variable pattern",
+      "each swarm variable is stored as a petsc field on a dmswarm when particles migrate between processors their variable data travels with them automatically the array property provides user facing access to the underlying storage with the same ndarraywithcallback mechanism described in the arrays in sync post underneath array sits the data property which exposes the raw non dimensional values petsc operates on directly",
+      "the proxydegree parameter is optional and sets the polynomial degree of the companion mesh variable that uw3 uses to project particle data onto the mesh it defaults to 1 linear interpolation higher values give a smoother proxy at the cost of more mesh degrees of freedom every swarm variable gets a proxy by default you do not have to ask for one but you can ask not to proxy the variable for example it makes no sense to proxy a discrete index variable",
+      "build a kdtree of all particle positions on the local rank",
+      "for each mesh node at position x n find the k nearest particles k textdim 1 by default giving neighbour positions x p i and values phi p i for i 1 ldots k",
+      "compute weights from the squared distances d i 2 x n x p i 2 and take the normalised weighted average",
+      "store the result phi n on the proxy mesh variable",
+      "this means the user never calls a projection routine modify particle data use the symbol the framework does the rest",
+      "the same pattern works for stress history in viscoelastic models the dfdt infrastructure stores previous stress values on a swarm variable like the stresshistory declared above and the constitutive model reads its sym as part of the effective strain rate expression the projection from particles to mesh is lazy the symbol is sympy and the jacobian derivation is automatic"
+    ]
+  },
+  {
+    "original": "physical-units.md",
+    "slug": "physical-units-in-computational-geodynamics",
+    "verdict": "identical prose",
+    "similarity": 1.0,
+    "only_in_original": [],
+    "only_in_ghost": []
+  },
+  {
+    "original": "sympy-to-c-pipeline.md",
+    "slug": "how-underworld3-turns-sympy-into-c",
+    "verdict": "both diverge -- read before choosing",
+    "similarity": 0.8866,
+    "only_in_original": [
+      "screenshot f0 and f1 as rendered in a jupyter notebook the full mathematical form of the body force and constitutive stress with the frank kamenetskii viscosity visible inside the flux",
+      "1 user writes sympy expressions for stress body force boundary conditions 2 solver derives jacobian blocks automatically via symbolic differentiation 3 compiler extracts runtime constants parameters that can change between solves 4 compiler unwraps remaining expressions to pure sympy patches field variables to c accessors 5 sympy prints the expressions as c99 code inside petsc compatible function signatures 6 subprocess compiles to a shared library which is cached and loaded 7 petsc registers the function pointers and uses them during finite element assembly 8 at each solve current constant values are packed and passed to petsc"
+    ],
+    "only_in_ghost": [
+      "g0 f0 u g1 f0 u g2 f1 u g3 f1 u",
+      "user writes sympy expressions for stress body force boundary conditions",
+      "solver derives jacobian blocks automatically via symbolic differentiation",
+      "compiler extracts runtime constants parameters that can change between solves",
+      "compiler unwraps remaining expressions to pure sympy patches field variables to c accessors",
+      "sympy prints the expressions as c99 code inside petsc compatible function signatures",
+      "subprocess compiles to a shared library which is cached and loaded",
+      "petsc registers the function pointers and uses them during finite element assembly",
+      "at each solve current constant values are packed and passed to petsc"
+    ]
+  },
+  {
+    "original": "time-derivatives.md",
+    "slug": "symbolic-time-derivatives-in-underworld3",
+    "verdict": "both diverge -- read before choosing",
+    "similarity": 0.8791,
+    "only_in_original": [
+      "in underworld3 the time derivative is a symbolic object it appears in the solver s weak form as a sympy expression alongside the constitutive stress and the body force you can inspect it display it in a notebook and verify that the time discretisation is doing what you expect and you can swap between lagrangian semi lagrangian and eulerian approaches without rewriting the solver",
+      "many geodynamics equations involve a material derivative temperature advection diffusion viscoelastic stress transport navier stokes momentum the material derivative dphi dt combines the time rate of change with advection by the flow",
+      "discretising this in time requires choices how do you handle the advection term how many previous timesteps do you use how do you deal with variable timestep sizes these choices affect accuracy stability and computational cost",
+      "1 pre solve update bdf am coefficients for the current timestep for semi lagrangian trace characteristics to find departure points and sample history values 2 solve petsc snes solves the assembled system the compiled c callbacks evaluate the symbolic expressions at quadrature points 3 post solve shift the history chain what was phi n 1 becomes phi n 2 the current solution becomes the new phi n 1 increment the solve counter for order ramping",
+      "the underworld project is supported by auscope and the australian government through the national collaborative research infrastructure strategy ncris source code github com underworldcode underworld3"
+    ],
+    "only_in_ghost": [
+      "a symbolic time derivatives you can inspect it display it in a notebook and verify that the time discretisation is doing what you expect and you can swap between lagrangian semi lagrangian and eulerian approaches without rewriting the solver sympy introduces incredible flexibility for on the fly composition of time dependent problems",
+      "many geodynamics equations involve a material derivative temperature advection diffusion viscoelastic stress transport navier stokes momentum the material derivative dphi dt combines the time rate of change with transport by the flow",
+      "discretising this equation requires making specific choices how do you handle the advection term how many previous timesteps do you use how do you deal with variable timestep sizes these choices affect accuracy stability and computational cost",
+      "pre solve update bdf am coefficients for the current timestep for semi lagrangian trace characteristics to find departure points and sample history values",
+      "solve petsc snes solves the assembled system the compiled c callbacks evaluate the symbolic expressions at quadrature points",
+      "post solve shift the history chain what was phi n 1 becomes phi n 2 the current solution becomes the new phi n 1 increment the solve counter for order ramping"
+    ]
+  },
+  {
+    "original": "uw2-to-uw3-journey.md",
+    "slug": "our-journey-from-underworld2-to-underworld3",
+    "verdict": "repo is a superset -- edited after publication",
+    "similarity": 0.9565,
+    "only_in_original": [
+      "underworld is a finite element code for geodynamics mantle convection lithospheric deformation subduction ice flow we solve coupled nonlinear pdes with complex rheologies in the large deformation limit using lagrangian particles to track material history the project has been running for twenty years across three major incarnations and this post explains why we threw out the engine and started again",
+      "the underworld project is supported by auscope and the australian government through the national collaborative research infrastructure strategy ncris"
+    ],
+    "only_in_ghost": []
+  }
+]

@@ -33,4 +33,11 @@ test = { depends-on = ["validate", "test-dois"] }
 # Stage 0 migration tooling. Read-only against the live Ghost site.
 inventory = "python3 scripts/inventory_site.py"
 audit = "python3 scripts/audit_content.py"
+
+# The recent posts were drafted in the underworld3 repo. compare-originals says
+# how far each drafted copy has drifted from what Ghost actually published;
+# rebuild-figures replaces rasterised figures with vector ones built from their
+# Typst sources and the data that generates them.
+compare-originals = "python3 scripts/compare_originals.py --repo ../underworld3-pixi"
+rebuild-figures = "python3 scripts/rebuild_figures.py --repo ../underworld3-pixi"
 mirror = "python3 scripts/fetch_assets.py"

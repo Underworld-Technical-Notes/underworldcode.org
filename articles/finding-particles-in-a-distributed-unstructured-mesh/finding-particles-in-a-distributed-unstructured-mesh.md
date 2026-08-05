@@ -48,7 +48,7 @@ Given a particle position, the KDTree returns the nearest control point, which m
 
 ### Stage 2: Inside/Outside Confirmation
 
-```{figure} figures/mesh-demo.png
+```{figure} figures/mesh-demo.svg
 :alt: Inside/outside test for a triangular cell
 
 An unstructured triangulation with a highlighted element. Each face carries a pair of control points: one just inside the cell (black) and one just outside (rust). A test point is connected to the marker on the same side of each face as the centroid: $x _ q$ — interior — lands on three black markers; $x _ p$ — exterior — lands on a rust marker for the face it has crossed. A point is inside the cell iff every connection is black.
@@ -78,7 +78,7 @@ On a single processor, the algorithm above is sufficient. On a parallel mesh, ea
 
 After advection, particles that are outside their local domain need new owners. The first step is deciding where to send them. Each MPI rank computes its domain centroid, and a KDTree is built from all centroids across all ranks. For a displaced particle, the nearest centroid gives a candidate destination.
 
-```{figure} figures/domain-demo.png
+```{figure} figures/domain-demo.svg
 :alt: Domain centroid ambiguity in a parallel mesh
 
 A mesh decomposed into four processor domains. The particle $x _ p$ is inside domain B but closer to domain A's centroid $c _ A$ than to $c _ B$. A nearest-centroid assignment would send the particle to the wrong processor. Dashed lines show distances to all four domain centroids. The domain shapes here are exaggerated for illustration. Real decomposition tools like METIS produce more compact domains that minimise boundary surface area, but the centroid ambiguity still arises near irregular partition boundaries.
@@ -92,7 +92,7 @@ Each processor needs to confirm whether an arriving particle is actually inside 
 
 For a given particle, the nearest boundary control point is found. If it is an inside marker and the particle is far from the boundary, the particle is clearly inside the domain. If it is an outside marker and the particle is far away, the particle is clearly outside. These two cases are fast.
 
-```{figure} figures/boundary-demo.png
+```{figure} figures/boundary-demo.svg
 :alt: Boundary ownership test from each domain's perspective
 
 Each panel shows one domain's view. Dark shading marks the region that is clearly inside (far from any boundary control point). Light shading marks the boundary zone where the sign of the nearest control point is not reliable. White is clearly outside. Black dots are inside control points; grey dots are outside control points. The particle $x _ a$ is clearly inside A and clearly outside B. The particle $x _ b$ is the reverse. The particle $x _ p$ falls in the boundary zone of both domains and requires the more expensive cell-location test to resolve.
