@@ -19,7 +19,6 @@ exports:
     output: constitutive-models-in-symbolic-form.pdf
     article_id: UWTN 2026-006
     article_version: 1.0.0
-    live_url: https://www.underworldcode.org/constitutive-models-in-symbolic-form/
 parts:
   abstract: "A constitutive model is a Python class where the relationship between fluxes and gradients is encoded in SymPy. At every stage the mathematics is visible, inspectable, and differentiable. The framework handles Jacobians, C code generation, and PETSc integration. You handle the physics."
 ---

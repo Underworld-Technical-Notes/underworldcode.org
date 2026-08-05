@@ -17,7 +17,6 @@ exports:
     output: finding-particles-in-a-distributed-unstructured-mesh.pdf
     article_id: UWTN 2026-009
     article_version: 1.0.0
-    live_url: https://www.underworldcode.org/finding-particles-in-a-distributed-unstructured-mesh/
 parts:
   abstract: It can be difficult to figure out where you are in an unstructured mesh of triangles or tetrahedra; worse when the mesh is distributed in parallel. We have to solve this problem for particle-in-cell type codes such as Underworld3. This is how we do it.
 ---

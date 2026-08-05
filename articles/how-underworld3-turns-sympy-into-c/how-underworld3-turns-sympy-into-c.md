@@ -21,7 +21,6 @@ exports:
     output: how-underworld3-turns-sympy-into-c.pdf
     article_id: UWTN 2026-003
     article_version: 1.0.0
-    live_url: https://www.underworldcode.org/how-underworld3-turns-sympy-into-c/
 parts:
   abstract: "What actually happens between the moment you write a mathematical expression in underworld3's python layer and the moment PETSc receives a finite element term in the form of compiled C code ?"
 ---

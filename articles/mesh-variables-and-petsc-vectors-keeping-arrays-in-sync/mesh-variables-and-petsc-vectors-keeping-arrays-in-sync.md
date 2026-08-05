@@ -18,7 +18,6 @@ exports:
     output: mesh-variables-and-petsc-vectors-keeping-arrays-in-sync.pdf
     article_id: UWTN 2026-004
     article_version: 1.0.0
-    live_url: https://www.underworldcode.org/mesh-variables-and-petsc-vectors-keeping-arrays-in-sync/
 parts:
   abstract: "One of the less glamorous but important problems in a finite element framework is this: how does the user assign values to a field variable, and how does the framework ensure that PETSc sees those values correctly, in parallel, without the user needing to keep track themselves?"
 ---

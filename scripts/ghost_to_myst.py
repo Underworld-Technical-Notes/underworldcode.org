@@ -448,7 +448,6 @@ def frontmatter(rec, doi, article_id):
         "    output: %s.pdf" % rec["slug"],
         "    article_id: %s" % yaml_str(article_id),
         "    article_version: 1.0.0",
-        "    live_url: %s/%s/" % (SITE, rec["slug"]),
     ]
     if abstract:
         lines += ["parts:", "  abstract: %s" % yaml_str(abstract)]

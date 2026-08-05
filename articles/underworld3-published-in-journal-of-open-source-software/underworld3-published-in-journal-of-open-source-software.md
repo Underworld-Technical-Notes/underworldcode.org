@@ -20,7 +20,6 @@ exports:
     output: underworld3-published-in-journal-of-open-source-software.pdf
     article_id: UWTN 2025-005
     article_version: 1.0.0
-    live_url: https://www.underworldcode.org/underworld3-published-in-journal-of-open-source-software/
 parts:
   abstract: "The aim of underworld3 is to provide strong support to users in developing sophisticated mathematical models, and provide the ability to interrogate those models during development and at run-time. Underworld3 encodes the mathematical structure of the equations it solves in symbolic form."
 ---

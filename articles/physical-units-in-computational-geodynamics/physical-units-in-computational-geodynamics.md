@@ -19,7 +19,6 @@ exports:
     output: physical-units-in-computational-geodynamics.pdf
     article_id: UWTN 2026-005
     article_version: 1.0.0
-    live_url: https://www.underworldcode.org/physical-units-in-computational-geodynamics/
 parts:
   abstract: "Non-dimensionalisation (rewriting problems to make them re-scalable from lab to the real world) is a specialised task that all modellers confront at some point. It is important for accurate and efficient numerical solutions. Can we take away the pain that comes with the task ?"
 ---

@@ -150,19 +150,6 @@ def main():
             errors.append("%s: has a registered DOI (%s) but metadata says none"
                           % (label, registered))
 
-        # The PDF's rotated margin strip shows the live URL on a single line at
-        # 6pt. A 65-character slug (85 displayed characters) fits with room to
-        # spare; beyond that the cell wraps and pushes its label off the page.
-        # The longest slug in the full corpus is 91 characters, so this will
-        # fire during the backfill -- shorten the displayed URL in the template,
-        # do not let it wrap.
-        if slug:
-            displayed = len("underworldcode.org/%s/" % slug)
-            if displayed > 95:
-                warnings.append("%s: live URL is %d characters; it will wrap in "
-                                "the PDF margin strip and clip its label"
-                                % (label, displayed))
-
         for author in meta.get("authors") or []:
             orcid = author.get("orcid")
             if orcid and not ORCID_RE.match(str(orcid)):

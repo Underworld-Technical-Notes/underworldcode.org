@@ -22,7 +22,6 @@ exports:
     output: our-journey-from-underworld2-to-underworld3.pdf
     article_id: UWTN 2026-002
     article_version: 1.0.0
-    live_url: https://www.underworldcode.org/our-journey-from-underworld2-to-underworld3/
 parts:
   abstract: "Underworld is a code for geodynamics — mantle convection, lithospheric deformation, subduction, ice flow. We solve coupled, nonlinear PDEs with complex rheologies using Lagrangian particles to track material history. The project has been running for 20 years: why did we start again ?"
 ---

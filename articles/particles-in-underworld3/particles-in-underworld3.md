@@ -18,7 +18,6 @@ exports:
     output: particles-in-underworld3.pdf
     article_id: UWTN 2026-008
     article_version: 1.0.0
-    live_url: https://www.underworldcode.org/particles-in-underworld3/
 parts:
   abstract: "Underworld is built around the idea of active Lagrangian tracer particles that carry history and composition information as the material deforms. How do we combine this information with our symbolic mathematical framework ?"
 ---

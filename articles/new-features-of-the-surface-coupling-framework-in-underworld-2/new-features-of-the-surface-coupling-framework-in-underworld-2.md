@@ -13,7 +13,6 @@ exports:
     output: new-features-of-the-surface-coupling-framework-in-underworld-2.pdf
     article_id: UWTN 2025-004
     article_version: 1.0.0
-    live_url: https://www.underworldcode.org/new-features-of-the-surface-coupling-framework-in-underworld-2/
 parts:
   abstract: "Coupling in Underworld 2 Underworld 2's UWGeodynamic module enables the coupling of tectonics and surface processes models, most notably, with Underworld 2 handling the tectonics and Badlands (Salles, Ding, & Brocard, 2018) handling the surface processes. This coupling framework has been employed to study landscape evolution and topography in orogenic regions, including the Three Rivers region in Southeast Tibet (Lu et al., 2019), Southwestern North America (Bahadori et al., 2022), and subduct"
 ---

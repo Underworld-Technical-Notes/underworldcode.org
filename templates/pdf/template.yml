@@ -62,9 +62,12 @@ options:
   - id: software_version
     type: string
     description: Underworld version the article describes
-  - id: live_url
-    type: string
-    description: URL of the living HTML rendition
+  - id: wide_body
+    type: boolean
+    description: >
+      Release the first page's wide left margin for the body, so only the title
+      page carries the rotated identity strip. Inserts a page break after the
+      front matter.
   - id: theme
     type: string
     description: |

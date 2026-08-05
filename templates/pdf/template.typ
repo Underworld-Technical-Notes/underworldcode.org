@@ -93,8 +93,8 @@
 [# if options.software_version #]
   software-version: "[-options.software_version-]",
 [# endif #]
-[# if options.live_url #]
-  live-url: "[-options.live_url-]",
+[# if options.wide_body !== undefined #]
+  wide-body: [-options.wide_body-],
 [# endif #]
 [# if options.logo #]
   logo: "[-options.logo-]",

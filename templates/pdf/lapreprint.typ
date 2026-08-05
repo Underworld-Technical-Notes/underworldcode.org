@@ -50,6 +50,8 @@
   license: none,
   software-version: none,
   live-url: none,
+  // Release the first page's wide left margin for the body.
+  wide-body: true,
   // -----------------------------------------------------------------------
   // The path to a bibliography file if you want to cite some external works.
   bibliography-file: none,
@@ -89,7 +91,7 @@
 
   set page(
     paper-size,
-    margin: (left: 22%),
+    margin: (left: 11%, right: 9%),
     header: context {
       let loc = here()
       if(loc.page() == 1) {
@@ -213,10 +215,10 @@
   if (logo != none) {
     place(
       top,
-      dx: -27%,
+      dx: -12%,
       float: false,
       box(
-        width: 24%,
+        width: 10%,
         {
           if (type(logo) == content) {
             logo
@@ -277,16 +279,6 @@
     })
   }
 
-  // The strip runs up the page, so its total length is bounded by page height.
-  // Show the URL without its scheme and www: the link still targets the full
-  // address, but the visible text is short enough not to run off the top.
-  let short-url(url) = {
-    let s = url
-    for prefix in ("https://", "http://") { s = s.trim(prefix, at: start) }
-    s = s.trim("www.", at: start)
-    s
-  }
-
   let cells = ()
   if (kind != none) {
     cells.push(text(11pt, fill: theme, weight: "semibold", smallcaps(kind)))
@@ -302,11 +294,10 @@
   if (article-version != none) { cells.push(field("Version", article-version)) }
   if (license != none) { cells.push(field("Licence", license)) }
   if (software-version != none) { cells.push(field("Underworld", software-version)) }
-  if (live-url != none) {
-    // 6pt keeps even the longest slug in this corpus (84 characters) on one
-    // line; a wrapped cell would push its label off the edge of the page.
-    cells.push(field("Live article", short-url(live-url),
-                     link-target: live-url, size: 6pt))
+  // The DOI is the published identifier; slugs are an implementation detail of
+  // the website and do not belong on the archival record.
+  if (doi != none) {
+    cells.push(field("DOI", doi, link-target: "https://doi.org/" + doi))
   }
   for side in margin {
     if ("title" in side) {
@@ -321,11 +312,14 @@
   if (cells.len() > 0) {
     place(
       left + bottom,
-      dx: -27%,
+      // Offset found by rendering: at -12% the labels clip off the page
+      // edge. The strip grows outward from this origin, so it must sit far
+      // enough inside the margin to fit its own thickness.
+      dx: -8%,
       dy: 0pt,
       rotate(-90deg, origin: left + bottom, box(
         width: 200mm,
-        height: 22%,
+        height: 14mm,
         grid(
           columns: cells.map(_ => auto),
           column-gutter: 1.6em,
@@ -365,7 +359,11 @@ if (abstracts != none and abstracts.len() > 0) {
 
   show par: set par(spacing: 1.5em)
 
-  // Display the paper's contents.
+  // Typst 0.13 does honour a `set page` after the first page, so a title page
+  // with a wider body is available -- but it is not worth it here: measured
+  // across these eleven articles it cost 7 extra pages, because the page it
+  // adds is never paid back by the wider measure. The rotated strip is thin
+  // enough that one modest margin serves every page.
   body
 
   if (bibliography-file != none) {

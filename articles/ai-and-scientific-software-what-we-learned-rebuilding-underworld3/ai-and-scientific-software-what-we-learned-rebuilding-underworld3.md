@@ -19,7 +19,6 @@ exports:
     output: ai-and-scientific-software-what-we-learned-rebuilding-underworld3.pdf
     article_id: UWTN 2026-001
     article_version: 1.0.0
-    live_url: https://www.underworldcode.org/ai-and-scientific-software-what-we-learned-rebuilding-underworld3/
 parts:
   abstract: "Underworld3 has about 50,000 lines of Python/ Cython wrapping PETSc, SymPy, and a just-in-time compiler. I began a trial of AI coding tools in 2025 and they have gradually become central to the way our team works. This is a story of co-evolution as much as it is about adoption of a new set of tools."
 ---
