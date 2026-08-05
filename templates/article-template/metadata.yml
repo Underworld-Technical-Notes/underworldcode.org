@@ -1,0 +1,24 @@
+# Validated in CI against schemas/article-metadata.schema.json.
+# `pixi run validate` checks this and the cross-file invariants a schema cannot
+# express -- that the article file is named <slug>.md, that canonical_path
+# matches the slug, and that no legacy DOI is ever paired with a new registrant.
+id: UWTN 2026-000
+slug: SLUG
+title: A short, specific title
+article_type: technical-note
+status: draft
+authors:
+  - name: Your Name
+    orcid: 0000-0000-0000-0000
+    affiliation: Your Institution
+publication_date: null
+version: 1.0.0
+doi: null
+doi_registrant: null
+license: CC-BY-4.0
+canonical_path: /SLUG/
+legacy_paths: []
+tags:
+  - Underworld Code
+figures: 0
+source: native

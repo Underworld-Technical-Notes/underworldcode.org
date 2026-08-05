@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 """Convert Ghost posts to MyST articles.
 
+**Migration scaffolding, not permanent machinery.** This reverse-engineers
+intent from a rendered HTML corpus: whether an image was meant as a numbered
+figure, a badge or an inline graphic has to be inferred from its markup and its
+size. New notes are authored from ``templates/article-template``, where that
+intent is stated outright, so none of this guessing applies to them. Legacy
+articles that resist the general rules are handled individually in
+``corrections.yml`` rather than by making the rules cleverer.
+
 Walks the HTML rather than pattern-matching it, so nested structure survives.
 The converter is deliberately **strict**: any tag it does not explicitly handle
 is recorded and reported. A converter that silently drops content is the

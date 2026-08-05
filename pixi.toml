@@ -12,6 +12,10 @@ nodejs = ">=20"
 
 [tasks]
 # One documented entry point. CI runs exactly these.
+new = "python3 scripts/new_article.py"
+
+# Legacy migration only. New notes are authored from templates/article-template,
+# where a figure, a badge and an inline image are stated rather than inferred.
 convert = "python3 scripts/ghost_to_myst.py --since 2025-08-05"
 
 # `myst build --html` truncates slugs to 50 characters, which breaks 12 of the
