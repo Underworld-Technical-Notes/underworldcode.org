@@ -19,12 +19,16 @@ scripts/
   inventory_site.py     read-only inventory via Ghost's public Content API
   audit_content.py      compromise audit of the exported corpus
   fetch_assets.py       verifiable mirror of every site-hosted asset
+  check_links.py        liveness of every outbound link (DOI-aware)
+  recover_lost_assets.py  Wayback recovery attempt for dead figures
 inventory/
   inventory.csv/.json   one row per public URL, classified
   doi-register.csv      the 50 registered DOIs -> the URLs that must keep resolving
   assets.txt            every site-hosted asset URL
   asset-manifest.csv    mirrored assets with SHA-256
   compromise-audit.md   generated audit report
+  link-check.md         dead outbound links, grouped by host
+  recovered-assets.csv  what Wayback recovery actually yielded
   ghost-export/         raw Content API payloads (the content corpus)
   STAGE-0-FINDINGS.md   the analysis, and what it means for the migration
 assets/                 mirrored binaries (not in git — see below)
@@ -38,6 +42,8 @@ compromised and is not trusted as a source.
 python3 scripts/inventory_site.py     # --refresh to re-fetch
 python3 scripts/audit_content.py
 python3 scripts/fetch_assets.py
+python3 scripts/check_links.py
+python3 scripts/recover_lost_assets.py
 ```
 
 `assets/` (69 MB) is deliberately not committed. The checksummed manifest is in
@@ -71,6 +77,16 @@ Full detail in `inventory/STAGE-0-FINDINGS.md`.
 
 4. **50 registered DOIs, all resolving to live records.** Three recent posts
    (Apr–Jun 2026) carry no DOI — Rogue Scholar had not ingested them.
+
+5. **Sixteen figures are permanently lost**, across eight posts, seven of which
+   have DOIs. They are hot-linked to the retired `underworldcode.ghost.io` host
+   and the Internet Archive never captured the image bytes — only the redirect.
+   They are broken on the live site today.
+
+6. **57 of 327 outbound links are dead.** The Discourse estate behind
+   `uw-mailing-lists` no longer resolves in DNS, so that page is wholly dead and
+   should be retired rather than migrated. Two DOI links are malformed by
+   trailing punctuation — one of them Underworld3's own JOSS citation.
 
 ---
 

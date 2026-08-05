@@ -133,7 +133,7 @@ narrow and absolute — those 50 URLs must keep resolving.
 | `ugcomm` | 164 | About us |
 | `publications-using-uw` | 128 | Who's Using Underworld |
 | `who-is-using-stripy` | 92 | Who's using stripy |
-| `uw-mailing-lists` | 68 | Underworld Community Mailing list |
+| ~~`uw-mailing-lists`~~ | 68 | **retire** — wholly dead Discourse embed, see §7 |
 | `group-publications` | 30 | Our Publications |
 | `lm-publications` | 14 | Publications by Louis Moresi |
 | `underworld-geodynamics-community` | 4 | Underworld Geodynamics Community |
@@ -149,20 +149,103 @@ load. On a static site with no third-party JS these must be **baked at build
 time** — a Zotero fetch in CI writing a static bibliography. That is real work
 the brief does not account for, and it should be scoped in Stage 2.
 
-## 6. Assets
+## 6. Assets, and sixteen permanently lost figures
 
 159 of 160 site-hosted assets mirrored, 69.1 MB, each with a SHA-256 in
 `asset-manifest.csv`.
 
-One failure: `content/images/2019/09/ModelComparison.png` returns 404 on the live
-site. It is referenced by `shear-bands-with-dilatancy-modelled-with-underworld`,
-which has a DOI (`10.59350/awc90-63186`). This is pre-existing rot — the
-migration does not cause it — but the article is incomplete as published. A
-Wayback recovery attempt was rate-limited; retry before Stage 2.
+**Sixteen figures are lost.** Fifteen are still hot-linked to
+`underworldcode.ghost.io` — the Ghost(Pro) hostname the site used before it was
+self-hosted. That host is gone, and the files were never copied to the droplet,
+so these figures are broken on the live site *today*. A sixteenth,
+`ModelComparison.png`, 404s on the current host.
+
+| post | DOI | figures lost |
+|---|---|---:|
+| `underworld-and-docker-part-2` | `10.59350/4cqwc-rth67` | 4 |
+| `untitled` | — | 4 |
+| `craton-formation-and-the-onset-of-plate-tectonics` | `10.59350/c4g09-htk29` | 2 |
+| `getting-started-60-seconds-to-underworld` | `10.59350/3y92k-n4v30` | 2 |
+| `underworld-and-docker-part-1` | `10.59350/y8762-pe280` | 1 |
+| `viscoelasticity` | `10.59350/3atx2-v4j54` | 1 |
+| `alaska-moho-model-reproducible-research-with-containers` | `10.59350/pn8gh-98592` | 1 |
+| `shear-bands-with-dilatancy-modelled-with-underworld` | `10.59350/awc90-63186` | 1 |
+
+**The Internet Archive does not have them.** Every capture of every
+`underworldcode.ghost.io` image is a ~750-byte `warc/revisit` record sharing a
+digest with a `text/html` 302 — the Archive only ever captured the redirect. Its
+earliest capture of that host is November 2023, by which time it was already
+dead. `scripts/recover_lost_assets.py` confirms this and is re-runnable, but
+there is nothing there to recover.
+
+So this content is gone from every public source. Recovery, if it happens,
+depends on Louis's own local copies — original model output, figures from the
+corresponding papers, or screenshots that can be retaken (the four `Kitematic*`
+images and `Docker_hello_world.png` are UI screenshots of software that has
+itself moved on, and are probably better dropped than reproduced).
+
+Seven of the eight affected posts carry DOIs. Migrating them as-is republishes
+incomplete articles. **Decision needed:** restore from local copies, replace,
+or annotate the gap honestly in the migrated article.
 
 Feature images for recent posts are hot-linked from `images.unsplash.com` and
-are not site-hosted. They are not covered by the mirror and will need either
-local copies or replacement.
+are not site-hosted. They are outside the mirror and need local copies or
+replacement.
+
+## 7. Link rot: 57 dead links of 327
+
+`scripts/check_links.py` probes every outbound link in the corpus. DOIs are
+judged by whether `doi.org` resolves them, not by the publisher's final status —
+Wiley, AGU and PeerJ all return 403 to anything that looks like a bot, and
+judging a DOI that way manufactures false positives. 22 links are reachable but
+bot-blocked and are excluded.
+
+| host | dead | what it was |
+|---|---:|---|
+| `underworldcode.ghost.io` | 16 | the retired Ghost(Pro) host — 15 are the lost figures above |
+| `github.com` | 7 | moved or renamed repositories |
+| `demon.underworldcloud.org` | 5 | the retired Underworld cloud service |
+| `cloudstor.aarnet.edu.au` | 4 | CloudStor, decommissioned by AARNet |
+| `agora.` / `forums.geophysics-down-under.geoscience.education` | 3 | the Discourse estate — see below |
+| `doi.org` | 2 | **malformed links, not dead DOIs** |
+| `www.mybinder.org` | 2 | wrong host; the service is at `mybinder.org` |
+| 18 further hosts | 18 | one each — institutional pages that moved |
+
+### The Discourse estate is entirely gone
+
+`forums.geophysics-down-under.geoscience.education` and
+`agora.geophysics-down-under.geoscience.education` no longer resolve in DNS.
+This was the discussion forum shadowing the blog, which also backed post
+comments and a notification/mailing list. Its remains in the corpus:
+
+- `uw-mailing-lists` — the page is a jQuery + Discourse AJAX widget calling
+  `agora…/c/mailing-lists/UWcodes/8/l/latest.json`, a registration link to
+  `forums…`, and a `mailto:` at the dead `agora…` domain. Every element of the
+  page is dead. **Retire it**; do not migrate.
+- A second dead `mailto:` at `agora…` in the publications pages.
+
+This also settles brief §13.6 by experience rather than argument: a separate
+discussion platform was tried, and it did not survive its own hosting. Whatever
+replaces it should be something that fails softly — a link to a GitHub
+Discussion, not an embedded widget.
+
+### Two malformed DOI links — worth fixing
+
+Trailing punctuation was captured into the URL, so these 404 at `doi.org`:
+
+| in post | link | should be |
+|---|---|---|
+| `underworld3-published-in-journal-of-open-source-software` | `https://doi.org/10.21105/joss.07831.` | `…/10.21105/joss.07831` |
+| `ismip-hom-benchmark-experiments-using-underworld` | `https://doi.org/10.5194/gmd-15-8749-2022,%202022.` | `…/10.5194/gmd-15-8749-2022` |
+
+The first is Underworld3's own JOSS citation.
+
+### Not errors
+
+- `http://localhost:8888/` and `http://192.168.99.100:8888/` in
+  `underworld-and-docker-part-1` are instructions to the reader, not links to
+  follow. Leave them.
+- Ghost appends `?ref=underworldcode.org` to outbound links. Strip on migration.
 
 ---
 
@@ -173,9 +256,11 @@ local copies or replacement.
 1. Create the GitHub org (needs `admin:org`; the local token does not have it) and add a second owner.
 2. Answer the `rce-*` / `sysinfo-*` question in §3 — yours or not?
 3. Rotate droplet-held credentials; scope from 2026-07-07.
-4. Mark the cull list in §5.
-5. Contact Front Matter: deactivate Rogue Scholar ingestion, get written confirmation the 50 DOIs keep resolving.
-6. Take the Ghost admin export and a droplet snapshot for the incident record — before anything on the droplet is touched.
+4. Mark the cull list in §5 (`uw-mailing-lists` already recommended for retirement).
+5. Decide what happens to the eight posts missing figures (§6): restore from
+   local copies, replace, or annotate the gap. Seven of them carry DOIs.
+6. Contact Front Matter: deactivate Rogue Scholar ingestion, get written confirmation the 50 DOIs keep resolving.
+7. Take the Ghost admin export and a droplet snapshot for the incident record — before anything on the droplet is touched.
 
 **Next here (Stage 1)**
 

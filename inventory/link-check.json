@@ -1,0 +1,2336 @@
+{
+  "http://192.168.99.100:8888/": {
+    "status": "URLError",
+    "note": "timed out",
+    "referenced_by": [
+      "underworld-and-docker-part-1"
+    ]
+  },
+  "http://ausis.edu.au/": {
+    "status": "200",
+    "note": "https://sites.google.com/view/ausis2/",
+    "referenced_by": [
+      "australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it"
+    ]
+  },
+  "http://bgh.org.au/": {
+    "status": "URLError",
+    "note": "[Errno 8] nodename nor servname provided, or not known",
+    "referenced_by": [
+      "ugcomm"
+    ]
+  },
+  "http://docs.docker.com/engine/installation/": {
+    "status": "200",
+    "note": "https://docs.docker.com/engine/install/",
+    "referenced_by": [
+      "underworld-and-docker-part-1"
+    ]
+  },
+  "http://dx.doi.org/10.1007/s10069-008-0010-2": {
+    "status": "resolves",
+    "note": "https://dx.doi.org/10.1007/s10069-008-0010-2",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "http://dx.doi.org/10.1038/nature13033": {
+    "status": "resolves",
+    "note": "https://dx.doi.org/10.1038/nature13033",
+    "referenced_by": [
+      "the-dynamics-of-continental-accretion"
+    ]
+  },
+  "http://dx.doi.org/10.1080/2151237X.2008.10129269": {
+    "status": "resolves",
+    "note": "https://dx.doi.org/10.1080/2151237X.2008.10129269",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "http://github.com/nothings/stb": {
+    "status": "200",
+    "note": "https://github.com/nothings/stb",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "http://github.com/uic-evl/omegalib": {
+    "status": "200",
+    "note": "https://github.com/uic-evl/omegalib",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "http://joss.theoj.org/papers/10.21105/joss.01410/status.svg": {
+    "status": "200",
+    "note": "https://joss.theoj.org/papers/10.21105/joss.01410/status.svg",
+    "referenced_by": [
+      "stripy"
+    ]
+  },
+  "http://links.underworldcode.org/stripy-live": {
+    "status": "200",
+    "note": "https://mybinder.org/v2/gh/underworldcode/stripy/master?filepath=Notebooks%2F0-StartHere.ipynb",
+    "referenced_by": [
+      "stripy"
+    ]
+  },
+  "http://localhost:8888/": {
+    "status": "URLError",
+    "note": "[Errno 61] Connection refused",
+    "referenced_by": [
+      "underworld-and-docker-part-1"
+    ]
+  },
+  "http://mailto:underworld_publications@agora.geophysics-down-under.geoscience.education/": {
+    "status": "InvalidURL",
+    "note": "nonnumeric port: 'underworld_publications@agora.geophysics-down-under.geoscience.education",
+    "referenced_by": [
+      "publications-using-uw"
+    ]
+  },
+  "http://monash.edu.au/mivp": {
+    "status": "403",
+    "note": "",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "http://onlinelibrary.wiley.com/doi/10.1002/2014GC005507/abstract": {
+    "status": "403",
+    "note": "",
+    "referenced_by": [
+      "viscoelasticity"
+    ]
+  },
+  "http://rses.anu.edu.au/people/academics/associate-professor-meghan-s-miller": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "covid-quiet-time"
+    ]
+  },
+  "http://tljh.jupyter.org/en/latest/": {
+    "status": "200",
+    "note": "https://tljh.jupyter.org/en/latest/",
+    "referenced_by": [
+      "underworld-low-fat-cloud"
+    ]
+  },
+  "http://user-image.logdown.io/user/7331/blog/7268/post/192386/ImpKS6BgT4WPS9aLFRjq_AdditionalImages3.png": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "the-dynamics-of-continental-accretion"
+    ]
+  },
+  "http://user-image.logdown.io/user/7331/blog/7268/post/192386/WXDOHuPTeahzWe7TyFGA_Figure1.png": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "the-dynamics-of-continental-accretion"
+    ]
+  },
+  "http://user-image.logdown.io/user/7331/blog/7268/post/192386/cfU0Y2uSpOJOl3Ygh0bv_AdditionalImages1.png": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "the-dynamics-of-continental-accretion"
+    ]
+  },
+  "http://user-image.logdown.io/user/7331/blog/7268/post/192386/tbheDw9bTmG3iMln5ptm_AdditionalImages2.png": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "the-dynamics-of-continental-accretion"
+    ]
+  },
+  "http://www.arc.gov.au/": {
+    "status": "timeout",
+    "note": "timed out",
+    "referenced_by": [
+      "intro-to-underworld"
+    ]
+  },
+  "http://www.auscope.org.au/": {
+    "status": "200",
+    "note": "https://www.auscope.org.au/",
+    "referenced_by": [
+      "auscope-cloud"
+    ]
+  },
+  "http://www.auscope.org.au/ncris/": {
+    "status": "200",
+    "note": "https://www.auscope.org.au/ncris/",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "http://www.dannyruijters.nl/cubicinterpolation/": {
+    "status": "308",
+    "note": "",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "http://www.facebook.com/underworldcode": {
+    "status": "200",
+    "note": "https://www.facebook.com/underworldcode",
+    "referenced_by": [
+      "underworld-2"
+    ]
+  },
+  "http://www.github.com/underworldcode/underworld2": {
+    "status": "200",
+    "note": "https://github.com/underworldcode/underworld2",
+    "referenced_by": [
+      "intro-to-underworld"
+    ]
+  },
+  "http://www.mcs.anl.gov/petsc/": {
+    "status": "403",
+    "note": "",
+    "referenced_by": [
+      "intro-to-underworld"
+    ]
+  },
+  "http://www.monash.edu/": {
+    "status": "403",
+    "note": "",
+    "referenced_by": [
+      "intro-to-underworld"
+    ]
+  },
+  "http://www.moresi.info/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "intro-to-underworld"
+    ]
+  },
+  "http://www.mybinder.org/": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "auscope-cloud"
+    ]
+  },
+  "http://www.nature.com/nature/journal/vaop/ncurrent/full/nature13033.html": {
+    "status": "200",
+    "note": "https://www.nature.com/nature/articles?error=cookies_not_supported&code=a79c2a39-f015-42a1-b613-30db294f9210",
+    "referenced_by": [
+      "the-dynamics-of-continental-accretion"
+    ]
+  },
+  "http://www.nectar.org.au/eresearch-tools": {
+    "status": "200",
+    "note": "https://ardc.edu.au/services/ardc-nectar-research-cloud/",
+    "referenced_by": [
+      "intro-to-underworld"
+    ]
+  },
+  "http://www.swig.org/": {
+    "status": "200",
+    "note": "https://www.swig.org/",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "http://www.unimelb.edu.au/": {
+    "status": "403",
+    "note": "",
+    "referenced_by": [
+      "intro-to-underworld"
+    ]
+  },
+  "http://www.vpac.org/": {
+    "status": "200",
+    "note": "https://www.vpac.org/",
+    "referenced_by": [
+      "intro-to-underworld"
+    ]
+  },
+  "http://www.zenodo.org/": {
+    "status": "200",
+    "note": "https://zenodo.org/",
+    "referenced_by": [
+      "underworld-on-zenodo"
+    ]
+  },
+  "https://academic.oup.com/gji/article-abstract/210/2/671/3813427/Dripping-or-delamination-A-range-of-mechanisms-for?redirectedFrom=fulltext": {
+    "status": "200",
+    "note": "https://academic.oup.com/gji/article/210/2/671/3813427",
+    "referenced_by": [
+      "untitled"
+    ]
+  },
+  "https://agora.geophysics-down-under.geoscience.education/c/mailing-lists/UWcodes/8/l/latest.json": {
+    "status": "URLError",
+    "note": "[Errno 8] nodename nor servname provided, or not known",
+    "referenced_by": [
+      "uw-mailing-lists"
+    ]
+  },
+  "https://anaconda.org/geo-down-under": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "here-comes-conda"
+    ]
+  },
+  "https://anu-rses-education.github.io/Zero-2-Python-for-Earth-Sciences/book/1-Basics/Ex1-IntroWebPython.html": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop"
+    ]
+  },
+  "https://anu-rses-education.github.io/Zero-2-Python-for-Earth-Sciences/book/assets/ANU-logo.jpg": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop"
+    ]
+  },
+  "https://anu.zoom.us/j/3915962707": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "congested-subduction-workshop"
+    ]
+  },
+  "https://arxiv.org/abs/1309.1204": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld3-published-in-journal-of-open-source-software"
+    ]
+  },
+  "https://au.finance.yahoo.com/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "covid-quiet-time"
+    ]
+  },
+  "https://auspass.edu.au/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "self-updating-repositories"
+    ]
+  },
+  "https://avatars.githubusercontent.com/u/14074661?s=280&v=4": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop"
+    ]
+  },
+  "https://avatars1.githubusercontent.com/u/50940395?s=400&v=4": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-model-exchange"
+    ]
+  },
+  "https://camo.githubusercontent.com/784dc00020fecdcdb5ae2b277e871c701145c5f5/687474703a2f2f6f77656e2e6b616c757a612e69642e61752f536c696465732f323031372d30382d31352f4c61766156752e706e67": {
+    "status": "403",
+    "note": "",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "https://camo.githubusercontent.com/c97ed9d2f19d512a9bff9296001a95e35a2fad5d/68747470733a2f2f7a656e6f646f2e6f72672f62616467652f34353136333035352e737667": {
+    "status": "403",
+    "note": "",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "https://campusmap.curtin.edu.au/bentley/?poi=796680": {
+    "status": "URLError",
+    "note": "[Errno 8] nodename nor servname provided, or not known",
+    "referenced_by": [
+      "perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop"
+    ]
+  },
+  "https://cdn-images-1.medium.com/max/2400/1*1wKV7RUPKbbw4RLT_GwuVQ.png": {
+    "status": "200",
+    "note": "https://cdn-images-1.medium.com/v2/resize:fit:2400/1*1wKV7RUPKbbw4RLT_GwuVQ.png",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://cloudstor.aarnet.edu.au/plus/s/11Fearv7XUQ9SZ1/download": {
+    "status": "URLError",
+    "note": "[Errno 8] nodename nor servname provided, or not known",
+    "referenced_by": [
+      "2-11-scaling"
+    ]
+  },
+  "https://cloudstor.aarnet.edu.au/plus/s/xaNlPXMAYoLv3O5/download": {
+    "status": "URLError",
+    "note": "[Errno 8] nodename nor servname provided, or not known",
+    "referenced_by": [
+      "2-11-scaling"
+    ]
+  },
+  "https://cloudstor.aarnet.edu.au/plus/s/yQ9MWqVknacxQnc/download": {
+    "status": "URLError",
+    "note": "[Errno 8] nodename nor servname provided, or not known",
+    "referenced_by": [
+      "2-11-scaling"
+    ]
+  },
+  "https://cloudstor.aarnet.edu.au/plus/s/zLCYMcHEIEetrLg/download": {
+    "status": "URLError",
+    "note": "[Errno 8] nodename nor servname provided, or not known",
+    "referenced_by": [
+      "2-11-scaling"
+    ]
+  },
+  "https://code.jquery.com/jquery-3.2.1.js": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "uw-mailing-lists"
+    ]
+  },
+  "https://counter.theconversation.com/content/142717/count.gif?distributor=republish-lightbox-basic": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it"
+    ]
+  },
+  "https://d24cgw3uvb9a9h.cloudfront.net/static/93854/image/thumb.png": {
+    "status": "URLError",
+    "note": "[Errno 8] nodename nor servname provided, or not known",
+    "referenced_by": [
+      "congested-subduction-workshop"
+    ]
+  },
+  "https://d24cgw3uvb9a9h.cloudfront.net/zoom.ico": {
+    "status": "URLError",
+    "note": "[Errno 8] nodename nor servname provided, or not known",
+    "referenced_by": [
+      "congested-subduction-workshop"
+    ]
+  },
+  "https://demon.underworldcloud.org/": {
+    "status": "URLError",
+    "note": "timed out",
+    "referenced_by": [
+      "underworld-low-fat-cloud"
+    ]
+  },
+  "https://demon.underworldcloud.org/hub/admin": {
+    "status": "URLError",
+    "note": "timed out",
+    "referenced_by": [
+      "underworld-low-fat-cloud"
+    ]
+  },
+  "https://demon.underworldcloud.org/hub/authorize": {
+    "status": "URLError",
+    "note": "timed out",
+    "referenced_by": [
+      "underworld-low-fat-cloud"
+    ]
+  },
+  "https://demon.underworldcloud.org/hub/signup": {
+    "status": "URLError",
+    "note": "timed out",
+    "referenced_by": [
+      "underworld-low-fat-cloud"
+    ]
+  },
+  "https://demon.underworldcloud.org/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Funderworld-geodynamics-cloud%2Funderworld-cloud-droplet&urlpath=lab%2Ftree%2Funderworld-cloud-droplet%2FStartHere.ipynb": {
+    "status": "URLError",
+    "note": "timed out",
+    "referenced_by": [
+      "underworld-low-fat-cloud"
+    ]
+  },
+  "https://disqus.com/home/forums/underworldcode/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "intro-to-underworld"
+    ]
+  },
+  "https://docs.conda.io/en/latest/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "here-comes-conda"
+    ]
+  },
+  "https://docs.conda.io/en/latest/miniconda.html": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "here-comes-conda"
+    ]
+  },
+  "https://docs.conda.io/projects/conda-build/en/latest/concepts/recipe.html": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "build-conda-packages"
+    ]
+  },
+  "https://docs.docker.com/linux/": {
+    "status": "200",
+    "note": "https://docs.docker.com/engine/",
+    "referenced_by": [
+      "underworld2-workshop-at-cig-2016-meeting"
+    ]
+  },
+  "https://doi.org/10.1002/nme.1620330702": {
+    "status": "resolves",
+    "note": "https://onlinelibrary.wiley.com/doi/10.1002/nme.1620330702",
+    "referenced_by": [
+      "stress-recovery-in-underworld"
+    ]
+  },
+  "https://doi.org/10.1002/nme.1620330703": {
+    "status": "resolves",
+    "note": "https://onlinelibrary.wiley.com/doi/10.1002/nme.1620330703",
+    "referenced_by": [
+      "stress-recovery-in-underworld"
+    ]
+  },
+  "https://doi.org/10.1007/978-3-030-14987-1_13": {
+    "status": "resolves",
+    "note": "http://link.springer.com/10.1007/978-3-030-14987-1_13",
+    "referenced_by": [
+      "shear-bands-with-dilatancy-modelled-with-underworld"
+    ]
+  },
+  "https://doi.org/10.1007/s00024-004-2575-5": {
+    "status": "resolves",
+    "note": "https://link.springer.com/10.1007/s00024-004-2575-5",
+    "referenced_by": [
+      "ismip-hom-benchmark-experiments-using-underworld"
+    ]
+  },
+  "https://doi.org/10.1007/s10852-008-9097-6": {
+    "status": "resolves",
+    "note": "http://link.springer.com/10.1007/s10852-008-9097-6",
+    "referenced_by": [
+      "how-to-cite-underworld",
+      "underworld-release-2-8"
+    ]
+  },
+  "https://doi.org/10.1016/0031-9201(96)03163-9": {
+    "status": "resolves",
+    "note": "https://linkinghub.elsevier.com/retrieve/pii/0031920196031639",
+    "referenced_by": [
+      "30-years-of-citcom-ellipsis-and-underworld"
+    ]
+  },
+  "https://doi.org/10.1016/S0021-9991(02)00031-1": {
+    "status": "resolves",
+    "note": "https://linkinghub.elsevier.com/retrieve/pii/S0021999102000311",
+    "referenced_by": [
+      "30-years-of-citcom-ellipsis-and-underworld",
+      "how-to-cite-underworld",
+      "ismip-hom-benchmark-experiments-using-underworld"
+    ]
+  },
+  "https://doi.org/10.1016/j.advwatres.2011.04.013": {
+    "status": "resolves",
+    "note": "https://linkinghub.elsevier.com/retrieve/pii/S0309170811000777",
+    "referenced_by": [
+      "underworld3-published-in-journal-of-open-source-software"
+    ]
+  },
+  "https://doi.org/10.1016/j.epsl.2016.05.054": {
+    "status": "resolves",
+    "note": "https://linkinghub.elsevier.com/retrieve/pii/S0012821X16302874",
+    "referenced_by": [
+      "craton-formation-and-the-onset-of-plate-tectonics"
+    ]
+  },
+  "https://doi.org/10.1016/j.pepi.2007.06.009": {
+    "status": "resolves",
+    "note": "https://linkinghub.elsevier.com/retrieve/pii/S0031920107001446",
+    "referenced_by": [
+      "30-years-of-citcom-ellipsis-and-underworld",
+      "how-to-cite-underworld"
+    ]
+  },
+  "https://doi.org/10.1016/j.pepi.2008.07.036": {
+    "status": "resolves",
+    "note": "https://linkinghub.elsevier.com/retrieve/pii/S003192010800191X",
+    "referenced_by": [
+      "how-to-cite-underworld"
+    ]
+  },
+  "https://doi.org/10.1016/j.pepi.2020.106637": {
+    "status": "resolves",
+    "note": "https://linkinghub.elsevier.com/retrieve/pii/S0031920120303976",
+    "referenced_by": [
+      "ismip-hom-benchmark-experiments-using-underworld",
+      "stress-recovery-in-underworld"
+    ]
+  },
+  "https://doi.org/10.1017/S002211208000225X": {
+    "status": "resolves",
+    "note": "https://www.cambridge.org/core/product/identifier/S002211208000225X/type/journal_article",
+    "referenced_by": [
+      "compressible-convection-in-cartesian-coordinates-in-underworld3"
+    ]
+  },
+  "https://doi.org/10.1029/2000JB900003": {
+    "status": "resolves",
+    "note": "https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2000JB900003",
+    "referenced_by": [
+      "30-years-of-citcom-ellipsis-and-underworld"
+    ]
+  },
+  "https://doi.org/10.1029/2005GC001073": {
+    "status": "resolves",
+    "note": "https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2005GC001073",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://doi.org/10.1029/2006JB004505": {
+    "status": "resolves",
+    "note": "https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2006JB004505",
+    "referenced_by": [
+      "compressible-convection-in-cartesian-coordinates-in-underworld3"
+    ]
+  },
+  "https://doi.org/10.1029/94JB00852": {
+    "status": "resolves",
+    "note": "https://agupubs.onlinelibrary.wiley.com/doi/10.1029/94JB00852",
+    "referenced_by": [
+      "compressible-convection-in-cartesian-coordinates-in-underworld3"
+    ]
+  },
+  "https://doi.org/10.1029/98JB01069": {
+    "status": "resolves",
+    "note": "https://agupubs.onlinelibrary.wiley.com/doi/10.1029/98JB01069",
+    "referenced_by": [
+      "craton-formation-and-the-onset-of-plate-tectonics"
+    ]
+  },
+  "https://doi.org/10.1029/JZ057i002p00227": {
+    "status": "resolves",
+    "note": "http://doi.wiley.com/10.1029/JZ057i002p00227",
+    "referenced_by": [
+      "compressible-convection-in-cartesian-coordinates-in-underworld3"
+    ]
+  },
+  "https://doi.org/10.1063/1.868465": {
+    "status": "resolves",
+    "note": "https://pubs.aip.org/pof/article/7/9/2154/465004/Numerical-investigation-of-2D-convection-",
+    "referenced_by": [
+      "30-years-of-citcom-ellipsis-and-underworld",
+      "how-to-cite-underworld"
+    ]
+  },
+  "https://doi.org/10.1093/gji/ggaa078": {
+    "status": "resolves",
+    "note": "https://academic.oup.com/gji/article/221/2/1264/5735442",
+    "referenced_by": [
+      "compressible-convection-in-cartesian-coordinates-in-underworld3"
+    ]
+  },
+  "https://doi.org/10.1111/j.1365-246X.2009.04413.x": {
+    "status": "resolves",
+    "note": "https://academic.oup.com/gji/article-lookup/doi/10.1111/j.1365-246X.2009.04413.x",
+    "referenced_by": [
+      "compressible-convection-in-cartesian-coordinates-in-underworld3"
+    ]
+  },
+  "https://doi.org/10.1130/G39943.1": {
+    "status": "resolves",
+    "note": "https://pubs.geoscienceworld.org/gsa/geology/article/46/6/487/530083/Formation-of-cratonic",
+    "referenced_by": [
+      "craton-formation-and-the-onset-of-plate-tectonics"
+    ]
+  },
+  "https://doi.org/10.1130/G47301.1": {
+    "status": "resolves",
+    "note": "https://pubs.geoscienceworld.org/geology/article/48/7/658/583557/Strain-and-retrogression-",
+    "referenced_by": [
+      "publication-news",
+      "underworld-model-exchange"
+    ]
+  },
+  "https://doi.org/10.21105/joss.01410": {
+    "status": "resolves",
+    "note": "http://joss.theoj.org/papers/10.21105/joss.01410",
+    "referenced_by": [
+      "how-to-cite-underworld",
+      "stripy"
+    ]
+  },
+  "https://doi.org/10.21105/joss.01797": {
+    "status": "resolves",
+    "note": "https://joss.theoj.org/papers/10.21105/joss.01797",
+    "referenced_by": [
+      "how-to-cite-underworld",
+      "joss-publication-underworld-2",
+      "underworld-2-9"
+    ]
+  },
+  "https://doi.org/10.21105/joss.07831": {
+    "status": "resolves",
+    "note": "https://joss.theoj.org/papers/10.21105/joss.07831",
+    "referenced_by": [
+      "underworld3-published-in-journal-of-open-source-software"
+    ]
+  },
+  "https://doi.org/10.21105/joss.07831.": {
+    "status": "404",
+    "note": "doi.org does not resolve this DOI",
+    "referenced_by": [
+      "underworld3-published-in-journal-of-open-source-software"
+    ]
+  },
+  "https://doi.org/10.5194/gmd-15-8749-2022,%202022.": {
+    "status": "404",
+    "note": "doi.org does not resolve this DOI",
+    "referenced_by": [
+      "ismip-hom-benchmark-experiments-using-underworld"
+    ]
+  },
+  "https://doi.org/10.5194/gmd-15-8749-2022-supplement": {
+    "status": "resolves",
+    "note": "https://gmd.copernicus.org/articles/15/8749/2022/gmd-15-8749-2022-supplement.zip",
+    "referenced_by": [
+      "ismip-hom-benchmark-experiments-using-underworld"
+    ]
+  },
+  "https://doi.org/10.5194/se-13-583-2022": {
+    "status": "resolves",
+    "note": "https://se.copernicus.org/articles/13/583/2022/",
+    "referenced_by": [
+      "compressible-convection-in-cartesian-coordinates-in-underworld3"
+    ]
+  },
+  "https://doi.org/10.5281/zenodo.1195597": {
+    "status": "resolves",
+    "note": "https://zenodo.org/record/1195597",
+    "referenced_by": [
+      "how-to-cite-underworld",
+      "publications-using-uw",
+      "who-is-using-stripy"
+    ]
+  },
+  "https://doi.org/10.5281/zenodo.1422825": {
+    "status": "resolves",
+    "note": "https://zenodo.org/record/1422825",
+    "referenced_by": [
+      "how-to-cite-underworld"
+    ]
+  },
+  "https://doi.org/10.5281/zenodo.1436039": {
+    "status": "resolves",
+    "note": "https://zenodo.org/doi/10.5281/zenodo.1436039",
+    "referenced_by": [
+      "how-to-cite-underworld",
+      "underworld-on-zenodo"
+    ]
+  },
+  "https://doi.org/10.5281/zenodo.1459110": {
+    "status": "resolves",
+    "note": "https://zenodo.org/record/1459110",
+    "referenced_by": [
+      "alaska-moho-model-reproducible-research-with-containers"
+    ]
+  },
+  "https://doi.org/10.5281/zenodo.16810746": {
+    "status": "resolves",
+    "note": "https://zenodo.org/doi/10.5281/zenodo.16810746",
+    "referenced_by": [
+      "underworld3-published-in-journal-of-open-source-software"
+    ]
+  },
+  "https://doi.org/10.5281/zenodo.7384424": {
+    "status": "resolves",
+    "note": "https://zenodo.org/record/7384424",
+    "referenced_by": [
+      "ismip-hom-benchmark-experiments-using-underworld"
+    ]
+  },
+  "https://doi.org/10.59350/t7ghx-8f823": {
+    "status": "resolves",
+    "note": "https://www.underworldcode.org/setting-up-underworld-dependencies/",
+    "referenced_by": [
+      "setting-up-underworld-dependencies"
+    ]
+  },
+  "https://doi.org/10.7717/peerj-cs.103": {
+    "status": "resolves",
+    "note": "https://peerj.com/articles/cs-103",
+    "referenced_by": [
+      "underworld3-published-in-journal-of-open-source-software"
+    ]
+  },
+  "https://doi.org/10/cf3h5q": {
+    "status": "resolves",
+    "note": "https://doi.org/10.1144/SP282.19",
+    "referenced_by": [
+      "how-to-cite-underworld"
+    ]
+  },
+  "https://doi.org/10/gf9rmd": {
+    "status": "resolves",
+    "note": "https://doi.org/10.21105/JOSS.01136",
+    "referenced_by": [
+      "how-to-cite-underworld"
+    ]
+  },
+  "https://en.wikipedia.org/wiki/1994_Northridge_earthquake": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "30-years-of-citcom-ellipsis-and-underworld"
+    ]
+  },
+  "https://en.wikipedia.org/wiki/Containerization": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://en.wikipedia.org/wiki/Docker_%28software%29": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-2-9"
+    ]
+  },
+  "https://en.wikipedia.org/wiki/Docker_(software)": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-and-docker-part-1"
+    ]
+  },
+  "https://en.wikipedia.org/wiki/Gremlin": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://en.wikipedia.org/wiki/OS-level_virtualisation": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-2-9"
+    ]
+  },
+  "https://en.wikipedia.org/wiki/Operating-system-level_virtualization": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-and-docker-part-1"
+    ]
+  },
+  "https://en.wikipedia.org/wiki/Recursive_acronym": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "build-conda-packages"
+    ]
+  },
+  "https://en.wikipedia.org/wiki/Spider_(solitaire)": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://en.wikipedia.org/wiki/Troubleshooting": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://en.wikipedia.org/wiki/Turing_completeness": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://en.wikipedia.org/wiki/YAML": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "build-conda-packages"
+    ]
+  },
+  "https://en.wiktionary.org/wiki/Catch-22": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://en.wiktionary.org/wiki/shipshape": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://forms.gle/TiM7Km8cLVr9LqcJ7": {
+    "status": "200",
+    "note": "https://docs.google.com/forms/d/e/1FAIpQLScrusWaliM7gd6nRvvzbkjAvh8fND3iKCBaYBeMnprlUbUgYw/viewform?usp=send_form",
+    "referenced_by": [
+      "perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop"
+    ]
+  },
+  "https://forums.geophysics-down-under.geoscience.education/": {
+    "status": "URLError",
+    "note": "[Errno 8] nodename nor servname provided, or not known",
+    "referenced_by": [
+      "uw-mailing-lists"
+    ]
+  },
+  "https://frank.pattyn.web.ulb.be/ismip/welcome.html": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "ismip-hom-benchmark-experiments-using-underworld"
+    ]
+  },
+  "https://gist.github.com/jmansour/44de4b2e091f2235289e23785bcc3809.js": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://gist.github.com/jmansour/d2207371b0a0fc7ed26a7ca720ad8c6f.js": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://gist.github.com/julesghub/566f6593edf53f6bf9a919859ced58ae.js": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-and-singularity"
+    ]
+  },
+  "https://gist.github.com/julesghub/cceef885ff00694edb8f217130dd211b.js": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://github.com/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "covid-quiet-time"
+    ]
+  },
+  "https://github.com/ANU-RSES-Education/SeismicNoise_AuSIS": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "self-updating-repositories"
+    ]
+  },
+  "https://github.com/ANU-RSES-Education/SeismicNoise_AuSIS_DAR": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "self-updating-repositories"
+    ]
+  },
+  "https://github.com/ANU-RSES-Education/SeismicNoise_AuSIS_KSC": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "self-updating-repositories"
+    ]
+  },
+  "https://github.com/ANU-RSES-Education/SeismicNoise_AuSIS_MAR": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "self-updating-repositories"
+    ]
+  },
+  "https://github.com/ANU-RSES-Education/SeismicNoise_AuSIS_NRC": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "self-updating-repositories"
+    ]
+  },
+  "https://github.com/ANU-RSES-Education/SeismicNoise_AuSIS_UHS": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "self-updating-repositories"
+    ]
+  },
+  "https://github.com/ANU-RSES-Education/Seismic_Noise_AuSIS_MAR/raw/master/results/latest.png": {
+    "status": "200",
+    "note": "https://raw.githubusercontent.com/ANU-RSES-Education/Seismic_Noise_AuSIS_MAR/master/results/latest.png",
+    "referenced_by": [
+      "self-updating-repositories"
+    ]
+  },
+  "https://github.com/NERSC/shifter": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-2-9",
+      "underworld-release-2-8"
+    ]
+  },
+  "https://github.com/ThomasLecocq/SeismoRMS": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "self-updating-repositories"
+    ]
+  },
+  "https://github.com/YangHaibin1102/Test_jpnbLink/blob/master/Benchmark_Stress_Recovery.ipynb": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "stress-recovery-in-underworld"
+    ]
+  },
+  "https://github.com/features/actions": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "self-updating-repositories"
+    ]
+  },
+  "https://github.com/jlblancoc/nanoflann": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://github.com/lavavu/LavaVu": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "lavavu",
+      "underworld-2-9"
+    ]
+  },
+  "https://github.com/lavavu/LavaVu.git": {
+    "status": "200",
+    "note": "https://github.com/lavavu/LavaVu",
+    "referenced_by": [
+      "here-comes-conda"
+    ]
+  },
+  "https://github.com/lavavu/LavaVu/issues": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "https://github.com/lvandeve/lodepng": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "https://github.com/mivp/LavaVR": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "https://github.com/nlohmann/json": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "https://github.com/openjournals/joss-reviews/issues/1797": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "joss-publication-underworld-2"
+    ]
+  },
+  "https://github.com/richgel999/jpeg-compressor": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "https://github.com/richgel999/miniz": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "https://github.com/sgorsten/linalg": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "https://github.com/syoyo/tinyobjloader": {
+    "status": "200",
+    "note": "https://github.com/tinyobjloader/tinyobjloader",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "https://github.com/underworld-community": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "credits",
+      "underworld-model-exchange"
+    ]
+  },
+  "https://github.com/underworld-community/UW3-benchmarks/blob/dev/Working/Cartesian/Ex_Convection_TALA_benchmark.py": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "compressible-convection-in-cartesian-coordinates-in-underworld3"
+    ]
+  },
+  "https://github.com/underworld-community/cenki-tok-et-al-crustal-roots-in-stable-continents": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "publication-news",
+      "underworld-model-exchange"
+    ]
+  },
+  "https://github.com/underworld-community/cenki-tok-et-al-crustal-roots-in-stable-continents/raw/master/media/FigC.png": {
+    "status": "200",
+    "note": "https://raw.githubusercontent.com/underworld-community/cenki-tok-et-al-crustal-roots-in-stable-continents/master/media/FigC.png",
+    "referenced_by": [
+      "underworld-model-exchange"
+    ]
+  },
+  "https://github.com/underworld-community/sachau-et-al-ice-sheet/blob/main/Exp_B_2D.ipynb": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "ismip-hom-benchmark-experiments-using-underworld"
+    ]
+  },
+  "https://github.com/underworld-community/underworld-standard-examples": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-model-exchange"
+    ]
+  },
+  "https://github.com/underworld-community/uwg-coupling-test": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "new-features-of-the-surface-coupling-framework-in-underworld-2"
+    ]
+  },
+  "https://github.com/underworld-geodynamics-cloud/underworld-cloud-droplet": {
+    "status": "200",
+    "note": "https://github.com/lmoresi/underworld-cloud-droplet",
+    "referenced_by": [
+      "underworld-low-fat-cloud"
+    ]
+  },
+  "https://github.com/underworldcode": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "credits",
+      "perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop"
+    ]
+  },
+  "https://github.com/underworldcode/UWGeodynamics": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "free-surface-in-underworld",
+      "uwgeodynamics-and-underworld-merge"
+    ]
+  },
+  "https://github.com/underworldcode/UWGeodynamics.git": {
+    "status": "200",
+    "note": "https://github.com/underworldcode/UWGeodynamics",
+    "referenced_by": [
+      "here-comes-conda"
+    ]
+  },
+  "https://github.com/underworldcode/UWGeodynamics/blob/development/docs/examples/1_23_01_FreeSurface_Simple_Example.ipynb": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "free-surface-in-underworld"
+    ]
+  },
+  "https://github.com/underworldcode/UWGeodynamics/blob/development/docs/examples/1_23_02_FreeSurface_Kaus2010_Rayleigh-Taylor_Instability.ipynb": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "free-surface-in-underworld"
+    ]
+  },
+  "https://github.com/underworldcode/UWGeodynamics/blob/development/docs/examples/1_23_03_FreeSurface_Crameri2012Case1_Relaxation.ipynb": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "free-surface-in-underworld"
+    ]
+  },
+  "https://github.com/underworldcode/UWGeodynamics/blob/development/docs/examples/1_23_04_FreeSurface_Crameri2012Case2_Rising_Plume.ipynb": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "free-surface-in-underworld"
+    ]
+  },
+  "https://github.com/underworldcode/UWGeodynamics/blob/development/docs/tutorials/Tutorial_10_Thrust_Wedges.ipynb": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "free-surface-in-underworld"
+    ]
+  },
+  "https://github.com/underworldcode/UWGeodynamics/tree/v2.10.1": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-2-10"
+    ]
+  },
+  "https://github.com/underworldcode/scaling_scripts": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "2-11-scaling"
+    ]
+  },
+  "https://github.com/underworldcode/stripy": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "stripy",
+      "stripy-2-0-released"
+    ]
+  },
+  "https://github.com/underworldcode/stripy.git": {
+    "status": "200",
+    "note": "https://github.com/underworldcode/stripy",
+    "referenced_by": [
+      "here-comes-conda"
+    ]
+  },
+  "https://github.com/underworldcode/stripy/blob/master/CONTRIBUTING.md": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "stripy-2-0-released"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld",
+      "uwgeodynamics-and-underworld-merge"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2.git": {
+    "status": "200",
+    "note": "https://github.com/underworldcode/underworld2",
+    "referenced_by": [
+      "here-comes-conda"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "lavavu",
+      "underworld2-workshop-at-cig-2016-meeting"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/blob/development/docs/examples/1_14_ScalingExample.ipynb": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "untitled-2"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/blob/development/docs/examples/1_15_Rayleigh_Taylor_GrowthRate.ipynb": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "untitled"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/blob/development/docs/publications/DrippingDelamination-BeallEtAl-2017/dripping_or_delamination.ipynb": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "untitled"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/blob/master/COMPILE.md": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/blob/master/docs/examples/1_06_Rayleigh_Taylor.ipynb": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "untitled"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/blob/v2.10.1b/Installation.rst": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-2-10"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/blob/v2.8.0b/CHANGES.md": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/blob/v2.8.0b/docs/install_guides/xsede_stampede2_singularity.md": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/blob/v2.8.0b/underworld/__init__.py": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/commit/61b1db7239b12c853c3338b18cc24d03e86e9f95": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-2-10"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/commit/e01c14f9ca5ea204e10f6d97433a902a82ea0175": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-2-9"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/commits/v2.17.x/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "new-features-of-the-surface-coupling-framework-in-underworld-2"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/issues": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld",
+      "underworld-2-10",
+      "underworld-release-2-8"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/issues/723": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "new-features-of-the-surface-coupling-framework-in-underworld-2"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/releases/tag/v2.9.5b": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-2-9"
+    ]
+  },
+  "https://github.com/underworldcode/underworld2/tree/v2.8.0b/docs/install_guides": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://github.com/underworldcode/underworld3": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "how-underworld3-turns-sympy-into-c",
+      "particles-in-underworld3",
+      "physical-units-in-computational-geodynamics",
+      "underworld3-come-and-get-it"
+    ]
+  },
+  "https://github.githubassets.com/assets/pinned-octocat-093da3e6fa40.svg": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop"
+    ]
+  },
+  "https://github.githubassets.com/favicons/favicon.svg": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-model-exchange"
+    ]
+  },
+  "https://hub.docker.com/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-and-docker-part-1"
+    ]
+  },
+  "https://hub.docker.com/r/underworldcode/underworld2/tags": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-2-9",
+      "underworld-release-2-8"
+    ]
+  },
+  "https://hub.docker.com/u/underworldcode/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-and-docker-part-1"
+    ]
+  },
+  "https://images.theconversation.com/files/347517/original/file-20200715-31-1f0ixal.png?ixlib=rb-1.1.0&q=45&auto=format&w=1000&fit=clip": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it"
+    ]
+  },
+  "https://images.theconversation.com/files/347517/original/file-20200715-31-1f0ixal.png?ixlib=rb-1.1.0&q=45&auto=format&w=237&fit=clip": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it"
+    ]
+  },
+  "https://images.theconversation.com/files/347848/original/file-20200716-17-1xkxswe.png?ixlib=rb-1.1.0&q=45&auto=format&w=1000&fit=clip": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it",
+      "self-updating-repositories"
+    ]
+  },
+  "https://images.theconversation.com/files/347848/original/file-20200716-17-1xkxswe.png?ixlib=rb-1.1.0&q=45&auto=format&w=237&fit=clip": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it"
+    ]
+  },
+  "https://img.shields.io/badge/Cloud_Admin-Authorize_Users-Red": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-low-fat-cloud"
+    ]
+  },
+  "https://img.shields.io/badge/Cloud_Admin-Hub_Control_Panel-Red": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-low-fat-cloud"
+    ]
+  },
+  "https://img.shields.io/badge/Cloud_User-Launch_Demo_Notebooks-blue": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-low-fat-cloud"
+    ]
+  },
+  "https://img.shields.io/badge/Cloud_User-Signup-blue": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-low-fat-cloud"
+    ]
+  },
+  "https://imgs.xkcd.com/comics/dimensional_analysis.png": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "untitled-2"
+    ]
+  },
+  "https://joss.theoj.org/papers/10.21105/joss.07831/status.svg": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld3-published-in-journal-of-open-source-software"
+    ]
+  },
+  "https://jupyter.org/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "intro-to-underworld",
+      "underworld2-workshop-at-cig-2016-meeting"
+    ]
+  },
+  "https://jupyterhub.github.io/nbgitpuller/": {
+    "status": "200",
+    "note": "https://hub.jupyter.org/nbgitpuller/",
+    "referenced_by": [
+      "underworld-low-fat-cloud"
+    ]
+  },
+  "https://kitematic.com/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld2-workshop-at-cig-2016-meeting"
+    ]
+  },
+  "https://kitematic.com/docs/managing-volumes/": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "underworld-and-docker-part-2"
+    ]
+  },
+  "https://lavavu.github.io/Documentation": {
+    "status": "200",
+    "note": "https://lavavu.github.io/Documentation/",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "https://lavavu.github.io/Documentation/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "https://link.springer.com/chapter/10.1007/978-3-030-14987-1_13": {
+    "status": "200",
+    "note": "https://link.springer.com/chapter/10.1007/978-3-030-14987-1_13?error=cookies_not_supported&code=755dae35-a291-4d18-843b-6c4813e2b8c1",
+    "referenced_by": [
+      "shear-bands-with-dilatancy-modelled-with-underworld"
+    ]
+  },
+  "https://link.springer.com/springerlink-static/1031054787/images/favicon/app-icon-iphone@3x.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "shear-bands-with-dilatancy-modelled-with-underworld"
+    ]
+  },
+  "https://macpaw.com/how-to/use-terminal-on-mac": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://medium.com/geophysics-down-under": {
+    "status": "403",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://mybinder.org/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://mybinder.org/badge.svg": {
+    "status": "200",
+    "note": "https://static.mybinder.org/badge.svg",
+    "referenced_by": [
+      "alaska-moho-model-reproducible-research-with-containers"
+    ]
+  },
+  "https://mybinder.org/badge_logo.svg": {
+    "status": "200",
+    "note": "https://static.mybinder.org/badge_logo.svg",
+    "referenced_by": [
+      "publication-news",
+      "stripy",
+      "underworld-2-10"
+    ]
+  },
+  "https://mybinder.org/v2/gh/YangHaibin1102/Test_jpnbLink/HEAD?filepath=Test_jpnbLink%2FBenchmark_Stress_Recovery.ipynb": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "stress-recovery-in-underworld"
+    ]
+  },
+  "https://mybinder.org/v2/gh/lmoresi/miller-moho-binder/publication": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "alaska-moho-model-reproducible-research-with-containers"
+    ]
+  },
+  "https://mybinder.org/v2/gh/underworld-community/cenki-tok-et-al-crustal-roots-in-stable-continents/master": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "publication-news"
+    ]
+  },
+  "https://mybinder.org/v2/gh/underworld-community/uw3-demo-launcher/HEAD?labpath=underworld3%2Fdocs%2Fuser%2FNotebooks%2F1-Meshes.ipynb": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld3-come-and-get-it"
+    ]
+  },
+  "https://mybinder.org/v2/gh/underworld-community/uwg-coupling-test.git/HEAD": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "new-features-of-the-surface-coupling-framework-in-underworld-2"
+    ]
+  },
+  "https://mybinder.org/v2/gh/underworldcode/underworld2/v2.10.1b": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-2-10"
+    ]
+  },
+  "https://mybinder.org/v2/gist/jmansour/03eb2508c63342ac02dca68884f0c212/master?filepath=demo1%2Fdemo.ipynb": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://mybinder.org/v2/gist/jmansour/03eb2508c63342ac02dca68884f0c212/master?filepath=demo2%2Fdemo.ipynb": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://mybinder.org/v2/gist/jmansour/03eb2508c63342ac02dca68884f0c212/master?filepath=demo3%2Fslcn_supg.ipynb": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://nci.org.au/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "credits",
+      "ugcomm"
+    ]
+  },
+  "https://nci.org.au/our-systems/hpc-systems": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "2-11-scaling",
+      "how-many-processors-should-we-use-to-solve-problem-x"
+    ]
+  },
+  "https://nci.org.au/sites/default/files/styles/large_side_image/public/images/2020-06/Gadi-19-2.jpg?h=0fc90738&itok=jYEi6Bi8": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "how-many-processors-should-we-use-to-solve-problem-x"
+    ]
+  },
+  "https://opus.nci.org.au/spaces/Help/pages/236881323/What+is+Gadi+...": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-and-singularity"
+    ]
+  },
+  "https://pawsey.atlassian.net/wiki/spaces/US/pages/51925434/Setonix+User+Guide": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-and-singularity"
+    ]
+  },
+  "https://pawsey.org.au/systems/magnus/": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "2-11-scaling",
+      "underworld-release-2-8"
+    ]
+  },
+  "https://pint.readthedocs.io/": {
+    "status": "200",
+    "note": "https://pint.readthedocs.io/en/stable/",
+    "referenced_by": [
+      "untitled-2"
+    ]
+  },
+  "https://portal.tacc.utexas.edu/user-guides/stampede2": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://pypi.org/project/miller_alaskamoho_srl2018/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "alaska-moho-model-reproducible-research-with-containers"
+    ]
+  },
+  "https://pythonclock.org/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://raw.githubusercontent.com/ANU-RSES-Education/SeismicNoise_AuSIS_DAR/master/results/latest.png": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "self-updating-repositories"
+    ]
+  },
+  "https://raw.githubusercontent.com/ANU-RSES-Education/SeismicNoise_AuSIS_KSC/master/results/latest-hourly.png": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it"
+    ]
+  },
+  "https://raw.githubusercontent.com/ANU-RSES-Education/SeismicNoise_AuSIS_KSC/master/results/latest.png": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "self-updating-repositories"
+    ]
+  },
+  "https://raw.githubusercontent.com/ANU-RSES-Education/SeismicNoise_AuSIS_NRC/master/results/latest.png": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "self-updating-repositories"
+    ]
+  },
+  "https://raw.githubusercontent.com/ANU-RSES-Education/SeismicNoise_AuSIS_UHS/master/results/latest-gridmap.png": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "self-updating-repositories"
+    ]
+  },
+  "https://raw.githubusercontent.com/ANU-RSES-Education/SeismicNoise_AuSIS_UHS/master/results/latest.png": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "self-updating-repositories"
+    ]
+  },
+  "https://science.sciencemag.org/content/early/2020/07/22/science.abd2438": {
+    "status": "403",
+    "note": "",
+    "referenced_by": [
+      "covid-quiet-time"
+    ]
+  },
+  "https://sebastianraschka.com/Articles/2014_python_2_3_key_diff.html": {
+    "status": "502",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://singularity.lbl.gov/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-2-9",
+      "underworld-release-2-8"
+    ]
+  },
+  "https://static-content.springer.com/cover/book/978-3-030-14987-1.jpg": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "shear-bands-with-dilatancy-modelled-with-underworld"
+    ]
+  },
+  "https://static.ghost.org/v5.0.0/images/link-icon.svg": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "how-many-processors-should-we-use-to-solve-problem-x",
+      "perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop"
+    ]
+  },
+  "https://theconversation.com/": {
+    "status": "200",
+    "note": "https://theconversation.com/au",
+    "referenced_by": [
+      "australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it"
+    ]
+  },
+  "https://theconversation.com/australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it-142717": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it",
+      "self-updating-repositories"
+    ]
+  },
+  "https://theconversation.com/institutions/australian-national-university-877": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it",
+      "self-updating-repositories"
+    ]
+  },
+  "https://theconversation.com/profiles/louis-moresi-1133314": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it",
+      "self-updating-repositories"
+    ]
+  },
+  "https://theconversation.com/profiles/meghan-s-miller-1105475": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it",
+      "self-updating-repositories"
+    ]
+  },
+  "https://theconversation.com/the-victorian-earthquake-didnt-do-much-damage-but-the-next-one-might-7787": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it"
+    ]
+  },
+  "https://theconversation.com/underground-sounds-why-we-should-listen-to-earthquakes-5798": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it"
+    ]
+  },
+  "https://trendsideas.com/stories/phoenix-rising-4": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "congested-subduction-workshop"
+    ]
+  },
+  "https://twitter.com/underworldcode": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://underworld2.readthedocs.io/en/latest/UserGuide.html": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://underworld2.readthedocs.io/en/latest/build/underworld.function.analytic.html": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "scaling-in-underworld"
+    ]
+  },
+  "https://underworld2.readthedocs.io/en/latest/build/underworld.function.analytic.html?highlight=solDB": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "2-11-scaling"
+    ]
+  },
+  "https://underworld2.readthedocs.io/en/latest/build/underworld.mpi.html": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://underworldcode.ghost.io/": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://underworldcode.ghost.io/content/images/2019/08/comparison.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "untitled"
+    ]
+  },
+  "https://underworldcode.ghost.io/content/images/2019/08/schematic-1.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "untitled"
+    ]
+  },
+  "https://underworldcode.ghost.io/content/images/2019/08/stressHistory_dAlpha-1.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "viscoelasticity"
+    ]
+  },
+  "https://underworldcode.ghost.io/content/images/2019/08/timescales.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "untitled"
+    ]
+  },
+  "https://underworldcode.ghost.io/content/images/2019/08/triggereddripping.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "untitled"
+    ]
+  },
+  "https://underworldcode.ghost.io/content/images/2019/09/CratonFormationMovieFrames-2.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "craton-formation-and-the-onset-of-plate-tectonics"
+    ]
+  },
+  "https://underworldcode.ghost.io/content/images/2019/09/CratonsLithosphere.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "craton-formation-and-the-onset-of-plate-tectonics"
+    ]
+  },
+  "https://underworldcode.ghost.io/content/images/2019/09/Kitematic2.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "underworld-and-docker-part-2"
+    ]
+  },
+  "https://underworldcode.ghost.io/content/images/2019/09/Kitematic3.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "underworld-and-docker-part-2"
+    ]
+  },
+  "https://underworldcode.ghost.io/content/images/2019/09/Kitematic4.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "underworld-and-docker-part-2"
+    ]
+  },
+  "https://underworldcode.ghost.io/content/images/2019/09/Kitematic6.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "underworld-and-docker-part-2"
+    ]
+  },
+  "https://underworldcode.ghost.io/content/images/2019/09/MohoSurfaceGradient-ClusteredGrids.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "alaska-moho-model-reproducible-research-with-containers"
+    ]
+  },
+  "https://underworldcode.ghost.io/content/images/2019/09/dockeredNotebook.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "underworld-and-docker-part-1"
+    ]
+  },
+  "https://underworldcode.ghost.io/content/images/2019/11/Docker_hello_world.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://underworldcode.ghost.io/content/images/2019/11/timer_60_seconds.png": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://underworldcode.github.io/stripy/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "stripy"
+    ]
+  },
+  "https://underworldcode.github.io/underworld3/development/_quickstart/index.html": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld3-come-and-get-it"
+    ]
+  },
+  "https://uwgeodynamics.readthedocs.io/en/latest/UserGuide.html": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "publication-news"
+    ]
+  },
+  "https://www.anaconda.com/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "here-comes-conda"
+    ]
+  },
+  "https://www.anaconda.com/download": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "https://www.apple.com/au/safari/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://www.arc.gov.au/": {
+    "status": "TimeoutError",
+    "note": "[Errno 60] Operation timed out",
+    "referenced_by": [
+      "credits"
+    ]
+  },
+  "https://www.auscope.org.au/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "credits",
+      "intro-to-underworld"
+    ]
+  },
+  "https://www.auscope.org.au/geophysical-observatory": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "covid-quiet-time"
+    ]
+  },
+  "https://www.computerhope.com/issues/chusedos.htm": {
+    "status": "403",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://www.docker.com/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld",
+      "here-comes-conda"
+    ]
+  },
+  "https://www.docker.com/get-started": {
+    "status": "200",
+    "note": "https://www.docker.com/get-started/",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://www.docker.com/what-docker": {
+    "status": "200",
+    "note": "https://www.docker.com/resources/what-container/",
+    "referenced_by": [
+      "underworld-and-docker-part-1"
+    ]
+  },
+  "https://www.dropbox.com/sh/rrt8x6an8ykferc/AABP2XyCPCUDUaRBi4JoNvtJa?dl=0": {
+    "status": "200",
+    "note": "https://www.dropbox.com/scl/fo/xbez1eurq19k818exoxks/AAFZhhjbK7v7Ud52LN923DU?rlkey=8lcgha5pckvnvvbi6vd9nayrs&dl=0",
+    "referenced_by": [
+      "congested-subduction-workshop"
+    ]
+  },
+  "https://www.earthbyte.org/the-basin-genesis-hub/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "credits"
+    ]
+  },
+  "https://www.eventbrite.com.au/e/anu-congested-subduction-workshop-tickets-97954822511": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "congested-subduction-workshop"
+    ]
+  },
+  "https://www.facebook.com/underworldcode/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://www.google.com/chrome/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://www.google.com/covid19/mobility/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "covid-quiet-time"
+    ]
+  },
+  "https://www.google.com/maps/embed?pb=%211m18%211m12%211m3%211d52091.11146237571%212d149.04564407781763%213d-35.313572550030976%212m3%211f0%212f0%213f0%213m2%211i1024%212i768%214f13.1%213m3%211m2%211s0x6b17b6abd7b30147%3A0x91864957aac85050%212sMount+Stromlo+Observatory%215e0%213m2%211sen%212sau%214v1583363321464%215m2%211sen%212sau": {
+    "status": "404",
+    "note": "",
+    "referenced_by": [
+      "congested-subduction-workshop"
+    ]
+  },
+  "https://www.infoworld.com/article/3126427/go-pro-the-power-users-guide-to-powershell.html": {
+    "status": "200",
+    "note": "https://www.infoworld.com/article/2249565/go-pro-the-power-users-guide-to-powershell.html",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://www.mozilla.org/en-US/firefox/new/": {
+    "status": "200",
+    "note": "https://www.firefox.com/en-US/?redirect_source=mozilla-org",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://www.mpich.org/": {
+    "status": "403",
+    "note": "",
+    "referenced_by": [
+      "underworld-2-9"
+    ]
+  },
+  "https://www.mybinder.org/": {
+    "status": "URLError",
+    "note": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer cer",
+    "referenced_by": [
+      "underworld-low-fat-cloud"
+    ]
+  },
+  "https://www.open-mpi.org/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-2-9"
+    ]
+  },
+  "https://www.responsibletravel.com/holidays/safari/travel-guide/best-place-to-go-on-safari": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://www.sciencedirect.com/science/article/pii/S0031920120303976": {
+    "status": "403",
+    "note": "",
+    "referenced_by": [
+      "stress-recovery-in-underworld"
+    ]
+  },
+  "https://www.sqlite.org/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "lavavu"
+    ]
+  },
+  "https://www.techopedia.com/definition/5817/absolute-path": {
+    "status": "403",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://www.youtube.com/embed/1sn327SSzsk?feature=oembed": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-release-2-8"
+    ]
+  },
+  "https://www.youtube.com/embed/8zaeYJG0SCs?feature=oembed": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "publication-news"
+    ]
+  },
+  "https://www.youtube.com/embed/sk0vCsANwc8?feature=oembed": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "craton-formation-and-the-onset-of-plate-tectonics"
+    ]
+  },
+  "https://www.zotero.org/groups/2386948/underworld-geodynamics-community/items/collectionKey/BZCLFTDA": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "group-publications"
+    ]
+  },
+  "https://www.zotero.org/groups/2386948/underworld-geodynamics-community/items/collectionKey/QNARWBUC": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "adding-zotero-references-to-a-webpage",
+      "publications-using-uw",
+      "who-is-using-stripy"
+    ]
+  },
+  "https://www.zotero.org/lmoresi": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "lm-publications"
+    ]
+  },
+  "https://www.zotero.org/support/dev/web_api/v3/basics": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "adding-zotero-references-to-a-webpage"
+    ]
+  },
+  "https://www.zotero.org/support/dev/web_api/v3/start": {
+    "status": "200",
+    "note": "https://www.zotero.org/support/dev/web_api/v3/",
+    "referenced_by": [
+      "adding-zotero-references-to-a-webpage"
+    ]
+  },
+  "https://xkcd.com/705/": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "getting-started-60-seconds-to-underworld"
+    ]
+  },
+  "https://zenodo.org/badge/DOI/10.5281/zenodo.1436039.svg": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld-on-zenodo"
+    ]
+  },
+  "https://zenodo.org/badge/DOI/10.5281/zenodo.1459110.svg": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "alaska-moho-model-reproducible-research-with-containers"
+    ]
+  },
+  "https://zenodo.org/communities/auscope/": {
+    "status": "200",
+    "note": "https://zenodo.org/communities/auscope/records",
+    "referenced_by": [
+      "underworld-on-zenodo"
+    ]
+  },
+  "https://zenodo.org/record/3964957": {
+    "status": "200",
+    "note": "https://zenodo.org/records/3964957",
+    "referenced_by": [
+      "underworld-2-9"
+    ]
+  },
+  "https://zenodo.org/records/16838572": {
+    "status": "200",
+    "note": "",
+    "referenced_by": [
+      "underworld3-published-in-journal-of-open-source-software"
+    ]
+  }
+}
