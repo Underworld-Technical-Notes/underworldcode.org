@@ -181,7 +181,7 @@ repository with `pixi run new`, and there is only one copy.
 
 - **Create the GitHub organisation** and add a second owner. The local `gh`
   token holds `gist`, `read:org`, `repo` only — no `admin:org` — so this cannot
-  be done from here. Suggested: org `underworld-notes`, repo `underworldcode.org`.
+  be done from here. Suggested: org `underworld-technical-notes`, repo `underworldcode.org`.
 - **Cull the pages.** 16 Ghost pages are classified `migrate`; decide which
   survive. See the table in `STAGE-0-FINDINGS.md`.
 - **Contact Front Matter** to deactivate Rogue Scholar ingestion and get written

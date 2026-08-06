@@ -6,7 +6,7 @@ project:
   description: >-
     Methods, implementation notes, benchmarks and worked examples from the
     Underworld geodynamics code.
-  github: https://github.com/underworld-notes/underworldcode.org
+  github: https://github.com/underworld-technical-notes/underworldcode.org
   license:
     content: CC-BY-4.0
     code: MIT
