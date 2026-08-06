@@ -62,5 +62,11 @@ jobs:
         with:
           path: _build/html
 
+      # GitHub's Pages queue intermittently keeps a deployment pending for
+      # longer than the action's default patience, which fails the run with a
+      # timeout that has nothing to do with the build.
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          timeout: 1200000
+          error_count: 10
