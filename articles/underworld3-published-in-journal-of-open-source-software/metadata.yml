@@ -2,7 +2,7 @@
 id: UWTN 2025-005
 slug: underworld3-published-in-journal-of-open-source-software
 title: Underworld3 published in Journal of Open Source Software
-article_type: technical-note
+article_type: release-note
 status: migrated
 authors:
   - name: Louis Moresi
@@ -20,7 +20,9 @@ license: CC-BY-4.0
 canonical_path: /underworld3-published-in-journal-of-open-source-software/
 legacy_paths:
   - /underworld3-published-in-journal-of-open-source-software/
-tags:
+subjects:
+methods:
+ghost_tags:
   - Underworld Code
   - Python/Jupyter
 banner: figures/banner.jpg

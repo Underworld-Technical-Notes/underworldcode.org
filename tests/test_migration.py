@@ -368,3 +368,50 @@ def test_each_topic_page_carries_a_searchable_query_token():
         token = page.stem[len("topic-"):]
         text = page.read_text(encoding="utf-8")
         assert "tag:%s" % token in text, "%s carries no tag: token" % page.stem
+
+
+# --------------------------------------------------------------------------
+# Subject and method facets, derived from measuring the corpus rather than
+# from Ghost's blog tags.
+# --------------------------------------------------------------------------
+
+def test_facet_terms_are_in_the_vocabulary():
+    import json
+    schema = json.loads((ROOT / "schemas" / "article-metadata.schema.json").read_text())
+    build_index = load("build_index")
+    for axis in ("subjects", "methods"):
+        allowed = set(schema["properties"][axis]["items"]["enum"])
+        assert allowed == set(build_index.vocabulary()[axis]), \
+            "%s enum has drifted from vocabulary.yml" % axis
+
+
+def test_classification_covers_every_article():
+    ghost_to_myst = load("ghost_to_myst")
+    slugs = {p.parent.name for p in (ROOT / "articles").glob("*/*.md")}
+    classified = set(ghost_to_myst.load_classification())
+    assert slugs <= classified, "unclassified: %s" % sorted(slugs - classified)
+
+
+def test_ghost_tags_are_recorded_but_not_published():
+    """The migration should lose nothing, and publish nothing decorative."""
+    import re
+    found = False
+    for meta in sorted((ROOT / "articles").glob("*/metadata.yml")):
+        text = meta.read_text(encoding="utf-8")
+        if "ghost_tags:" in text:
+            found = True
+        assert not re.search(r"^tags:", text, re.M), \
+            "%s still carries Ghost's tags as a live field" % meta.parent.name
+    assert found, "Ghost tags were dropped rather than recorded"
+    index = (ROOT / "index.md").read_text(encoding="utf-8")
+    for blog_tag in ("Tricks of the Trade", "Underworld Code"):
+        assert blog_tag not in index, "%r is blog furniture, not a facet" % blog_tag
+
+
+def test_a_subject_may_be_empty():
+    """Most of these notes are about machinery and have no Earth subject."""
+    build_index = load("build_index")
+    metas = [build_index.read_yaml(p) for p in (ROOT / "articles").glob("*/metadata.yml")]
+    assert any(not m.get("subjects") for m in metas), \
+        "every note claims a subject -- that is a decorative classification"
+    assert any(m.get("methods") for m in metas)

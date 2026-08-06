@@ -21,13 +21,18 @@ project:
     - title: "Topics"
       children:
         - file: topics/topics.md
-        - file: topics/topic-auscope.md
-        - file: topics/topic-development.md
-        - file: topics/topic-documentation.md
-        - file: topics/topic-geodynamics.md
-        - file: topics/topic-python-jupyter.md
-        - file: topics/topic-tricks-of-the-trade.md
-        - file: topics/topic-underworld-code.md
+        - file: topics/topic-benchmarks-validation.md
+        - file: topics/topic-finite-elements.md
+        - file: topics/topic-meshing.md
+        - file: topics/topic-parallel-hpc.md
+        - file: topics/topic-particles-swarms.md
+        - file: topics/topic-rheology.md
+        - file: topics/topic-solvers.md
+        - file: topics/topic-surface-processes.md
+        - file: topics/topic-symbolic-codegen.md
+        - file: topics/topic-tectonics-lithosphere.md
+        - file: topics/topic-time-integration.md
+        - file: topics/topic-units-scaling.md
     - title: "2026"
       children:
         - file: articles/finding-particles-in-a-distributed-unstructured-mesh/finding-particles-in-a-distributed-unstructured-mesh.md

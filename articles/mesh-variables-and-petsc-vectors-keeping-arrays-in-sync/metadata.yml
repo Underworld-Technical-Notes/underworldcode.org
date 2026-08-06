@@ -16,7 +16,11 @@ license: CC-BY-4.0
 canonical_path: /mesh-variables-and-petsc-vectors-keeping-arrays-in-sync/
 legacy_paths:
   - /mesh-variables-and-petsc-vectors-keeping-arrays-in-sync/
-tags:
+subjects:
+methods:
+  - finite-elements
+  - meshing
+ghost_tags:
   - Underworld Code
   - development
 banner: figures/banner.jpg

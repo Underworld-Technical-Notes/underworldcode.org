@@ -2,7 +2,7 @@
 id: UWTN 2026-002
 slug: our-journey-from-underworld2-to-underworld3
 title: Our Journey from Underworld2 to Underworld3
-article_type: technical-note
+article_type: development-note
 status: migrated
 authors:
   - name: Louis Moresi
@@ -22,7 +22,12 @@ license: CC-BY-4.0
 canonical_path: /our-journey-from-underworld2-to-underworld3/
 legacy_paths:
   - /our-journey-from-underworld2-to-underworld3/
-tags:
+subjects:
+methods:
+  - symbolic-codegen
+  - solvers
+  - finite-elements
+ghost_tags:
   - Underworld Code
   - Geodynamics
   - Tricks of the Trade

@@ -55,6 +55,10 @@ rebuild-figures = "python3 scripts/rebuild_figures.py --repo ."
 merge-originals = "python3 scripts/merge_originals.py"
 audit-math = "python3 scripts/audit_math.py --repo ."
 
+# Reproduces the counts behind vocabulary.yml. Re-run it as the corpus grows:
+# the scheme is meant to be revised, not defended.
+vocabulary = "python3 scripts/analyse_vocabulary.py"
+
 # Full migration pipeline, in order. Each step is reviewable on its own.
 migrate = { depends-on = ["convert", "rebuild-figures", "merge-originals"] }
 mirror = "python3 scripts/fetch_assets.py"

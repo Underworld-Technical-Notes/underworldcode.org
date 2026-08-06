@@ -1,0 +1,73 @@
+# Controlled vocabulary for Underworld Technical Notes.
+#
+# Two axes, because the corpus has two. Derived from measuring the text rather
+# than invented -- `pixi run vocabulary` reproduces the counts. Article *type*
+# (technical note, how-to, benchmark, release note) is a third dimension and
+# lives in each article's `article_type`, not here.
+#
+# This will not fit forever. When a term stops earning its place, or a new one
+# arrives with the content, change it here and re-classify: nothing downstream
+# hard-codes these names except the schema, which reads them.
+#
+# Deliberately NOT included, on the evidence:
+#   geodynamics     30 of 53 articles -- that is the publication's scope, and a
+#                   label applying to everything classifies nothing.
+#   groundwater      2 of 53, both passing mentions. Add it when there is
+#                   content, not in anticipation of it.
+#   glaciology       1 of 53.
+#   reproducibility 27 of 53, but that is how-to content: an article *type*,
+#                   not a subject.
+
+subjects:
+  mantle-convection:
+    label: Mantle convection
+    scope: Thermal and thermochemical convection, plumes, the deep interior.
+  tectonics-lithosphere:
+    label: Tectonics & lithosphere
+    scope: >-
+      Plate boundaries, crust and lithosphere deformation, subduction. Merged
+      because the three score 5-10 articles each and split too thin apart.
+  earthquakes-faults:
+    label: Earthquakes & faults
+    scope: Fault mechanics, rupture, seismic cycles, fault representation.
+  rheology:
+    label: Rheology
+    scope: >-
+      Material behaviour as the subject of the article -- viscoelasticity,
+      plasticity, constitutive theory. Not for articles that merely use a
+      viscosity as a worked example, which is most of them.
+  surface-processes:
+    label: Surface processes
+    scope: Erosion, sedimentation, landscape evolution, surface coupling.
+  planetary:
+    label: Planetary
+    scope: Bodies other than Earth.
+
+methods:
+  finite-elements:
+    label: Finite elements
+    scope: Discretisation, weak forms, function spaces, PETSc DS integration.
+  particles-swarms:
+    label: Particles & swarms
+    scope: Lagrangian particles, swarm variables, particle location and migration.
+  meshing:
+    label: Meshing
+    scope: Mesh generation, unstructured meshes, adaptivity, refinement.
+  solvers:
+    label: Solvers
+    scope: Nonlinear and linear solution, preconditioning, multigrid, Jacobians.
+  symbolic-codegen:
+    label: Symbolic algebra & code generation
+    scope: SymPy expressions, JIT compilation, automatic differentiation.
+  parallel-hpc:
+    label: Parallel & HPC
+    scope: Domain decomposition, MPI, scaling, running at size.
+  benchmarks-validation:
+    label: Benchmarks & validation
+    scope: Analytic solutions, community benchmarks, convergence testing.
+  time-integration:
+    label: Time integration
+    scope: Timestepping, advection, semi-Lagrangian transport, time derivatives.
+  units-scaling:
+    label: Units & scaling
+    scope: Physical units, non-dimensionalisation, reference scales.

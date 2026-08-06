@@ -152,12 +152,6 @@
         "pattern": "^/.*/$"
       }
     },
-    "tags": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
     "figures": {
       "type": "integer",
       "minimum": 0
@@ -212,6 +206,48 @@
         "null"
       ],
       "description": "Photographer attribution, as Unsplash's licence asks for. Carried from Ghost's feature_image_caption."
+    },
+    "subjects": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "earthquakes-faults",
+          "mantle-convection",
+          "planetary",
+          "rheology",
+          "surface-processes",
+          "tectonics-lithosphere"
+        ]
+      },
+      "description": "Earth-science subject facets, from vocabulary.yml. May be empty: a note about the machinery has no subject, and a decorative one is worse than none."
+    },
+    "methods": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "benchmarks-validation",
+          "finite-elements",
+          "meshing",
+          "parallel-hpc",
+          "particles-swarms",
+          "solvers",
+          "symbolic-codegen",
+          "time-integration",
+          "units-scaling"
+        ]
+      },
+      "description": "Computational method facets, from vocabulary.yml."
+    },
+    "ghost_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags inherited from Ghost. Recorded so the migration loses nothing; nothing is built from them."
     }
   },
   "allOf": [

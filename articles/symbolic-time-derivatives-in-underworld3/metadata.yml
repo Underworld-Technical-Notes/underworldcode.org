@@ -16,7 +16,11 @@ license: CC-BY-4.0
 canonical_path: /symbolic-time-derivatives-in-underworld3/
 legacy_paths:
   - /symbolic-time-derivatives-in-underworld3/
-tags:
+subjects:
+methods:
+  - time-integration
+  - symbolic-codegen
+ghost_tags:
   - Underworld Code
   - Tricks of the Trade
   - Documentation

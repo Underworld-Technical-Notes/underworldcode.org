@@ -394,3 +394,14 @@ a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); 
   padding: 0.1rem 0.35rem;
   color: var(--uwtn-ink);
 }
+
+/* Facets the series has not covered yet. Shown rather than hidden: an empty
+   subject is a statement about the corpus, not an oversight. */
+.uwtn-axis { margin-bottom: 2rem; }
+
+.uwtn-unused {
+  font-family: var(--uwtn-sans);
+  font-size: 0.72rem;
+  color: var(--uwtn-muted);
+  margin-top: 0.7rem;
+}

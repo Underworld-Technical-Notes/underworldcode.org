@@ -20,7 +20,12 @@ license: CC-BY-4.0
 canonical_path: /how-underworld3-turns-sympy-into-c/
 legacy_paths:
   - /how-underworld3-turns-sympy-into-c/
-tags:
+subjects:
+methods:
+  - symbolic-codegen
+  - finite-elements
+  - solvers
+ghost_tags:
   - Underworld Code
   - Tricks of the Trade
   - development

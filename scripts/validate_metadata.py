@@ -150,6 +150,16 @@ def main():
             errors.append("%s: has a registered DOI (%s) but metadata says none"
                           % (label, registered))
 
+        # Facet terms must exist in vocabulary.yml. The schema enum is
+        # generated from it, so a term that is merely plausible fails here
+        # rather than quietly creating a topic page of one article.
+        for axis in ("subjects", "methods"):
+            allowed = schema["properties"][axis]["items"]["enum"]
+            for term in meta.get(axis) or []:
+                if term not in allowed:
+                    errors.append("%s: %s %r is not in vocabulary.yml"
+                                  % (label, axis[:-1], term))
+
         for author in meta.get("authors") or []:
             orcid = author.get("orcid")
             if orcid and not ORCID_RE.match(str(orcid)):

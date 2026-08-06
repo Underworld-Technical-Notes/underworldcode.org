@@ -122,6 +122,37 @@ def _scalar(text):
 CORRECTIONS = load_corrections()
 
 
+def load_classification():
+    """slug -> {article_type, subjects, methods} from classification.yml.
+
+    Kept outside articles/, which `pixi run migrate` regenerates, so an
+    editorial judgement is not lost by re-running the conversion.
+    """
+    path = ROOT / "classification.yml"
+    entries, slug = {}, None
+    if not path.exists():
+        return entries
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        if not raw.startswith(" ") and raw.rstrip().endswith(":"):
+            slug = raw.rstrip()[:-1]
+            entries[slug] = {"article_type": "technical-note",
+                             "subjects": [], "methods": []}
+        elif slug and ":" in raw:
+            key, _, value = raw.strip().partition(":")
+            value = value.strip()
+            if key in ("subjects", "methods"):
+                inner = value.strip("[]").strip()
+                entries[slug][key] = [x.strip() for x in inner.split(",") if x.strip()]
+            elif key == "article_type" and value:
+                entries[slug][key] = value
+    return entries
+
+
+CLASSIFICATION = load_classification()
+
+
 def author_entry(author):
     """Merge a Ghost author record with the registry."""
     slug = author.get("slug") or ""
@@ -461,7 +492,8 @@ def write_metadata(path, rec, doi, figures, article_id, banner=None, credit=None
         "id: %s" % yaml_str(article_id),
         "slug: %s" % rec["slug"],
         "title: %s" % yaml_str(rec.get("title") or ""),
-        "article_type: technical-note",
+        "article_type: %s" % (CLASSIFICATION.get(rec["slug"], {}).get(
+            "article_type") or "technical-note"),
         "status: migrated",
         "authors:",
     ]
@@ -483,8 +515,16 @@ def write_metadata(path, rec, doi, figures, article_id, banner=None, credit=None
         "canonical_path: /%s/" % rec["slug"],
         "legacy_paths:",
         "  - /%s/" % rec["slug"],
-        "tags:",
     ]
+    # Ghost's tags ("Tricks of the Trade", "Underworld Code") are blog
+    # furniture; the subject and method facets replace them. They are recorded
+    # so the migration loses nothing, but nothing is built from them.
+    facets = CLASSIFICATION.get(rec["slug"], {})
+    for axis in ("subjects", "methods"):
+        lines.append("%s:" % axis)
+        for term in facets.get(axis) or []:
+            lines.append("  - %s" % term)
+    lines.append("ghost_tags:")
     for tag in (rec.get("tags") or []):
         lines.append("  - %s" % yaml_str(tag.get("name") or ""))
     lines += [

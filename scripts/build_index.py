@@ -23,6 +23,9 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 ARTICLES = ROOT / "articles"
 
+# Filled from vocabulary.yml at start-up so entries can show readable labels.
+FACET_LABELS = {}
+
 
 def read_yaml(path):
     """Parse the fixed-shape metadata.yml without a YAML dependency."""
@@ -106,9 +109,10 @@ def entry_html(meta, description, has_pdf, banner=None, lead=False):
         links.append('<a href="https://doi.org/%s"><span class="uwtn-doi-label">doi</span>%s</a>'
                      % (doi, html.escape(doi)))
 
+    facets = list(meta.get("subjects") or []) + list(meta.get("methods") or [])
     tags = "".join('<a class="uwtn-tag" href="/%s/">%s</a>'
-                   % (topic_slug(t), html.escape(str(t)))
-                   for t in (meta.get("tags") or []) if t)
+                   % (topic_slug(term), html.escape(FACET_LABELS.get(term, term)))
+                   for term in facets)
 
     # MyST keeps div, span and a with their classes and drops everything else's
     # -- <article>, <p class>, <time>, role and aria-* are all stripped. The
@@ -187,6 +191,31 @@ def write_toc(metas):
     return by_year
 
 
+def vocabulary():
+    """axis -> {term: (label, scope)} from vocabulary.yml."""
+    text = (ROOT / "vocabulary.yml").read_text(encoding="utf-8")
+    axes, axis, term = {}, None, None
+    for raw in text.splitlines():
+        if raw.startswith("#") or not raw.strip():
+            continue
+        if not raw.startswith(" ") and raw.rstrip().endswith(":"):
+            axis = raw.rstrip()[:-1]
+            axes[axis] = {}
+        elif raw.startswith("  ") and not raw.startswith("    ") and raw.rstrip().endswith(":"):
+            term = raw.strip()[:-1]
+            axes[axis][term] = ["", ""]
+        elif raw.startswith("    ") and term:
+            key, _, value = raw.strip().partition(":")
+            value = value.strip().strip(">-").strip()
+            if key == "label":
+                axes[axis][term][0] = value
+            elif key == "scope" and value:
+                axes[axis][term][1] = value
+        elif raw.startswith("      ") and term:
+            axes[axis][term][1] = (axes[axis][term][1] + " " + raw.strip()).strip()
+    return axes
+
+
 def topic_slug(tag):
     """A URL slug for a tag, prefixed so it can never collide with an article.
 
@@ -211,10 +240,15 @@ def write_topic_pages(metas):
     hidden: searching the bare tag word buries the topic page under every prose
     mention of it, and a token nobody can see is a query nobody knows to type.
     """
-    topics = {}
+    vocab = vocabulary()
+    topics, axis_of, label_of, scope_of = {}, {}, {}, {}
+    for axis in ("subjects", "methods"):
+        for term, (label, scope) in vocab.get(axis, {}).items():
+            label_of[term], scope_of[term], axis_of[term] = label, scope, axis
     for meta, description, has_pdf in metas:
-        for tag in (meta.get("tags") or []):
-            topics.setdefault(str(tag), []).append((meta, description, has_pdf))
+        for axis in ("subjects", "methods"):
+            for term in (meta.get(axis) or []):
+                topics.setdefault(term, []).append((meta, description, has_pdf))
 
     directory = ROOT / "topics"
     directory.mkdir(exist_ok=True)
@@ -225,32 +259,52 @@ def write_topic_pages(metas):
         slug = topic_slug(tag)
         body = "\n".join(entry_html(m, d, p) for m, d, p in entries)
         page = (
-            '---\ntitle: "{tag}"\nsite:\n  hide_outline: true\n---\n\n'
+            '---\ntitle: "{label}"\nsite:\n  hide_outline: true\n---\n\n'
             '<div class="uwtn-topic-head">'
-            '<div class="uwtn-kicker">Topic</div>'
-            '<div class="uwtn-wordmark">{safe}</div>'
-            '<div class="uwtn-standfirst">{count} note{plural} tagged {safe}. '
-            '<a href="/topics/">All topics</a></div>'
-            '<div class="uwtn-query">search <code>tag:{token}</code></div>'
+            '<div class="uwtn-kicker">{kicker}</div>'
+            '<div class="uwtn-wordmark">{label}</div>'
+            '<div class="uwtn-standfirst">{scope}</div>'
+            '<div class="uwtn-query">{count} note{plural} &middot; '
+            'search <code>tag:{token}</code> &middot; '
+            '<a href="/topics/">all topics</a></div>'
             '</div>\n\n'
             '<div class="uwtn-feed">\n{body}\n</div>\n'
-        ).format(tag=tag, safe=html.escape(tag), count=len(entries),
-                 plural="" if len(entries) == 1 else "s",
+        ).format(label=html.escape(label_of.get(tag, tag)),
+                 kicker="Subject" if axis_of.get(tag) == "subjects" else "Method",
+                 scope=html.escape(scope_of.get(tag, "")),
+                 count=len(entries), plural="" if len(entries) == 1 else "s",
                  token=slug[len("topic-"):], body=body)
         (directory / ("%s.md" % slug)).write_text(page, encoding="utf-8")
 
-    listing = "".join(
-        '<a class="uwtn-topic-link" href="/%s/">%s<span class="uwtn-topic-count">%d</span></a>'
-        % (topic_slug(tag), html.escape(tag), len(entries))
-        for tag, entries in sorted(topics.items(), key=lambda kv: (-len(kv[1]), kv[0])))
+    sections = []
+    for axis, heading in (("subjects", "Subject"), ("methods", "Method")):
+        terms = [(t_, e) for t_, e in topics.items() if axis_of.get(t_) == axis]
+        if not terms:
+            continue
+        links = "".join(
+            '<a class="uwtn-topic-link" href="/%s/">%s<span class="uwtn-topic-count">%d</span></a>'
+            % (topic_slug(term), html.escape(label_of.get(term, term)), len(entries))
+            for term, entries in sorted(terms, key=lambda kv: (-len(kv[1]), kv[0])))
+        unused = sorted(t_ for t_ in vocab.get(axis, {}) if t_ not in topics)
+        note = ""
+        if unused:
+            # Shown rather than hidden: an empty facet is a statement about the
+            # corpus -- these are subjects the series has not covered yet.
+            note = ('<div class="uwtn-unused">Not yet used: %s</div>'
+                    % ", ".join(html.escape(label_of[t_]) for t_ in unused))
+        sections.append('<div class="uwtn-axis"><div class="uwtn-year">%s</div>'
+                        '<div class="uwtn-topic-list">%s</div>%s</div>'
+                        % (heading, links, note))
+
     (directory / "topics.md").write_text(
         '---\ntitle: Topics\nsite:\n  hide_outline: true\n---\n\n'
         '<div class="uwtn-topic-head"><div class="uwtn-kicker">Browse</div>'
         '<div class="uwtn-wordmark">Topics</div>'
-        '<div class="uwtn-standfirst">Every note carries topics. Each has its own '
-        'page, and each can be reached from the search box as '
-        '<code>tag:name</code>.</div></div>\n\n'
-        '<div class="uwtn-topic-list">%s</div>\n' % listing, encoding="utf-8")
+        '<div class="uwtn-standfirst">Notes are classified on two axes: the Earth\u2019s '
+        'behaviour they are about, and the computational method they use. Many are '
+        'purely about method, and carry no subject. Each facet has a page, and can '
+        'be reached from the search box as <code>tag:name</code>.</div></div>\n\n'
+        + "\n".join(sections) + "\n", encoding="utf-8")
 
     return {tag: (topic_slug(tag), len(entries)) for tag, entries in topics.items()}
 
@@ -263,6 +317,10 @@ def banner_of(directory):
 
 
 def main():
+    for axis, terms in vocabulary().items():
+        for term, (label, _scope) in terms.items():
+            FACET_LABELS[term] = label
+
     metas = []
     for meta_path in sorted(ARTICLES.glob("*/metadata.yml")):
         meta = read_yaml(meta_path)
