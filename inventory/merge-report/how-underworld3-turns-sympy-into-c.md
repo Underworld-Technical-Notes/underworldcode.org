@@ -27,6 +27,13 @@ The draft wording is shown first, the published wording second.
 - draft: ``` G0 = ∂F0/∂u G1 = ∂F0/∂(∇u) G2 = ∂F1/∂u G3 = ∂F1/∂(∇u) ```
   <br>published: $G_0 = ∂F_0/∂u$ $G_1 = ∂F_0/∂(∇u)$ $G_2 = ∂F_1/∂u$ $G_3 = ∂F_1/∂(∇u)$
 
+## Maths repaired from the draft
+
+Ghost's editor removed characters from LaTeX on the way in. Where the published prose was kept, its maths was restored from the draft.
+
+- published `F_0`
+  <br>restored `{F_0}`
+
 ## Structure kept from the draft
 
 2 block(s): code, math

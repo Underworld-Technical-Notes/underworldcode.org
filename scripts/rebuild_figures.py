@@ -26,6 +26,22 @@ import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+
+
+def resolve_sources(repo):
+    """Where the drafted sources live.
+
+    Defaults to the copy preserved in ``sources/``. The originals lived only as
+    uncommitted edits in a worktree, so nothing here depends on a checkout
+    outside this repository.
+    """
+    if repo:
+        candidate = pathlib.Path(repo).expanduser() / "publications" / "blog-posts"
+        if candidate.exists():
+            return candidate
+    return ROOT / "sources" / "blog-posts"
+
+
 ARTICLES = ROOT / "articles"
 
 
@@ -36,11 +52,12 @@ def find_sources(figures_dir):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--repo", required=True, help="path to the underworld3 checkout")
+    parser.add_argument("--repo", help="checkout holding publications/blog-posts; "
+                                       "defaults to the preserved copy in sources/")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    source_dir = pathlib.Path(args.repo).expanduser() / "publications" / "blog-posts" / "figures"
+    source_dir = resolve_sources(args.repo) / "figures"
     if not source_dir.exists():
         sys.exit("no figure sources at %s" % source_dir)
 

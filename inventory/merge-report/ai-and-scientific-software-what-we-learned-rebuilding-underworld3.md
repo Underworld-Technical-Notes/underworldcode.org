@@ -32,6 +32,12 @@ The draft wording is shown first, the published wording second.
 - draft: ``` σ = 2 η₀ exp(-γ y) ε̇(u) ```
   <br>published: \boldsymbol{\sigma} = 2 \eta_0 \exp(-\gamma y) \dot{\boldsymbol{\epsilon}}(\mathbf{u})
 
+## Maths repaired from the draft
+
+Ghost's editor removed characters from LaTeX on the way in. Where the published prose was kept, its maths was restored from the draft.
+
+*None.*
+
 ## Structure kept from the draft
 
 0 block(s): none

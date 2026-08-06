@@ -25,6 +25,12 @@ The draft wording is shown first, the published wording second.
 - draft: Discretising this in time requires choices. How do you handle the advection term? How many previous timesteps do you use? How do you deal with variable timestep sizes? These choice
   <br>published: Discretising this equation requires making specific choices. How do you handle the advection term? How many previous timesteps do you use? How do you deal with variable timestep si
 
+## Maths repaired from the draft
+
+Ghost's editor removed characters from LaTeX on the way in. Where the published prose was kept, its maths was restored from the draft.
+
+*None.*
+
 ## Structure kept from the draft
 
 9 block(s): math

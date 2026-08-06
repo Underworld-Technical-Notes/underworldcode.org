@@ -23,6 +23,12 @@ The draft wording is shown first, the published wording second.
 - draft: Underworld is a finite element code for geodynamics — mantle convection, lithospheric deformation, subduction, ice flow. We solve coupled, nonlinear PDEs with complex rheologies in
   <br>published: ## UW1 and UW2: Same Wolf, different clothes
 
+## Maths repaired from the draft
+
+Ghost's editor removed characters from LaTeX on the way in. Where the published prose was kept, its maths was restored from the draft.
+
+*None.*
+
 ## Structure kept from the draft
 
 0 block(s): none

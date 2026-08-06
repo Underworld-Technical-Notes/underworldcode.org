@@ -137,13 +137,113 @@ def key(kind, text):
     return " ".join(text.split())[:70]
 
 
+MATH_SPAN = re.compile(r"(?<!\$)\$([^$\n]{2,}?)\$(?!\$)")
+DISPLAY_SPAN = re.compile(r"\$\$(.+?)\$\$", re.S)
+
+
+def shape(span):
+    """A maths span reduced to its alphanumerics.
+
+    Ghost's editor removed characters rather than adding them -- backslashes,
+    carets, braces -- so a damaged span and its intact original share this
+    skeleton. It is what lets the two be paired without guessing.
+    """
+    return re.sub(r"[^A-Za-z0-9]", "", span)
+
+
+def repair_math(published_text, draft_text, repairs):
+    """Restore inline maths in published prose from the draft.
+
+    Ghost damaged LaTeX on the way in: `\,` was published as a bare comma,
+    `\|` as `|`, and in places the caret vanished, so `d_i^2` became `d_i2` --
+    an exponent silently lost. Prose is taken from the published article because
+    that is the version of record, but its *maths* is the draft's wherever the
+    two describe the same expression.
+    """
+    if not draft_text:
+        return published_text
+    by_shape = {}
+    for span in MATH_SPAN.findall(draft_text):
+        by_shape.setdefault(shape(span), span)
+
+    def replace(match):
+        published_span = match.group(1)
+        draft_span = by_shape.get(shape(published_span))
+        if draft_span is None or draft_span == published_span:
+            return match.group(0)
+        repairs.append((published_span, draft_span))
+        return "$%s$" % draft_span
+
+    return MATH_SPAN.sub(replace, published_text)
+
+
+MARKUP = set("\\^_{} ")
+
+
+def only_markup_restored(published_span, draft_span):
+    """True when the draft differs from the published span by markup alone.
+
+    Counting markup characters is not enough. The draft's ``10^{-6}`` (thermal
+    diffusivity) and the published ``10^6`` ("wrong by a factor of") reduce to
+    the same skeleton and the draft has more braces, so a count-based rule
+    swapped one for the other and changed the meaning of a sentence.
+
+    The real question is whether the draft can be obtained from the published
+    span by inserting *only* markup -- a backslash, a caret, a brace. Anything
+    else, a minus sign above all, is a different expression rather than a
+    repaired one, and is left alone.
+    """
+    import difflib
+    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(
+            None, published_span, draft_span).get_opcodes():
+        if tag == "equal":
+            continue
+        if tag in ("delete", "replace"):
+            if published_span[i1:i2].strip():
+                return False
+        if tag in ("insert", "replace"):
+            if any(ch not in MARKUP for ch in draft_span[j1:j2]):
+                return False
+    return True
+
+
+def repair_document(text, draft_text, repairs):
+    """Restore every damaged maths span in a merged article.
+
+    The per-block repair only reaches prose that aligned with a draft block.
+    Damage also survives in blocks that had no counterpart, so this runs over
+    the finished document against *all* the draft's maths. Matching is by
+    skeleton, and a span is only replaced when the draft's version is strictly
+    richer -- more LaTeX, same alphanumerics -- so an edited equation is never
+    reverted to a superseded one.
+    """
+    by_shape = {}
+    for pattern in (DISPLAY_SPAN, MATH_SPAN):
+        for span in pattern.findall(draft_text):
+            by_shape.setdefault(shape(span), span)
+
+    def replace(match, wrapper):
+        published_span = match.group(1)
+        draft_span = by_shape.get(shape(published_span))
+        if draft_span is None or draft_span.strip() == published_span.strip():
+            return match.group(0)
+        if not only_markup_restored(published_span, draft_span):
+            return match.group(0)
+        repairs.append((published_span.strip(), draft_span.strip()))
+        return wrapper % draft_span
+
+    text = DISPLAY_SPAN.sub(lambda m: replace(m, "$$%s$$"), text)
+    text = MATH_SPAN.sub(lambda m: replace(m, "$%s$"), text)
+    return text
+
+
 def merge(original, published):
     """Return (merged blocks, decisions)."""
     o_blocks, p_blocks = blocks(original), blocks(published)
     o_keys = [key(k, t) for k, t in o_blocks]
     p_keys = [key(k, t) for k, t in p_blocks]
 
-    merged, decisions = [], []
+    merged, decisions, math_repairs = [], [], []
     matcher = difflib.SequenceMatcher(None, o_keys, p_keys)
     for tag, i1, i2, j1, j2 in matcher.get_opcodes():
         if tag == "equal":
@@ -169,9 +269,13 @@ def merge(original, published):
                     decisions.append(("kept-original", o_kind,
                                       "structure from the draft", o_text, p_text))
                 else:
-                    merged.append((p_kind, p_text))
+                    fixed = p_text
+                    if p_kind == "prose":
+                        fixed = repair_math(p_text, o_text if o_kind == "prose" else "",
+                                            math_repairs)
+                    merged.append((p_kind, fixed))
                     decisions.append(("took-published", p_kind,
-                                      "text edited after drafting", o_text, p_text))
+                                      "text edited after drafting", o_text, fixed))
             for extra in o_slice[len(p_slice):]:
                 decisions.append(("dropped-from-draft", extra[0],
                                   "in the draft, not in the published article", extra[1], ""))
@@ -196,10 +300,10 @@ def merge(original, published):
                 else:
                     decisions.append(("dropped-from-draft", kind,
                                       "in the draft, not in the published article", text, ""))
-    return merged, decisions
+    return merged, decisions, math_repairs
 
 
-def write_report(slug, decisions, path, corpus):
+def write_report(slug, decisions, path, corpus, math_repairs):
     counts = {}
     for action, *_ in decisions:
         counts[action] = counts.get(action, 0) + 1
@@ -246,6 +350,17 @@ def write_report(slug, decisions, path, corpus):
         lines.append("- draft: %s" % (" ".join(old.split())[:180] or "*(none)*"))
         lines.append("  <br>published: %s" % (" ".join(new.split())[:180]))
     lines.append("")
+    lines.append("## Maths repaired from the draft")
+    lines.append("")
+    lines.append("Ghost's editor removed characters from LaTeX on the way in. Where the "
+                 "published prose was kept, its maths was restored from the draft.")
+    lines.append("")
+    if not math_repairs:
+        lines.append("*None.*")
+    for published_span, draft_span in math_repairs:
+        lines.append("- published `%s`" % published_span[:110])
+        lines.append("  <br>restored `%s`" % draft_span[:110])
+    lines.append("")
     lines.append("## Structure kept from the draft")
     lines.append("")
     kept = [d for d in decisions if d[0] == "kept-original"
@@ -256,15 +371,18 @@ def write_report(slug, decisions, path, corpus):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--repo", required=True)
+    parser.add_argument("--repo", help="checkout holding publications/blog-posts; "
+                                       "defaults to the preserved copy in sources/")
     parser.add_argument("--slug", action="append", help="limit to these slugs")
     args = parser.parse_args()
 
-    source_dir = pathlib.Path(args.repo).expanduser() / "publications" / "blog-posts"
+    source_dir = (pathlib.Path(args.repo).expanduser() / "publications" / "blog-posts"
+                  if args.repo else ROOT / "sources" / "blog-posts")
     if not source_dir.exists():
         sys.exit("no blog-posts directory at %s" % source_dir)
     REPORT.mkdir(parents=True, exist_ok=True)
     corpus = published_corpus()
+    math_fixed = {}
 
     print("%-52s %6s %6s %6s %6s %s"
           % ("article", "pub", "orig", "added", "cut", "never published"))
@@ -284,14 +402,16 @@ def main():
         # The draft repeats its title as an H1; the front matter already has it.
         original_body = re.sub(r"^\s*#\s+[^\n]*\n", "", original_body, count=1)
 
-        merged, decisions = merge(original_body, published_body)
+        merged, decisions, math_repairs = merge(original_body, published_body)
         body = "\n\n".join(text for _kind, text in merged).strip() + "\n"
+        body = repair_document(body, original_body, math_repairs)
         target.write_text(frontmatter + body, encoding="utf-8")
-        write_report(slug, decisions, REPORT / ("%s.md" % slug), corpus)
+        write_report(slug, decisions, REPORT / ("%s.md" % slug), corpus, math_repairs)
 
         counts = {}
         for action, *_ in decisions:
             counts[action] = counts.get(action, 0) + 1
+        math_fixed[slug] = len(math_repairs)
         never = sum(1 for a, _k, _w, old, _n in decisions
                     if a == "dropped-from-draft" and locate(old, corpus, slug) == "NOT PUBLISHED")
         print("%-52s %6d %6d %6d %6d %s"
@@ -299,6 +419,12 @@ def main():
                  counts.get("added-in-ghost", 0), counts.get("dropped-from-draft", 0),
                  ("**%d**" % never) if never else "-"))
 
+    total_math = sum(math_fixed.values())
+    if total_math:
+        print("\n%d inline maths span(s) repaired from the drafts:" % total_math)
+        for slug, n in sorted(math_fixed.items(), key=lambda kv: -kv[1]):
+            if n:
+                print("  %-52s %d" % (slug[:52], n))
     print("\nper-article decisions: inventory/merge-report/")
 
 

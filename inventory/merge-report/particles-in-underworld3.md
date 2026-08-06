@@ -23,6 +23,17 @@ The draft wording is shown first, the published wording second.
 - draft: 4. Store the result $\phi _ n$ on the proxy mesh variable.
   <br>published: 1. Store the result $\phi _ n$ on the proxy mesh variable.
 
+## Maths repaired from the draft
+
+Ghost's editor removed characters from LaTeX on the way in. Where the published prose was kept, its maths was restored from the draft.
+
+- published `w _ i = \frac{1}{\left(\epsilon + d _ i^2\right)p}, \qquad  
+\phi _ n = \frac{\sum _ {i=1}^{k} w _ i , \phi _ `
+  <br>restored `w _ i = \frac{1}{\left(\epsilon + d _ i^2\right)^p}, \qquad
+\phi _ n = \frac{\sum _ {i=1}^{k} w _ i \, \phi _ `
+- published `d _ i^2 = | x _ n - x _ p^{(i)} |^2`
+  <br>restored `d _ i^2 = \| x _ n - x _ p^{(i)} \|^2`
+
 ## Structure kept from the draft
 
 0 block(s): none

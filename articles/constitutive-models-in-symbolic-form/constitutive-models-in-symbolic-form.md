@@ -145,9 +145,7 @@ $$
 where $\mathbf{P} = \textrm{diag}(1, 1, \sqrt{2})$ in 2D, or $\textrm{diag}(1,1,1,\sqrt{2},\sqrt{2},\sqrt{2})$ in 3D. In Mandel form, the isotropic constitutive matrix becomes:
 
 $$
-
-C^{ * } _ {IJ} = \eta , \delta _ {IJ}
-
+C^{ * } _ {IJ} = \eta \, \delta _ {IJ}
 $$
 
 This is just $\eta$ times the identity. The fourth-order symmetric identity tensor, which has an awkward $1/2$ factor in its off-diagonal rank-4 components, becomes the matrix identity in Mandel form.

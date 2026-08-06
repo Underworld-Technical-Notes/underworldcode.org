@@ -15,6 +15,12 @@ These were in the drafted original but are not prose in the merged article. Each
 The draft wording is shown first, the published wording second.
 
 
+## Maths repaired from the draft
+
+Ghost's editor removed characters from LaTeX on the way in. Where the published prose was kept, its maths was restored from the draft.
+
+*None.*
+
 ## Structure kept from the draft
 
 0 block(s): none

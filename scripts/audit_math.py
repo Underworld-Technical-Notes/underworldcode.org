@@ -29,6 +29,22 @@ import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+
+
+def resolve_sources(repo):
+    """Where the drafted sources live.
+
+    Defaults to the copy preserved in ``sources/``. The originals lived only as
+    uncommitted edits in a worktree, so nothing here depends on a checkout
+    outside this repository.
+    """
+    if repo:
+        candidate = pathlib.Path(repo).expanduser() / "publications" / "blog-posts"
+        if candidate.exists():
+            return candidate
+    return ROOT / "sources" / "blog-posts"
+
+
 EXPORT = ROOT / "inventory" / "ghost-export"
 
 PAIRS = {
@@ -90,7 +106,7 @@ def main():
     # ---- pass 1: ground truth from the drafts ---------------------------
     catalogue = collections.Counter()
     if args.repo:
-        source = pathlib.Path(args.repo).expanduser() / "publications" / "blog-posts"
+        source = resolve_sources(args.repo)
         print("=== differences between drafted and published maths ===\n")
         for filename, slug in sorted(PAIRS.items(), key=lambda kv: kv[1]):
             draft = source / filename

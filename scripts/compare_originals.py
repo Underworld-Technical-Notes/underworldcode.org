@@ -24,6 +24,20 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
+
+def resolve_sources(repo):
+    """Where the drafted sources live.
+
+    Defaults to the copy preserved in ``sources/``. The originals lived only as
+    uncommitted edits in a worktree, so nothing here depends on a checkout
+    outside this repository.
+    """
+    if repo:
+        candidate = pathlib.Path(repo).expanduser() / "publications" / "blog-posts"
+        if candidate.exists():
+            return candidate
+    return ROOT / "sources" / "blog-posts"
+
 # original filename in publications/blog-posts -> published Ghost slug
 PAIRS = {
     "sympy-to-c-pipeline.md": "how-underworld3-turns-sympy-into-c",
@@ -105,7 +119,7 @@ def main():
     parser.add_argument("--show", type=int, default=2, help="sample paragraphs to print")
     args = parser.parse_args()
 
-    source = pathlib.Path(args.repo).expanduser() / "publications" / "blog-posts"
+    source = resolve_sources(args.repo)
     if not source.exists():
         sys.exit("no blog-posts directory at %s" % source)
 

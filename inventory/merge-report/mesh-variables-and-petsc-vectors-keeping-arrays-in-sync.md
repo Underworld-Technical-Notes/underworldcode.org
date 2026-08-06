@@ -37,6 +37,12 @@ The draft wording is shown first, the published wording second.
 - draft: The division is clean: users work through `.data` (safe, synchronised, cached). Solvers work through `.vec` (direct, fast, PETSc-native). The two paths share the same underlying me
   <br>published: The division is clean: users work through `.array` (safe, synchronised, cached). Solvers work through `.vec` (direct, fast, PETSc-native). The two paths share the same underlying m
 
+## Maths repaired from the draft
+
+Ghost's editor removed characters from LaTeX on the way in. Where the published prose was kept, its maths was restored from the draft.
+
+*None.*
+
 ## Structure kept from the draft
 
 2 block(s): code

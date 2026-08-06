@@ -23,6 +23,13 @@ The draft wording is shown first, the published wording second.
 - draft: If you don't want to use particles for
   <br>published: If you don't want to use particles for tracking the stress history, you can use a semi-Lagrangian version of the `DFDt` which is a drop-in replacement at the user level.
 
+## Maths repaired from the draft
+
+Ghost's editor removed characters from LaTeX on the way in. Where the published prose was kept, its maths was restored from the draft.
+
+- published `C^{ * } _ {IJ} = \eta , \delta _ {IJ}`
+  <br>restored `C^{ * } _ {IJ} = \eta \, \delta _ {IJ}`
+
 ## Structure kept from the draft
 
 10 block(s): math

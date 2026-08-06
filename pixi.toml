@@ -38,9 +38,11 @@ audit = "python3 scripts/audit_content.py"
 # how far each drafted copy has drifted from what Ghost actually published;
 # rebuild-figures replaces rasterised figures with vector ones built from their
 # Typst sources and the data that generates them.
-compare-originals = "python3 scripts/compare_originals.py --repo ../underworld3-pixi"
-rebuild-figures = "python3 scripts/rebuild_figures.py --repo ../underworld3-pixi"
-merge-originals = "python3 scripts/merge_originals.py --repo ../underworld3-pixi"
+# All read the preserved copy in sources/, not a live worktree.
+compare-originals = "python3 scripts/compare_originals.py --repo ."
+rebuild-figures = "python3 scripts/rebuild_figures.py --repo ."
+merge-originals = "python3 scripts/merge_originals.py"
+audit-math = "python3 scripts/audit_math.py --repo ."
 
 # Full migration pipeline, in order. Each step is reviewable on its own.
 migrate = { depends-on = ["convert", "rebuild-figures", "merge-originals"] }

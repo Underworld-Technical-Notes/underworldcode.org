@@ -35,6 +35,12 @@ The draft wording is shown first, the published wording second.
 - draft: ![Boundary ownership test from each domain's perspective](figures/finding-particles/boundary-demo.png)
   <br>published: ```{figure} figures/boundary-demo.svg :alt: Boundary ownership test from each domain's perspective Each panel shows one domain's view. Dark shading marks the region that is clearly
 
+## Maths repaired from the draft
+
+Ghost's editor removed characters from LaTeX on the way in. Where the published prose was kept, its maths was restored from the draft.
+
+*None.*
+
 ## Structure kept from the draft
 
 1 block(s): math

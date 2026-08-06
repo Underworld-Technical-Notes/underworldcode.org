@@ -80,7 +80,7 @@ The solver does not evaluate these expressions. It stores them symbolically and 
 
 PETSc's Newton solver (SNES) needs not just the residual but its derivative with respect to the unknowns. In many finite element codes, someone has to derive these by hand and code them in C. In UW3, SymPy does it. We did not use PETSc Newton solvers in Underworld2 because we had no systematic way to produce Jacobians for arbitrary user-defined constitutive models contructed from python functions.
 
-The solver takes $F_0$ and $F_1$ and differentiates them with respect to the unknown field and its gradient, producing four Jacobian blocks:
+The solver takes ${F_0}$ and $F_1$ and differentiates them with respect to the unknown field and its gradient, producing four Jacobian blocks:
 
 $G_0 = ∂F_0/∂u$       $G_1 = ∂F_0/∂(∇u)$  
  $G_2 = ∂F_1/∂u$       $G_3 = ∂F_1/∂(∇u)$

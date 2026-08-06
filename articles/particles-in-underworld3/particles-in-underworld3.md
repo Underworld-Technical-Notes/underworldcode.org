@@ -69,11 +69,11 @@ The projection from particles to mesh uses inverse-distance-weighted (IDW) inter
 
 2. For each mesh node at position $x _ n$, find the $k$ nearest particles ($k = \text{dim} + 1$ by default), giving neighbour positions $x _ p^{(i)}$ and values $\phi _ p^{(i)}$ for $i = 1, \ldots, k$.
 
-3. Compute weights from the squared distances $d _ i^2 = | x _ n - x _ p^{(i)} |^2$ and take the normalised weighted average:
+3. Compute weights from the squared distances $d _ i^2 = \| x _ n - x _ p^{(i)} \|^2$ and take the normalised weighted average:
 
-$$  
-w _ i = \frac{1}{\left(\epsilon + d _ i^2\right)p}, \qquad  
-\phi _ n = \frac{\sum _ {i=1}^{k} w _ i , \phi _ p^{(i)}}{\sum _ {i=1}^{k} w _ i}  
+$$
+w _ i = \frac{1}{\left(\epsilon + d _ i^2\right)^p}, \qquad
+\phi _ n = \frac{\sum _ {i=1}^{k} w _ i \, \phi _ p^{(i)}}{\sum _ {i=1}^{k} w _ i}
 $$
 
 The default exponent is $p = 2$, giving weights that decay as $1/d^4$. The small $\epsilon$ regularises the case where a particle coincides with a mesh node — this happens more often than you might imagine in practice, because we often use swarms to carry mesh information during deformation or during advection.
