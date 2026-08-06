@@ -215,3 +215,33 @@ def test_committed_svgs_carry_no_random_ids():
         text = svg.read_text(encoding="utf-8")
         leftover = rebuild_figures.RANDOM_ID.findall(text)
         assert not leftover, "%s still has %d random id(s)" % (svg.name, len(leftover))
+
+
+# --------------------------------------------------------------------------
+# The landing page is generated, and its styling is inlined because MyST's
+# `style` option records a path that does not match where it writes the file.
+# Both would fail silently -- the site renders, unstyled.
+# --------------------------------------------------------------------------
+
+def test_index_lists_every_published_article():
+    import re
+    index = (ROOT / "index.md").read_text(encoding="utf-8")
+    slugs = {p.parent.name for p in (ROOT / "articles").glob("*/*.md")}
+    for slug in slugs:
+        assert 'href="/%s/"' % slug in index, "%s missing from the landing page" % slug
+
+
+def test_index_entries_carry_no_blank_lines():
+    """A blank line ends a raw HTML block, handing the rest back to markdown."""
+    index = (ROOT / "index.md").read_text(encoding="utf-8")
+    feed = index.split('<div class="uwtn-feed">')[1].split("</div>\n\n<div class=\"uwtn-colophon\"")[0]
+    for block in feed.split("\n"):
+        assert block.strip() != "" or block == "", "blank line inside the feed"
+
+
+def test_index_uses_only_markup_myst_preserves():
+    """MyST strips <article>, <p class>, <time>, role and aria-*."""
+    import re
+    index = (ROOT / "index.md").read_text(encoding="utf-8")
+    for tag in ("<article", "<time", "role=", "aria-"):
+        assert tag not in index, "%s does not survive MyST's HTML handling" % tag

@@ -1,0 +1,228 @@
+/* Underworld Technical Notes — site styling.
+ *
+ * The aim is that the site and the archival PDF look like the same
+ * publication. The PDF sets its body in a serif with small-caps labels in a
+ * muted blue down the margin; the site borrows that vocabulary rather than
+ * inventing a second identity. Anything here that is merely decorative should
+ * be removed instead of elaborated.
+ */
+
+:root {
+  --uwtn-ink: #16202b;
+  --uwtn-muted: #5d6b7a;
+  --uwtn-rule: #dfe4ea;
+  --uwtn-accent: #1a4f80;        /* the PDF's theme colour, blue.darken(30%) */
+  --uwtn-paper: #ffffff;
+  --uwtn-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
+                "Times New Roman", serif;
+  --uwtn-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --uwtn-ink: #e6e9ec;
+    --uwtn-muted: #9aa7b4;
+    --uwtn-rule: #2b3541;
+    --uwtn-accent: #7cb3e0;
+    --uwtn-paper: #131a21;
+  }
+}
+
+/* ---- masthead ---------------------------------------------------------- */
+
+.uwtn-masthead {
+  border-bottom: 1px solid var(--uwtn-rule);
+  padding-bottom: 1.6rem;
+  margin-bottom: 2.4rem;
+}
+
+.uwtn-kicker {
+  font-family: var(--uwtn-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--uwtn-accent);
+  margin: 0 0 0.15rem;
+}
+
+.uwtn-wordmark {
+  font-family: var(--uwtn-serif);
+  font-weight: 600;
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--uwtn-ink);
+  margin: 0 0 0.7rem;
+}
+
+.uwtn-standfirst {
+  font-family: var(--uwtn-serif);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--uwtn-muted);
+  max-width: 34em;
+  margin: 0;
+}
+
+/* ---- the feed ---------------------------------------------------------- */
+
+/* MyST strips <article>, <p class> and <time>, so entries are divs. The title
+   stays a real heading but loses its class -- hence the descendant selector. */
+.uwtn-entry {
+  border-top: 1px solid var(--uwtn-rule);
+  padding: 1.5rem 0 1.4rem;
+}
+
+.uwtn-entry:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+/* Article id and date, echoing the identity strip down the PDF's margin. */
+.uwtn-entry-meta,
+.uwtn-kicker {
+  font-family: var(--uwtn-sans);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--uwtn-muted);
+  margin: 0 0 0.35rem;
+  display: flex;
+  gap: 0.9rem;
+}
+
+.uwtn-id { color: var(--uwtn-accent); font-weight: 600; }
+
+.uwtn-entry :is(h1, h2, h3, h4) {
+  font-family: var(--uwtn-serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 0.3rem;
+}
+
+/* The theme's hover anchor (¶) belongs on documentation, not on a feed. */
+.uwtn-entry :is(h1, h2, h3, h4) > a[href^="#"] { display: none; }
+
+.uwtn-entry :is(h1, h2, h3, h4) a {
+  color: var(--uwtn-ink);
+  text-decoration: none;
+  background-image: linear-gradient(var(--uwtn-accent), var(--uwtn-accent));
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.18s ease;
+}
+
+.uwtn-entry :is(h1, h2, h3, h4) a:hover { background-size: 100% 1px; }
+
+.uwtn-entry-byline {
+  font-family: var(--uwtn-sans);
+  font-size: 0.82rem;
+  color: var(--uwtn-muted);
+  margin: 0 0 0.55rem;
+}
+
+.uwtn-entry-summary {
+  font-family: var(--uwtn-serif);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--uwtn-ink);
+  max-width: 38em;
+  margin: 0 0 0.7rem;
+}
+
+/* ---- affordances ------------------------------------------------------- */
+
+.uwtn-entry-links {
+  font-family: var(--uwtn-sans);
+  font-size: 0.8rem;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+  align-items: baseline;
+}
+
+.uwtn-entry-links a {
+  color: var(--uwtn-accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.uwtn-entry-links a:hover { border-bottom-color: currentColor; }
+
+.uwtn-read::after { content: " →"; }
+
+/* The DOI is the published identifier, so it is shown in full rather than
+   hidden behind a word. */
+.uwtn-doi-label {
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--uwtn-muted);
+  margin-right: 0.35em;
+}
+
+.uwtn-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0;
+  margin: 0.7rem 0 0;
+}
+
+.uwtn-tag {
+  font-family: var(--uwtn-sans);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--uwtn-muted);
+  border: 1px solid var(--uwtn-rule);
+  border-radius: 2px;
+  padding: 0.1rem 0.45rem;
+}
+
+.uwtn-colophon {
+  border-top: 1px solid var(--uwtn-rule);
+  margin-top: 2.4rem;
+  padding-top: 1.2rem;
+  font-family: var(--uwtn-sans);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--uwtn-muted);
+  max-width: 38em;
+}
+
+/* ---- article pages ----------------------------------------------------- */
+
+/* Give the body the same serif as the PDF, so an article reads as the same
+   document in a different medium. Code and maths keep the theme's fonts. */
+.uwtn-article-body,
+article.content p,
+article.content li,
+article.content blockquote {
+  font-family: var(--uwtn-serif);
+  font-size: 1.02rem;
+  line-height: 1.62;
+}
+
+article.content h1,
+article.content h2,
+article.content h3 {
+  font-family: var(--uwtn-serif);
+  letter-spacing: -0.005em;
+}
+
+/* Captions read as apparatus, matching the PDF: sans, smaller, lighter. */
+article.content figcaption,
+article.content figcaption p {
+  font-family: var(--uwtn-sans);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--uwtn-muted);
+}
+
+@media (max-width: 640px) {
+  .uwtn-entry-meta { flex-direction: column; gap: 0.1rem; }
+  .uwtn-entry-title { font-size: 1.3rem; }
+}
