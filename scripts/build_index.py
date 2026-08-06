@@ -146,6 +146,56 @@ def entry_html(meta, description, has_pdf, banner=None, lead=False):
 
 TOC_BEGIN = "  # BEGIN GENERATED TOC"
 TOC_END = "  # END GENERATED TOC"
+NAV_BEGIN = "  # BEGIN GENERATED NAV"
+NAV_END = "  # END GENERATED NAV"
+
+
+def write_nav():
+    """Rewrite site.nav in myst.yml from pages.yml.
+
+    The standing pages are the site's furniture, not its content, so they
+    belong in the header rather than in the sidebar beside the notes -- MyST
+    keeps the two separate, and `nav` takes dropdowns via `children`.
+    """
+    config_path = ROOT / "pages.yml"
+    if not config_path.exists():
+        return {}
+
+    pages, slug = {}, None
+    for raw in config_path.read_text(encoding="utf-8").splitlines():
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        if not raw.startswith(" ") and raw.rstrip().endswith(":"):
+            slug = raw.rstrip()[:-1]
+            pages[slug] = {}
+        elif slug and ":" in raw:
+            key, _, value = raw.strip().partition(":")
+            pages[slug][key.strip()] = value.strip().strip('"')
+
+    groups = {}
+    for slug, settings in pages.items():
+        groups.setdefault(settings.get("group", "More"), []).append(
+            (settings.get("title", slug), slug))
+
+    lines = ["  nav:"]
+    for group, items in groups.items():
+        lines.append('    - title: "%s"' % group)
+        lines.append("      children:")
+        for title, slug in items:
+            lines.append('        - title: "%s"' % title)
+            lines.append("          url: /%s" % slug)
+    lines.append('    - title: "Topics"')
+    lines.append("      url: /topics")
+
+    myst = ROOT / "myst.yml"
+    text = myst.read_text(encoding="utf-8")
+    if NAV_BEGIN not in text:
+        sys.exit("myst.yml is missing the generated-nav markers")
+    head, _, rest = text.partition(NAV_BEGIN)
+    _, _, tail = rest.partition(NAV_END)
+    myst.write_text("%s%s\n%s\n%s%s" % (head, NAV_BEGIN, "\n".join(lines), NAV_END, tail),
+                    encoding="utf-8")
+    return pages
 
 
 def write_toc(metas):
@@ -177,6 +227,12 @@ def write_toc(metas):
         lines.append("        - file: topics/topics.md")
         for path in topic_files:
             lines.append("        - file: topics/%s" % path.name)
+    page_files = sorted((ROOT / "pages").glob("*.md"))
+    if page_files:
+        lines.append('    - title: "About"')
+        lines.append("      children:")
+        for path in page_files:
+            lines.append("        - file: pages/%s" % path.name)
     for year in sorted(by_year, reverse=True):
         lines.append('    - title: "%s"' % year)
         lines.append("      children:")
@@ -337,6 +393,7 @@ def main():
 
     with_doi = sum(1 for m, _d, _p in metas if m.get("doi"))
     topics = write_topic_pages(metas)
+    pages = write_nav()
     by_year = write_toc(metas)
 
     # The most recent note leads, shown larger and with its banner; the rest
@@ -370,6 +427,7 @@ site:
 """ % (entries, len(metas), with_doi)
 
     (ROOT / "index.md").write_text(page, encoding="utf-8")
+    print("nav: %d standing page(s)" % len(pages))
     print("topics: %d (%s)" % (len(topics), ", ".join(sorted(topics))))
     print("index.md: %d note(s), %d with a DOI, %d with a PDF"
           % (len(metas), with_doi, sum(1 for _m, _d, p in metas if p)))

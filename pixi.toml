@@ -22,7 +22,8 @@ convert = "python3 scripts/ghost_to_myst.py --since 2025-08-05"
 # index.md is generated from article metadata and is gitignored, so it must be
 # built before ANY myst invocation -- it is the project's root toc entry, and
 # without it myst refuses to start.
-index = "python3 scripts/build_index.py"
+index = { cmd = "python3 scripts/build_index.py", depends-on = ["pages"] }
+pages = "python3 scripts/build_pages.py"
 
 # `myst build --html` truncates slugs to 50 characters, MyST's own `style`
 # option never loads the stylesheet, and PDFs are written beside the sources

@@ -33,6 +33,16 @@ project:
         - file: topics/topic-tectonics-lithosphere.md
         - file: topics/topic-time-integration.md
         - file: topics/topic-units-scaling.md
+    - title: "About"
+      children:
+        - file: pages/auscope-cloud.md
+        - file: pages/credits.md
+        - file: pages/how-to-cite-underworld.md
+        - file: pages/intro-to-underworld.md
+        - file: pages/publications-using-uw.md
+        - file: pages/ugcomm.md
+        - file: pages/underworld-model-exchange.md
+        - file: pages/underworld-steering-committee.md
     - title: "2026"
       children:
         - file: articles/finding-particles-in-a-distributed-unstructured-mesh/finding-particles-in-a-distributed-unstructured-mesh.md
@@ -53,6 +63,31 @@ project:
 site:
   template: book-theme
   title: Underworld Technical Notes
+  # BEGIN GENERATED NAV
+  nav:
+    - title: "About"
+      children:
+        - title: "About"
+          url: /ugcomm
+        - title: "Credits"
+          url: /credits
+        - title: "Steering committee"
+          url: /underworld-steering-committee
+        - title: "How to cite"
+          url: /how-to-cite-underworld
+    - title: "Underworld"
+      children:
+        - title: "Introduction to Underworld"
+          url: /intro-to-underworld
+        - title: "Model exchange"
+          url: /underworld-model-exchange
+        - title: "AuScope Cloud"
+          url: /auscope-cloud
+        - title: "Publications using Underworld"
+          url: /publications-using-uw
+    - title: "Topics"
+      url: /topics
+  # END GENERATED NAV
   options:
     logo_text: Underworld Technical Notes
     # The landing page is generated as a feed by scripts/build_index.py and

@@ -415,3 +415,41 @@ def test_a_subject_may_be_empty():
     assert any(not m.get("subjects") for m in metas), \
         "every note claims a subject -- that is a decorative classification"
     assert any(m.get("methods") for m in metas)
+
+
+# --------------------------------------------------------------------------
+# Standing pages: the site's furniture, in the header rather than the sidebar.
+# --------------------------------------------------------------------------
+
+def test_declared_pages_all_exist():
+    build_pages = load("build_pages")
+    for slug in build_pages.load_pages_config():
+        assert (ROOT / "pages" / ("%s.md" % slug)).exists(), "%s not built" % slug
+
+
+def test_nav_is_generated_and_covers_every_page():
+    build_pages = load("build_pages")
+    myst = (ROOT / "myst.yml").read_text(encoding="utf-8")
+    assert "# BEGIN GENERATED NAV" in myst
+    for slug in build_pages.load_pages_config():
+        assert "url: /%s" % slug in myst, "%s missing from the header nav" % slug
+
+
+def test_bibliography_is_baked_not_fetched():
+    """Ghost drew this with jQuery against api.zotero.org on every page load.
+
+    That left the page empty without scripts, empty when Zotero was down, and
+    empty in the archive.
+    """
+    page = (ROOT / "pages" / "publications-using-uw.md").read_text(encoding="utf-8")
+    assert "<script" not in page, "client-side script survived into the page"
+    assert "api.zotero.org" not in page, "the page still fetches at read time"
+    assert page.count('class="uwtn-ref"') > 50, "the bibliography was not baked in"
+
+
+def test_dead_pages_are_not_carried_over():
+    """The Discourse estate no longer resolves; the stub said 'updating'."""
+    build_pages = load("build_pages")
+    declared = set(build_pages.load_pages_config())
+    for slug in ("uw-mailing-lists", "underworld-geodynamics-community"):
+        assert slug not in declared, "%s was carried over despite being dead" % slug

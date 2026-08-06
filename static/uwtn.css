@@ -405,3 +405,24 @@ a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); 
   color: var(--uwtn-muted);
   margin-top: 0.7rem;
 }
+
+/* ---- baked bibliography ------------------------------------------------ */
+
+/* Rendered from Zotero at build time rather than fetched by client script, so
+   it is present without JavaScript, when Zotero is down, and in the archive. */
+.uwtn-bibliography { margin-top: 1.4rem; }
+
+.uwtn-ref {
+  font-family: var(--uwtn-serif);
+  font-size: 0.94rem;
+  line-height: 1.5;
+  color: var(--uwtn-ink);
+  padding: 0.55rem 0 0.55rem 1.4rem;
+  text-indent: -1.4rem;          /* hanging indent, as a reference list wants */
+  border-bottom: 1px solid var(--uwtn-rule);
+  max-width: 42em;
+}
+
+.uwtn-ref:last-child { border-bottom: none; }
+.uwtn-ref a { color: var(--uwtn-accent); text-decoration: none; }
+.uwtn-ref a:hover { text-decoration: underline; }

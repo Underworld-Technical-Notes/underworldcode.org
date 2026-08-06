@@ -1,0 +1,62 @@
+# The standing pages carried over from the Ghost site.
+#
+# These are the site's furniture rather than its content, so they appear in the
+# header navigation (`nav` and `group` below) rather than in the sidebar beside
+# the notes.
+#
+# Declared rather than swept up: the Ghost site had 33 pages, of which 13 were
+# compromise artefacts, a dozen were Ghost's own routing and archive pages, and
+# several of the rest have stopped being true. Carrying everything over would
+# be migration by inertia.
+#
+#   title   what the page is called here, if not what Ghost called it
+#   group   which header dropdown it belongs to
+#   zotero  <group>/<collection> for a bibliography baked in at build time
+#
+# NOT carried over, and why:
+#   uw-mailing-lists              every element is dead: the forum, the
+#                                 registration link and the mailto all point at
+#                                 geophysics-down-under.geoscience.education,
+#                                 which no longer resolves in DNS.
+#   underworld-geodynamics-community   six words, "Landing page ... updating".
+#   congested-subduction-workshop A workshop held in 2019. Historical; belongs
+#                                 in the archive rather than the navigation.
+#   stripy, lavavu, who-is-using-stripy
+#                                 Other packages. Substantial pages, but this
+#                                 site is Underworld's -- they want their own.
+#   lm-publications               One author's personal bibliography.
+#   group-publications            Superseded by publications-using-uw, which is
+#                                 the same idea done better.
+
+ugcomm:
+  title: About
+  group: About
+
+credits:
+  title: Credits
+  group: About
+
+underworld-steering-committee:
+  title: Steering committee
+  group: About
+
+how-to-cite-underworld:
+  title: How to cite
+  group: About
+
+intro-to-underworld:
+  title: Introduction to Underworld
+  group: Underworld
+
+underworld-model-exchange:
+  title: Model exchange
+  group: Underworld
+
+auscope-cloud:
+  title: AuScope Cloud
+  group: Underworld
+
+publications-using-uw:
+  title: Publications using Underworld
+  group: Underworld
+  zotero: 2386948/QNARWBUC
