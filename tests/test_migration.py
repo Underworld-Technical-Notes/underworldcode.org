@@ -223,19 +223,29 @@ def test_committed_svgs_carry_no_random_ids():
 # Both would fail silently -- the site renders, unstyled.
 # --------------------------------------------------------------------------
 
-def index_source():
-    """The generated landing page, produced on demand.
+def ensure_generated():
+    """Produce the generated files these tests read.
 
-    index.md is generated from article metadata and is gitignored, so on a
-    fresh checkout -- which is exactly what CI has -- it does not exist until
-    something builds it. Generating it here keeps these tests runnable before
-    any build step.
+    index.md, pages/ and topics/ are all generated and gitignored, so on a
+    fresh checkout -- which is exactly what CI has -- none of them exists until
+    something builds them. The Zotero bibliography is cached in the repository,
+    so this needs no network.
     """
-    path = ROOT / "index.md"
-    if not path.exists():
-        build_index = load("build_index")
-        build_index.main()
-    return path.read_text(encoding="utf-8")
+    # These scripts parse sys.argv, which under pytest is pytest's own.
+    original = sys.argv
+    try:
+        sys.argv = ["generate"]
+        if not list((ROOT / "pages").glob("*.md")):
+            load("build_pages").main()
+        if not (ROOT / "index.md").exists():
+            load("build_index").main()
+    finally:
+        sys.argv = original
+
+
+def index_source():
+    ensure_generated()
+    return (ROOT / "index.md").read_text(encoding="utf-8")
 
 
 def test_index_lists_every_published_article():
@@ -300,6 +310,7 @@ def test_every_banner_is_local():
 
 
 def test_toc_is_generated_and_grouped_by_year():
+    ensure_generated()
     myst = (ROOT / "myst.yml").read_text(encoding="utf-8")
     assert "# BEGIN GENERATED TOC" in myst and "# END GENERATED TOC" in myst
     # A bare year is parsed as an integer and MyST rejects a non-string title.
@@ -335,6 +346,7 @@ def test_credits_do_not_still_attribute_ghost():
 
 
 def test_topic_slugs_cannot_collide_with_article_slugs():
+    ensure_generated()
     build_index = load("build_index")
     articles = {p.parent.name for p in (ROOT / "articles").glob("*/*.md")}
     for topic in (ROOT / "topics").glob("topic-*.md"):
@@ -345,6 +357,7 @@ def test_topic_slugs_cannot_collide_with_article_slugs():
 
 
 def test_every_tag_has_a_topic_page():
+    ensure_generated()
     import re
     tags = set()
     for meta in (ROOT / "articles").glob("*/metadata.yml"):
@@ -358,6 +371,7 @@ def test_every_tag_has_a_topic_page():
 
 
 def test_each_topic_page_carries_a_searchable_query_token():
+    ensure_generated()
     """`tag:x` only works because the token is in page content, and visible.
 
     The search index has no tag field -- its records are hierarchy, type, url
@@ -422,12 +436,14 @@ def test_a_subject_may_be_empty():
 # --------------------------------------------------------------------------
 
 def test_declared_pages_all_exist():
+    ensure_generated()
     build_pages = load("build_pages")
     for slug in build_pages.load_pages_config():
         assert (ROOT / "pages" / ("%s.md" % slug)).exists(), "%s not built" % slug
 
 
 def test_nav_is_generated_and_covers_every_page():
+    ensure_generated()
     build_pages = load("build_pages")
     myst = (ROOT / "myst.yml").read_text(encoding="utf-8")
     assert "# BEGIN GENERATED NAV" in myst
@@ -435,7 +451,8 @@ def test_nav_is_generated_and_covers_every_page():
         assert "url: /%s" % slug in myst, "%s missing from the header nav" % slug
 
 
-def test_bibliography_is_baked_not_fetched():
+def test_bibliography_is_baked_not_fetched():  # noqa: D401
+    ensure_generated()
     """Ghost drew this with jQuery against api.zotero.org on every page load.
 
     That left the page empty without scripts, empty when Zotero was down, and
