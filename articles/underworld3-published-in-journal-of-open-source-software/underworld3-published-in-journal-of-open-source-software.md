@@ -108,3 +108,5 @@ Knepley, M. G., Brown, J., Rupp, K., & Smith, B. F. (2013). Achieving High Perfo
 Meurer, A., Smith, C. P., Paprocki, M., Čertík, O., Kirpichev, S. B., Rocklin, M., Kumar, A., Ivanov, S., Moore, J. K., Singh, S., Rathnayake, T., Vig, S., Granger, B. E., Muller, R. P., Bonazzi, F., Gupta, H., Vats, S., Johansson, F., Pedregosa, F., … Scopatz, A. (2017). SymPy: Symbolic computing in Python. PeerJ Computer Science, 3, e103. [https://doi.org/10.7717/peerj-cs.103](https://doi.org/10.7717/peerj-cs.103)
 
 **Moresi et al. (2025). Underworld3: Mathematically Self-Describing Modelling in Python for Desktop, HPC and Cloud. Journal of Open Source Software, 10(112), 7831. **[**https://doi.org/10.21105/joss.07831**](https://doi.org/10.21105/joss.07831)
+
+<div class="uwtn-discuss"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld3-published-in-journal-of-open-source-software">Discuss this note on GitHub</a></div>

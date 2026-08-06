@@ -30,6 +30,13 @@ BANNER_BLOCK = re.compile(
     r'<div class="uwtn-banner"><img src="[^"]*" alt="">'
     r'(?:<div class="uwtn-credit">.*?</div>)?</div>\n\n', re.S)
 
+# The discussion link is web-only for the same reason as the banner: it is a
+# live affordance, and an archival PDF should not invite a reader to click.
+DISCUSS_BLOCK = re.compile(r'\n*<div class="uwtn-discuss">.*?</div>\n*', re.S)
+
+DISCUSS_URL = ("https://github.com/Underworld-Technical-Notes/underworldcode.org"
+               "/discussions/new?category=general&title=%s")
+
 
 def banner_from_frontmatter(text):
     match = re.search(r"^---\n(.*?)\n---\n", text, re.S)
@@ -54,6 +61,23 @@ def credit_from_metadata(directory):
     return found.group(1).replace('\\"', '"')
 
 
+def discuss_block(path):
+    """A link to open a GitHub Discussion about this note.
+
+    Giscus would embed the thread in the page, and everything it needs is
+    recorded in giscus.yml -- but MyST strips <script> from page content and
+    from theme parts alike, so its official embed cannot be placed without
+    forking the theme. A link needs no JavaScript, keeps the conversation on
+    GitHub either way, and cannot break the way an embedded widget can.
+    """
+    import urllib.parse
+    slug = path.stem
+    title = urllib.parse.quote(slug)
+    return ('<div class="uwtn-discuss">'
+            '<a href="%s">Discuss this note on GitHub</a>'
+            '</div>' % (DISCUSS_URL % title))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     group = parser.add_mutually_exclusive_group(required=True)
@@ -73,6 +97,8 @@ def main():
             continue
         stripped = BANNER_BLOCK.sub("", body, count=1)
 
+        stripped = DISCUSS_BLOCK.sub("\n", stripped).rstrip() + "\n"
+
         if args.remove:
             new_body = stripped
         else:
@@ -82,6 +108,7 @@ def main():
                 block += '<div class="uwtn-credit">%s</div>' % credit
             block += "</div>\n\n"
             new_body = block + stripped.lstrip("\n")
+            new_body = new_body.rstrip() + "\n\n" + discuss_block(path) + "\n"
 
         if new_body != body:
             path.write_text(head + sep + new_body, encoding="utf-8")

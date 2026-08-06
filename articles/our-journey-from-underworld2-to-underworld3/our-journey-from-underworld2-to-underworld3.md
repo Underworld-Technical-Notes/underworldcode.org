@@ -83,3 +83,5 @@ Not everything is better yet. The particle machinery in UW3 is still catching up
 Underworld3 3.0.0 marks the point where the new architecture is mature enough to replace UW2 as the production tool. The symbolic pipeline is solid. The solver framework leverages modern PETSc properly. The mesh infrastructure handles the geometries that geodynamics actually needs. And the Python interface — the part of UW2 that actually worked — is better than ever, because SymPy makes it legible all the way down.
 
 In upcoming posts, we go deeper into the machinery: how SymPy expressions become C code, how particles navigate a parallel mesh, how the units system tracks physical dimensions through the pipeline, and how we build geographic meshes for regional models.
+
+<div class="uwtn-discuss"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=our-journey-from-underworld2-to-underworld3">Discuss this note on GitHub</a></div>

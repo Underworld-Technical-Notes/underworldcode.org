@@ -233,3 +233,5 @@ This does not replace physical intuition. You still need to know that a Rayleigh
 ---
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code: [github.com/underworldcode/underworld3](https://github.com/underworldcode/underworld3)*
+
+<div class="uwtn-discuss"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=physical-units-in-computational-geodynamics">Discuss this note on GitHub</a></div>

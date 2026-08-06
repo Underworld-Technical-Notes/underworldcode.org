@@ -426,3 +426,17 @@ a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); 
 .uwtn-ref:last-child { border-bottom: none; }
 .uwtn-ref a { color: var(--uwtn-accent); text-decoration: none; }
 .uwtn-ref a:hover { text-decoration: underline; }
+
+/* ---- discussion -------------------------------------------------------- */
+
+.uwtn-discuss {
+  margin-top: 3rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--uwtn-rule);
+  font-family: var(--uwtn-sans);
+  font-size: 0.85rem;
+}
+
+.uwtn-discuss a { color: var(--uwtn-accent); text-decoration: none; }
+.uwtn-discuss a:hover { text-decoration: underline; }
+.uwtn-discuss a::after { content: " →"; }

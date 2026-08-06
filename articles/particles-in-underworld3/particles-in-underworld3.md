@@ -145,3 +145,5 @@ This uniformity is important. It means you can start with a mesh-based viscosity
 ---
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code: [github.com/underworldcode/underworld3](https://github.com/underworldcode/underworld3)*
+
+<div class="uwtn-discuss"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=particles-in-underworld3">Discuss this note on GitHub</a></div>

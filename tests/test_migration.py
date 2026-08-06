@@ -470,3 +470,27 @@ def test_dead_pages_are_not_carried_over():
     declared = set(build_pages.load_pages_config())
     for slug in ("uw-mailing-lists", "underworld-geodynamics-community"):
         assert slug not in declared, "%s was carried over despite being dead" % slug
+
+
+def test_discussion_link_is_web_only():
+    """A live affordance belongs on the site, not in the fixed record."""
+    banner_body = load("banner_body")
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        assert "uwtn-discuss" in path.read_text(encoding="utf-8"), \
+            "%s has no discussion link" % path.parent.name
+    # And the stripper removes it, which is what keeps it out of the PDF.
+    sample = '---\ntitle: T\n---\nBody.\n\n<div class="uwtn-discuss"><a href="#">x</a></div>\n'
+    _head, _sep, body = sample.partition("\n---\n")
+    assert "uwtn-discuss" not in banner_body.DISCUSS_BLOCK.sub("\n", body)
+
+
+def test_no_third_party_scripts_are_loaded():
+    """The Ghost site loaded eight, one from a service shut down in 2023."""
+    import re
+    build = ROOT / "_build" / "html"
+    if not build.exists():
+        return
+    allowed = ("giscus.app",)          # only if deliberately enabled later
+    for page in list(build.glob("*/index.html"))[:6]:
+        for src in re.findall(r'<script[^>]+src="(https?://[^"]+)"', page.read_text(encoding="utf-8")):
+            assert any(a in src for a in allowed), "third-party script: %s" % src

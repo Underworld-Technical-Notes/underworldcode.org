@@ -93,3 +93,5 @@ This model is adapted from Tutorial 10 in UWGeodynamics, which explores the deve
 - Corcho, A. F. R., Polanco, S., Farrington, R., & Moresi, L. (2025). Subduction system response to ribbon collision: implications on the intra-plate force balance and the style of slab deformation. Authorea Preprints.
 
 - Ghosh, S., Bose, S., Mandal, N., & Laik, A. (2020). Mid-crustal ramping of the Main Himalayan Thrust in Nepal to Bhutan Himalaya: New insights from analogue and numerical experiments. *Tectonophysics*, *782*, 228425.
+
+<div class="uwtn-discuss"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=new-features-of-the-surface-coupling-framework-in-underworld-2">Discuss this note on GitHub</a></div>

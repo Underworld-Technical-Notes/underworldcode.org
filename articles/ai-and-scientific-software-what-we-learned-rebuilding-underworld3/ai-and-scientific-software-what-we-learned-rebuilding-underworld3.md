@@ -128,3 +128,5 @@ Looking back over eight months, the central insight is this: making the code AI-
 We didn't try (for long) to bolt AI tools onto an existing workflow. The code changed to suit the tools, and the tools became more useful as the code improved. The result is a codebase that is better for everyone — AI and human alike.
 
 The lesson we'd offer other scientific software teams is simple: if your AI tools are struggling with your code, listen to what that is telling you. The problem is probably real, and fixing it will pay off in ways that go well beyond AI.
+
+<div class="uwtn-discuss"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=ai-and-scientific-software-what-we-learned-rebuilding-underworld3">Discuss this note on GitHub</a></div>

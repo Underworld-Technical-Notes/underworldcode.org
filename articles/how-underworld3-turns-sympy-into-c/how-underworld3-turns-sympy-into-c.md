@@ -213,3 +213,5 @@ For geodynamics, where constitutive models are complex, nonlinear, and frequentl
 ---
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code: [github.com/underworldcode/underworld3](https://github.com/underworldcode/underworld3)*
+
+<div class="uwtn-discuss"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=how-underworld3-turns-sympy-into-c">Discuss this note on GitHub</a></div>
