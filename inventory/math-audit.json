@@ -1,0 +1,122 @@
+{
+  "catalogue": {
+    "  -> ": 93,
+    "\\ -> ": 14,
+    " _ {11} \\\\ -> _{11} ": 2,
+    " _ {22} \\\\ -> _{22} ": 2,
+    " _  -> _": 2,
+    "\\\\ 0 & \\eta  ->  0 & \\eta & ": 1,
+    " -> {": 4,
+    " -> }": 5,
+    "\\ ->  ": 4,
+    " ->  ": 1,
+    "** -> ": 4,
+    "{ -> ": 2,
+    "} -> ": 2,
+    "` -> ": 10,
+    "^ -> ": 2,
+    " -> {-": 1
+  },
+  "findings": [
+    {
+      "slug": "finding-particles-in-a-distributed-unstructured-mesh",
+      "kind": "inline",
+      "math": "\u2014 exterior \u2014 lands on a rust marker for the face it has crossed. A point is inside the cell iff every connection is black.To confirm that a particle is inside its candidate cell, UW3 uses precomputed control point pairs on each face. During mesh setup, each face gets two markers: one placed just inside the cell (offset by a small distance along the inward normal from the face centroid) and one just outside. These are the black and rust-coloured dots in the diagram.At query time, the test is purely distance-based. For each face, compare the squared distance from the particle to the outer control point versus the inner control point: If the particle is closer to the inner point, it is on the centroid side of that face. A particle is inside the cell if and only if this holds for all faces. No normals, no dot products, no plane equations at query time. The geometry was baked into the control point positions during mesh setup. The computation is vectorised over all particles and all faces using NumPy. For a triangle, this is three distance comparisons per particle. For a tetrahedron it is four.This approach is exact for linear meshes (where faces are planar).When the Candidate Is WrongIf the KDTree returns a candidate cell and the inside/outside test fails, the particle is in a neighbouring cell. The algorithm queries the KDTree for the next-nearest control point, tests that cell, and repeats. In practice, the first candidate is almost always correct, and at most one or two iterations are needed.Scaling to ParallelOn a single processor, the algorithm above is sufficient. On a parallel mesh, each processor owns a subset of cells. A particle that has moved outside its processor's domain needs to be found, relocated to the correct processor, and have all its variable data transferred. It is important in this situation for the algorithm to be categorical about not owning a particle.Migration Between ProcessorsAfter advection, particles that are outside their local domain need new owners. The first step is deciding where to send them. Each MPI rank computes its domain centroid, and a KDTree is built from all centroids across all ranks. For a displaced particle, the nearest centroid gives a candidate destination.A mesh decomposed into four processor domains. The particle",
+      "bare_commands": [
+        "dot"
+      ],
+      "lone_comma": false
+    },
+    {
+      "slug": "particles-in-underworld3",
+      "kind": "display",
+      "math": "w _ i = \\frac{1}{\\left(\\epsilon + d _ i2\\right)p}, \\qquad \\phi _ n = \\frac{\\sum _ {i=1}^{k} w _ i , \\phi _ p^{(i)}}{\\sum _ {i=1}^{k} w _ i}",
+      "bare_commands": [],
+      "lone_comma": true
+    },
+    {
+      "slug": "constitutive-models-in-symbolic-form",
+      "kind": "display",
+      "math": "\\sigma_{ij} = C_{ijkl} , \\dot\\varepsilon_{kl}",
+      "bare_commands": [],
+      "lone_comma": true
+    },
+    {
+      "slug": "constitutive-models-in-symbolic-form",
+      "kind": "display",
+      "math": "\\sigma = 2\\eta , \\dot\\varepsilon",
+      "bare_commands": [],
+      "lone_comma": true
+    },
+    {
+      "slug": "constitutive-models-in-symbolic-form",
+      "kind": "display",
+      "math": "C_{ijkl} = 2\\eta_0 , I_{ijkl} + 2(\\eta_0 - \\eta_1) , A_{ijkl}(\\mathbf{n})",
+      "bare_commands": [],
+      "lone_comma": true
+    },
+    {
+      "slug": "constitutive-models-in-symbolic-form",
+      "kind": "display",
+      "math": "\\tau^{ * } _ {I} = P _ {IJ},\\tau _ {J}, \\quad \\dot\\varepsilon^{ * } _ {I} = P _ {IJ},\\dot\\varepsilon _ {J}, \\quad C^{ * } _ {IJ} = P _ {IK} ,C _ {KL} , P _ {LJ}",
+      "bare_commands": [],
+      "lone_comma": true
+    },
+    {
+      "slug": "constitutive-models-in-symbolic-form",
+      "kind": "display",
+      "math": "C^{ * } _ {IJ} = \\eta , \\delta _ {IJ}",
+      "bare_commands": [],
+      "lone_comma": true
+    },
+    {
+      "slug": "constitutive-models-in-symbolic-form",
+      "kind": "display",
+      "math": "C'^{ * } _ {IJ} = R^{ * }_ {IK} , C^{ * } _ {KL} , R^{ * T} _ {LJ}",
+      "bare_commands": [],
+      "lone_comma": true
+    },
+    {
+      "slug": "constitutive-models-in-symbolic-form",
+      "kind": "display",
+      "math": "\\eta_\\textrm{pl} = \\frac{\\tau_y}{2 , \\dot\\varepsilon_{II}}",
+      "bare_commands": [],
+      "lone_comma": true
+    },
+    {
+      "slug": "constitutive-models-in-symbolic-form",
+      "kind": "inline",
+      "math": "2\\eta , I_{ijkl}",
+      "bare_commands": [],
+      "lone_comma": true
+    },
+    {
+      "slug": "how-underworld3-turns-sympy-into-c",
+      "kind": "inline",
+      "math": ". You use them in expressions naturally \u2014 rho * g * mesh.X[1] for a depth-dependent body force \u2014 and at compile time they become petsc_x[0], petsc_x[1]. In spherical coordinates, the same mechanism provides",
+      "bare_commands": [
+        "rho"
+      ],
+      "lone_comma": false
+    },
+    {
+      "slug": "viscoelasticity",
+      "kind": "inline",
+      "math": "is proportional to the sum of the stress",
+      "bare_commands": [
+        "sum"
+      ],
+      "lone_comma": false
+    },
+    {
+      "slug": "viscoelasticity",
+      "kind": "inline",
+      "math": ". The shearing velocity is then taken to zero with the stress decaying with time.Viscoelastic stress history term for different relaxation timesThe graph above shows the shear component of the stress history term from equation (2) for a range of Maxwell relaxation times (alpha). See the viscoelastic example for details, my_uw/doc/2_11_ViscoelasticityInSimpleShear.ipynbAn objective stress rate tensorThe stress history term (stress rate tensor) is carried on particles that can be advected and rotated through time by the velocity field. To maintain objectivity it must be both advected and rotated for the current reference frame. This can be acheived using the Jaumann stress rate, defined by",
+      "bare_commands": [
+        "alpha",
+        "times"
+      ],
+      "lone_comma": false
+    }
+  ]
+}

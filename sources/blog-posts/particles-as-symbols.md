@@ -1,29 +1,16 @@
 ---
-title: Particles in Underworld3
-description: "Underworld is built around the idea of active Lagrangian tracer particles that carry history and composition information as the material deforms. How do we combine this information with our symbolic mathematical framework ?"
-date: 2026-06-03
-authors:
-  - name: Louis Moresi
-    orcid: 0000-0003-3685-174X
-    affiliations:
-      - Australian National University
-license: CC-BY-4.0
-keywords:
-  - Underworld Code
-  - Documentation
-  - development
-exports:
-  - format: typst
-    template: ../../templates/pdf
-    output: particles-in-underworld3.pdf
-    article_id: UWTN 2026-008
-    article_version: 1.0.0
-parts:
-  abstract: "Underworld is built around the idea of active Lagrangian tracer particles that carry history and composition information as the material deforms. How do we combine this information with our symbolic mathematical framework ?"
+title: "Particles That Know Calculus"
+status: published
+published: 2026-06-03
+url: https://www.underworldcode.org/particles-in-underworld3/
+feeds_into: [paper-2]
+target: underworldcode.org (Ghost)
+tags: [underworld, particles, swarm, proxy, symbolic, geodynamics]
 ---
-Lagrangian particles in a fixed-mesh, finite-element code can be used to carry material properties with the flow. Composition, strain history, stress memory, damage. Finite element solvers operate on fields defined on the mesh, so scattered data on particles always demand special treatment of some kind. In Underworld 1 and Underworld 2, we created dynamic integration schemes for particle swarms on an element-by-element basis. This option is not available with the [PETSc point-wise function approach](/how-underworld3-turns-sympy-into-c/) that UW3 uses. For this, we need to project particle data onto the available interpolating functions before each solve.
 
-We also need to be able to represent the particle-based data and its derivatives symbolically for the underworld3 representation to be composable with mesh-based data when we construct the weak form. In Underworld3, we create `swarmVariables` as natural, symbolic objects to fulfil this requirement.
+Lagrangian particles in a fixed-mesh, finite-element code can be used to carry material properties with the flow. Composition, strain history, stress memory, damage. Finite element solvers operate on fields defined on the mesh, so scattered data on particles always demand special treatment of some kind. In Underworld 1 and Underworld 2, we created dynamic integration schemes for particle swarms on an element-by-element basis. This option is not available with the [PETSc point-wise function approach](/how-underworld3-turns-sympy-into-c/) that UW3 uses. For this, we need to project particle data onto the available interpolating functions before each solve. 
+
+We also need to be able to represent the particle-based data and its derivatives symbolically for the underworld3 representation to be composable with mesh-based data when we construct the weak form. In Underworld3, we create `swarmVariables` as natural, symbolic objects to fulfil this requirement. 
 
 A swarm variable has a `.sym` property that returns a SymPy symbol, just like a mesh variable. That symbol participates in the solver's weak form, the constitutive model, the boundary conditions. The solver does not know whether it is reading a field computed on the mesh or a field projected from particles. The distinction is invisible at the symbolic level.
 
@@ -31,7 +18,7 @@ A swarm variable has a `.sym` property that returns a SymPy symbol, just like a 
 
 A Stokes solver assembles the weak form by evaluating expressions at quadrature points inside each element. The expressions reference field variables defined at mesh nodes. If the viscosity depends on a material property stored on particles, that property must first be available as a mesh field.
 
-In Underworld2, the user managed this explicitly. You would call a projection routine before each solve, mapping particle data onto the mesh. Forget the projection, and the solver would use stale data.
+In Underworld2, the user managed this explicitly. You would call a projection routine before each solve, mapping particle data onto the mesh. Forget the projection, and the solver would use stale data. 
 
 UW3 automates this through a ***"proxy mesh variable"*** pattern.
 
@@ -66,19 +53,17 @@ The companion mesh variable is a standard finite element field defined on the me
 The projection from particles to mesh uses inverse-distance-weighted (IDW) interpolation from the nearest particles to each mesh node, implemented through a KDTree of particle positions:
 
 1. Build a KDTree of all particle positions on the local rank.
-
 2. For each mesh node at position $x _ n$, find the $k$ nearest particles ($k = \text{dim} + 1$ by default), giving neighbour positions $x _ p^{(i)}$ and values $\phi _ p^{(i)}$ for $i = 1, \ldots, k$.
+3. Compute weights from the squared distances $d _ i^2 = \| x _ n - x _ p^{(i)} \|^2$ and take the normalised weighted average:
 
-3. Compute weights from the squared distances $d _ i^2 = | x _ n - x _ p^{(i)} |^2$ and take the normalised weighted average:
-
-$$  
-w _ i = \frac{1}{\left(\epsilon + d _ i^2\right)p}, \qquad  
-\phi _ n = \frac{\sum _ {i=1}^{k} w _ i , \phi _ p^{(i)}}{\sum _ {i=1}^{k} w _ i}  
+$$
+w _ i = \frac{1}{\left(\epsilon + d _ i^2\right)^p}, \qquad
+\phi _ n = \frac{\sum _ {i=1}^{k} w _ i \, \phi _ p^{(i)}}{\sum _ {i=1}^{k} w _ i}
 $$
 
-The default exponent is $p = 2$, giving weights that decay as $1/d^4$. The small $\epsilon$ regularises the case where a particle coincides with a mesh node — this happens more often than you might imagine in practice, because we often use swarms to carry mesh information during deformation or during advection.
+   The default exponent is $p = 2$, giving weights that decay as $1/d^4$. The small $\epsilon$ regularises the case where a particle coincides with a mesh node — this happens more often than you might imagine in practice, because we often use swarms to carry mesh information during deformation or during advection. 
 
-1. Store the result $\phi _ n$ on the proxy mesh variable.
+4. Store the result $\phi _ n$ on the proxy mesh variable.
 
 The proxy has a `.sym` property that returns a SymPy symbol. This is the same interface as any mesh variable. You use it in expressions, constitutive models, boundary conditions, source terms. The solver sees a mesh variable symbol and does not need to know that the data originated on particles.
 
