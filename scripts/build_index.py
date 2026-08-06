@@ -115,7 +115,9 @@ def entry_html(meta, description, has_pdf, banner=None, lead=False):
     # class but keeping the semantics) and is styled by descendant selector.
     # No blank lines: a blank line ends a raw HTML block in markdown, which
     # silently hands the rest of the entry back to the markdown parser.
-    thumb = ('<a class="uwtn-thumb" href="/%s/"><img src="/%s/%s" alt=""></a>'
+    # A path MyST can resolve from index.md, so it copies and fingerprints the
+    # file. An absolute /<slug>/... path is passed through untouched and 404s.
+    thumb = ('<a class="uwtn-thumb" href="/%s/"><img src="articles/%s/%s" alt=""></a>'
              % (slug, slug, banner)) if banner else ""
 
     return "".join([

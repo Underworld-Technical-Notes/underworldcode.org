@@ -51,6 +51,11 @@ jobs:
       - name: No registered DOI is broken
         run: pixi run test-dois
 
+      - name: Referenced assets exist
+        env:
+          BASE_URL: ${{ steps.base.outputs.base_url }}
+        run: pixi run test-assets --base-url "$BASE_URL"
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3

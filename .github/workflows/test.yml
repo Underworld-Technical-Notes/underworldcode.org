@@ -31,6 +31,11 @@ jobs:
       - name: No registered DOI is broken
         run: pixi run test-dois
 
+      # MyST passes through any asset path it cannot resolve, silently, so a
+      # reference can look right and 404 in the browser.
+      - name: Referenced assets exist
+        run: pixi run test-assets
+
       - name: Upload built site
         uses: actions/upload-artifact@v4
         with:
