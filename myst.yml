@@ -38,9 +38,7 @@ site:
     logo_text: Underworld Technical Notes
     # The landing page is generated as a feed by scripts/build_index.py and
     # styled by static/uwtn.css, which borrows the archival PDF's typography so
-    # the two renditions read as one publication. The stylesheet is inlined by
-    # scripts/inject_style.py rather than declared here: MyST's `style` option
-    # records a path that does not match where it writes the file, and ignores
-    # BASE_URL, so the CSS silently never loads.
+    # the two renditions read as one publication.
+    style: static/uwtn.css
     hide_footer_links: true
     numbered_references: true

@@ -258,3 +258,14 @@ def test_index_uses_only_markup_myst_preserves():
     index = index_source()
     for tag in ("<article", "<time", "role=", "aria-"):
         assert tag not in index, "%s does not survive MyST's HTML handling" % tag
+
+
+def test_myst_style_option_is_declared():
+    """The theme injects the stylesheet from hydration data via this option.
+
+    Relying on scripts/inject_style.py alone leaves the page styled for one
+    frame and unstyled thereafter, because hydration discards the inlined tag.
+    """
+    myst = (ROOT / "myst.yml").read_text(encoding="utf-8")
+    assert "style: static/uwtn.css" in myst, \
+        "site.options.style is what survives hydration; the inline is only for first paint"

@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
-"""Inline the site stylesheet into every built page.
+"""Inline the site stylesheet into every built page, for the first paint.
 
-MyST's ``site.options.style`` does not work here, on mystmd 1.10.1: it records
-the stylesheet in ``config.json`` as ``/uwtn-<hash>.css`` while writing the file
-to ``/build/uwtn-<hash>.css``, so the path never resolves — and the recorded
-path is not adjusted for ``BASE_URL`` either, so a project site served under a
-subpath would miss it a second way. Both failures are silent: the site renders,
-unstyled, and looks merely plain rather than broken.
+``site.options.style`` in ``myst.yml`` is what actually styles the site: the
+theme is a React app that injects the stylesheet from the page's hydration
+data. That is easy to miss, because the path in ``config.json`` is wrong
+(``/uwtn-<hash>.css`` while the file is written to ``/build/uwtn-<hash>.css``)
+and there is no ``<link>`` in the static HTML — but the hydration payload
+carries the correct, BASE_URL-adjusted path, and the theme uses that.
 
-Inlining sidesteps the whole question. The stylesheet is small, it costs no
-extra request, and it cannot be defeated by a path prefix.
+The gap it leaves is the first paint. Until React hydrates there is no
+stylesheet at all, so the page appears briefly as unstyled text. This inlines
+the same CSS into ``<head>`` so the very first frame is correct. Hydration then
+discards the inlined tag and the theme's own link takes over, which is
+seamless because they are the same stylesheet.
+
+Do not remove ``style:`` from ``myst.yml`` and rely on this alone: hydration
+would strip the inlined tag and leave the page permanently unstyled, having
+looked correct for a moment first.
 
 Usage:
     python3 scripts/inject_style.py [--build _build/html] [--style static/uwtn.css]
