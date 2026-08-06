@@ -162,6 +162,7 @@ class GhostToMyst(HTMLParser):
         self._link_text = []
         self._fig = None           # {'src','alt','caption'}
         self._in_caption = False
+        self._after_break = False
         self.unbolded_captions = 0
         self.inline_images = 0
         self.linked_images = 0
@@ -225,7 +226,12 @@ class GhostToMyst(HTMLParser):
             self._href = attrs.get("href", "")
             self._link_text = []
         elif tag == "br":
+            # A <br> is a line break, never a paragraph break. Ghost writes a
+            # real newline after it, and letting that through turns one block
+            # into two -- which splits `<p>$$<br>...<br>$$</p>` into three,
+            # so the equation stops being an equation.
             self._write("  \n" if not self._pre else "\n")
+            self._after_break = True
         elif tag == "hr":
             self._flush()
             self._emit("---")
@@ -353,8 +359,13 @@ class GhostToMyst(HTMLParser):
             return
         if self._pre:
             self._buf.append(data)
-        else:
-            self._write(data)
+            return
+        if self._after_break:
+            self._after_break = False
+            if not data.strip():
+                return              # the source newline that follows a <br>
+            data = data.lstrip("\n\r")
+        self._write(data)
 
     # -- figures ---------------------------------------------------------
 
@@ -407,6 +418,10 @@ class GhostToMyst(HTMLParser):
         self._flush()
         body = "\n\n".join(b for b in (x.strip() for x in self.out) if b)
         body = re.sub(r"\n{3,}", "\n\n", body)
+        # Drop the hard-break markers that hug display delimiters, so the block
+        # is plain `$$\n...\n$$` rather than `$$  \n...  \n$$`.
+        body = re.sub(r"\$\$[ \t]*\n", "$$\n", body)
+        body = re.sub(r"[ \t]+\n(\$\$)", r"\n\1", body)
         return body + "\n"
 
 

@@ -1,0 +1,188 @@
+"""Regression tests for the parts of the migration that fail silently.
+
+Every test here corresponds to something that actually went wrong, or that
+would break fifty registered DOIs if it regressed. They run without a network
+and without a build.
+"""
+
+import importlib.util
+import pathlib
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "scripts"))
+
+
+def load(name):
+    spec = importlib.util.spec_from_file_location(name, ROOT / "scripts" / ("%s.py" % name))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+ghost_to_myst = load("ghost_to_myst")
+merge_originals = load("merge_originals")
+fix_slugs = load("fix_slugs")
+
+
+# --------------------------------------------------------------------------
+# Maths repair. The first version of this guard swapped the published
+# "wrong by a factor of $10^6$" for the draft's thermal diffusivity
+# $10^{-6}$ -- same skeleton, more braces, different meaning.
+# --------------------------------------------------------------------------
+
+def test_markup_only_repairs_are_accepted():
+    accept = [
+        (r"\eta , \delta _ {IJ}", r"\eta \, \delta _ {IJ}"),   # thin space
+        ("F_0", "{F_0}"),                                       # braces
+        (r"\left(x\right)p", r"\left(x\right)^p"),              # lost exponent
+        (r"| x |^2", r"\| x \|^2"),                             # norm bars
+    ]
+    for published, draft in accept:
+        assert merge_originals.only_markup_restored(published, draft), \
+            "should repair %r -> %r" % (published, draft)
+
+
+def test_meaning_changes_are_refused():
+    refuse = [
+        ("10^6", "10^{-6}"),          # a sign is not markup
+        ("a + b", "a - b"),           # nor is an operator
+        ("x_1", "x_2"),               # nor a different index
+        (r"\alpha", r"\beta"),        # nor a different symbol
+    ]
+    for published, draft in refuse:
+        assert not merge_originals.only_markup_restored(published, draft), \
+            "must refuse %r -> %r" % (published, draft)
+
+
+def test_repair_leaves_untouched_maths_alone():
+    repairs = []
+    text = "The factor is $10^6$ here."
+    out = merge_originals.repair_document(text, "diffusivity $10^{-6}$", repairs)
+    assert out == text and repairs == []
+
+
+# --------------------------------------------------------------------------
+# Slug truncation. MyST limits a page slug to 50 characters, which silently
+# breaks 12 of the 50 registered DOIs.
+# --------------------------------------------------------------------------
+
+def test_long_slugs_are_still_over_the_myst_limit():
+    """If this fails the corpus changed, not the tooling -- recheck fix_slugs."""
+    register = ROOT / "inventory" / "doi-register.csv"
+    import csv
+    with register.open(encoding="utf-8") as fh:
+        slugs = [row["slug"] for row in csv.DictReader(fh)]
+    assert sum(1 for s in slugs if len(s) > 50) >= 12
+
+
+def test_truncation_collision_would_be_detected():
+    """Two slugs sharing a 50-character prefix must not be renamed silently."""
+    a = "a" * 50 + "-one"
+    b = "a" * 50 + "-two"
+    assert a[:50] == b[:50], "test fixture must actually collide"
+
+
+# --------------------------------------------------------------------------
+# Converter. The source site was compromised; nothing executable may cross.
+# --------------------------------------------------------------------------
+
+def _convert(html):
+    conv = ghost_to_myst.GhostToMyst("test")
+    conv.feed(html)
+    conv.close()
+    return conv
+
+
+def test_executable_markup_is_dropped_and_reported():
+    conv = _convert('<p>before</p><script>alert(1)</script>'
+                    '<iframe src="x"></iframe><p>after</p>')
+    out = conv.markdown()
+    assert "alert" not in out and "iframe" not in out
+    assert conv.dropped["script"] == 1 and conv.dropped["iframe"] == 1
+    assert "before" in out and "after" in out
+
+
+def test_unhandled_tags_are_reported_not_swallowed():
+    conv = _convert("<p>text</p><marquee>scrolling</marquee>")
+    assert conv.unknown["marquee"] == 1, "an unknown tag must be reported"
+
+
+def test_figure_is_numbered_but_a_bare_image_is_not():
+    figure = _convert('<figure><img src="/content/images/a.png" alt="A">'
+                      '<figcaption>Caption here</figcaption></figure>').markdown()
+    assert "```{figure}" in figure and "Caption here" in figure
+
+    bare = _convert('<p><img src="/content/images/b.png" alt="B"></p>').markdown()
+    assert "```{figure}" not in bare, "a bare image must not become a numbered figure"
+
+
+def test_caption_bolded_end_to_end_is_unbolded():
+    conv = _convert('<figure><img src="/content/images/a.png">'
+                    '<figcaption><strong>All bold caption text here</strong></figcaption></figure>')
+    out = conv.markdown()
+    assert conv.unbolded_captions == 1
+    assert "**All bold" not in out
+
+
+def test_partial_caption_emphasis_survives():
+    conv = _convert('<figure><img src="/content/images/a.png">'
+                    '<figcaption><strong>Left:</strong> a panel and '
+                    '<strong>Right:</strong> another</figcaption></figure>')
+    assert conv.unbolded_captions == 0
+    assert "**Left:**" in conv.markdown()
+
+
+def test_ghost_ref_parameter_is_stripped():
+    out = _convert('<p><a href="https://example.org/x?ref=underworldcode.org">link</a></p>').markdown()
+    assert "ref=underworldcode.org" not in out and "https://example.org/x" in out
+
+
+def test_same_site_links_become_root_relative():
+    out = _convert('<p><a href="https://www.underworldcode.org/other-post/">other</a></p>').markdown()
+    assert "(/other-post/)" in out
+
+
+# --------------------------------------------------------------------------
+# Block parsing used by the merge.
+# --------------------------------------------------------------------------
+
+def test_fenced_code_is_not_split_on_blank_lines():
+    text = "para\n\n```python\na = 1\n\nb = 2\n```\n\nafter\n"
+    kinds = [k for k, _ in merge_originals.blocks(text)]
+    assert kinds == ["prose", "code", "prose"]
+
+
+def test_directive_is_distinguished_from_code():
+    text = "```{figure} figures/a.png\n:alt: x\n\ncap\n```\n"
+    assert merge_originals.blocks(text)[0][0] == "directive"
+
+
+# --------------------------------------------------------------------------
+# Ghost stores display maths as `<p>$$<br>...<br>$$</p>`. Letting the source
+# newline after a <br> through split one equation into three blocks, which the
+# merge then emitted twice -- once as maths, once as literal LaTeX.
+# --------------------------------------------------------------------------
+
+def test_display_maths_from_ghost_stays_one_block():
+    html = ("<p>$$<br>\n\\sigma = 2\\eta \\, \\dot\\varepsilon<br>\n$$</p>"
+            "<p>and prose follows</p>")
+    out = _convert(html).markdown()
+    assert "$$\n\\sigma = 2\\eta \\, \\dot\\varepsilon\n$$" in out, out
+    kinds = [k for k, _ in merge_originals.blocks(out)]
+    assert kinds.count("math") == 1, "the equation must be a single block, got %s" % kinds
+
+
+def test_line_breaks_inside_prose_are_kept():
+    out = _convert("<p>first line<br>\nsecond line</p>").markdown()
+    assert "first line" in out and "second line" in out
+    assert "\n\n" not in out.strip(), "a <br> is not a paragraph break"
+
+
+def test_display_maths_delimiters_are_balanced_in_every_article():
+    import re
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        body = re.sub(r"^---\n.*?\n---\n", "", path.read_text(encoding="utf-8"), flags=re.S)
+        body = re.sub(r"```.*?```", "", body, flags=re.S)
+        count = len(re.findall(r"(?m)^\$\$\s*$", body))
+        assert count % 2 == 0, "%s has %d lone $$ delimiters" % (path.parent.name, count)

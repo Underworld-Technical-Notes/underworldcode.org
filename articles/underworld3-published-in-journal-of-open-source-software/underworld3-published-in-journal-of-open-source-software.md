@@ -48,55 +48,33 @@ The symbolic layer of `underworld3` works with the "strong form" of a problem wh
 `PETSc` provides a template form for the automatic generation of weak forms [see Knepley et al, 2013]. We start from the strong-form of the problem which is defined through the functional $\mathcal{F}_s$ that expresses the balance between fluxes ($F(u, \nabla u)$), forces, $f(u, \nabla u)$, and unknowns $u$:
 
 \begin{equation}\label{eq:petsc-strong-form}  
-
 \mathcal{F}_s(u) \sim \nabla \cdot F(u, \nabla u) - f(u, \nabla u) = 0  
-
 \end{equation}
 
 The discrete weak form and its Jacobian derivative would then be expressed through the related functional $\mathcal{F}_w$  as follows:
 
 \begin{equation}\label{eq:petsc-weak-form}  
-
 \mathcal{F}_w(u) \sim \sum_e \epsilon_e^T \left[ B^T W f(u^q, \nabla u^q) + \sum_k D_k^T W F^k (u^q, \nabla u^q) \right] = 0  
-
 \end{equation}
 
 \begin{equation}\label{eq:petsc-jacobian}  
-
 \mathcal{F}_w'(u) \sim \sum _e \epsilon _{e^T}  
-
 \left[ \begin{array}{cc}  
-
 B^T  & D^T \  
-
 \end{array} \right]  
-
 W  
-
 \left[ \begin{array}{cc}  
-
 \partial {f}/{\partial {u}} &  
-
 \partial {f}/{\partial \nabla {u}} \  
-
 \partial {F}/{\partial {u}} &  
-
 \partial {F}/{\partial \nabla {u}} \  
-
 \end{array}\right]  
-
 \left[  
-
 \begin{array}{c}  
-
 B^T  \  
-
 D^T  
-
 \end{array} \right]  
-
 \epsilon _{e}  
-
 \end{equation}
 
 Here $\epsilon$ is the element restriction operator; $B$ is the matrix of basis function derivatives and $D$ is the constitutive matrix that, together, describe the relation between the unknowns and the flux. $q$ indicates that the values are determined at a set of quadrature points, and $W$ is a diagonal matrix of weights for these points.
@@ -104,15 +82,10 @@ Here $\epsilon$ is the element restriction operator; $B$ is the matrix of basis 
 The symbolic representation of the strong-form that is encoded in `underworld3` is:
 
 \begin{equation}\label{eq:sympy-strong-form}  
-
 \Bigl[ {D u}/{D t} \Bigr]  
-
 -\nabla \cdot \Bigl[ \sigma(u, \nabla u, \mathbf{x}, t) \Bigr]  
-
 -\Bigl[ \mathrm{H}(u, \nabla u, \mathbf{x},t) \Bigr]  
-
 = 0  
-
 \end{equation}
 
 Here $\mathrm{H}$ represents sources and sinks of $u$, and ${D u}/{D t}$ is the material time derivative of $u$. The time derivatives of the unknowns are not present in the `PETSc` template but, after time-discretisation, they produce terms that are combinations of fluxes and flux history terms (which combine with $\boldsymbol{\sigma}$ to contribute to $F$) and forces (which combine with $\mathbf{h}$ to contribute to $f$). The explicit time / position dependence in $\sigma$ is to highlight potential changes to boundary conditions or constitutive properties.

@@ -2,9 +2,9 @@
 
 Prose from the published article, structure from the drafted original.
 
-- **took-published**: 5
-- **kept-original**: 22
-- **added-in-ghost**: 5
+- **took-published**: 4
+- **kept-original**: 23
+- **added-in-ghost**: 2
 - **dropped-from-draft**: 2
 
 ## Blocks dropped from the draft
@@ -23,10 +23,8 @@ The draft wording is shown first, the published wording second.
 
 - draft: ``` > stokes.constitutive_model.flux σ = 2 · 1 · ε̇(u) ```
   <br>published: > stokes.constitutive_model.flux
-- draft: The viscosity is 1 — the default value. Your depth-dependent expression isn't reaching the solver. You defined:
-  <br>published: \boldsymbol{\sigma} = 2 \cdot 1 \cdot \dot{\boldsymbol{\epsilon}}(\mathbf{u})
 - draft: ``` > viscosity_fn η₀ · exp(-γ · y) ```
-  <br>published: The viscosity is 1 — the default value. Your depth-dependent
+  <br>published: > viscosity_fn
 - draft: ``` > stokes.constitutive_model.Parameters.viscosity = viscosity_fn ```
   <br>published: > stokes.constitutive_model.Parameters.viscosity = viscosity_fn
 - draft: ``` σ = 2 η₀ exp(-γ y) ε̇(u) ```

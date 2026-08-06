@@ -1,0 +1,39 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: prefix-dev/setup-pixi@v0.8.1
+        with:
+          cache: true
+
+      # Regression tests first: they need no build and fail fastest.
+      - name: Unit tests
+        run: pixi run test-unit
+
+      - name: Validate article metadata
+        run: pixi run validate
+
+      - name: Build site and archival PDFs
+        run: pixi run build
+
+      # The gate that matters. Fifty Crossref DOIs resolve to /<slug>/ and
+      # cannot be re-pointed; MyST truncates slugs to 50 characters, so a build
+      # that skips scripts/fix_slugs.py silently 404s twelve of them.
+      - name: No registered DOI is broken
+        run: pixi run test-dois
+
+      - name: Upload built site
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: _build/html
+          retention-days: 7

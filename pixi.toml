@@ -9,6 +9,7 @@ python = ">=3.11,<3.13"
 mystmd = ">=1.6,<2"
 typst = ">=0.13,<0.14"
 nodejs = ">=20"
+pytest = ">=8"
 
 [tasks]
 # One documented entry point. CI runs exactly these.
@@ -28,7 +29,8 @@ build = { depends-on = ["build-html", "build-pdf"] }
 validate = "python3 scripts/validate_metadata.py"
 test-dois = "python3 scripts/test_doi_urls.py"
 test-links = "python3 scripts/check_links.py"
-test = { depends-on = ["validate", "test-dois"] }
+test-unit = "pytest -q tests/"
+test = { depends-on = ["test-unit", "validate", "test-dois"] }
 
 # Stage 0 migration tooling. Read-only against the live Ghost site.
 inventory = "python3 scripts/inventory_site.py"

@@ -12,11 +12,15 @@ archival PDFs. This is a local working repository; it has not yet been pushed to
 a GitHub organisation. See *Blocked on Louis* below.
 
 ```bash
-pixi run convert      # Ghost export -> articles/
+pixi run migrate      # convert -> rebuild figures -> merge with the drafts
 pixi run build        # HTML site + archival PDFs
-pixi run test         # metadata validation + the DOI URL test
+pixi run test         # unit tests + metadata validation + the DOI URL test
 pixi run myst start   # preview the site locally
 ```
+
+`migrate` is idempotent: running it twice produces a byte-identical tree. CI
+(`.github/workflows/`) runs the same tasks and refuses to deploy a build that
+would break a registered DOI.
 
 ---
 

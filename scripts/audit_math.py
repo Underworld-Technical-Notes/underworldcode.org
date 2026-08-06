@@ -78,14 +78,40 @@ LONE_COMMA = re.compile(r"[A-Za-z0-9}\)]\s+,\s+\\?[A-Za-z\\]")
 
 
 def math_spans(text):
-    """Every display and inline maths span, in order."""
+    """Every display and inline maths span, in order.
+
+    Inline spans are only recognised when they contain no code fence and no
+    sentence-ending punctuation followed by a space: a lone ``$`` in prose or
+    inside backticks otherwise pairs with the next one and swallows a whole
+    sentence, which the audit then reports as suspect maths.
+    """
     spans = []
     for match in re.finditer(r"\$\$(.+?)\$\$", text, re.S):
+        if not is_maths(match.group(1)):
+            continue          # a closing $$ paired with the next opening one
         spans.append(("display", match.group(1)))
-    without_display = re.sub(r"\$\$.+?\$\$", " ", text, flags=re.S)
-    for match in re.finditer(r"(?<!\$)\$([^$\n]{2,})\$(?!\$)", without_display):
-        spans.append(("inline", match.group(1)))
+    body = re.sub(r"\$\$.+?\$\$", " ", text, flags=re.S)
+    body = re.sub(r"`[^`\n]*`", " ", body)          # inline code is not maths
+    for match in re.finditer(r"(?<!\$)\$([^$\n]{2,})\$(?!\$)", body):
+        span = match.group(1)
+        if not is_maths(span):
+            continue                                 # prose caught between dollars
+        spans.append(("inline", span))
     return spans
+
+
+def is_maths(span):
+    """Reject a span that is plainly prose.
+
+    A closing ``$$`` can pair with the *next* block's opening one, swallowing
+    the paragraphs between them; the same happens inline when a line ends and
+    the next begins with a dollar. Real maths carries almost no running English,
+    so counting words outside ``\\text{}`` separates the two reliably.
+    """
+    prose = re.sub(r"\\(?:text|mathrm|operatorname)\{[^}]*\}", " ", span)
+    prose = re.sub(r"\\[A-Za-z]+", " ", prose)
+    words = re.findall(r"\b[a-z]{3,}\b", prose)
+    return len(words) <= 8
 
 
 def clean(span):

@@ -152,7 +152,7 @@ def shape(span):
 
 
 def repair_math(published_text, draft_text, repairs):
-    """Restore inline maths in published prose from the draft.
+    r"""Restore inline maths in published prose from the draft.
 
     Ghost damaged LaTeX on the way in: `\,` was published as a bare comma,
     `\|` as `|`, and in places the caret vanished, so `d_i^2` became `d_i2` --

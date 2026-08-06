@@ -136,12 +136,6 @@ $$
 \tau^{ * } _ I = P _ {IJ}\,\tau _ J, \quad \dot\varepsilon^{ * } _ I = P _ {IJ}\,\dot\varepsilon _ J, \quad C^{ * } _ {IJ} = P _ {IK}\,C _ {KL}\,P _ {LJ}
 $$
 
-\tau^{ * } _ {I} = P _ {IJ},\tau _ {J}, \quad \dot\varepsilon^{ * } _ {I} = P _ {IJ},\dot\varepsilon _ {J}, \quad C^{ * } _ {IJ} = P _ {IK} ,C _ {KL} , P _ {LJ}
-
-$$
-C^{ * } _ {IJ} = \eta \, \delta _ {IJ}
-$$
-
 where $\mathbf{P} = \textrm{diag}(1, 1, \sqrt{2})$ in 2D, or $\textrm{diag}(1,1,1,\sqrt{2},\sqrt{2},\sqrt{2})$ in 3D. In Mandel form, the isotropic constitutive matrix becomes:
 
 $$
@@ -154,10 +148,6 @@ The advantage of this approach is that rotations work naturally. If $\mathbf{R}$
 
 $$
 C'^{ * } _ {IJ} = R^{ * } _ {IK}\, C^{ * } _ {KL}\, R^{ * T} _ {LJ}
-$$
-
-C'^{ * } _ {IJ} = R^{ * }_ {IK} , C^{ * } _ {KL} , R^{ * T} _ {LJ}
-
 $$
 
 where $R^{ * }$ is the Mandel-form rotation matrix derived from $\mathbf{R}$. This is why UW3 builds the transverse isotropic constitutive tensor in Mandel form. The anisotropic correction is defined in the material frame, rotated to the global frame using the director, and converted back to the rank-4 tensor. In Voigt notation, the same rotation would require tracking which components get the factor of 2 and which do not.

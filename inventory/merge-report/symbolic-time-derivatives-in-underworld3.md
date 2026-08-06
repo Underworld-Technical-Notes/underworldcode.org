@@ -3,7 +3,7 @@
 Prose from the published article, structure from the drafted original.
 
 - **took-published**: 2
-- **kept-original**: 11
+- **kept-original**: 2
 - **added-in-ghost**: 2
 - **dropped-from-draft**: 4
 
@@ -33,4 +33,4 @@ Ghost's editor removed characters from LaTeX on the way in. Where the published 
 
 ## Structure kept from the draft
 
-9 block(s): math
+0 block(s): none

@@ -3,8 +3,7 @@
 Prose from the published article, structure from the drafted original.
 
 - **took-published**: 2
-- **kept-original**: 20
-- **added-in-ghost**: 6
+- **kept-original**: 19
 - **dropped-from-draft**: 2
 
 ## Blocks dropped from the draft
@@ -19,7 +18,7 @@ These were in the drafted original but are not prose in the merged article. Each
 The draft wording is shown first, the published wording second.
 
 - draft: where $\mathbf{P} = \text{diag}(1, 1, \sqrt{2})$ in 2D, or $\text{diag}(1,1,1,\sqrt{2},\sqrt{2},\sqrt{2})$ in 3D. In Mandel form, the isotropic constitutive matrix becomes:
-  <br>published: \tau^{ * } _ {I} = P _ {IJ},\tau _ {J}, \quad \dot\varepsilon^{ * } _ {I} = P _ {IJ},\dot\varepsilon _ {J}, \quad C^{ * } _ {IJ} = P _ {IK} ,C _ {KL} , P _ {LJ}
+  <br>published: where $\mathbf{P} = \textrm{diag}(1, 1, \sqrt{2})$ in 2D, or $\textrm{diag}(1,1,1,\sqrt{2},\sqrt{2},\sqrt{2})$ in 3D. In Mandel form, the isotropic constitutive matrix becomes:
 - draft: If you don't want to use particles for
   <br>published: If you don't want to use particles for tracking the stress history, you can use a semi-Lagrangian version of the `DFDt` which is a drop-in replacement at the user level.
 
@@ -27,9 +26,8 @@ The draft wording is shown first, the published wording second.
 
 Ghost's editor removed characters from LaTeX on the way in. Where the published prose was kept, its maths was restored from the draft.
 
-- published `C^{ * } _ {IJ} = \eta , \delta _ {IJ}`
-  <br>restored `C^{ * } _ {IJ} = \eta \, \delta _ {IJ}`
+*None.*
 
 ## Structure kept from the draft
 
-10 block(s): math
+9 block(s): math

@@ -5,7 +5,7 @@
             <path class="typst-shape" fill="none" stroke="#808080" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 0 0 L 0 283.46457 L 283.46457 283.46457 L 283.46457 0 Z "/>
         </g>
         <g transform="translate(8 8)">
-            <g class="typst-group" clip-path="url(#cED9D0C2BA4116C67741F1EF6A8E2E41F)">
+            <g class="typst-group" clip-path="url(#cB2E578CA34936F313164D0F3B0BEA255)">
                 <g>
                     <g transform="translate(6.842125984251974 10.913385826771654)">
                         <g class="typst-group">
@@ -1342,7 +1342,7 @@
         </symbol>
     </defs>
     <defs id="clip-path">
-        <clipPath id="cED9D0C2BA4116C67741F1EF6A8E2E41F">
+        <clipPath id="cB2E578CA34936F313164D0F3B0BEA255">
             <path d="M 0.25 0.25 L 283.21457 0.25 L 283.21457 283.21457 L 0.25 283.21457 Z "/>
         </clipPath>
     </defs>

@@ -48,19 +48,13 @@ Then we moved to test-driven development. Meaningful tests are the clearest poss
 
 **User:** The Stokes solver converges but the velocity field is symmetric top-to-bottom when it shouldn't be. The viscosity should vary with depth. Can you check what the solver actually sees?
 
-when it shouldn't be. The viscosity should vary with depth. Can you
-
-check what the solver actually sees?
-
 **AI:** Let me inspect the constitutive model.
 
 > stokes.constitutive_model.flux
 
 \boldsymbol{\sigma} = 2 \cdot 1 \cdot \dot{\boldsymbol{\epsilon}}(\mathbf{u})
 
-The viscosity is 1 — the default value. Your depth-dependent
-
-expression isn't reaching the solver. You defined:
+The viscosity is 1 — the default value. Your depth-dependent expression isn't reaching the solver. You defined:
 
 > viscosity_fn
 
