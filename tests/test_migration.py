@@ -186,3 +186,32 @@ def test_display_maths_delimiters_are_balanced_in_every_article():
         body = re.sub(r"```.*?```", "", body, flags=re.S)
         count = len(re.findall(r"(?m)^\$\$\s*$", body))
         assert count % 2 == 0, "%s has %d lone $$ delimiters" % (path.parent.name, count)
+
+
+# --------------------------------------------------------------------------
+# Typst mints a fresh random id per clip path on every compile, so an
+# unchanged figure differed between builds and dirtied the tree each time.
+# --------------------------------------------------------------------------
+
+def test_svg_ids_are_normalised():
+    rebuild_figures = load("rebuild_figures")
+    import tempfile
+    svg = ('<svg><g clip-path="url(#c4E4D1942BE45BB2659F6F87C48AB180B)"/>'
+           '<clipPath id="c4E4D1942BE45BB2659F6F87C48AB180B"/>'
+           '<g id="g20BA6410FA305734EE1C40E9BE74F2C5"/></svg>')
+    with tempfile.TemporaryDirectory() as tmp:
+        path = pathlib.Path(tmp) / "f.svg"
+        path.write_text(svg, encoding="utf-8")
+        rebuild_figures.normalise_svg(path)
+        out = path.read_text(encoding="utf-8")
+    assert "c4E4D194" not in out and "g20BA641" not in out
+    # The reference and its definition must still agree.
+    assert out.count("uwtn0") == 2 and "uwtn1" in out
+
+
+def test_committed_svgs_carry_no_random_ids():
+    rebuild_figures = load("rebuild_figures")
+    for svg in sorted((ROOT / "articles").glob("*/figures/*.svg")):
+        text = svg.read_text(encoding="utf-8")
+        leftover = rebuild_figures.RANDOM_ID.findall(text)
+        assert not leftover, "%s still has %d random id(s)" % (svg.name, len(leftover))

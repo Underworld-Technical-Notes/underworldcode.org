@@ -45,6 +45,27 @@ def resolve_sources(repo):
 ARTICLES = ROOT / "articles"
 
 
+# Typst mints a fresh random id for every clip path on each compile, so two
+# builds of an unchanged figure differ. Left alone that dirties the working
+# tree on every rebuild and fills CI diffs with noise, which is a good way to
+# stop reading them.
+# Ids look like a single letter followed by 32 hex digits: c4E4D194..., g20BA641...
+RANDOM_ID = re.compile(r"\b([a-z][A-F0-9]{32})\b")
+
+
+def normalise_svg(path):
+    """Replace Typst's random ids with stable ones, in order of appearance."""
+    text = path.read_text(encoding="utf-8")
+    mapping = {}
+    for match in RANDOM_ID.finditer(text):
+        mapping.setdefault(match.group(1), "uwtn%d" % len(mapping))
+    if not mapping:
+        return
+    for old, new in mapping.items():
+        text = text.replace(old, new)
+    path.write_text(text, encoding="utf-8")
+
+
 def find_sources(figures_dir):
     """basename stem -> .typ source path, searched recursively."""
     return {p.stem: p for p in figures_dir.rglob("*.typ")}
@@ -88,6 +109,7 @@ def main():
             failed.append((article.name, figure.name, result.stderr.strip().splitlines()[:2]))
             continue
 
+        normalise_svg(target)
         before, after = figure.stat().st_size, target.stat().st_size
         figure.unlink()
 
