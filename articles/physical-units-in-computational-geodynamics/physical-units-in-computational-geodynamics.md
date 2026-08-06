@@ -229,4 +229,4 @@ This does not replace physical intuition. You still need to know that a Rayleigh
 
 ---
 
-*The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code: *[*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
+*The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code: [github.com/underworldcode/underworld3](https://github.com/underworldcode/underworld3)*

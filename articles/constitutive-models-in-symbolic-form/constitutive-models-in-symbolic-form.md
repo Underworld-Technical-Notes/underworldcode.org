@@ -36,13 +36,13 @@ This post explains how constitutive models work in UW3, from simple viscous flow
 
 ## The Constitutive Relationship
 
-A constitutive model in Underworld3 defines the relationship between a flux (e.g. stress - a momentum flux) and gradients of the unknowns (e.g. strain rate - gradients of velocity). For a Stokes flow problem, the solver needs a flux term $\mathbf{F_1}$ that expresses the deviatoric stress:
+A constitutive model in Underworld3 defines the relationship between a flux (e.g. stress - a momentum flux) and gradients of the unknowns (e.g. strain rate - gradients of velocity). For a Stokes flow problem, the solver needs a flux term $\mathbf{F _ 1}$ that expresses the deviatoric stress:
 
-$$  
-\sigma_{ij} = C_{ijkl} , \dot\varepsilon_{kl}  
+$$
+\sigma _ {ij} = C _ {ijkl} \, \dot\varepsilon _ {kl}
 $$
 
-where $C_{ijkl}$ is the constitutive tensor (viscosity in this case) and $\dot\varepsilon$ is the symmetric strain rate tensor derived from the velocity gradient. For isotropic viscous flow, $C_{ijkl}$ reduces to $2\eta , I_{ijkl}$ where $\eta$ is the viscosity and $I$ is the symmetric identity tensor. For more complex rheologies, the constitutive tensor can depend on the strain rate itself, on pressure, temperature, stress history, or material orientation.
+where $C _ {ijkl}$ is the constitutive tensor (viscosity in this case) and $\dot\varepsilon$ is the symmetric strain rate tensor derived from the velocity gradient. For isotropic viscous flow, $C _ {ijkl}$ reduces to $2\eta \, I _ {ijkl}$ where $\eta$ is the viscosity and $I$ is the symmetric identity tensor. For more complex rheologies, the constitutive tensor can depend on the strain rate itself, on pressure, temperature, stress history, or material orientation.
 
 The constitutive model's job is to build this tensor symbolically. The solver reads the model's `.flux` property, which returns the stress as a SymPy matrix expression. From there, the JIT pipeline described in our [SymPy-to-C post](/how-underworld3-turns-sympy-into-c/) takes over: automatically deriving Jacobians, unwrapping nested expressions, C code generation, PETSc integration.
 
@@ -59,8 +59,8 @@ stokes.constitutive_model.Parameters.shear_viscosity_0 = uw.expression(
 
 The viscosity can be a constant, a UWexpression with units, a SymPy expression involving temperature and pressure, or a mesh variable. The model does not care. It builds the stress tensor symbolically:
 
-$$  
-\sigma = 2\eta , \dot\varepsilon  
+$$
+\sigma = 2\eta \, \dot\varepsilon
 $$
 
 You can inspect this at any time:
@@ -102,47 +102,51 @@ stokes.constitutive_model.Parameters.director = n_vector              # orientat
 
 The constitutive tensor becomes:
 
-$$  
-C_{ijkl} = 2\eta_0 , I_{ijkl} + 2(\eta_0 - \eta_1) , A_{ijkl}(\mathbf{n})  
+$$
+C _ {ijkl} = 2\eta _ 0 \, I _ {ijkl} + 2(\eta _ 0 - \eta _ 1) \, A _ {ijkl}(\mathbf{n})
 $$
 
-where $A_{ijkl}$ is the anisotropic correction involving products of the director components. When $\eta_0 = \eta_1$, the correction vanishes and you recover isotropic flow. When $\eta_1 < \eta_0$, the material is weak along planes perpendicular to the director.
+where $A _ {ijkl}$ is the anisotropic correction involving products of the director components. When $\eta _ 0 = \eta _ 1$, the correction vanishes and you recover isotropic flow. When $\eta _ 1 < \eta _ 0$, the material is weak along planes perpendicular to the director.
 
-Building this tensor correctly requires care with index symmetries. The rank-4 constitutive tensor $C_{ijkl}$ has 81 components in 3D (16 in 2D), but the symmetries of stress and strain rate reduce the independent entries. The standard approach in finite element work is to flatten the symmetric tensors into vectors and the constitutive tensor into a matrix. There are two common ways to do this, and the difference matters.
+Building this tensor correctly requires care with index symmetries. The rank-4 constitutive tensor $C _ {ijkl}$ has 81 components in 3D (16 in 2D), but the symmetries of stress and strain rate reduce the independent entries. The standard approach in finite element work is to flatten the symmetric tensors into vectors and the constitutive tensor into a matrix. There are two common ways to do this, and the difference matters.
 
 ### Voigt Notation
 
 In Voigt notation, the stress and strain rate tensors are written as vectors by listing the independent components:
 
-$$  
-\tau_I = (\tau_{11}, \tau_{22}, \tau_{12}), \quad \dot\varepsilon_I = (\dot\varepsilon_{11}, \dot\varepsilon_{22}, 2\dot\varepsilon_{12})  
+$$
+\tau _ I = (\tau _ {11}, \tau _ {22}, \tau _ {12}), \quad \dot\varepsilon _ I = (\dot\varepsilon _ {11}, \dot\varepsilon _ {22}, 2\dot\varepsilon _ {12})
 $$
 
-Note the factor of 2 on the off-diagonal strain rate. The constitutive matrix $C_{IJ}$ is then the rearrangement of the rank-4 tensor without scaling. For isotropic viscosity in 2D:
+Note the factor of 2 on the off-diagonal strain rate. The constitutive matrix $C _ {IJ}$ is then the rearrangement of the rank-4 tensor without scaling. For isotropic viscosity in 2D:
 
-$$  
-\left[\begin{matrix} \tau_{11} \\ \tau_{22} \\ \tau_{12} \end{matrix}\right] =  
-\left[\begin{matrix} \eta & 0 & 0 \\ 0 & \eta & 0 \\ 0 & 0 & \eta/2 \end{matrix}\right]  
-\left[\begin{matrix} \dot\varepsilon_{11} \\ \dot\varepsilon_{22} \\ 2\dot\varepsilon_{12} \end{matrix}\right]  
+$$
+\left[\begin{matrix} \tau _ {11} \\\\ \tau _ {22} \\\\ \tau _ {12} \end{matrix}\right] =
+\left[\begin{matrix} \eta & 0 & 0 \\\\ 0 & \eta & 0 \\\\ 0 & 0 & \eta/2 \end{matrix}\right]
+\left[\begin{matrix} \dot\varepsilon _ {11} \\\\ \dot\varepsilon _ {22} \\\\ 2\dot\varepsilon _ {12} \end{matrix}\right]
 $$
 
-This is what you will find in most finite element textbooks. It works for computing stress from strain rate, but it has a problem: $\tau_I \dot\varepsilon_I \neq \tau_{ij}\dot\varepsilon_{ij}$. The vector inner product does not reproduce the tensor inner product. And $C_{IJ}$ does not transform correctly under rotations.
+This is what you will find in most finite element textbooks. It works for computing stress from strain rate, but it has a problem: $\tau _ I \dot\varepsilon _ I \neq \tau _ {ij}\dot\varepsilon _ {ij}$. The vector inner product does not reproduce the tensor inner product. And $C _ {IJ}$ does not transform correctly under rotations.
 
 ### Mandel Notation
 
 Mandel notation fixes both problems by applying a scaling matrix $\mathbf{P}$ that puts a factor of $\sqrt{2}$ on the off-diagonal components:
 
-$$  
+$$
+\tau^{ * } _ I = P _ {IJ}\,\tau _ J, \quad \dot\varepsilon^{ * } _ I = P _ {IJ}\,\dot\varepsilon _ J, \quad C^{ * } _ {IJ} = P _ {IK}\,C _ {KL}\,P _ {LJ}
+$$
 
-\tau^{ * } _ {I} = P _ {IJ},\tau _ {J}, \quad \dot\varepsilon^{ * } _ {I} = P _ {IJ},\dot\varepsilon _ {J}, \quad C^{ * } _ {IJ} = P _ {IK} ,C _ {KL} , P _ {LJ}  
+\tau^{ * } _ {I} = P _ {IJ},\tau _ {J}, \quad \dot\varepsilon^{ * } _ {I} = P _ {IJ},\dot\varepsilon _ {J}, \quad C^{ * } _ {IJ} = P _ {IK} ,C _ {KL} , P _ {LJ}
 
+$$
+C^{ * } _ {IJ} = \eta \, \delta _ {IJ}
 $$
 
 where $\mathbf{P} = \textrm{diag}(1, 1, \sqrt{2})$ in 2D, or $\textrm{diag}(1,1,1,\sqrt{2},\sqrt{2},\sqrt{2})$ in 3D. In Mandel form, the isotropic constitutive matrix becomes:
 
-$$  
+$$
 
-C^{ * } _ {IJ} = \eta , \delta _ {IJ}  
+C^{ * } _ {IJ} = \eta , \delta _ {IJ}
 
 $$
 
@@ -150,9 +154,11 @@ This is just $\eta$ times the identity. The fourth-order symmetric identity tens
 
 The advantage of this approach is that rotations work naturally. If $\mathbf{R}$ is a rotation matrix, then the rotated Mandel constitutive matrix is:
 
-$$  
+$$
+C'^{ * } _ {IJ} = R^{ * } _ {IK}\, C^{ * } _ {KL}\, R^{ * T} _ {LJ}
+$$
 
-C'^{ * } _ {IJ} = R^{ * }_ {IK} , C^{ * } _ {KL} , R^{ * T} _ {LJ}  
+C'^{ * } _ {IJ} = R^{ * }_ {IK} , C^{ * } _ {KL} , R^{ * T} _ {LJ}
 
 $$
 
@@ -160,7 +166,7 @@ where $R^{ * }$ is the Mandel-form rotation matrix derived from $\mathbf{R}$. Th
 
 ### How UW3 Uses These Representations
 
-The internal representation is the full rank-4 tensor $C_{ijkl}$. The Mandel form is available to the user through the `.C` property (capital C) for inspection and for supplying custom anisotropic tensors. The raw rank-4 tensor is available through `.c` (lowercase). If you provide a scalar viscosity, the model builds the rank-4 tensor directly. If you provide a Mandel matrix, the model converts it. Stress is passed to PETSc in Voigt form via `.flux_1d` to match its symmetric tensor storage conventions. The conversions between these representations are handled by utility functions in `maths/tensors.py`, and the index book keeping is automatic and dimension-independent.
+The internal representation is the full rank-4 tensor $C _ {ijkl}$. The Mandel form is available to the user through the `.C` property (capital C) for inspection and for supplying custom anisotropic tensors. The raw rank-4 tensor is available through `.c` (lowercase). If you provide a scalar viscosity, the model builds the rank-4 tensor directly. If you provide a Mandel matrix, the model converts it. Stress is passed to PETSc in Voigt form via `.flux_1d` to match its symmetric tensor storage conventions. The conversions between these representations are handled by utility functions in `maths/tensors.py`, and the index book keeping is automatic and dimension-independent.
 
 ## Adding Plasticity
 
@@ -176,20 +182,20 @@ stokes.constitutive_model.Parameters.yield_stress = uw.expression(
 
 The plastic viscosity is computed from the yield stress and the second invariant of the strain rate:
 
-$$  
-\eta_\textrm{pl} = \frac{\tau_y}{2 , \dot\varepsilon_{II}}  
+$$
+\eta _ \textrm{pl} = \frac{\tau _ y}{2 \, \dot\varepsilon _ {II}}
 $$
 
-The effective viscosity is the lesser of the viscous and plastic values.  
-$$  
-\eta_\textrm{eff} = \min(\eta_\textrm{v}, \eta_\textrm{pl})  
-$$  
-The model provides several other ways to combine them, because the choice affects Newton solver convergence. The default ("smooth") form uses a corrected harmonic blend:  
-$$  
-\eta_\textrm{eff} = \eta_v \cdot \frac{1 + f}{1 + f + f^2}, \quad f = \frac{\eta_\textrm{v}}{\eta_\textrm{pl}}  
+The effective viscosity is the lesser of the viscous and plastic values. 
+$$
+\eta _ \textrm{eff} = \min(\eta _ \textrm{v}, \eta _ \textrm{pl})
+$$
+The model provides several other ways to combine them, because the choice affects Newton solver convergence. The default ("smooth") form uses a corrected harmonic blend:
+$$
+\eta _ \textrm{eff} = \eta _ v \cdot \frac{1 + f}{1 + f + f^2}, \quad f = \frac{\eta _ \textrm{v}}{\eta _ \textrm{pl}}
 $$
 
-This function is smooth everywhere, approaches $\eta_v$ when $f \to 0$ (below yield), and approaches $\eta_{pl}$ exactly when $f \to \infty$ (fully yielded). Other modes include harmonic averaging, a soft-min approximation, and a sharp min. The smooth default works well with Newton iteration because the Jacobian is continuous.
+This function is smooth everywhere, approaches $\eta _ v$ when $f \to 0$ (below yield), and approaches $\eta _ {pl}$ exactly when $f \to \infty$ (fully yielded). Other modes include harmonic averaging, a soft-min approximation, and a sharp min. The smooth default works well with Newton iteration because the Jacobian is continuous.
 
 None of this blending logic requires special solver code. The effective viscosity is a SymPy expression. The solver differentiates it symbolically for the Jacobian. If you switch from smooth to sharp yielding, the Jacobian updates automatically.
 
@@ -199,8 +205,8 @@ Viscous and plastic models are instantaneous. The stress depends only on the cur
 
 `ViscoElasticPlasticFlowModel` handles this. The Maxwell viscoelastic rheology combines viscous and elastic responses:
 
-$$  
-\dot\varepsilon = \frac{\sigma}{2\eta} + \frac{\dot\sigma}{2\mu}  
+$$
+\dot\varepsilon = \frac{\sigma}{2\eta} + \frac{\dot\sigma}{2\mu}
 $$
 
 Rearranging and discretising in time, the stress at the current step depends on the stress at previous steps. This stress history is a transported term, advected (and rotated) with the flow.
@@ -220,7 +226,7 @@ The stress history lives on particles via the solver's `DFDt` (flux time derivat
 
 If you don't want to use particles for tracking the stress history, you can use a semi-Lagrangian version of the `DFDt` which is a drop-in replacement at the user level.
 
-For VEP problems, the viscoelastic effective strain rate includes contributions from the stress history, and the plastic yield criterion is evaluated against this total deformation rate. The `bdf_blend` parameter controls blending between BDF-1 and BDF-2 near the yield surface, where pure BDF-2 can produce oscillations. The model auto-detects the appropriate blend: pure VE problems get full BDF-2 accuracy, while VEP problems get a stable near-optimal blend.
+For VEP problems, the viscoelastic effective strain rate includes contributions from the stress history, and the plastic yield criterion is evaluated against this total deformation rate. The Min-mode plasticity has a non-smooth kink at the yield surface, which historically caused twitchy SNES behaviour at yield onset. Two safeguards keep the solver well-behaved there: a Picard-style retry on SNES divergence (`divergence_retries`), and a snapshot-based projection in the stress-history machinery that prevents an implicit feedback loop between the projection's source and target under variable timestep.
 
 Recent work has extended the anisotropic model to `TransverseIsotropicVEPFlowModel`, combining directional weakness with viscoelastic stress memory and plastic yielding. The yield criterion is evaluated on the resolved shear stress on the fault plane, computed from the full stress tensor and the director orientation. In UW3, this is a class that inherits from the VEP model and overrides the stress computation with additional director terms. The Jacobian follows automatically. In UW2, it would have been extremely difficult to implement.
 

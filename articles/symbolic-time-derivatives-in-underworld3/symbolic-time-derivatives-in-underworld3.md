@@ -24,10 +24,10 @@ parts:
 ---
 A symbolic time derivatives: you can inspect it, display it in a notebook, and verify that the time discretisation is doing what you expect. And you can swap between Lagrangian, Semi-Lagrangian, and Eulerian approaches without rewriting the solver. Sympy introduces incredible flexibility for on-the-fly composition of time-dependent problems.
 
-Many geodynamics equations involve a material derivative. Temperature advection-diffusion, viscoelastic stress transport, Navier-Stokes momentum. The material derivative $D\phi/Dt$ combines the time rate of change with transport by the flow:
+Many geodynamics equations involve a material derivative. Temperature advection-diffusion, viscoelastic stress transport, Navier-Stokes momentum. The material derivative $D\phi/Dt$ combines the time rate of change with advection by the flow:
 
-$$  
-\frac{D\phi}{Dt} = \frac{\partial \phi}{\partial t} + \mathbf{v} \cdot \nabla\phi  
+$$
+\frac{D\phi}{Dt} = \frac{\partial \phi}{\partial t} + \mathbf{v} \cdot \nabla\phi
 $$
 
 Discretising this equation requires making specific choices. How do you handle the advection term? How many previous timesteps do you use? How do you deal with variable timestep sizes? These choices affect accuracy, stability, and computational cost.
@@ -54,20 +54,20 @@ The time discretisation uses backward differentiation formulas (BDF). These are 
 
 At order 1, this is the backward Euler method:
 
-$$  
-\frac{D\phi}{Dt} \approx \frac{\phi^n - \phi^{n-1}}{\Delta t}  
+$$
+\frac{D\phi}{Dt} \approx \frac{\phi^n - \phi^{n-1}}{\Delta t}
 $$
 
 At order 2, BDF-2 uses two previous values for second-order accuracy:
 
-$$  
-\frac{D\phi}{Dt} \approx \frac{\frac{3}{2}\phi^n - 2\phi^{n-1} + \frac{1}{2}\phi^{n-2}}{\Delta t}  
+$$
+\frac{D\phi}{Dt} \approx \frac{\frac{3}{2}\phi^n - 2\phi^{n-1} + \frac{1}{2}\phi^{n-2}}{\Delta t}
 $$
 
 The coefficients $[3/2, -2, 1/2]$ are for constant timesteps. When the timestep varies, the coefficients adapt. If the current timestep is $\Delta t _ n$ and the previous was $\Delta t _ {n-1}$, with ratio $r = \Delta t _ n / \Delta t _ {n-1}$, the BDF-2 coefficients become:
 
-$$  
-c _ 0 = \frac{1+2r}{1+r}, \quad c _ 1 = -(1+r), \quad c _ 2 = \frac{r^2}{1+r}  
+$$
+c _ 0 = \frac{1+2r}{1+r}, \quad c _ 1 = -(1+r), \quad c _ 2 = \frac{r^2}{1+r}
 $$
 
 This matters in practice. Underworld simulations usually adjust the timestep as the flow evolves.
@@ -96,8 +96,8 @@ History slots are initialised with the current solution value on the first call.
 
 Consider advection-diffusion of temperature:
 
-$$  
-\frac{D T}{Dt} = \nabla \cdot (k \nabla T) + H  
+$$
+\frac{D T}{Dt} = \nabla \cdot (k \nabla T) + H
 $$
 
 The solver setup looks like this:
@@ -121,24 +121,24 @@ F1 = DFDt.adams_moulton_flux()
 
 At **order 1** (backward Euler / fully implicit), these expand to:
 
-$$  
-F _ 0 = \frac{T^n - T^{n-1}}{\Delta t} - H  
+$$
+F _ 0 = \frac{T^n - T^{n-1}}{\Delta t} - H
 $$
 
-$$  
-F _ 1 = k \nabla T^n  
+$$
+F _ 1 = k \nabla T^n
 $$
 
 The flux is evaluated entirely at the current timestep. The system is first-order accurate in time.
 
 At **order 2** (BDF-2 / Crank-Nicolson), the expressions become:
 
-$$  
-F _ 0 = \frac{\frac{3}{2}T^n - 2T^{n-1} + \frac{1}{2}T^{n-2}}{\Delta t} - H  
+$$
+F _ 0 = \frac{\frac{3}{2}T^n - 2T^{n-1} + \frac{1}{2}T^{n-2}}{\Delta t} - H
 $$
 
-$$  
-F _ 1 = \frac{1}{2} k \nabla T^n + \frac{1}{2} k \nabla T^{n-1}  
+$$
+F _ 1 = \frac{1}{2} k \nabla T^n + \frac{1}{2} k \nabla T^{n-1}
 $$
 
 The flux is now averaged between the current and previous timesteps. Both the time derivative and the flux evaluation are second-order accurate. The history terms $T^{n-1}$ and $T^{n-2}$ are mesh variable symbols managed by the DDt objects. The coefficients ($3/2$, $-2$, $1/2$, etc.) are UWexpression symbolic constants whose values update each step, if $\Delta t$ changes, and no recompilation is required.
@@ -150,6 +150,8 @@ The solver differentiates through all of this for the Jacobian. The JIT compiler
 The solve sequence for each timestep is:
 
 1. **Pre-solve**: Update BDF/AM coefficients for the current timestep. For Semi-Lagrangian, trace characteristics to find departure points and sample history values.
+2. **Solve**: PETSc SNES solves the assembled system. The compiled C callbacks evaluate the symbolic expressions at quadrature points.
+3. **Post-solve**: Shift the history chain. What was $\phi^{n-1}$ becomes $\phi^{n-2}$. The current solution becomes the new $\phi^{n-1}$. Increment the solve counter for order ramping.
 
 2. **Solve**: PETSc SNES solves the assembled system. The compiled C callbacks evaluate the symbolic expressions at quadrature points.
 

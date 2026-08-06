@@ -20,7 +20,7 @@ exports:
 parts:
   abstract: It can be difficult to figure out where you are in an unstructured mesh of triangles or tetrahedra; worse when the mesh is distributed in parallel. We have to solve this problem for particle-in-cell type codes such as Underworld3. This is how we do it.
 ---
-[Lagrangian particles](/particles-in-underworld3/) are central to geodynamics modelling. They track material properties through large deformation, carry stress history for viscoelastic models, and define material interfaces. But managing particles in a finite element mesh is harder than it looks. On a structured grid, finding which cell contains a given point is arithmetic. On an unstructured mesh of triangles or tetrahedra, it is a search problem. And when the mesh is decomposed across processors, it becomes a distributed search problem with communication costs.
+Lagrangian particles are central to geodynamics modelling. They track material properties through large deformation, carry stress history for viscoelastic models, and define material interfaces. But managing particles in a finite element mesh is harder than it looks. On a structured grid, finding which cell contains a given point is arithmetic. On an unstructured mesh of triangles or tetrahedra, it is a search problem. And when the mesh is decomposed across processors, it becomes a distributed search problem with communication costs.
 
 This post describes how Underworld3 locates particles in an unstructured mesh, and then how it extends that to work across a parallel decomposition.
 
@@ -44,7 +44,7 @@ UW3 addresses this by placing multiple control points per cell: one near each ve
 **Control points used for cell location: the cell centroid $c$ plus one nudge point per vertex ($c _ 1$, $c _ 2$, $c _ 3$, each 1% from $v _ i$ toward $c$). *******Left (normal cell):******* a test point $x _ p$ near the acute vertex $v _ 1$ is closer to the neighbouring centroid $c'$ (rust line) than to the highlighted cell's own centroid $c$, but its nearest control point overall is the nudge $c _ 1$ (teal line). The KDTree correctly identifies the highlighted cell. *******Right (sliver edge case):******* a highly elongated cell has its nudge points crowded near the long axis. A test point near $v _ 1$ still picks $c _ 1$ as nearest, even when it is fractionally on the wrong side of an edge. This is the geometry that motivates the Stage 2 confirmation.**
 ```
 
-Given a particle position, the KDTree returns the nearest control point, which maps to a candidate cell. The vertex-nudged points make this a much better guess than centroid-only lookup, but it is still not guaranteed correct for points near cell boundaries. If a point lies outside the domain boundary, there is no containing cell, but there is still a nearest cell. For these cells, we need a validation test ***"is this point within this cell or not"***. It is important to be able to identify this situation cleanly and pass this point to a different domain to handle.
+Given a particle position, the KDTree returns the nearest control point, which maps to a candidate cell. The vertex-nudged points make this a much better guess than centroid-only lookup, but it is still not guaranteed correct for points near cell boundaries.
 
 ### Stage 2: Inside/Outside Confirmation
 
@@ -54,15 +54,15 @@ Given a particle position, the KDTree returns the nearest control point, which m
 An unstructured triangulation with a highlighted element. Each face carries a pair of control points: one just inside the cell (black) and one just outside (rust). A test point is connected to the marker on the same side of each face as the centroid: $x _ q$ — interior — lands on three black markers; $x _ p$ — exterior — lands on a rust marker for the face it has crossed. A point is inside the cell iff every connection is black.
 ```
 
-To confirm that a particle is inside its candidate cell, UW3 uses precomputed control point pairs on each face. During mesh setup, each face gets two markers: one placed just inside the cell (offset by a small distance along the inward normal from the face centroid) and one just outside. These are the black and rust-coloured dots in the diagram.
+To confirm that a particle is inside its candidate cell, UW3 uses precomputed control point pairs on each face. During mesh setup, each face gets two markers: one placed just inside the cell (offset by a small distance along the inward normal from the face centroid) and one just outside. These are the black and orange dots in the diagram.
 
 At query time, the test is purely distance-based. For each face, compare the squared distance from the particle to the outer control point versus the inner control point:
 
-$$  
-| x - x _ \text{outer} |^2 - | x - x _ \text{inner} |^2 > 0  
+$$
+\| x - x _ \text{outer} \|^2 - \| x - x _ \text{inner} \|^2 > 0
 $$
 
-If the particle is closer to the inner point, it is on the centroid side of that face. A particle is inside the cell if and only if this holds for all faces. No normals, no dot products, no plane equations at query time. The geometry was baked into the control point positions during mesh setup. The computation is vectorised over all particles and all faces using NumPy. For a triangle, this is three distance comparisons per particle. For a tetrahedron it is four.
+If the particle is closer to the inner point, it is on the centroid side of that face. A particle is inside the cell if and only if this holds for all faces.
 
 This approach is exact for linear meshes (where faces are planar).
 
@@ -72,7 +72,7 @@ If the KDTree returns a candidate cell and the inside/outside test fails, the pa
 
 ## Scaling to Parallel
 
-On a single processor, the algorithm above is sufficient. On a parallel mesh, each processor owns a subset of cells. A particle that has moved outside its processor's domain needs to be found, relocated to the correct processor, and have all its variable data transferred. It is important in this situation for the algorithm to be categorical about **not owning** a particle.
+On a single processor, the algorithm above is sufficient. On a parallel mesh, each processor owns a subset of cells. A particle that has moved outside its processor's domain needs to be found, relocated to the correct processor, and have all its variable data transferred.
 
 ### Migration Between Processors
 

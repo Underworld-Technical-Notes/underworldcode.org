@@ -137,10 +137,21 @@ re-chunks paragraphs around `<br>`:
 | `particles-as-symbols.md` | 60% | both diverge |
 | `finding-particles.md` | 34% | published six weeks after the last repo commit |
 
-So the drafted originals are **not** a drop-in replacement for what was
-published. The Ghost version is the version of record: it is what the
-registered DOI resolves to, and substituting an unpublished draft for it would
-change a published article. The migration therefore keeps the Ghost text.
+Neither source is complete, so `pixi run merge-originals` combines them rather
+than choosing: **prose from the published article** (that is what the DOI
+resolves to) and **structure from the draft** (a figure is a figure, code is
+fenced and tagged, maths is real LaTeX rather than whatever survived the HTML
+round trip).
+
+That recovers 27 structural blocks and fixes a real defect. Ghost's editor ate
+the backslash in `\,`, so the published maths rendered a literal comma where a
+thin space belongs — `C_{ijkl} , \dot\varepsilon_{kl}`. The drafts have it
+right.
+
+The safety property is that no published prose is lost, and it is checked:
+**0 of 345 published prose blocks** are missing from the merged articles.
+Per-article decisions are written to `inventory/merge-report/`, including every
+prose change, so the result can be reviewed rather than trusted.
 
 The figures are the opposite case, and an unambiguous win. Several were drawn
 in Typst/cetz and committed with the data that generates them, but Ghost only
@@ -148,6 +159,16 @@ ever held the exported PNG. `pixi run rebuild-figures` rebuilds those as vector
 — sharp at any zoom, traceable to their data, and much smaller (the
 `finding-particles` PDF went from 994 KB to 338 KB, with its maths labels
 typeset rather than rasterised).
+
+**One thing needs an editorial decision.** Draft blocks that do not appear in
+the merge are checked against the whole published corpus, because a block can
+survive in another form (a caption that became a `<figcaption>`) or be
+published in a different article. Most are accounted for that way — but
+`finding-particles` has **19 blocks that were never published anywhere**:
+sections on populating a swarm, on population control not being automatic, and
+on the full timestep. They were written and cut. Restoring them would change a
+DOI-bearing article, so they are listed in the merge report for you rather than
+merged in.
 
 For notes written from now on this problem disappears: author in this
 repository with `pixi run new`, and there is only one copy.

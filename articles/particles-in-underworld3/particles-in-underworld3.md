@@ -21,9 +21,9 @@ exports:
 parts:
   abstract: "Underworld is built around the idea of active Lagrangian tracer particles that carry history and composition information as the material deforms. How do we combine this information with our symbolic mathematical framework ?"
 ---
-Lagrangian particles in a fixed-mesh, finite-element code can be used to carry material properties with the flow. Composition, strain history, stress memory, damage. Finite element solvers operate on fields defined on the mesh, so scattered data on particles always demand special treatment of some kind. In Underworld 1 and Underworld 2, we created dynamic integration schemes for particle swarms on an element-by-element basis. This option is not available with the [PETSc point-wise function approach](/how-underworld3-turns-sympy-into-c/) that UW3 uses. For this, we need to project particle data onto the available interpolating functions before each solve.
+Lagrangian particles in a fixed mesh, finite element code can be used to carry material properties with the flow. Composition, strain history, stress memory, damage. Finite element solvers operate on fields defined on the mesh, not scattered data on particles. In Underworld 1 and Underworld 2, we created dynamic integration schemes for particle swarms on an element-by-element basis. This option is not available with the PETSc point wise-function approach. For this, we need to project particle data onto the available interpolating functions before each solve.
 
-We also need to be able to represent the particle-based data and its derivatives symbolically for the underworld3 representation to be composable with mesh-based data when we construct the weak form. In Underworld3, we create `swarmVariables` as natural, symbolic objects to fulfil this requirement.
+We also need to be able to represent the particle-based data and its derivatives symbolically for the underworld3 representation to be composable with mesh-based data when we contruct the weak form.
 
 A swarm variable has a `.sym` property that returns a SymPy symbol, just like a mesh variable. That symbol participates in the solver's weak form, the constitutive model, the boundary conditions. The solver does not know whether it is reading a field computed on the mesh or a field projected from particles. The distinction is invisible at the symbolic level.
 
@@ -47,7 +47,7 @@ material_C = uw.swarm.SwarmVariable("material_C", swarm, size=1)
 material_C.array[:] = initial_values
 ```
 
-Each swarm variable is stored as a PETSc field on a `DMSwarm`. When particles migrate between processors, their variable data travels with them automatically. The `.array` property provides user-facing access to the underlying storage, with the same NDArray_With_Callback mechanism described in the [arrays-in-sync post](/mesh-variables-and-petsc-vectors-keeping-arrays-in-sync/). Underneath `.array` sits the `.data` property, which exposes the raw non-dimensional values PETSc operates on directly.
+Each swarm variable is stored as a PETSc field on a `DMSwarm`. When particles migrate between processors, their variable data travels with them automatically. The `.array` property provides access to the underlying array, with the same NDArray_With_Callback mechanism described in the [arrays-in-sync post](/mesh-variables-and-petsc-vectors-keeping-arrays-in-sync/). Behind the `.array` is a `.data` variable that has non-dimensional, raw information in PETSc form.
 
 A swarm variable can be scalar, vector, or tensor, or an arbitrary matrix shape:
 
@@ -57,7 +57,7 @@ stress_history = uw.swarm.SwarmVariable(
 )
 ```
 
-The `proxy_degree` parameter is optional and sets the polynomial degree of the companion mesh variable that UW3 uses to project particle data onto the mesh. It defaults to `1` (linear interpolation); higher values give a smoother proxy at the cost of more mesh degrees of freedom. Every swarm variable gets a proxy by default: you do not have to ask for one, but you can ask *not* to proxy the variable (for example, it makes no sense to proxy a discrete-index variable)
+The `proxy_degree` parameter is optional and sets the polynomial degree of the companion mesh variable that UW3 uses to project particle data onto the mesh. It defaults to `1` (linear interpolation); higher values give a smoother proxy at the cost of more mesh degrees of freedom. Every swarm variable gets a proxy by default — you do not have to ask for one.
 
 ## The Proxy Mesh Variable
 
@@ -90,7 +90,7 @@ UW3 handles this through lazy evaluation. The swarm variable tracks whether its 
 
 ```python
 # Modify particle data
-material_C.array[some_particles] = new_values   # marks proxy as stale
+material_C.data[some_particles] = new_values   # marks proxy as stale
 
 # Next access to .sym triggers projection
 viscosity_fn = eta_0 * sympy.exp(-material_C.sym)   # projection happens here
@@ -98,15 +98,14 @@ viscosity_fn = eta_0 * sympy.exp(-material_C.sym)   # projection happens here
 
 During solver assembly, the same symbol may be evaluated many times at different quadrature points. The projection happens once, on the first access after a modification. Subsequent accesses within the same solve use the cached mesh field.
 
-This means the user never calls a projection routine. Modify particle data, use the symbol, the framework does the rest.
+This means the user never calls a projection routine. Modify particle data, use the symbol, the framework will handle everything behind the scenes.
 
 ## Particles in Expressions
 
 Because `.sym` returns a standard SymPy symbol, particle data composes with everything else in UW3's symbolic layer:
 
 ```python
-# material_C is a swarm variable (per-particle);
-# Temp is a mesh variable (per-node).
+# Material-dependent viscosity from particle data
 viscosity_fn = eta_0 * sympy.exp(-material_C.sym * Temp.sym)
 
 # Use in constitutive model
@@ -126,7 +125,7 @@ Migration involves MPI communication and KDTree reconstruction. If you are updat
 
 ```python
 with uw.synchronised_array_update():
-    swarm.particle_coordinates.array[...] = new_coords
+    swarm.particle_coordinates.data[...] = new_coords
     material_C.array[:] = new_values
 # Migration and cache invalidation happen here, once
 ```
@@ -141,4 +140,4 @@ This uniformity is important. It means you can start with a mesh-based viscosity
 
 ---
 
-*The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code: *[*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
+*The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code: [github.com/underworldcode/underworld3](https://github.com/underworldcode/underworld3)*

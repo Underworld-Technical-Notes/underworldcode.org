@@ -61,7 +61,8 @@ The viscosity here is a SymPy expression. `eta_0` and `gamma` are UWexpressions 
 
 Every UW3 solver defines a strong-form PDE template. For Stokes flow, this is:
 
-$$ -\nabla \cdot \underbrace{\boldsymbol{\sigma}(u, \nabla u)}_{\mathbf{F_1}} - \underbrace{\mathbf{f}(u, \nabla u)}_{F_0} = 0  
+$$
+-\nabla \cdot \underbrace{\boldsymbol{\sigma}(u, \nabla u)}_{\mathbf{F_1}} - \underbrace{\mathbf{f}(u, \nabla u)}_{F_0} = 0
 $$
 
 The solver decomposes this into two symbolic properties: $\mathbf{F_1}$ (flux-like terms: everything under a divergence operator, which is then paired with gradients of the test function in the weak form) and ${F_0}$ (force-like terms: everything else). For Stokes, $\mathbf{F_1}$ contains the constitutive stress minus the pressure, while ${F_0}$ contains the body force and any time-derivative contributions.
@@ -84,7 +85,7 @@ The solver takes $F_0$ and $F_1$ and differentiates them with respect to the unk
 $G_0 = ∂F_0/∂u$       $G_1 = ∂F_0/∂(∇u)$  
  $G_2 = ∂F_1/∂u$       $G_3 = ∂F_1/∂(∇u)$
 
-This is `sympy.derive_by_array()` applied to the user's constitutive law. For a simple linear viscosity, $G_3$ is just the viscosity tensor. For a nonlinear rheology (strain-rate-dependent, pressure-dependent, with yield criteria) the derivatives can be complex, and SymPy computes them exactly. No finite-difference approximations, no hand-coding. What is more, they can be checked through introspection and interaction because they are symbolic before and after differentiation.
+This is `sympy.derive_by_array()` applied to the user's constitutive law. For a simple linear viscosity, G3 is just the viscosity tensor. For a nonlinear rheology (strain-rate-dependent, pressure-dependent, with yield criteria) the derivatives can be complex, and SymPy computes them exactly. No finite-difference approximations, no hand-coding. What is more, they can be checked through introspection and interaction because they are symbolic before and after differentiation.
 
 ## The Symbolic Wrappers
 
@@ -128,24 +129,23 @@ Now the compiler turns SymPy into C. Each mesh variable in the expression — th
 
 SymPy's C99 code printer then converts the patched expression to a C string. The compiler wraps this in a function with the exact signature that PETSc's DMPlex assembly expects:
 
-```python
+```c
 void fn_residual_F1(
-     PetscInt dim, PetscInt Nf, PetscInt NfAux,
-     const PetscInt uOff[], const PetscInt uOff_x[],
-     const PetscScalar petsc_u[],       // unknown field values
-     const PetscScalar petsc_u_x[],     // unknown field gradients
-     const PetscInt aOff[], const PetscInt aOff_x[],
-     const PetscScalar petsc_a[],       // auxiliary fields
-     const PetscScalar petsc_a_x[],     // auxiliary field gradients
-     PetscReal petsc_t,                 // time
-     const PetscReal petsc_x[],         // coordinates
-     PetscInt numConstants,
-     const PetscScalar constants[],     // runtime parameters
-     PetscScalar out[]                  // output
- ) {
-     out[0] = constants[0] * petsc_u_x[0] + ...;
- }
- 
+    PetscInt dim, PetscInt Nf, PetscInt NfAux,
+    const PetscInt uOff[], const PetscInt uOff_x[],
+    const PetscScalar petsc_u[],       // unknown field values
+    const PetscScalar petsc_u_x[],     // unknown field gradients
+    const PetscInt aOff[], const PetscInt aOff_x[],
+    const PetscScalar petsc_a[],       // auxiliary fields
+    const PetscScalar petsc_a_x[],     // auxiliary field gradients
+    PetscReal petsc_t,                 // time
+    const PetscReal petsc_x[],         // coordinates
+    PetscInt numConstants,
+    const PetscScalar constants[],     // runtime parameters
+    PetscScalar out[]                  // output
+) {
+    out[0] = constants[0] * petsc_u_x[0] + ...;
+}
 ```
 
 A linear viscous Stokes problem generates a handful of simple functions. A nonlinear rheology with pressure-dependent yielding generates longer ones, but the process is identical: **SymPy handles the complexity**.
@@ -154,7 +154,7 @@ A linear viscous Stokes problem generates a handful of simple functions. A nonli
 
 The generated C code, a Cython wrapper, and a build script are written to a temporary directory. A subprocess call to `python setup.py build_ext --inplace` compiles everything to a shared library. The library is loaded via Python's import machinery, and function pointers are extracted.
 
-Compilation can be expensive, a second or more per function, so UW3 caches aggressively. The cache operates at the level of *individual functions*, not entire solvers. Each of the $F_0$, $F_1$, $G_0$–$G_3$ residual and Jacobian callbacks is hashed independently based on its *structural form*: the expression with constants replaced by placeholders. Two consequences follow.
+Compilation can be expensive, a second or more per function, so UW3 caches aggressively. The cache operates at the level of *individual functions*, not entire solvers. Each of the F0, F1, G0–G3 residual and Jacobian callbacks is hashed independently based on its *structural form*: the expression with constants replaced by placeholders. Two consequences follow.
 
 First, changing a parameter value (viscosity, density, time-step size) does not trigger recompilation. The structural form has not changed — only the values in the constants array, which are updated cheaply at solve time.
 
@@ -175,6 +175,13 @@ The user calls `solver.solve()`. PETSc runs Newton iterations, calling back into
 To summarise the pipeline for a single constitutive model:
 
 1. **User writes** SymPy expressions for stress, body force, boundary conditions
+2. **Solver derives** Jacobian blocks automatically via symbolic differentiation
+3. **Compiler extracts** runtime constants (parameters that can change between solves)
+4. **Compiler unwraps** remaining expressions to pure SymPy, patches field variables to C accessors
+5. **SymPy prints** the expressions as C99 code inside PETSc-compatible function signatures
+6. **Subprocess compiles** to a shared library, which is cached and loaded
+7. **PETSc registers** the function pointers and uses them during finite element assembly
+8. **At each solve**, current constant values are packed and passed to PETSc
 
 2. **Solver derives** Jacobian blocks automatically via symbolic differentiation
 
@@ -202,4 +209,4 @@ For geodynamics, where constitutive models are complex, nonlinear, and frequentl
 
 ---
 
-*The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code: *[*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
+*The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code: [github.com/underworldcode/underworld3](https://github.com/underworldcode/underworld3)*

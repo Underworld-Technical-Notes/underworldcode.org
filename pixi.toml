@@ -40,4 +40,8 @@ audit = "python3 scripts/audit_content.py"
 # Typst sources and the data that generates them.
 compare-originals = "python3 scripts/compare_originals.py --repo ../underworld3-pixi"
 rebuild-figures = "python3 scripts/rebuild_figures.py --repo ../underworld3-pixi"
+merge-originals = "python3 scripts/merge_originals.py --repo ../underworld3-pixi"
+
+# Full migration pipeline, in order. Each step is reviewable on its own.
+migrate = { depends-on = ["convert", "rebuild-figures", "merge-originals"] }
 mirror = "python3 scripts/fetch_assets.py"

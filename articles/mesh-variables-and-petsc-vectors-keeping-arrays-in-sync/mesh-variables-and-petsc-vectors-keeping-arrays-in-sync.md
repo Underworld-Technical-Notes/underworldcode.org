@@ -31,7 +31,7 @@ with mesh.access(temperature):
     temperature.data[...] = values
 
 # Underworld3 (current)
-temperature.array[...] = values
+temperature.data[...] = values
 ```
 
 This post explains how we make that work.
@@ -42,7 +42,7 @@ PETSc stores field data in distributed vectors. Each MPI rank owns a portion of 
 
 The user wants to work with NumPy arrays. They want to set initial conditions, apply corrections, read solution values — all using familiar NumPy indexing. They do not want to know about local vectors, global vectors, ghost regions, or scatter operations.
 
-The challenge is bridging these two worlds without introducing bugs. If the user modifies an array but PETSc doesn't see the change, the solver works with stale data. If PETSc rebuilds its internal data structures (because the mesh adapted or a new variable was added), the user's cached array might try to view points at freed memory locations.
+The challenge is bridging these two worlds without introducing bugs. If the user modifies an array but PETSc doesn't see the change, the solver works with stale data. If PETSc rebuilds its internal data structures (because the mesh adapted or a new variable was added), the user's cached array view points at freed memory.
 
 ## NDArray_With_Callback: A Reactive NumPy Array
 
@@ -102,9 +102,9 @@ Sometimes you need to update several variables together. Each individual write t
 
 ```python
 with uw.synchronised_array_update():
-    velocity.array[...] = v_initial
-    pressure.array[...] = p_initial
-    temperature.array[...] = T_initial
+    velocity.data[...] = v_initial
+    pressure.data[...] = p_initial
+    temperature.data[...] = T_initial
 # All three synchronise here, once
 ```
 
