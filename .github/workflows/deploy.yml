@@ -10,9 +10,15 @@ permissions:
   pages: write
   id-token: write
 
+# GitHub's starter workflow keeps queued deploys, on the reasoning that an
+# in-flight production deployment should not be interrupted. That assumes
+# infrequent pushes: here, successive commits queued behind each other until
+# the Pages queue outlasted the action's patience and runs failed on a timeout
+# while the site itself deployed fine. Only the newest commit should be live,
+# so superseded runs are cancelled instead.
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -68,5 +74,5 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@v4
         with:
-          timeout: 1200000
-          error_count: 10
+          # 600000 ms is the action's hard maximum; larger values are clamped.
+          timeout: 600000
