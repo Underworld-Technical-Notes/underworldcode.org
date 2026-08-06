@@ -45,7 +45,7 @@ jobs:
       - name: Build
         env:
           BASE_URL: ${{ steps.base.outputs.base_url }}
-        run: pixi run build-html
+        run: pixi run build
 
       # Never publish a build that would break a registered DOI.
       - name: No registered DOI is broken

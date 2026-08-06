@@ -223,9 +223,23 @@ def test_committed_svgs_carry_no_random_ids():
 # Both would fail silently -- the site renders, unstyled.
 # --------------------------------------------------------------------------
 
+def index_source():
+    """The generated landing page, produced on demand.
+
+    index.md is generated from article metadata and is gitignored, so on a
+    fresh checkout -- which is exactly what CI has -- it does not exist until
+    something builds it. Generating it here keeps these tests runnable before
+    any build step.
+    """
+    path = ROOT / "index.md"
+    if not path.exists():
+        build_index = load("build_index")
+        build_index.main()
+    return path.read_text(encoding="utf-8")
+
+
 def test_index_lists_every_published_article():
-    import re
-    index = (ROOT / "index.md").read_text(encoding="utf-8")
+    index = index_source()
     slugs = {p.parent.name for p in (ROOT / "articles").glob("*/*.md")}
     for slug in slugs:
         assert 'href="/%s/"' % slug in index, "%s missing from the landing page" % slug
@@ -233,7 +247,7 @@ def test_index_lists_every_published_article():
 
 def test_index_entries_carry_no_blank_lines():
     """A blank line ends a raw HTML block, handing the rest back to markdown."""
-    index = (ROOT / "index.md").read_text(encoding="utf-8")
+    index = index_source()
     feed = index.split('<div class="uwtn-feed">')[1].split("</div>\n\n<div class=\"uwtn-colophon\"")[0]
     for block in feed.split("\n"):
         assert block.strip() != "" or block == "", "blank line inside the feed"
@@ -241,7 +255,6 @@ def test_index_entries_carry_no_blank_lines():
 
 def test_index_uses_only_markup_myst_preserves():
     """MyST strips <article>, <p class>, <time>, role and aria-*."""
-    import re
-    index = (ROOT / "index.md").read_text(encoding="utf-8")
+    index = index_source()
     for tag in ("<article", "<time", "role=", "aria-"):
         assert tag not in index, "%s does not survive MyST's HTML handling" % tag
