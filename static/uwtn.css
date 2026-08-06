@@ -376,3 +376,21 @@ a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); 
   color: var(--uwtn-muted);
   font-variant-numeric: tabular-nums;
 }
+
+/* The searchable query token on a topic page. Visible on purpose: it tells the
+   reader the query exists, which hidden text cannot, and it is what the search
+   index is built from. */
+.uwtn-query {
+  font-family: var(--uwtn-sans);
+  font-size: 0.75rem;
+  color: var(--uwtn-muted);
+  margin-top: 0.6rem;
+}
+
+.uwtn-query code {
+  font-size: 0.75rem;
+  background: var(--uwtn-rule);
+  border-radius: 2px;
+  padding: 0.1rem 0.35rem;
+  color: var(--uwtn-ink);
+}

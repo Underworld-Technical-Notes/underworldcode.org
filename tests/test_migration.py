@@ -355,3 +355,16 @@ def test_every_tag_has_a_topic_page():
     for tag in tags:
         page = ROOT / "topics" / ("%s.md" % build_index.topic_slug(tag))
         assert page.exists(), "no topic page for %r" % tag
+
+
+def test_each_topic_page_carries_a_searchable_query_token():
+    """`tag:x` only works because the token is in page content, and visible.
+
+    The search index has no tag field -- its records are hierarchy, type, url
+    and position -- so the query has nothing to match unless the page says it.
+    """
+    build_index = load("build_index")
+    for page in sorted((ROOT / "topics").glob("topic-*.md")):
+        token = page.stem[len("topic-"):]
+        text = page.read_text(encoding="utf-8")
+        assert "tag:%s" % token in text, "%s carries no tag: token" % page.stem

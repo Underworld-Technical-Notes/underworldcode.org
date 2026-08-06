@@ -200,9 +200,16 @@ def topic_slug(tag):
 def write_topic_pages(metas):
     """One page per tag, plus an index. Returns tag -> (slug, count).
 
-    Static pages rather than a search query: the built search index carries only
-    hierarchy, type, url and position, so it cannot answer `tag:x`. Generated
-    pages also give each topic a real URL that can be linked and shared.
+    Static pages rather than a search query. The built search index is derived
+    from page content -- its records carry only hierarchy, type, url and
+    position -- so there is no tag field for a `tag:x` query to match against.
+    Generated pages also give each topic a real URL that can be linked, shared
+    and indexed.
+
+    Each topic page does carry a visible ``tag:<slug>`` token, which the search
+    index then contains, so the query works after all. Visible rather than
+    hidden: searching the bare tag word buries the topic page under every prose
+    mention of it, and a token nobody can see is a query nobody knows to type.
     """
     topics = {}
     for meta, description, has_pdf in metas:
@@ -217,16 +224,20 @@ def write_topic_pages(metas):
     for tag, entries in topics.items():
         slug = topic_slug(tag)
         body = "\n".join(entry_html(m, d, p) for m, d, p in entries)
-        (directory / ("%s.md" % slug)).write_text(
-            '---\ntitle: "%s"\nsite:\n  hide_outline: true\n---\n\n'
-            '<div class="uwtn-topic-head"><div class="uwtn-kicker">Topic</div>'
-            '<div class="uwtn-wordmark">%s</div>'
-            '<div class="uwtn-standfirst">%d note%s tagged %s. '
-            '<a href="/topics/">All topics</a></div></div>\n\n'
-            '<div class="uwtn-feed">\n%s\n</div>\n'
-            % (tag, html.escape(tag), len(entries), "" if len(entries) == 1 else "s",
-               html.escape(tag), body),
-            encoding="utf-8")
+        page = (
+            '---\ntitle: "{tag}"\nsite:\n  hide_outline: true\n---\n\n'
+            '<div class="uwtn-topic-head">'
+            '<div class="uwtn-kicker">Topic</div>'
+            '<div class="uwtn-wordmark">{safe}</div>'
+            '<div class="uwtn-standfirst">{count} note{plural} tagged {safe}. '
+            '<a href="/topics/">All topics</a></div>'
+            '<div class="uwtn-query">search <code>tag:{token}</code></div>'
+            '</div>\n\n'
+            '<div class="uwtn-feed">\n{body}\n</div>\n'
+        ).format(tag=tag, safe=html.escape(tag), count=len(entries),
+                 plural="" if len(entries) == 1 else "s",
+                 token=slug[len("topic-"):], body=body)
+        (directory / ("%s.md" % slug)).write_text(page, encoding="utf-8")
 
     listing = "".join(
         '<a class="uwtn-topic-link" href="/%s/">%s<span class="uwtn-topic-count">%d</span></a>'
@@ -235,7 +246,10 @@ def write_topic_pages(metas):
     (directory / "topics.md").write_text(
         '---\ntitle: Topics\nsite:\n  hide_outline: true\n---\n\n'
         '<div class="uwtn-topic-head"><div class="uwtn-kicker">Browse</div>'
-        '<div class="uwtn-wordmark">Topics</div></div>\n\n'
+        '<div class="uwtn-wordmark">Topics</div>'
+        '<div class="uwtn-standfirst">Every note carries topics. Each has its own '
+        'page, and each can be reached from the search box as '
+        '<code>tag:name</code>.</div></div>\n\n'
         '<div class="uwtn-topic-list">%s</div>\n' % listing, encoding="utf-8")
 
     return {tag: (topic_slug(tag), len(entries)) for tag, entries in topics.items()}
