@@ -17,6 +17,8 @@ legacy_paths:
   - /new-features-of-the-surface-coupling-framework-in-underworld-2/
 tags:
   - Underworld Code
+banner: figures/banner.png
+banner_credit: null
 figures: 5
 source: ghost-migration
 ghost_uuid: ba04ae00-5f7f-4655-89ef-c58d6060c9c7

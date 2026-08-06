@@ -20,7 +20,7 @@ These were in the drafted original but are not prose in the merged article. Each
 The draft wording is shown first, the published wording second.
 
 - draft: In Underworld3, the time derivative is a symbolic object. It appears in the solver's weak form as a SymPy expression, alongside the constitutive stress and the body force. You can 
-  <br>published: <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+  <br>published: <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@aronvisuals?utm_source=underworld-technical-notes&utm
 - draft: ## The Problem
   <br>published: A symbolic time derivatives: you can inspect it, display it in a notebook, and verify that the time discretisation is doing what you expect. And you can swap between Lagrangian, Se
 - draft: Discretising this in time requires choices. How do you handle the advection term? How many previous timesteps do you use? How do you deal with variable timestep sizes? These choice

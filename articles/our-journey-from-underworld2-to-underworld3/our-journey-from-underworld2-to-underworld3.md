@@ -26,7 +26,7 @@ exports:
 parts:
   abstract: "Underworld is a code for geodynamics — mantle convection, lithospheric deformation, subduction, ice flow. We solve coupled, nonlinear PDEs with complex rheologies using Lagrangian particles to track material history. The project has been running for 20 years: why did we start again ?"
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@les_photos_de_raph?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Raphaël Biscaldi</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 
 ## UW1 and UW2: Same Wolf, different clothes
 

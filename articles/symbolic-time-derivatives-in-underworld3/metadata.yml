@@ -21,6 +21,8 @@ tags:
   - Tricks of the Trade
   - Documentation
   - development
+banner: figures/banner.jpg
+banner_credit: "Photo by <a href=\"https://unsplash.com/@aronvisuals?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Aron Visuals</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplash</a>"
 figures: 0
 source: ghost-migration
 ghost_uuid: 1eb496b6-8422-4b09-9443-2894629c35cf

@@ -24,6 +24,8 @@ tags:
   - Underworld Code
   - Tricks of the Trade
   - development
+banner: figures/banner.jpg
+banner_credit: "Photo by <a href=\"https://unsplash.com/@silverkblack?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Vitaly Gariev</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplash</a>"
 figures: 1
 source: ghost-migration
 ghost_uuid: ba7cc108-239e-4371-8182-2316f9e2cf7c

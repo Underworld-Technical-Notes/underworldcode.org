@@ -454,7 +454,7 @@ def yaml_str(value):
     return text
 
 
-def write_metadata(path, rec, doi, figures, article_id):
+def write_metadata(path, rec, doi, figures, article_id, banner=None, credit=None):
     authors = rec.get("authors") or []
     lines = [
         "# Article metadata. Validated in CI against schemas/article-metadata.schema.json.",
@@ -488,11 +488,34 @@ def write_metadata(path, rec, doi, figures, article_id):
     for tag in (rec.get("tags") or []):
         lines.append("  - %s" % yaml_str(tag.get("name") or ""))
     lines += [
+        "banner: %s" % (yaml_str("figures/" + banner) if banner else "null"),
+        "banner_credit: %s" % (yaml_str(credit) if credit else "null"),
         "figures: %d" % len(figures),
         "source: ghost-migration",
         "ghost_uuid: %s" % (rec.get("uuid") or "null"),
     ]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def banner_credit(rec):
+    """The photographer credit Ghost stored with the feature image.
+
+    Ghost's Unsplash integration writes a caption like
+    ``Photo by <a href="...">Name</a> on <a href="...">Unsplash</a>``, so the
+    attribution Unsplash's licence asks for is already in the export -- no API
+    key needed. The ``utm_source=ghost`` in those links is rewritten: this is no
+    longer Ghost, and the parameter is how Unsplash attributes referrals.
+    """
+    caption = rec.get("feature_image_caption") or ""
+    if "unsplash.com" not in caption:
+        return None
+    text = re.sub(r"<span[^>]*>|</span>", "", caption)
+    text = text.replace("utm_source=ghost", "utm_source=underworld-technical-notes")
+    text = " ".join(html.unescape(text).split())
+    # Keep only the anchors and plain words; anything else is Ghost's chrome.
+    if not re.fullmatch(r"[^<>]*(?:<a href=\"[^\"]*\">[^<]*</a>[^<>]*)+", text):
+        return None
+    return text
 
 
 def localise_banner(rec, dest_dir):
@@ -523,6 +546,15 @@ def localise_banner(rec, dest_dir):
     name = "banner" + suffix
     shutil.copy2(path, dest_dir / name)
     return name
+
+
+def banner_block(banner, credit):
+    """The visible banner, with its credit revealed on hover."""
+    parts = ['<div class="uwtn-banner"><img src="%s" alt="">' % banner]
+    if credit:
+        parts.append('<div class="uwtn-credit">%s</div>' % credit)
+    parts.append("</div>")
+    return "".join(parts)
 
 
 def frontmatter(rec, doi, article_id, banner=None):
@@ -690,12 +722,13 @@ def main():
         body = conv.markdown()
 
         doi = dois.get(slug, "")
+        credit = banner_credit(rec) if banner else None
         if banner:
-            body = ('<div class="uwtn-banner"><img src="figures/%s" alt=""></div>\n\n'
-                    % banner) + body
+            body = (banner_block("figures/" + banner, credit) + "\n\n") + body
         (dest / ("%s.md" % slug)).write_text(
             frontmatter(rec, doi, ids.get(slug, ""), banner) + body, encoding="utf-8")
-        write_metadata(dest / "metadata.yml", rec, doi, conv.figures, ids.get(slug, ""))
+        write_metadata(dest / "metadata.yml", rec, doi, conv.figures, ids.get(slug, ""),
+                       banner, credit)
 
         fig_notes = []
         for src, name, _alt, _cap in conv.figures:

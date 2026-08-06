@@ -23,7 +23,7 @@ exports:
 parts:
   abstract: "A constitutive model is a Python class where the relationship between fluxes and gradients is encoded in SymPy. At every stage the mathematics is visible, inspectable, and differentiable. The framework handles Jacobians, C code generation, and PETSc integration. You handle the physics."
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@foodistika?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Elena Leya</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 
 In Underworld2, adding a new rheology was a matter of writing C code inside the StGermain framework, compiling it, and registering it with the component system. The barrier was high enough that most users never tried. The available rheologies were the ones the developers had implemented, and combining them required understanding the C internals.
 

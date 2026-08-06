@@ -106,7 +106,8 @@ def entry_html(meta, description, has_pdf, banner=None, lead=False):
         links.append('<a href="https://doi.org/%s"><span class="uwtn-doi-label">doi</span>%s</a>'
                      % (doi, html.escape(doi)))
 
-    tags = "".join('<span class="uwtn-tag">%s</span>' % html.escape(str(t))
+    tags = "".join('<a class="uwtn-tag" href="/%s/">%s</a>'
+                   % (topic_slug(t), html.escape(str(t)))
                    for t in (meta.get("tags") or []) if t)
 
     # MyST keeps div, span and a with their classes and drops everything else's
@@ -165,6 +166,13 @@ def write_toc(metas):
         by_year.setdefault(year, []).append(meta)
 
     lines = ["  toc:", "    - file: index.md"]
+    topic_files = sorted((ROOT / "topics").glob("topic-*.md"))
+    if topic_files:
+        lines.append('    - title: "Topics"')
+        lines.append("      children:")
+        lines.append("        - file: topics/topics.md")
+        for path in topic_files:
+            lines.append("        - file: topics/%s" % path.name)
     for year in sorted(by_year, reverse=True):
         lines.append('    - title: "%s"' % year)
         lines.append("      children:")
@@ -177,6 +185,60 @@ def write_toc(metas):
     myst.write_text("%s%s\n%s\n%s%s" % (head, TOC_BEGIN, "\n".join(lines), TOC_END, tail),
                     encoding="utf-8")
     return by_year
+
+
+def topic_slug(tag):
+    """A URL slug for a tag, prefixed so it can never collide with an article.
+
+    MyST takes a page's URL from its filename regardless of directory, so a
+    topic page called `documentation.md` would compete with any article of that
+    slug -- and article slugs are fixed by registered DOIs.
+    """
+    return "topic-" + re.sub(r"[^a-z0-9]+", "-", str(tag).lower()).strip("-")
+
+
+def write_topic_pages(metas):
+    """One page per tag, plus an index. Returns tag -> (slug, count).
+
+    Static pages rather than a search query: the built search index carries only
+    hierarchy, type, url and position, so it cannot answer `tag:x`. Generated
+    pages also give each topic a real URL that can be linked and shared.
+    """
+    topics = {}
+    for meta, description, has_pdf in metas:
+        for tag in (meta.get("tags") or []):
+            topics.setdefault(str(tag), []).append((meta, description, has_pdf))
+
+    directory = ROOT / "topics"
+    directory.mkdir(exist_ok=True)
+    for existing in directory.glob("*.md"):
+        existing.unlink()
+
+    for tag, entries in topics.items():
+        slug = topic_slug(tag)
+        body = "\n".join(entry_html(m, d, p) for m, d, p in entries)
+        (directory / ("%s.md" % slug)).write_text(
+            '---\ntitle: "%s"\nsite:\n  hide_outline: true\n---\n\n'
+            '<div class="uwtn-topic-head"><div class="uwtn-kicker">Topic</div>'
+            '<div class="uwtn-wordmark">%s</div>'
+            '<div class="uwtn-standfirst">%d note%s tagged %s. '
+            '<a href="/topics/">All topics</a></div></div>\n\n'
+            '<div class="uwtn-feed">\n%s\n</div>\n'
+            % (tag, html.escape(tag), len(entries), "" if len(entries) == 1 else "s",
+               html.escape(tag), body),
+            encoding="utf-8")
+
+    listing = "".join(
+        '<a class="uwtn-topic-link" href="/%s/">%s<span class="uwtn-topic-count">%d</span></a>'
+        % (topic_slug(tag), html.escape(tag), len(entries))
+        for tag, entries in sorted(topics.items(), key=lambda kv: (-len(kv[1]), kv[0])))
+    (directory / "topics.md").write_text(
+        '---\ntitle: Topics\nsite:\n  hide_outline: true\n---\n\n'
+        '<div class="uwtn-topic-head"><div class="uwtn-kicker">Browse</div>'
+        '<div class="uwtn-wordmark">Topics</div></div>\n\n'
+        '<div class="uwtn-topic-list">%s</div>\n' % listing, encoding="utf-8")
+
+    return {tag: (topic_slug(tag), len(entries)) for tag, entries in topics.items()}
 
 
 def banner_of(directory):
@@ -202,6 +264,7 @@ def main():
         sys.exit("no articles found -- run `pixi run migrate` first")
 
     with_doi = sum(1 for m, _d, _p in metas if m.get("doi"))
+    topics = write_topic_pages(metas)
     by_year = write_toc(metas)
 
     # The most recent note leads, shown larger and with its banner; the rest
@@ -235,6 +298,7 @@ site:
 """ % (entries, len(metas), with_doi)
 
     (ROOT / "index.md").write_text(page, encoding="utf-8")
+    print("topics: %d (%s)" % (len(topics), ", ".join(sorted(topics))))
     print("index.md: %d note(s), %d with a DOI, %d with a PDF"
           % (len(metas), with_doi, sum(1 for _m, _d, p in metas if p)))
     for meta, _description, _pdf in metas:

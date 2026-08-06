@@ -25,7 +25,7 @@ exports:
 parts:
   abstract: "What actually happens between the moment you write a mathematical expression in underworld3's python layer and the moment PETSc receives a finite element term in the form of compiled C code ?"
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@silverkblack?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Vitaly Gariev</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 
 In a [previous post](/our-journey-from-underworld2-to-underworld3/) we described why Underworld3 uses SymPy as its expression language and what that choice made possible. Here we'll go one level deeper: what actually happens between the moment you write a mathematical expression in Python and the moment PETSc receives a finite element term in the form of compiled C? The answer is a pipeline with six stages, and understanding it explains most of what makes UW3 tick.
 

@@ -20,6 +20,8 @@ tags:
   - Underworld Code
   - Tricks of the Trade
   - development
+banner: figures/banner.jpg
+banner_credit: "Photo by <a href=\"https://unsplash.com/@foodistika?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Elena Leya</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplash</a>"
 figures: 0
 source: ghost-migration
 ghost_uuid: 137d7c0a-1a6b-412b-a605-069137faac95

@@ -19,6 +19,8 @@ legacy_paths:
 tags:
   - Underworld Code
   - development
+banner: figures/banner.jpg
+banner_credit: "Photo by <a href=\"https://unsplash.com/@syinq?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Susan Q Yin</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplash</a>"
 figures: 4
 source: ghost-migration
 ghost_uuid: 1b9677b5-5308-4c90-a192-d29aad4000b7

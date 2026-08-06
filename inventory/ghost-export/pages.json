@@ -88,7 +88,8 @@
       "excerpt": "The AuScope [http://www.auscope.org.au] / Underworld Cloud is a computing\nplatform for launching docker containers that draw content dynamically from a\npublic git repository. It is focused on and optimised for distributing our\ntraining and reference materials.\n\nOur goal with the AuScope cloud is to make reproducible scientific exchange\nroutine in our discipline and to make it simple to extend the ideas that others\nshare. \n\nIf you have used www.mybinder.org [http://www.mybinder.org], then you wil",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af0f",
@@ -178,7 +179,8 @@
       "excerpt": "In the Underworld geodynamics group, we work on scientific problems,\ncomputational algorithms, and software for Earth and planetary dynamics. We\nrelease all of our work under open source licences so that anyone can recreate\nand build upon our science.\n\nWe have a particular interest in understanding the long-term evolution of the\nEarth and helping people to run time-evolving models of plate and lithosphere\nscale geological problems. We have collected all of our geodynamics articles\n[https://www.u",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af0e",
@@ -225,7 +227,8 @@
       "excerpt": "Thanks to our contributors",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af0d",
@@ -272,7 +275,8 @@
       "excerpt": "If you don't see what you want in the list of topics, the complete list of\narticles by date [https://www.underworldcode.org/content/] might help. \n\n\n--------------------------------------------------------------------------------",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af28",
@@ -341,7 +345,8 @@
       "excerpt": "A two day workshop at the Mt Stromlo Observatory, Australian National\nUniversity, March 16-17, 2020 exploring the dynamics of congested subduction\nzones. \n\nRegistration\n[https://www.eventbrite.com.au/e/anu-congested-subduction-workshop-tickets-97954822511] \nis free and so is lunch !\n\n * Louis Moresi (Research School of Earth Sciences, Australian National\n   University, louis.moresi@anu.edu.au)\n * Peter Betts (School of Earth Atmosphere and Environment, Monash University, \n   peter.betts@monash.e",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af12",
@@ -498,7 +503,8 @@
       "excerpt": "The Underworld codes represent more than a decade of programming effort by many\ndevelopers including a wide community of contributors from the open-source\ncommunity. Particular thanks are due to \u2014 \n\nFunding support\nAuScope [https://www.auscope.org.au/] provides direct support for the core\ndevelopment team behind the underworld codes and the underworld cloud suite of\ntools. AuScope is funded by the Australian Government through the National\nCollaborative Research Infrastructure Strategy, NCRIS.\n\n",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af23",
@@ -719,7 +725,8 @@
       "excerpt": "The preferred way to cite our code is to include 1) a reference to the defining\npublication for that particular version and 2) to include the zenodo doi for the\nactual version of the code you are using. If you wish to cite the algorithms\nthat have been used but not the actual implementation then see Algorithms below.\n\n * https://doi.org/10.5281/zenodo.1436039 (Underworld 2.x)\n * https://doi.org/10.5281/zenodo.1195597 (UWGeodynamics)\n * https://doi.org/ [https://doi.org/10.5281/zenodo.1195597]\n  ",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f447868736f2b02569a0c59",
@@ -765,7 +772,8 @@
       "excerpt": null,
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af1f",
@@ -855,7 +863,8 @@
       "excerpt": "A scientific visualisation tool with a python interface for fast and flexible\nvisual analysis.\n\nThe acronym stands for: lightweight, automatable visualisation and analysis\nviewing utility, but \"lava\" is also a reference to its primary application as a\nviewer for geophysical simulations. It was also chosen to be unique enough to\nfind the repository with google. The documentation is available here: LavaVu\nDocumentation [https://lavavu.github.io/Documentation/]\n\nLavaVu development is supported by t",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f3cc8e7736f2b02569a0bc9",
@@ -902,7 +911,8 @@
       "excerpt": "To return to this account management page at any time, look for the button with\n\u00a0your email address in the navigation bar and click on it.\n\nIf you have problems with your account, if you need to change your email address\nor manage your subscription to the mailing list, please contact www-\nadmin@underworldcode.org [www-admin@underworldcode.org] for help.\n\nIf you do not want to subscribe to email updates, there is an unsubscribe link\nin any emails you are sent. Your account will remain active so t",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af10",
@@ -993,7 +1003,8 @@
       "excerpt": "The following are publications from the Underworld Geodynamics Group since 2010.\nThis bibliography is built from the underworld community zotero\n[https://www.zotero.org/groups/2386948/underworld-geodynamics-community/items/collectionKey/BZCLFTDA] \npage and may take a few seconds to load.",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af22",
@@ -1040,7 +1051,8 @@
       "excerpt": "Note \u2014 this bibliography is generated on the fly from my zotero\n[https://www.zotero.org/lmoresi] page",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6a6b2f9aeb7226563af55547",
@@ -1086,7 +1098,8 @@
       "excerpt": null,
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6a6b90b1eb7226563af5558a",
@@ -1132,7 +1145,8 @@
       "excerpt": null,
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6a6b559beb7226563af55556",
@@ -1178,7 +1192,8 @@
       "excerpt": null,
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6a6b55a2eb7226563af5555b",
@@ -1224,7 +1239,8 @@
       "excerpt": null,
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6a6b55a8eb7226563af55560",
@@ -1270,7 +1286,8 @@
       "excerpt": null,
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6a6b58d3eb7226563af55565",
@@ -1316,7 +1333,8 @@
       "excerpt": null,
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6a6b58dceb7226563af5556a",
@@ -1362,7 +1380,8 @@
       "excerpt": null,
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6a6b58e1eb7226563af5556f",
@@ -1408,7 +1427,8 @@
       "excerpt": null,
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6a6b5bd4eb7226563af55574",
@@ -1454,7 +1474,8 @@
       "excerpt": null,
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6a6b2f73eb7226563af55542",
@@ -1500,7 +1521,8 @@
       "excerpt": null,
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6a6b1fd0eb7226563af5553d",
@@ -1546,7 +1568,8 @@
       "excerpt": null,
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af11",
@@ -1658,7 +1681,8 @@
       "excerpt": "A Python module for (constrained) triangulation in Cartesian coordinates and on a sphere.",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af0a",
@@ -1790,7 +1814,8 @@
       "excerpt": "A parallel, python, particle-in-cell, finite-element code for Geodynamics\nUnderworld is a python-friendly geodynamics code which provides a programmable\nand flexible front end to all the functionality of the code running in a\nparallel HPC environment. This gives significant advantages to the user, with\naccess to the power of python libraries for setup of complex problems, analysis\nat runtime, problem steering, and coupling of multiple problems. Underworld2 is\nintegrated with the literate program",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f43a5a1736f2b02569a0c3b",
@@ -1837,7 +1862,8 @@
       "excerpt": "We run a moderated mailing list for the Underworld community to exchange\nmessages. To post to the list, send an email to \nunderworld_list@agora.geophysics-down-under.geoscience.education. \n\nThe list runs on the discourse discussion forum for this website which is also\nresponsible for the comments on posts. You can register for the forum here\n[https://forums.geophysics-down-under.geoscience.education/] and sign up to\nreceive mailing list alerts if you wish. \n\nRecent mailing list alerts\n\n---------",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "652f6f2c5f6d0a75e59f10c7",
@@ -1884,7 +1910,8 @@
       "excerpt": "Landing page ... updating\n\n\n\n",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f485f66736f2b02569a0e5b",
@@ -2019,7 +2046,8 @@
       "excerpt": "Catalogue of repositories on the @underworld-community github\n[https://github.com/underworld-community] organisation\n\nStability of Crustal Roots\nCenki-Tok, B., P.F. Rey, and D. Arcay. \u201cStrain and Retrogression Partitioning\nExplain Long-Term Stability of Crustal Roots in Stable Continents.\u201d Geology,\nApril 17, 2020. https://doi.org/10.1130/G47301.1.\n\nAway from tectonically active regions, the continental crust has an average\nthickness of 40 \u00b1 1 km. Yet, it shows a remarkable variability from 25 to",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6051a798736f2b02569a15ce",
@@ -2109,7 +2137,8 @@
       "excerpt": "The Auscope Underworld steering committee provides strategic, scientific and user community input to the Underworld development and management team.",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6a6b4cf0eb7226563af5554c",
@@ -2155,7 +2184,8 @@
       "excerpt": null,
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6a6b51daeb7226563af55551",
@@ -2201,7 +2231,8 @@
       "excerpt": null,
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f505988736f2b02569a0ed3",
@@ -2313,7 +2344,8 @@
       "excerpt": "These papers have used stripy to generate their results. This bibliography is maintained via a zotero library \u2014 please let us know of any omissions or mistakes. \n",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af24",
@@ -2403,7 +2435,8 @@
       "excerpt": "These papers have used underworld [https://www.underworldcode.org/intro-to-underworld/] to\ngenerate their results. You may wish to visit the underworld github community to\nsee if simplified versions of the scripts have been made public. This\nbibliography is maintained via a zotero\n[https://www.zotero.org/groups/2386948/underworld-geodynamics-community/items/collectionKey/QNARWBUC] \nlibrary \u2014 please let us know of any omissions or mistakes. \n\nIf you have a new publication using one of our codes a",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     }
   ],
   "meta": {

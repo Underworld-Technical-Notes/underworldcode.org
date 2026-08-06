@@ -168,7 +168,8 @@ def main():
 
     fields = ("id,uuid,slug,title,html,plaintext,feature_image,feature_image_alt,"
               "published_at,updated_at,created_at,excerpt,custom_excerpt,canonical_url,"
-              "codeinjection_head,codeinjection_foot,visibility,url,meta_title,meta_description")
+              "codeinjection_head,codeinjection_foot,visibility,url,meta_title,meta_description,"
+              "feature_image_caption")
 
     rows = []
     for endpoint, kind in (("posts", "post"), ("pages", "page")):

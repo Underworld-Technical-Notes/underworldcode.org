@@ -309,3 +309,49 @@ def test_toc_is_generated_and_grouped_by_year():
     slugs = {p.parent.name for p in (ROOT / "articles").glob("*/*.md")}
     for slug in slugs:
         assert "articles/%s/%s.md" % (slug, slug) in myst, "%s missing from the toc" % slug
+
+
+# --------------------------------------------------------------------------
+# Image credits and topic pages.
+# --------------------------------------------------------------------------
+
+def test_banner_credit_survives_the_pdf_round_trip():
+    """Unsplash asks for attribution wherever the photograph appears."""
+    banner_body = load("banner_body")
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        text = path.read_text(encoding="utf-8")
+        if not banner_body.banner_from_frontmatter(text):
+            continue
+        credit = banner_body.credit_from_metadata(path.parent)
+        if credit:
+            assert "uwtn-credit" in text, "%s lost its image credit" % path.parent.name
+            assert "unsplash.com" in text
+
+
+def test_credits_do_not_still_attribute_ghost():
+    """The utm_source is how Unsplash attributes the referral; this is not Ghost."""
+    for path in sorted((ROOT / "articles").glob("*/metadata.yml")):
+        assert "utm_source=ghost" not in path.read_text(encoding="utf-8")
+
+
+def test_topic_slugs_cannot_collide_with_article_slugs():
+    build_index = load("build_index")
+    articles = {p.parent.name for p in (ROOT / "articles").glob("*/*.md")}
+    for topic in (ROOT / "topics").glob("topic-*.md"):
+        assert topic.stem not in articles, \
+            "%s would compete with an article URL fixed by a DOI" % topic.stem
+    assert build_index.topic_slug("Tricks of the Trade") == "topic-tricks-of-the-trade"
+    assert build_index.topic_slug("Python/Jupyter") == "topic-python-jupyter"
+
+
+def test_every_tag_has_a_topic_page():
+    import re
+    tags = set()
+    for meta in (ROOT / "articles").glob("*/metadata.yml"):
+        block = re.search(r"^tags:\n((?:  - .*\n)+)", meta.read_text(encoding="utf-8"), re.M)
+        if block:
+            tags.update(line.strip()[2:].strip('"') for line in block.group(1).strip().split("\n"))
+    build_index = load("build_index")
+    for tag in tags:
+        page = ROOT / "topics" / ("%s.md" % build_index.topic_slug(tag))
+        assert page.exists(), "no topic page for %r" % tag

@@ -3,7 +3,16 @@
   "$id": "https://underworldcode.org/schemas/article-metadata-1.json",
   "title": "Underworld Technical Note metadata",
   "type": "object",
-  "required": ["id", "slug", "title", "article_type", "status", "authors", "license", "canonical_path"],
+  "required": [
+    "id",
+    "slug",
+    "title",
+    "article_type",
+    "status",
+    "authors",
+    "license",
+    "canonical_path"
+  ],
   "additionalProperties": false,
   "properties": {
     "id": {
@@ -16,71 +25,234 @@
       "pattern": "^[a-z0-9][a-z0-9-]*$",
       "description": "URL slug. For migrated articles this is fixed by the registered DOI and must not be changed."
     },
-    "title": { "type": "string", "minLength": 1 },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
     "article_type": {
       "type": "string",
-      "enum": ["technical-note", "worked-example", "benchmark", "development-note",
-               "how-to", "commentary", "release-note", "news"]
+      "enum": [
+        "technical-note",
+        "worked-example",
+        "benchmark",
+        "development-note",
+        "how-to",
+        "commentary",
+        "release-note",
+        "news"
+      ]
     },
     "status": {
       "type": "string",
-      "enum": ["draft", "review", "accepted", "published", "migrated", "superseded", "withdrawn"]
+      "enum": [
+        "draft",
+        "review",
+        "accepted",
+        "published",
+        "migrated",
+        "superseded",
+        "withdrawn"
+      ]
     },
     "authors": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "additionalProperties": false,
         "properties": {
-          "name": { "type": "string", "minLength": 1 },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
           "orcid": {
             "oneOf": [
-              { "type": "null" },
-              { "type": "string", "pattern": "^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$" }
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "pattern": "^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$"
+              }
             ],
             "description": "Validated syntactically, including the check digit's X form. Null is allowed but warned about on DOI-bearing articles."
           },
-          "affiliation": { "type": ["string", "null"] }
+          "affiliation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
         }
       }
     },
     "publication_date": {
-      "oneOf": [{ "type": "null" }, { "type": "string", "format": "date",
-                 "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }]
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "format": "date",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        }
+      ]
     },
-    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
     "doi": {
-      "oneOf": [{ "type": "null" }, { "type": "string", "pattern": "^10\\.[0-9]{4,9}/[-._;()/:A-Za-z0-9]+$" }],
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "pattern": "^10\\.[0-9]{4,9}/[-._;()/:A-Za-z0-9]+$"
+        }
+      ],
       "description": "Bare DOI, no https://doi.org/ prefix and no trailing punctuation. Two articles in this corpus carried DOI links with trailing punctuation that 404'd; the pattern rejects that."
     },
     "doi_registrant": {
-      "oneOf": [{ "type": "null" }, { "type": "string", "enum": ["rogue-scholar", "zenodo", "figshare"] }],
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "enum": [
+            "rogue-scholar",
+            "zenodo",
+            "figshare"
+          ]
+        }
+      ],
       "description": "Which agency minted the DOI. Legacy articles are 'rogue-scholar' (Crossref, prefix 10.59350, not ours to re-point); new notes come from the chosen repository provider. Keeping the two eras distinguishable is what stops a re-mint."
     },
-    "license": { "type": "string", "enum": ["CC-BY-4.0", "CC-BY-SA-4.0", "CC0-1.0"] },
-    "canonical_path": { "type": "string", "pattern": "^/[a-z0-9-]+/$" },
-    "legacy_paths": { "type": "array", "items": { "type": "string", "pattern": "^/.*/$" } },
-    "tags": { "type": "array", "items": { "type": "string" } },
-    "figures": { "type": "integer", "minimum": 0 },
-    "source": { "type": "string", "enum": ["ghost-migration", "native"] },
-    "ghost_uuid": { "type": ["string", "null"] },
-    "underworld_versions": { "type": "array", "items": { "type": "string" } },
-    "discussion_url": { "type": ["string", "null"] },
-    "repository_provider": { "type": ["string", "null"] },
-    "repository_record_id": { "type": ["string", "null"] }
+    "license": {
+      "type": "string",
+      "enum": [
+        "CC-BY-4.0",
+        "CC-BY-SA-4.0",
+        "CC0-1.0"
+      ]
+    },
+    "canonical_path": {
+      "type": "string",
+      "pattern": "^/[a-z0-9-]+/$"
+    },
+    "legacy_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^/.*/$"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "figures": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "ghost-migration",
+        "native"
+      ]
+    },
+    "ghost_uuid": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "underworld_versions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "discussion_url": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "repository_provider": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "repository_record_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "banner": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Feature image kept for the web rendition only; removed for the archival PDF."
+    },
+    "banner_credit": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Photographer attribution, as Unsplash's licence asks for. Carried from Ghost's feature_image_caption."
+    }
   },
   "allOf": [
     {
       "description": "A DOI-bearing article must declare who minted it.",
-      "if": { "properties": { "doi": { "type": "string" } }, "required": ["doi"] },
-      "then": { "properties": { "doi_registrant": { "type": "string" } }, "required": ["doi_registrant"] }
+      "if": {
+        "properties": {
+          "doi": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "doi"
+        ]
+      },
+      "then": {
+        "properties": {
+          "doi_registrant": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "doi_registrant"
+        ]
+      }
     },
     {
       "description": "The canonical path must be the slug. A mismatch means a DOI would 404.",
-      "if": { "required": ["slug", "canonical_path"] },
-      "then": { "properties": { "canonical_path": { "type": "string" } } }
+      "if": {
+        "required": [
+          "slug",
+          "canonical_path"
+        ]
+      },
+      "then": {
+        "properties": {
+          "canonical_path": {
+            "type": "string"
+          }
+        }
+      }
     }
   ]
 }

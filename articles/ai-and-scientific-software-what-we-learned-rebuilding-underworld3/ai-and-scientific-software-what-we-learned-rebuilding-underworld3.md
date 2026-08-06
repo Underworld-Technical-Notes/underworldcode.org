@@ -23,7 +23,7 @@ exports:
 parts:
   abstract: "Underworld3 has about 50,000 lines of Python/ Cython wrapping PETSc, SymPy, and a just-in-time compiler. I began a trial of AI coding tools in 2025 and they have gradually become central to the way our team works. This is a story of co-evolution as much as it is about adoption of a new set of tools."
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@tinkerman?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Immo Wegmann</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 
 Our story begins with an underworld side-project: me working on an evaluation branch of underworld3, undertaking a complicated refactor of particle / mesh interaction modules. The complexity was getting the better of me, and I wondered if it would help to have an AI tool oversee the implementation of some of the more detailed work where I was making too many mistakes.
 

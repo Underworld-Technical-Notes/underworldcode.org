@@ -23,7 +23,7 @@ exports:
 parts:
   abstract: "Non-dimensionalisation (rewriting problems to make them re-scalable from lab to the real world) is a specialised task that all modellers confront at some point. It is important for accurate and efficient numerical solutions. Can we take away the pain that comes with the task ?"
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@diana_pole?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Diana Polekhina</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 
 Geodynamics involves quantities that span extraordinary ranges. Viscosity might be $10^{21}$ Pa·s, density $3300$ kg/m$^3$, thermal diffusivity $10^{-6}$ m$^2$/s. A single model combines all of these, and the solver needs them in a form where the numbers are close to unity. That means we need to non-dimensionalise our systems of equations. Every user of a geodynamics code does this in some fashion, but most codes force the user to do the book keeping themselves.
 

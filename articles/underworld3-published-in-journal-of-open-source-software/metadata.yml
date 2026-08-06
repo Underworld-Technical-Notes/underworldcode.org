@@ -23,6 +23,8 @@ legacy_paths:
 tags:
   - Underworld Code
   - Python/Jupyter
+banner: figures/banner.jpg
+banner_credit: "Photo by <a href=\"https://unsplash.com/@jessbaileydesigns?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Jess Bailey</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplash</a>"
 figures: 1
 source: ghost-migration
 ghost_uuid: a3bf5192-7742-4229-b076-5a5fccb1acf2

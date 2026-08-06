@@ -44,7 +44,8 @@
       "excerpt": null,
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6a204e77eb7226563af54a10",
@@ -134,7 +135,8 @@
       "excerpt": "It can be difficult to figure out where you are in an unstructured mesh of triangles or tetrahedra; worse when the mesh is distributed in parallel. We have to solve this problem for particle-in-cell type codes such as Underworld3. This is how we do it.",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@syinq?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Susan Q Yin</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>"
     },
     {
       "id": "6a1fcd70eb7226563af5497d",
@@ -245,7 +247,8 @@
       "excerpt": "Underworld is built around the idea of active Lagrangian tracer particles that carry history and composition information as the material deforms. How do we combine this information with our symbolic mathematical framework ?",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@resourcedatabase?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Resource Database</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>"
     },
     {
       "id": "69dfb91eeb7226563af54429",
@@ -377,7 +380,8 @@
       "excerpt": "In Underworld3, the time derivative is a symbolic object. It appears in the solver's strong form as a SymPy expression, alongside the constitutive stress and the body force. ",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@aronvisuals?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Aron Visuals</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>"
     },
     {
       "id": "69d7d320eb7226563af542d3",
@@ -488,7 +492,8 @@
       "excerpt": "A constitutive model is a Python class where the relationship between fluxes and gradients is encoded in SymPy. At every stage the mathematics is visible, inspectable, and differentiable. The framework handles Jacobians, C code generation, and PETSc integration. You handle the physics.",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@foodistika?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Elena Leya</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>"
     },
     {
       "id": "69d57d11eb7226563af541e4",
@@ -600,7 +605,8 @@
       "excerpt": "Non-dimensionalisation (rewriting problems to make them re-scalable from lab to the real world) is a specialised task that all modellers confront at some point. It is important for accurate and efficient numerical solutions. Can we take away the pain that comes with the task ?",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@diana_pole?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Diana Polekhina</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>"
     },
     {
       "id": "69ce5868eb7226563af540f3",
@@ -690,7 +696,8 @@
       "excerpt": "One of the less glamorous but important problems in a finite element framework is this: how does the user assign values to a field variable, and how does the framework ensure that PETSc sees those values correctly, in parallel, without the user needing to keep track themselves?",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@cmzw?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">MW</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>"
     },
     {
       "id": "69cba58ceb7226563af53fdf",
@@ -845,7 +852,8 @@
       "excerpt": "What actually happens between the moment you write a mathematical expression in underworld3's python layer and the moment PETSc receives a finite element term in the form of compiled C code ?",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@silverkblack?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Vitaly Gariev</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>"
     },
     {
       "id": "69c10705eb7226563af53eea",
@@ -1022,7 +1030,8 @@
       "excerpt": "Underworld is a code for geodynamics \u2014 mantle convection, lithospheric deformation, subduction, ice flow. We solve coupled, nonlinear PDEs with complex rheologies using Lagrangian particles to track material history. The project has been running for 20 years: why did we start again ?",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@les_photos_de_raph?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Rapha\u00ebl Biscaldi</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>"
     },
     {
       "id": "69c09af7eb7226563af53d6f",
@@ -1133,7 +1142,8 @@
       "excerpt": "Underworld3 has about 50,000 lines of Python/ Cython wrapping PETSc, SymPy, and a just-in-time compiler. I began a trial of AI coding tools in 2025 and they have gradually become central to the way our team works. This is a story of co-evolution as much as it is about adoption of a new set of tools.",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@tinkerman?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Immo Wegmann</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>"
     },
     {
       "id": "68ac4af1eb7226563af53a66",
@@ -1267,7 +1277,8 @@
       "excerpt": "The aim of underworld3 is to provide strong support to users in developing sophisticated mathematical models, and provide the ability to interrogate those models during development and at run-time. Underworld3 encodes the mathematical structure of the equations it solves in symbolic form.",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@jessbaileydesigns?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Jess Bailey</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>"
     },
     {
       "id": "68747f2feb7226563af53633",
@@ -1336,7 +1347,8 @@
       "excerpt": "Coupling in Underworld 2\n\nUnderworld 2's UWGeodynamic module enables the coupling of tectonics and surface processes models, most notably, with Underworld 2 handling the tectonics and Badlands (Salles, Ding, & Brocard, 2018) handling the surface processes.\n\nThis coupling framework has been employed to study landscape evolution and topography in orogenic regions, including the Three Rivers region in Southeast Tibet (Lu et al., 2019), Southwestern North America (Bahadori et al., 2022), and subduct",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Lake Louise, Hamlet in Canada</span>"
     },
     {
       "id": "6864a0dfeb7226563af53597",
@@ -1469,7 +1481,8 @@
       "excerpt": "Parallel computation puts many CPUs to work on solving a problem much more quickly than one CPU alone. But this only works if the tasks are carefully scheduled and the additional CPUs are not waiting around for something to do. How do we choose the right number of processors for a given problem ?",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@museumsvictoria?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Museums Victoria</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>"
     },
     {
       "id": "680f65725f6d0a75e59f17d8",
@@ -1580,7 +1593,8 @@
       "excerpt": "You are invited to a full-day workshop on Underworld \u2014 a computational Geodynamics / Tectonics modelling framework. This is an excellent opportunity for researchers, students, and professionals interested in computational geodynamics and Earth science modelling to learn about Underworld.",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@marvelous?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Marvin Meyer</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>"
     },
     {
       "id": "67f5bb3d5f6d0a75e59f167c",
@@ -1670,7 +1684,8 @@
       "excerpt": "TL; DR: Underworld is now Singularity-enabled, making it easier and somewhat quicker to use compared to traditional HPC installs. We demonstrate results using over 10,000 CPUs and more than one billion unknowns for solving the Stokes equation with Underworld 2.16\u00a0",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@hooverpaul55?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Paul Teysen</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplas</span></a>"
     },
     {
       "id": "672ca40f5f6d0a75e59f136b",
@@ -1760,7 +1775,8 @@
       "excerpt": "Introducing Underworld3: Mathematically Self-Describing Modelling in Python for Desktop, HPC and Cloud.",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": "A colourful image of flow around a series of obstacles. See caption for further description"
+      "feature_image_alt": "A colourful image of flow around a series of obstacles. See caption for further description",
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Underworld3 uses unstructured meshes supplied by gmsh or any other tool supported by PETSc. In this image we see flow driven from the left boundary around a series of obstacles visualised by streamlines. The intense colours appear where the flow is strongest which is also where the gaps between obstacles line up. There is an emergent pressure gradient displayed in the background shading.</span>"
     },
     {
       "id": "65a48dff5f6d0a75e59f1159",
@@ -1871,7 +1887,8 @@
       "excerpt": "CITCOM is a geodynamics modelling code based on the finite element method that is designed for planetary evolution modelling where large spatial variations and strong non-linearities occur in the material properties.",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": "With open source software you can have your cake and eat it too"
+      "feature_image_alt": "With open source software you can have your cake and eat it too",
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@henleydesign?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Henley Design Studio</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>"
     },
     {
       "id": "650c42d5d6a7ef7440f3d359",
@@ -1940,7 +1957,8 @@
       "excerpt": "Introduction and benchmarking\n\nThe convection of the Earth\u2019s mantle is usually modelled as an incompressible process, referred to as the Boussinesq approximation. However, in the Earth\u2019s mantle, the pressure increase associated with depth also increases the density due to self-compression (King et al. 2010). In some applications, this compressibility may be non-negligible and modelling it may be desirable. Over the years, several mantle convection formulations have been devised to take this comp",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@v2osk?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">v2osk</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplas</span></a>"
     },
     {
       "id": "63f2f8ccd6a7ef7440f3d235",
@@ -1987,7 +2005,8 @@
       "excerpt": "Abstract\nNumerical models have become an indispensable tool for understanding and\npredicting the flow of ice sheets and glaciers. Here we present the full-Stokes\nsoftware package Underworld to the glaciological community. The code is already\nwell established in simulating complex geodynamic systems. Advantages for\nglaciology are that it provides a full-Stokes solution for\nelastic\u2013viscous\u2013plastic materials and includes mechanical anisotropy. Underworld\nuses a material point method to track the fu",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "628c1807d6a7ef7440f3d1ac",
@@ -2034,7 +2053,8 @@
       "excerpt": "Yeah, one repo, one vision!\n\nIn an effort to simplify maintenance and compatibility between Underworld and UWGeodynamics, we have decided to merge the codes into a single repository.\n\nStarting with version 2.13, UWGeodynamics will now live under Underworld.\n\nAll UWGeodynamics functionalities and workflows will remain available to the users. From version 2.13 users will be able to import UWGeodynamics after installing Underworld (see documentation for install options), using from underworld impor",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@lisanto_?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Lisanto \u674e\u5955\u826f</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>"
     },
     {
       "id": "61e8df91d6a7ef7440f3d0a4",
@@ -2145,7 +2165,8 @@
       "excerpt": "\n\nThe Underworld Community has been supporting usage of Docker containers for\ndeveloping and running Underworld powered scientific models. They provide a good\noption to control the running environment (dependencies).\n\nDocker container can be used for developing the code base but creating a\nsuitable development workflow has proven challenging so far and I have opted for\na more simple solution involving native builds of PETSc and Python Virtual\nEnvironment.\n\nIn the following I describe how I insta",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "61e88857d6a7ef7440f3ce57",
@@ -2256,7 +2277,8 @@
       "excerpt": "https://doi.org/10.59350/t7ghx-8f823\n\n\nThe following is compatible with Ubuntu 20.04 under Windows 10/11 WSL 2 (Windows Subsystem for Linux).\n\nPETSc, the Portable, Extensible Toolkit for Scientific Computation is the main dependency required for building Underworld. In the following, I will describe my current workflow for configuring and installing PETSc on Linux. The instructions are also valid for the Windows Subsystem for Linux (WSL2) using the Ubuntu 20.04 app.\n\n\nBuild dependencies\n\n\nThe mi",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": "<span style=\"white-space: pre-wrap;\">Photo by </span><a href=\"https://unsplash.com/@markusspiske?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Markus Spiske</span></a><span style=\"white-space: pre-wrap;\"> / </span><a href=\"https://unsplash.com/?utm_source=ghost&amp;utm_medium=referral&amp;utm_campaign=api-credit\"><span style=\"white-space: pre-wrap;\">Unsplash</span></a>"
     },
     {
       "id": "61a989a7d6a7ef7440f3ce3a",
@@ -2303,7 +2325,8 @@
       "excerpt": "Free surface in geodynamics simulations\n\nGeodynamic simulations increasingly rely on models with a true free surface to\ninvestigate questions of tectonic deformation, mantle convection, and coupling\nof surface processes and lithosphere dynamics. Historically, most mantle\nconvection simulations have been performed with free-slip boundary conditions at\nthe surface. However, the Earth's surface is a free surface, which implies that\nboth normal and shear stress should be zero at this interface. More",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "614d5cb0d6a7ef7440f3cafe",
@@ -2415,7 +2438,8 @@
       "excerpt": "How does Underworld scale on a HPC? In this post we showcase how Underworld 2.11\nscales across two of Australia's premiere HPC systems.\n\n * Gadi - https://nci.org.au/our-systems/hpc-systems\n * Magnus - https://pawsey.org.au/systems/magnus/\n\nThe reference model chosen for this scaling showcase is a extended 3D stokes\nflow: Analytic Solution SolDB3D\n[https://underworld2.readthedocs.io/en/latest/build/underworld.function.analytic.html?highlight=solDB#underworld.function.analytic.SolDB3d] \n. Q1P0 el",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "61370eb3d6a7ef7440f3ca60",
@@ -2526,7 +2550,8 @@
       "excerpt": "The new generation of Apple Mac comes with the new Apple Silicon (M1) chip which has an Arm architecture (as opposed to the older generation that had i386 Intel processor). This brings all manner of troubles and requirements for the development of codes.",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "6046f2f0736f2b02569a1529",
@@ -2660,7 +2685,8 @@
       "excerpt": " To test scalability we run weak scaling tests on various HPC machines to check the numerical framework remains robust when pushing for higher fidelity models.",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5ff3ddef736f2b02569a13d7",
@@ -2729,7 +2755,8 @@
       "excerpt": "\n\nIssues with intra-element discontinuities in PIC-FEM\nThe classical finite element method (FEM) has been widely used to simulate\ndiverse problems in engineering. Unlike most engineering problems, geological\nsimulations are dominated by emergence of geometrical structures due to the\nnon-linear processes involved. For the structurally conforming FEM meshes, the\nlarge deformations result in distorted meshes, which often require repeated\nre-meshing in computation. The particle-in-cell (PIC) method ",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5fae0261736f2b02569a1120",
@@ -2840,7 +2867,8 @@
       "excerpt": "As mentioned, packages can be installed directly from our conda channel. You may\nhowever want to build your own package at some point in the future or you may\nwant to fix some of ours by submitting a Pull Request on github (You are more\nwelcome to do so...)\n\nThe following goes through the steps of building a conda package for Badlands\nwhich contains Python and Fortran code. This is relatively advanced but not\nreally difficult.\n\nInstalling and Updating conda-build\n\n\nTo install conda-build, in you",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5fb1f14f736f2b02569a1276",
@@ -2930,7 +2958,8 @@
       "excerpt": "Version control systems and online-communities such as Github have made\ncontributing to the development of opensource software incredibly easy. That is\nassuming that people get over their initial fear of sharing their code! \u00a0In this\nshort blog post I go through how to submit a pull request to one of our\nrepository. Do not fear and join us for some fun! You may actually learn some\ninteresting things along the way and we will acknowledge your contribution.\n\nThe open source community is by definiti",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5fadc49f736f2b02569a1014",
@@ -3041,7 +3070,8 @@
       "excerpt": " Sharing a workflow environment is also paramount if we want to make sure that reproducibility can be effectively tested. An environment management system such as conda allows us to do so. ",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f4c5361736f2b02569a0e6b",
@@ -3132,7 +3162,8 @@
       "excerpt": "Underworld 2.10 has dropped... kidding this is a benchmark model proposed by Schmalholz, 2011,  A simple analytical solution for slab detachment.",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f449125736f2b02569a0c88",
@@ -3222,7 +3253,8 @@
       "excerpt": "Generating Voronoi diagrams and interpolating / smoothing with spline tensions are among a list of new features in Stripy 2.0",
       "meta_title": "Stripy 2.0 released",
       "meta_description": "Generating Voronoi diagrams and interpolating / smoothing with spline tensions are among a list of new features in Stripy 2.0",
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af30",
@@ -3312,7 +3344,8 @@
       "excerpt": "A new study by an international team of scientists found lockdown measures to stop the spread of COVID-19 led to a 50 per cent reduction in seismic noise around the world.\n\nThe researchers, including  Meghan Miller and Louis Moresi from ANU analysed datasets from over 300 seismic stations.",
       "meta_title": "COVID lockdowns and seismic noise in Australia",
       "meta_description": "A new study by an international team of scientists has found lockdown measures to stop the spread of COVID-19 led to a 50 per cent reduction in seismic noise observed around the world. It is the largest reduction in human-generated noise ever observed globally.",
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af2c",
@@ -3444,7 +3477,8 @@
       "excerpt": "How we built a simple dashboard using Github actions with open source software and openly available (FAIR) data. ",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af2f",
@@ -3534,7 +3568,8 @@
       "excerpt": "Meghan S. Miller (ANU)\nLouis Moresi (ANU)\n\nOur responses to the COVID-19 pandemic have dramatically changed human activity all over the world. \n\nSensitive instruments are detecting far less of the noise and vibration produced by humans in motion.",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af2b",
@@ -3603,7 +3638,8 @@
       "excerpt": "The Underworld team would like to congratulate B\u00e9n\u00e9dicte Cenki-Tok and\nco-authors at the University of Sydney and the University of Montpellier on\ntheir recent publication, \n\nB. Cenki-Tok, P.F. Rey, D. Arcay; Strain and retrogression partitioning explain\nlong-term stability of crustal roots in stable continents. Geology doi: \nhttps://doi.org/10.1130/G47301.1.\n\nUsing Underworld the authors demonstrated a hypothesised mechanism that allows\nanomalous crustal roots, in stable intracontinental settin",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af2a",
@@ -3714,7 +3750,8 @@
       "excerpt": "We built a cheap-and-cheerful solution with persistent storage and a binder-like access to notebooks in a repository that is aimed at serving a single classroom.\n\nThe zero-to-server time is just a few minutes and there is minimal manual configuration. ",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af20",
@@ -3849,7 +3886,8 @@
       "excerpt": "The Underworld 2.9 release is available from Github, as a docker container and via zenodo (doi:10.5281/zenodo.3964957) it is also available through pip install for the first time",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af29",
@@ -3918,7 +3956,8 @@
       "excerpt": "A new paper by John Mansour [https://www.underworldcode.org/author/john] and others has just been\npublished in the Journal of Open Source Software. \n\n * Mansour, J., Giordani, J., Moresi, L., Beucher, R., Kaluza, O., \u00a0Velic, \u00a0M.,\n   Farrington, R., Quenette, S., Beall, A., 2020, Underworld2: \u00a0Python\n   \u00a0Geodynamics Modelling for Desktop, HPC and Cloud, Journal of Open \u00a0 Source\n   Software, 5(47), 1797, https://doi.org/10.21105/joss.01797\n\nThe JOSS paper is intended as a reference citation for re",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af27",
@@ -3987,7 +4026,8 @@
       "excerpt": "As the old truism states, the best way to learn is by doing. This guide can get you from zero to hero in 60 seconds - give or take.",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af26",
@@ -4056,7 +4096,8 @@
       "excerpt": "How we added an auto-updating set of citations to underworld in our publications\n[https://www.underworldcode.org/publications-using-uw/] webpage. \n\nWe need to curate all the publications that we can find that use the underworld\n[https://www.underworldcode.org/intro-to-underworld/] geodynamics code and provide this\ninformation on our website. To avoid needless repetition, we take advantage of\nthe fact that nearly all the information we require is online and automatically\nconstruct the bibliograph",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af21",
@@ -4146,7 +4187,8 @@
       "excerpt": "\n--------------------------------------------------------------------------------\n\nVersion 2.8 of Underworld has been released recently. As with all major\nreleases, this release brings numerous new features, enhancements and bug fixes.\nA summary of changes may be found within the usual CHANGES.md\n[https://github.com/underworldcode/underworld2/blob/v2.8.0b/CHANGES.md] file. As\nis also usually the case, numerous API changes have been necessary or warranted.\nMost significantly, this release marks a",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af09",
@@ -4257,7 +4299,8 @@
       "excerpt": "Viscoelastic materials exhibit the properies of both solids and liquids, with\ndeformation rates dependent on both the viscous stress and elastic stress rate.\n\u00a0In a Maxwell viscoelastic material the strain rate $D$ is proportional to the\nsum of the stress $\\tau$ and the stress rate $\\dot\\tau$,\n\n\\begin{equation}\nD_{ij} = D^v_{ij} + D^e_{ij} = \\frac{\\tau_{ij}}{2\\eta} +\n\\frac{\\dot\\tau_{ij}}{2\\mu}\n\\end{equation}\n\nwith $\\eta$ viscosity and $\\mu$ shear modulus. In Underworld this rheology can\nbe implem",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af1b",
@@ -4347,7 +4390,8 @@
       "excerpt": "Making your research reproducible means that you provide the entire workflow\nfrom data, through software and post-processing freely available. Not only can\nsomebody repeat your experiments and verify them, they can build upon them. In\nlab-based disciplines, there are many further challenges, but in research that\nis predominantly based on data processing, this ought to be an achievable goal.\n\nWe are releasing all of the background for our recent paper on the Alaska Moho\n(Miller & Moresi, 2018) to",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af18",
@@ -4416,7 +4460,8 @@
       "excerpt": "\nZenodo [http://www.zenodo.org] is a repository for immutable versions of\nsoftware that are provided with a persistent DOI for the purposes of citation\nand reproducibility.\n\nUnderworld can be cited via a zenodo DOI. There is a master DOI for all releases\n(10.5281/zenodo.1436039) and releases after 2.6.0 are automatically given a DOI\n_under the master_. \n\nIf you are using a development branch and wish to obtain a DOI for your specific\nversion we ask that you contact [anyone@underworldcode.org] us",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af1d",
@@ -4506,7 +4551,8 @@
       "excerpt": "(they don't make them like they used to ... )\n\nCratons are anomalously-strong regions of the continents that have largely\nresisted tectonic forces for billions of years. How such strong zones could be\nforged in a hot, low-viscosity, low stress, \u00a0early-Earth has been a\nlong-standing puzzle for geologists. Adam Beall, Katie Cooper and I have\nrecently proposed that cratons were made by the catastrophic switching on of\nplate tectonics. An event in which the stresses were larger than they have ever\nb",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af13",
@@ -4617,7 +4663,8 @@
       "excerpt": "Modelling the relative time-scales of the Rayleigh-Taylor Instability and\ndelamination, using Underworld\n\nWith Adam Beall, Cardiff University.\n\nWhy model sub-continental gravitational instabilities?\nWithin the plate tectonics framework, continents are generally considered to\nhave a much lower density than the asthenosphere below and therefore avoid the\nkind of recycling that the oceanic crust and lithosphere undergoes. The mantle\nlithosphere below some continents however can become denser than t",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af14",
@@ -4707,7 +4754,8 @@
       "excerpt": "Using physical units and how to appropriately scale a model is a top question\nusers ask when beginning with Underworld. The equations Underworld solves are\nstated in a physically correct form, they remain valid as long as every material\nconstant, geometry, time, etc., are expressed in the same system. \u00a0There is no\nexplicit concept of units no scaling in Underworld, the choice is entirely left\nto the user. One can thus decide to use the Meter Kilometer Second system or a\ndimensionless system, def",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af1e",
@@ -4797,7 +4845,8 @@
       "excerpt": "In honour of Hans M\u00fchlhaus' 70th birthday this month, here are some shear band\nsimulations made with Underworld. We are investigating the role of dilatancy in\nthe geometry of the shear bands for a box of material when a small trapdoor is\nopened.\n\nThe extent to which large-scale deformation is needed to release material\nthrough the trapdoor depends on how much the material dilates when shear bands\nform. This is a taster:\n\nThree snapshots of the total shear strain for a model with low dilatancy (A",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af15",
@@ -4887,7 +4936,8 @@
       "excerpt": "Underworld2 is a python-friendly version of the Underworld geodynamics code\nwhich provides a programmable and flexible front end to all the functionality of\nthe code running in a parallel HPC environment. This gives signficant advantages\nto the user, with access to the power of python libraries for setup of complex\nproblems, analysis at runtime, problem steering, and coupling of multiple\nproblems. Underworld2 is integrated with the literate programming environment of\nthe jupyter notebook [https:",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af0c",
@@ -4978,7 +5028,8 @@
       "excerpt": "By the way, before you read this post, catch up with how we use docker by\nreading part 1\n\nDocker allows us to distribute pre-built applications which are hosted in a\nvirtual machine and are therefore platform independent. This simplifies things\nfor us (only one platform we need to support) and for the users (you get a\nuniversal binary with complete reproducibility across platforms). However, if\nyou are not running on a native linux machine, you have to understand the way\ndocker works before bein",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af19",
@@ -5068,7 +5119,8 @@
       "excerpt": "\n\nWhile huge improvements in usability have been achieved in Underworld2, the\ninstallation process is still unfortunately as painful as ever. This difficulty\nis in large part due to Underworld's numerous dependencies, and also the\nmultiple platforms we try to support. Compounding this, the legacy of a\nindividual user's machine often conspires against success, rarely in obvious\nways. Simply, compiling is not fun.\n\nEnter docker.\n\nWhat are docker containers ?\nEssentially, docker containers allow de",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af1a",
@@ -5137,7 +5189,8 @@
       "excerpt": "(aka the Underworld renovation project)\n\nUnderworld [https://www.underworldcode.org/] is our parallel, particle-in-cell, finite element\ngeodynamics code [1]. For the past year or so, the Underworld team\n[http://www.facebook.com/underworldcode] has been working on a refurbished user\ninterface. We've known for a long time that it needed to be done but we finally\nbit the bullet.\n\nWe settled on turning underworld into a python code for two main reasons: 1)\nbecause many of our dependencies already ha",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     },
     {
       "id": "5f39e8d296e5ce484b73af1c",
@@ -5248,7 +5301,8 @@
       "excerpt": "In a recent paper [1], we used Underworld models to examine subduction\ncongestion associated with the ingestion of a continental ribbon. The SE\nAustralian geological record turned out to be a wonderful place to study this\nprocess. Here is a short summary of the work for a relatively non-technical\naudience that we put together and some additional figures which I prepared.\n\n[1] Moresi, L.N., Betts, P.G., Miller, M.S., and Cayley, R.A., 2014, The\nDynamics of Continental Accretion: Nature, doi:10.10",
       "meta_title": null,
       "meta_description": null,
-      "feature_image_alt": null
+      "feature_image_alt": null,
+      "feature_image_caption": null
     }
   ],
   "meta": {

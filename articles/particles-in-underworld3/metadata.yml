@@ -20,6 +20,8 @@ tags:
   - Underworld Code
   - Documentation
   - development
+banner: figures/banner.jpg
+banner_credit: "Photo by <a href=\"https://unsplash.com/@resourcedatabase?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Resource Database</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplash</a>"
 figures: 0
 source: ghost-migration
 ghost_uuid: d7e1f38a-c62a-4b5f-bc55-0133fff3b2c3

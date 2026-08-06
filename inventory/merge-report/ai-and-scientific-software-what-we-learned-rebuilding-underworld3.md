@@ -18,7 +18,7 @@ These were in the drafted original but are not prose in the merged article. Each
 The draft wording is shown first, the published wording second.
 
 - draft: Underworld3 has about 50,000 lines of Python/Cython wrapping PETSc, SymPy, and a just-in-time compiler. I began a trial of AI coding tools in 2025 and they have gradually become ce
-  <br>published: <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+  <br>published: <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@tinkerman?utm_source=underworld-technical-notes&utm_m
 - draft: ``` > stokes.constitutive_model.flux σ = 2 · 1 · ε̇(u) ```
   <br>published: > stokes.constitutive_model.flux
 - draft: ``` > viscosity_fn η₀ · exp(-γ · y) ```

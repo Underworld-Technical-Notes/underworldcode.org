@@ -27,7 +27,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 ARTICLES = ROOT / "articles"
 
 BANNER_BLOCK = re.compile(
-    r'<div class="uwtn-banner"><img src="[^"]*" alt=""></div>\n\n', re.M)
+    r'<div class="uwtn-banner"><img src="[^"]*" alt="">'
+    r'(?:<div class="uwtn-credit">.*?</div>)?</div>\n\n', re.S)
 
 
 def banner_from_frontmatter(text):
@@ -36,6 +37,21 @@ def banner_from_frontmatter(text):
         return None
     found = re.search(r"^banner:\s*(\S+)\s*$", match.group(1), re.M)
     return found.group(1) if found else None
+
+
+def credit_from_metadata(directory):
+    """The photographer attribution, from the article's metadata.yml.
+
+    Unsplash's licence asks for the credit wherever the photograph appears, so
+    rebuilding the banner has to rebuild the credit with it.
+    """
+    path = directory / "metadata.yml"
+    if not path.exists():
+        return None
+    found = re.search(r'^banner_credit:\s*"(.*)"\s*$', path.read_text(encoding="utf-8"), re.M)
+    if not found:
+        return None
+    return found.group(1).replace('\\"', '"')
 
 
 def main():
@@ -60,7 +76,11 @@ def main():
         if args.remove:
             new_body = stripped
         else:
-            block = '<div class="uwtn-banner"><img src="%s" alt=""></div>\n\n' % banner
+            credit = credit_from_metadata(path.parent)
+            block = '<div class="uwtn-banner"><img src="%s" alt="">' % banner
+            if credit:
+                block += '<div class="uwtn-credit">%s</div>' % credit
+            block += "</div>\n\n"
             new_body = block + stripped.lstrip("\n")
 
         if new_body != body:

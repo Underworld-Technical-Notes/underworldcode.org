@@ -20,6 +20,8 @@ tags:
   - Underworld Code
   - Tricks of the Trade
   - Auscope
+banner: figures/banner.jpg
+banner_credit: "Photo by <a href=\"https://unsplash.com/@tinkerman?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Immo Wegmann</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplash</a>"
 figures: 0
 source: ghost-migration
 ghost_uuid: abf315c7-0582-4368-bb7c-085cb3eeaf63

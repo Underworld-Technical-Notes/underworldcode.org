@@ -306,3 +306,73 @@ article.content figcaption p {
   .uwtn-lead :is(h1, h2, h3, h4) { font-size: 1.5rem; }
   .uwtn-banner img { max-height: 180px; }
 }
+
+/* ---- image credit ------------------------------------------------------ */
+
+/* Unsplash's licence asks for attribution wherever the photograph appears.
+   It sits on the image rather than beside it, so it credits without competing
+   with the article, and is always reachable — revealed on hover, and on focus
+   for anyone navigating by keyboard. */
+.uwtn-banner { position: relative; }
+
+.uwtn-credit {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  max-width: 100%;
+  padding: 0.3rem 0.6rem;
+  font-family: var(--uwtn-sans);
+  font-size: 0.66rem;
+  line-height: 1.4;
+  color: #fff;
+  background: rgba(12, 18, 24, 0.72);
+  backdrop-filter: blur(3px);
+  border-top-left-radius: 3px;
+  opacity: 0;
+  transform: translateY(0.3rem);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.uwtn-banner:hover .uwtn-credit,
+.uwtn-banner:focus-within .uwtn-credit { opacity: 1; transform: none; }
+
+.uwtn-credit a { color: #fff; text-decoration: underline; text-underline-offset: 2px; }
+
+/* Touch devices have no hover, so the credit is simply always shown. */
+@media (hover: none) {
+  .uwtn-credit { opacity: 1; transform: none; position: static; background: none;
+                 color: var(--uwtn-muted); padding: 0.4rem 0 0; }
+  .uwtn-credit a { color: var(--uwtn-accent); }
+}
+
+/* ---- topics ------------------------------------------------------------ */
+
+a.uwtn-tag { text-decoration: none; transition: border-color 0.15s ease, color 0.15s ease; }
+a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); }
+
+.uwtn-topic-head { border-bottom: 1px solid var(--uwtn-rule);
+                   padding-bottom: 1.2rem; margin-bottom: 2rem; }
+.uwtn-topic-head .uwtn-wordmark { font-size: clamp(1.6rem, 4vw, 2.2rem); }
+
+.uwtn-topic-list { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+
+.uwtn-topic-link {
+  font-family: var(--uwtn-sans);
+  font-size: 0.9rem;
+  color: var(--uwtn-ink);
+  text-decoration: none;
+  border: 1px solid var(--uwtn-rule);
+  border-radius: 3px;
+  padding: 0.45rem 0.8rem;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.uwtn-topic-link:hover { border-color: var(--uwtn-accent); color: var(--uwtn-accent); }
+
+.uwtn-topic-count {
+  font-size: 0.7rem;
+  color: var(--uwtn-muted);
+  font-variant-numeric: tabular-nums;
+}
