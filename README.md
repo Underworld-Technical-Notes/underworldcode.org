@@ -177,6 +177,31 @@ merged in.
 For notes written from now on this problem disappears: author in this
 repository with `pixi run new`, and there is only one copy.
 
+## DOI provider: leaning Figshare
+
+The brief leaves this open, to be settled by a pilot. The current lean is
+**Figshare**, on the grounds that a DOI link lands on a preview-oriented page
+that shows the PDF directly — which matters when DOIs are circulated as the way
+into an article. That is exactly the brief's own decision rule in §4.
+
+Confirmed so far: Figshare supports **reserving a DOI before publication** on
+the free public service, and the reservation can be disabled while the item is
+still private. That is the load-bearing requirement, because the mechanic is
+reserve → bake the DOI into the PDF → deposit. A provider that only mints on
+publication cannot support it — which is precisely why the GitHub↔Zenodo
+webhook is unusable here, whatever the repository layout.
+
+Still to check in the pilot, and the reason the provider interface stays
+abstract until then:
+
+- whether reservation is reachable from the **API**, not just the web UI
+  (the whole publication step is scripted);
+- whether reserving locks files or metadata against further edits;
+- version behaviour, and whether the base DOI resolves to the latest version;
+- citation export and how prominent the live article URL is in the record.
+
+Nothing in `articles/`, the templates or the tests depends on this choice.
+
 ## Blocked on Louis
 
 - **Create the GitHub organisation** and add a second owner. The local `gh`
