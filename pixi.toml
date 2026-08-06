@@ -19,12 +19,16 @@ new = "python3 scripts/new_article.py"
 # where a figure, a badge and an inline image are stated rather than inferred.
 convert = "python3 scripts/ghost_to_myst.py --since 2025-08-05"
 
-# `myst build --html` truncates slugs to 50 characters, which breaks 12 of the
-# 50 registered DOIs. fix-slugs restores them; the DOI test proves it worked.
-# Never publish a build that has not been through both.
+# index.md is generated from article metadata and is gitignored, so it must be
+# built before ANY myst invocation -- it is the project's root toc entry, and
+# without it myst refuses to start.
 index = "python3 scripts/build_index.py"
-build-html = { cmd = "python3 scripts/build_index.py && myst build --html && python3 scripts/fix_slugs.py && python3 scripts/inject_style.py && python3 scripts/stage_downloads.py", depends-on = [] }
-build-pdf = "myst build --typst"
+
+# `myst build --html` truncates slugs to 50 characters, MyST's own `style`
+# option never loads the stylesheet, and PDFs are written beside the sources
+# rather than into the site. Each post-step fixes one of those.
+build-html = { cmd = "myst build --html && python3 scripts/fix_slugs.py && python3 scripts/inject_style.py && python3 scripts/stage_downloads.py", depends-on = ["index"] }
+build-pdf = { cmd = "myst build --typst", depends-on = ["index"] }
 build = { depends-on = ["build-pdf", "build-html"] }
 
 validate = "python3 scripts/validate_metadata.py"
