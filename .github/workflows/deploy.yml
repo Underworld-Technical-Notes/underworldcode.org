@@ -27,7 +27,24 @@ jobs:
         with:
           cache: true
 
+      # A project site is served under /<repo>/, so MyST has to be told at build
+      # time or every root-relative asset 404s. Once a CNAME file exists the
+      # site is served at the root of its own domain and the prefix must go --
+      # deriving it from the CNAME means it cannot be left wrong at cutover.
+      - name: Determine base URL
+        id: base
+        run: |
+          if [ -f CNAME ]; then
+            echo "Custom domain $(cat CNAME) — building at the site root"
+            echo "base_url=" >> "$GITHUB_OUTPUT"
+          else
+            echo "No CNAME — building for the project-site subpath"
+            echo "base_url=/${{ github.event.repository.name }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build
+        env:
+          BASE_URL: ${{ steps.base.outputs.base_url }}
         run: pixi run build-html
 
       # Never publish a build that would break a registered DOI.
