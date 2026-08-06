@@ -2,10 +2,10 @@
 
 Prose from the published article, structure from the drafted original.
 
-- **took-published**: 7
+- **took-published**: 8
 - **kept-original**: 3
 - **added-in-ghost**: 4
-- **dropped-from-draft**: 3
+- **dropped-from-draft**: 2
 
 ## Blocks dropped from the draft
 
@@ -14,15 +14,13 @@ These were in the drafted original but are not prose in the merged article. Each
 - *(rule, too short to locate)* ---
 - *(prose, published in particles-in-underworld3, physical-units-in-computational-geodynamics, how-underworld3-turns-sympy-into-c)* *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCR
 
-### Never published — decide whether to restore
-
-- *(prose)* In Underworld2, the answer was context managers. You wrapped every data access in a `with` block, and the framework synchronised the arrays on exit. It was safe, but verbose — and forgetting the context manager was a silent bug.
-
 ## Prose taken from the published article
 
 The draft wording is shown first, the published wording second.
 
 - draft: One of the less glamorous but most important problems in a finite element framework is this: how does the user assign values to a field variable, and how does the framework ensure 
+  <br>published: <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+- draft: In Underworld2, the answer was context managers. You wrapped every data access in a `with` block, and the framework synchronised the arrays on exit. It was safe, but verbose — and 
   <br>published: In Underworld2, the answer was context managers. You would wrap every data access in a `with` block, and the framework synchronised the arrays on exit. It was safe, but verbose.
 - draft: This post explains how that works.
   <br>published: This post explains how we make that work.

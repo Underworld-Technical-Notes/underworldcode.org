@@ -8,6 +8,7 @@ authors:
     affiliations:
       - Australian National University
 license: CC-BY-4.0
+banner: figures/banner.jpg
 keywords:
   - Underworld Code
   - development
@@ -20,6 +21,8 @@ exports:
 parts:
   abstract: It can be difficult to figure out where you are in an unstructured mesh of triangles or tetrahedra; worse when the mesh is distributed in parallel. We have to solve this problem for particle-in-cell type codes such as Underworld3. This is how we do it.
 ---
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+
 Lagrangian particles are central to geodynamics modelling. They track material properties through large deformation, carry stress history for viscoelastic models, and define material interfaces. But managing particles in a finite element mesh is harder than it looks. On a structured grid, finding which cell contains a given point is arithmetic. On an unstructured mesh of triangles or tetrahedra, it is a search problem. And when the mesh is decomposed across processors, it becomes a distributed search problem with communication costs.
 
 This post describes how Underworld3 locates particles in an unstructured mesh, and then how it extends that to work across a parallel decomposition.

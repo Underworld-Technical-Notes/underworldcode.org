@@ -15,9 +15,10 @@ project:
   # Articles live at articles/<slug>/<slug>.md. MyST takes a page's URL from its
   # FILENAME, not its path, so each publishes at /<slug>/ -- the exact URL the 50
   # registered DOIs already resolve to. Renaming these files breaks those DOIs.
+  # BEGIN GENERATED TOC
   toc:
     - file: index.md
-    - title: Technical Notes
+    - title: "2026"
       children:
         - file: articles/finding-particles-in-a-distributed-unstructured-mesh/finding-particles-in-a-distributed-unstructured-mesh.md
         - file: articles/particles-in-underworld3/particles-in-underworld3.md
@@ -26,10 +27,13 @@ project:
         - file: articles/physical-units-in-computational-geodynamics/physical-units-in-computational-geodynamics.md
         - file: articles/mesh-variables-and-petsc-vectors-keeping-arrays-in-sync/mesh-variables-and-petsc-vectors-keeping-arrays-in-sync.md
         - file: articles/how-underworld3-turns-sympy-into-c/how-underworld3-turns-sympy-into-c.md
-        - file: articles/our-journey-from-underworld2-to-underworld3/our-journey-from-underworld2-to-underworld3.md
         - file: articles/ai-and-scientific-software-what-we-learned-rebuilding-underworld3/ai-and-scientific-software-what-we-learned-rebuilding-underworld3.md
-        - file: articles/underworld3-published-in-journal-of-open-source-software/underworld3-published-in-journal-of-open-source-software.md
+        - file: articles/our-journey-from-underworld2-to-underworld3/our-journey-from-underworld2-to-underworld3.md
+    - title: "2025"
+      children:
         - file: articles/new-features-of-the-surface-coupling-framework-in-underworld-2/new-features-of-the-surface-coupling-framework-in-underworld-2.md
+        - file: articles/underworld3-published-in-journal-of-open-source-software/underworld3-published-in-journal-of-open-source-software.md
+  # END GENERATED TOC
 
 site:
   template: book-theme

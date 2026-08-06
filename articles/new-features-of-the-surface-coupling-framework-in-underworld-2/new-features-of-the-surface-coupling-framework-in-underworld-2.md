@@ -5,6 +5,7 @@ authors:
   - name: Neng Lu
 doi: 10.59350/zqv83-gbf84
 license: CC-BY-4.0
+banner: figures/banner.png
 keywords:
   - Underworld Code
 exports:
@@ -16,6 +17,8 @@ exports:
 parts:
   abstract: "Coupling in Underworld 2 Underworld 2's UWGeodynamic module enables the coupling of tectonics and surface processes models, most notably, with Underworld 2 handling the tectonics and Badlands (Salles, Ding, & Brocard, 2018) handling the surface processes. This coupling framework has been employed to study landscape evolution and topography in orogenic regions, including the Three Rivers region in Southeast Tibet (Lu et al., 2019), Southwestern North America (Bahadori et al., 2022), and subduct"
 ---
+<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
+
 **Coupling in Underworld 2**
 
 Underworld 2's UWGeodynamic module enables the coupling of tectonics and surface processes models, most notably, with Underworld 2 handling the tectonics and Badlands (Salles, Ding, & Brocard, 2018) handling the surface processes.

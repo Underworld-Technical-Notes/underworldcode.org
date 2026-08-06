@@ -226,3 +226,83 @@ article.content figcaption p {
   .uwtn-entry-meta { flex-direction: column; gap: 0.1rem; }
   .uwtn-entry-title { font-size: 1.3rem; }
 }
+
+/* ---- year rules -------------------------------------------------------- */
+
+/* The feed is grouped the way the article ids are, by year. If the series ever
+   adopts volumes this label is where that happens. */
+.uwtn-year {
+  font-family: var(--uwtn-sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--uwtn-muted);
+  margin: 2.4rem 0 0.9rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid var(--uwtn-ink);
+}
+
+.uwtn-year:first-child { margin-top: 0; }
+.uwtn-year + .uwtn-entry { border-top: none; padding-top: 0.2rem; }
+
+/* ---- the lead item ----------------------------------------------------- */
+
+.uwtn-lead {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 1.6rem;
+  align-items: start;
+}
+
+.uwtn-lead .uwtn-thumb { order: 2; }
+.uwtn-lead .uwtn-entry-text { order: 1; }
+
+.uwtn-lead :is(h1, h2, h3, h4) { font-size: 2rem; line-height: 1.12; }
+.uwtn-lead .uwtn-entry-summary { font-size: 1.08rem; }
+
+.uwtn-thumb {
+  display: block;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid var(--uwtn-rule);
+}
+
+.uwtn-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  /* Decorative, so it should not compete with the words. */
+  filter: saturate(0.82);
+  transition: filter 0.25s ease, transform 0.4s ease;
+}
+
+.uwtn-thumb:hover img { filter: saturate(1); transform: scale(1.02); }
+
+/* ---- article banner ---------------------------------------------------- */
+
+/* Kept from the Ghost posts, and only on the web: the banner is a raw HTML
+   block, which the HTML build renders and the Typst build drops, so the
+   archival PDF stays free of decoration. */
+.uwtn-banner {
+  margin: 0 0 2rem;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid var(--uwtn-rule);
+}
+
+.uwtn-banner img {
+  display: block;
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+}
+
+@media (max-width: 720px) {
+  .uwtn-lead { grid-template-columns: 1fr; gap: 1rem; }
+  .uwtn-lead .uwtn-thumb { order: 1; }
+  .uwtn-lead .uwtn-entry-text { order: 2; }
+  .uwtn-lead :is(h1, h2, h3, h4) { font-size: 1.5rem; }
+  .uwtn-banner img { max-height: 180px; }
+}

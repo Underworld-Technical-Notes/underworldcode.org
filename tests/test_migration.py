@@ -269,3 +269,43 @@ def test_myst_style_option_is_declared():
     myst = (ROOT / "myst.yml").read_text(encoding="utf-8")
     assert "style: static/uwtn.css" in myst, \
         "site.options.style is what survives hydration; the inline is only for first paint"
+
+
+# --------------------------------------------------------------------------
+# Banners belong on the web, not on page one of an archival PDF. The visible
+# block is derived from the `banner:` front matter so it can be removed for the
+# Typst build. (Raw HTML is NOT dropped by Typst -- an earlier assumption that
+# it was put a stock photograph on the front of every PDF.)
+# --------------------------------------------------------------------------
+
+def test_banner_block_round_trips():
+    banner_body = load("banner_body")
+    text = ('---\ntitle: T\nbanner: figures/banner.jpg\n---\n'
+            '<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>\n\n'
+            'Body.\n')
+    assert banner_body.banner_from_frontmatter(text) == "figures/banner.jpg"
+    head, sep, body = text.partition("\n---\n")
+    stripped = banner_body.BANNER_BLOCK.sub("", body, count=1)
+    assert "uwtn-banner" not in stripped and stripped.startswith("Body.")
+
+
+def test_every_banner_is_local():
+    """Hot-linked feature images are how sixteen figures were already lost."""
+    import re
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        text = path.read_text(encoding="utf-8")
+        for src in re.findall(r'<div class="uwtn-banner"><img src="([^"]*)"', text):
+            assert not src.startswith("http"), "%s hot-links its banner" % path.parent.name
+            assert (path.parent / src).exists(), "%s: missing %s" % (path.parent.name, src)
+
+
+def test_toc_is_generated_and_grouped_by_year():
+    myst = (ROOT / "myst.yml").read_text(encoding="utf-8")
+    assert "# BEGIN GENERATED TOC" in myst and "# END GENERATED TOC" in myst
+    # A bare year is parsed as an integer and MyST rejects a non-string title.
+    import re
+    for title in re.findall(r"^\s+- title: (.+)$", myst, re.M):
+        assert title.startswith('"'), "toc title %s must be quoted" % title
+    slugs = {p.parent.name for p in (ROOT / "articles").glob("*/*.md")}
+    for slug in slugs:
+        assert "articles/%s/%s.md" % (slug, slug) in myst, "%s missing from the toc" % slug

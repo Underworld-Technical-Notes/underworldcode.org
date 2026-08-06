@@ -12,6 +12,7 @@ authors:
   - name: Romain Beucher
 doi: 10.59350/brqdq-9yq62
 license: CC-BY-4.0
+banner: figures/banner.jpg
 keywords:
   - Underworld Code
   - Geodynamics
@@ -25,6 +26,8 @@ exports:
 parts:
   abstract: "Underworld is a code for geodynamics — mantle convection, lithospheric deformation, subduction, ice flow. We solve coupled, nonlinear PDEs with complex rheologies using Lagrangian particles to track material history. The project has been running for 20 years: why did we start again ?"
 ---
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+
 ## UW1 and UW2: Same Wolf, different clothes
 
 Underworld1 assembled simulations from modular C components via XML configuration files: deterministic, reproducible, and rigid. Changing the physics meant writing C code and registering it in the XML framework. The target audience narrowed to people who could write C in a specific component architecture and, you'd have to admit, this is not a recipe for widespread adoption.

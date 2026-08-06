@@ -9,6 +9,7 @@ authors:
       - Australian National University
 doi: 10.59350/rmayz-81x80
 license: CC-BY-4.0
+banner: figures/banner.jpg
 keywords:
   - Underworld Code
   - Tricks of the Trade
@@ -22,6 +23,8 @@ exports:
 parts:
   abstract: "Underworld3 has about 50,000 lines of Python/ Cython wrapping PETSc, SymPy, and a just-in-time compiler. I began a trial of AI coding tools in 2025 and they have gradually become central to the way our team works. This is a story of co-evolution as much as it is about adoption of a new set of tools."
 ---
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+
 Our story begins with an underworld side-project: me working on an evaluation branch of underworld3, undertaking a complicated refactor of particle / mesh interaction modules. The complexity was getting the better of me, and I wondered if it would help to have an AI tool oversee the implementation of some of the more detailed work where I was making too many mistakes.
 
 Initially, human and AI were continually in tension. The AI tools would make rudimentary mistakes and repeat them even after re-direction. The human struggled to contain his frustration and (as a result) did not give sufficiently clear direction. The breakthrough came after a realisation that, the first thing we should have done all along was to refactor underworld3 to be AI-developer friendly. The changes that came along during that refactor made the code considerably easier for humans to learn and use as well.

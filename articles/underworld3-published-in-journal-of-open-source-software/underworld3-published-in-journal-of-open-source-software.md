@@ -11,6 +11,7 @@ authors:
   - name: John Mansour
 doi: 10.59350/a085z-qzh60
 license: CC-BY-4.0
+banner: figures/banner.jpg
 keywords:
   - Underworld Code
   - Python/Jupyter
@@ -23,6 +24,8 @@ exports:
 parts:
   abstract: "The aim of underworld3 is to provide strong support to users in developing sophisticated mathematical models, and provide the ability to interrogate those models during development and at run-time. Underworld3 encodes the mathematical structure of the equations it solves in symbolic form."
 ---
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+
 ```{image} figures/status.svg
 :alt: DOI
 :target: https://doi.org/10.21105/joss.07831

@@ -10,6 +10,7 @@ authors:
   - name: Ben Knight
 doi: 10.59350/2390e-w7d86
 license: CC-BY-4.0
+banner: figures/banner.jpg
 keywords:
   - Underworld Code
   - development
@@ -22,6 +23,8 @@ exports:
 parts:
   abstract: "Non-dimensionalisation (rewriting problems to make them re-scalable from lab to the real world) is a specialised task that all modellers confront at some point. It is important for accurate and efficient numerical solutions. Can we take away the pain that comes with the task ?"
 ---
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+
 Geodynamics involves quantities that span extraordinary ranges. Viscosity might be $10^{21}$ Pa·s, density $3300$ kg/m$^3$, thermal diffusivity $10^{-6}$ m$^2$/s. A single model combines all of these, and the solver needs them in a form where the numbers are close to unity. That means we need to non-dimensionalise our systems of equations. Every user of a geodynamics code does this in some fashion, but most codes force the user to do the book keeping themselves.
 
 Underworld3 handles this differently. You write a model in physical units. The framework tracks those units through the symbolic pipeline, non-dimensionalises everything before it reaches PETSc, and re-dimensionalises the results when you read them back. The solver always works in non-dimensional space, but you never see a non-dimensionalised quantity unless you ask for one.

@@ -90,7 +90,7 @@ def format_date(iso):
     return "%d %s %d" % (date.day, date.strftime("%B"), date.year)
 
 
-def entry_html(meta, description, has_pdf):
+def entry_html(meta, description, has_pdf, banner=None, lead=False):
     slug = meta["slug"]
     authors = [a.get("name", "") for a in (meta.get("authors") or [])]
     if len(authors) > 2:
@@ -115,8 +115,13 @@ def entry_html(meta, description, has_pdf):
     # class but keeping the semantics) and is styled by descendant selector.
     # No blank lines: a blank line ends a raw HTML block in markdown, which
     # silently hands the rest of the entry back to the markdown parser.
+    thumb = ('<a class="uwtn-thumb" href="/%s/"><img src="/%s/%s" alt=""></a>'
+             % (slug, slug, banner)) if banner else ""
+
     return "".join([
-        '<div class="uwtn-entry">',
+        '<div class="uwtn-entry%s">' % (" uwtn-lead" if lead else ""),
+        thumb,
+        '<div class="uwtn-entry-text">',
         '<div class="uwtn-entry-meta">',
         '<span class="uwtn-id">%s</span>' % html.escape(str(meta.get("id") or "")),
         '<span class="uwtn-date">%s</span>' % format_date(meta.get("publication_date")),
@@ -128,7 +133,55 @@ def entry_html(meta, description, has_pdf):
         '<div class="uwtn-entry-links">%s</div>' % " ".join(links),
         ('<div class="uwtn-tags">%s</div>' % tags) if tags else "",
         '</div>',
+        '</div>',
     ])
+
+
+TOC_BEGIN = "  # BEGIN GENERATED TOC"
+TOC_END = "  # END GENERATED TOC"
+
+
+def write_toc(metas):
+    """Rewrite the toc in myst.yml, grouped by year, newest first.
+
+    The sidebar is the reader's sense of the series over time, so it is
+    organised the way the article ids are: by year. If the series ever adopts
+    volumes, this is where that renaming happens -- nothing else depends on the
+    grouping.
+
+    Generated between markers rather than by rewriting the whole file, so the
+    rest of myst.yml stays hand-edited.
+    """
+    myst = ROOT / "myst.yml"
+    text = myst.read_text(encoding="utf-8")
+    if TOC_BEGIN not in text or TOC_END not in text:
+        sys.exit("myst.yml is missing the generated-toc markers")
+
+    by_year = {}
+    for meta, _description, _pdf in metas:
+        year = str(meta.get("publication_date") or "")[:4] or "undated"
+        by_year.setdefault(year, []).append(meta)
+
+    lines = ["  toc:", "    - file: index.md"]
+    for year in sorted(by_year, reverse=True):
+        lines.append('    - title: "%s"' % year)
+        lines.append("      children:")
+        for meta in by_year[year]:
+            slug = meta["slug"]
+            lines.append("        - file: articles/%s/%s.md" % (slug, slug))
+
+    head, _, rest = text.partition(TOC_BEGIN)
+    _, _, tail = rest.partition(TOC_END)
+    myst.write_text("%s%s\n%s\n%s%s" % (head, TOC_BEGIN, "\n".join(lines), TOC_END, tail),
+                    encoding="utf-8")
+    return by_year
+
+
+def banner_of(directory):
+    for candidate in ("banner.jpg", "banner.png", "banner.webp"):
+        if (directory / "figures" / candidate).exists():
+            return "figures/" + candidate
+    return None
 
 
 def main():
@@ -147,7 +200,21 @@ def main():
         sys.exit("no articles found -- run `pixi run migrate` first")
 
     with_doi = sum(1 for m, _d, _p in metas if m.get("doi"))
-    entries = "\n".join(entry_html(m, d, p) for m, d, p in metas)
+    by_year = write_toc(metas)
+
+    # The most recent note leads, shown larger and with its banner; the rest
+    # follow as a compact list under a rule for each year.
+    blocks, seen_year = [], None
+    for index, (meta, description, has_pdf) in enumerate(metas):
+        year = str(meta.get("publication_date") or "")[:4]
+        if year != seen_year:
+            blocks.append('<div class="uwtn-year">%s</div>' % year)
+            seen_year = year
+        directory = ARTICLES / meta["slug"]
+        blocks.append(entry_html(meta, description, has_pdf,
+                                 banner=banner_of(directory) if index == 0 else None,
+                                 lead=(index == 0)))
+    entries = "\n".join(blocks)
 
     page = """---
 title: Underworld Technical Notes

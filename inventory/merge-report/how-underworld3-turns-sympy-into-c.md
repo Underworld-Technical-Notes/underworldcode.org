@@ -4,7 +4,7 @@ Prose from the published article, structure from the drafted original.
 
 - **took-published**: 3
 - **kept-original**: 6
-- **added-in-ghost**: 7
+- **added-in-ghost**: 8
 - **dropped-from-draft**: 1
 
 ## Blocks dropped from the draft

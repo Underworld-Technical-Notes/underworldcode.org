@@ -2,10 +2,10 @@
 
 Prose from the published article, structure from the drafted original.
 
-- **took-published**: 4
+- **took-published**: 5
 - **kept-original**: 23
 - **added-in-ghost**: 2
-- **dropped-from-draft**: 2
+- **dropped-from-draft**: 1
 
 ## Blocks dropped from the draft
 
@@ -13,14 +13,12 @@ These were in the drafted original but are not prose in the merged article. Each
 
 - *(heading, too short to locate)* ### Example Interaction
 
-### Never published — decide whether to restore
-
-- *(prose)* Underworld3 has about 50,000 lines of Python/Cython wrapping PETSc, SymPy, and a just-in-time compiler. I began a trial of AI coding tools in 2025 and they have gradually become central to the way our team works. This is a story of co-evolution as much as it is about adoption of a new set of tools.
-
 ## Prose taken from the published article
 
 The draft wording is shown first, the published wording second.
 
+- draft: Underworld3 has about 50,000 lines of Python/Cython wrapping PETSc, SymPy, and a just-in-time compiler. I began a trial of AI coding tools in 2025 and they have gradually become ce
+  <br>published: <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
 - draft: ``` > stokes.constitutive_model.flux σ = 2 · 1 · ε̇(u) ```
   <br>published: > stokes.constitutive_model.flux
 - draft: ``` > viscosity_fn η₀ · exp(-γ · y) ```

@@ -9,6 +9,7 @@ authors:
       - Australian National University
 doi: 10.59350/6mxqs-3p708
 license: CC-BY-4.0
+banner: figures/banner.jpg
 keywords:
   - Underworld Code
   - development
@@ -21,6 +22,8 @@ exports:
 parts:
   abstract: "One of the less glamorous but important problems in a finite element framework is this: how does the user assign values to a field variable, and how does the framework ensure that PETSc sees those values correctly, in parallel, without the user needing to keep track themselves?"
 ---
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+
 In Underworld2, the answer was context managers. You would wrap every data access in a `with` block, and the framework synchronised the arrays on exit. It was safe, but verbose.
 
 In Underworld3, you just write to the array. The synchronisation happens automatically.

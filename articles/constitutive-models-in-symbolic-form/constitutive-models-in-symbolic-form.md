@@ -9,6 +9,7 @@ authors:
       - Australian National University
 doi: 10.59350/5fe9q-8ps48
 license: CC-BY-4.0
+banner: figures/banner.jpg
 keywords:
   - Underworld Code
   - Tricks of the Trade
@@ -22,6 +23,8 @@ exports:
 parts:
   abstract: "A constitutive model is a Python class where the relationship between fluxes and gradients is encoded in SymPy. At every stage the mathematics is visible, inspectable, and differentiable. The framework handles Jacobians, C code generation, and PETSc integration. You handle the physics."
 ---
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+
 In Underworld2, adding a new rheology was a matter of writing C code inside the StGermain framework, compiling it, and registering it with the component system. The barrier was high enough that most users never tried. The available rheologies were the ones the developers had implemented, and combining them required understanding the C internals.
 
 In Underworld3, a constitutive model is a Python class where the relationship between fluxes and gradients is encoded as a SymPy expression. You can build a viscous model, add plasticity, add elasticity, make it anisotropic. At every stage the mathematics is visible, inspectable, and differentiable. The framework handles Jacobians, C code generation, and PETSc integration. You handle the physics.

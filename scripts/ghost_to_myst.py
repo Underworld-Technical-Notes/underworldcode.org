@@ -495,7 +495,37 @@ def write_metadata(path, rec, doi, figures, article_id):
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def frontmatter(rec, doi, article_id):
+def localise_banner(rec, dest_dir):
+    """Bring the post's feature image alongside the article.
+
+    Ghost hot-links these to images.unsplash.com. They are decorative, but the
+    same hot-linking is why sixteen figures in this corpus no longer exist, so
+    they are fetched once and stored with the article.
+
+    Returns the local filename, or None.
+    """
+    src = rec.get("feature_image") or ""
+    if not src:
+        return None
+    path, error = cached_asset(src)
+    if error or not path.exists():
+        return None
+    head = path.read_bytes()[:12]
+    if head[:3] == b"\xff\xd8\xff":
+        suffix = ".jpg"
+    elif head[:8] == b"\x89PNG\r\n\x1a\n":
+        suffix = ".png"
+    elif head[:4] == b"RIFF":
+        suffix = ".webp"
+    else:
+        return None            # not an image we recognise; skip rather than guess
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    name = "banner" + suffix
+    shutil.copy2(path, dest_dir / name)
+    return name
+
+
+def frontmatter(rec, doi, article_id, banner=None):
     authors = rec.get("authors") or []
     lines = ["---", "title: %s" % yaml_str(rec.get("title") or "")]
     subtitle = (rec.get("custom_excerpt") or "").strip()
@@ -515,6 +545,11 @@ def frontmatter(rec, doi, article_id):
     if doi:
         lines.append("doi: %s" % doi)
     lines.append("license: CC-BY-4.0")
+    if banner:
+        # Gives the theme an og:image for sharing. The visible banner is a raw
+        # HTML block in the body, which the HTML build renders and the Typst
+        # build drops -- decorative on the web, absent from the archival PDF.
+        lines.append("banner: figures/%s" % banner)
     tags = [t.get("name") for t in (rec.get("tags") or []) if t.get("name")]
     if tags:
         lines.append("keywords:")
@@ -640,6 +675,7 @@ def main():
         dest = ARTICLES / slug
         dest.mkdir(parents=True, exist_ok=True)
 
+        banner = localise_banner(rec, dest / "figures")
         source = rec.get("html") or ""
         for find, replace, _why in CORRECTIONS.get(slug, []):
             if find in source:
@@ -654,8 +690,11 @@ def main():
         body = conv.markdown()
 
         doi = dois.get(slug, "")
+        if banner:
+            body = ('<div class="uwtn-banner"><img src="figures/%s" alt=""></div>\n\n'
+                    % banner) + body
         (dest / ("%s.md" % slug)).write_text(
-            frontmatter(rec, doi, ids.get(slug, "")) + body, encoding="utf-8")
+            frontmatter(rec, doi, ids.get(slug, ""), banner) + body, encoding="utf-8")
         write_metadata(dest / "metadata.yml", rec, doi, conv.figures, ids.get(slug, ""))
 
         fig_notes = []

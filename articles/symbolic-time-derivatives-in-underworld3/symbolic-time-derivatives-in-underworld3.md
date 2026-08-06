@@ -8,6 +8,7 @@ authors:
     affiliations:
       - Australian National University
 license: CC-BY-4.0
+banner: figures/banner.jpg
 keywords:
   - Underworld Code
   - Tricks of the Trade
@@ -22,6 +23,8 @@ exports:
 parts:
   abstract: "In Underworld3, the time derivative is a symbolic object. It appears in the solver's strong form as a SymPy expression, alongside the constitutive stress and the body force."
 ---
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+
 A symbolic time derivatives: you can inspect it, display it in a notebook, and verify that the time discretisation is doing what you expect. And you can swap between Lagrangian, Semi-Lagrangian, and Eulerian approaches without rewriting the solver. Sympy introduces incredible flexibility for on-the-fly composition of time-dependent problems.
 
 Many geodynamics equations involve a material derivative. Temperature advection-diffusion, viscoelastic stress transport, Navier-Stokes momentum. The material derivative $D\phi/Dt$ combines the time rate of change with advection by the flow:
