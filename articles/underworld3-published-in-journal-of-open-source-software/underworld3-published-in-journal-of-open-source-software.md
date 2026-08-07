@@ -109,4 +109,4 @@ Meurer, A., Smith, C. P., Paprocki, M., Čertík, O., Kirpichev, S. B., Rocklin,
 
 **Moresi et al. (2025). Underworld3: Mathematically Self-Describing Modelling in Python for Desktop, HPC and Cloud. Journal of Open Source Software, 10(112), 7831. **[**https://doi.org/10.21105/joss.07831**](https://doi.org/10.21105/joss.07831)
 
-<div class="uwtn-discuss"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld3-published-in-journal-of-open-source-software">Discuss this note on GitHub</a></div>
+<div class="uwtn-comments"><iframe src="https://giscus.app/en/widget?repo=Underworld-Technical-Notes%2Funderworldcode.org&repoId=R_kgDOTvdKWg&category=Announcements&categoryId=DIC_kwDOTvdKWs4DC1FQ&mapping=specific&term=underworld3-published-in-journal-of-open-source-software&reactionsEnabled=1&emitMetadata=0&inputPosition=top&theme=preferred_color_scheme&lang=en" title="Comments" loading="lazy"></iframe></div>

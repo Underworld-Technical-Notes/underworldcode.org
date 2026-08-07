@@ -196,4 +196,4 @@ In UW3, the time derivative is an object you can create, configure, inspect, and
 
 This is the same design principle we described in the [constitutive models post](/constitutive-models-in-symbolic-form/): separate the physics from the numerics, connect them through symbolic expressions, and make both sides inspectable. For constitutive models, the boundary is the stress tensor. For time derivatives, it is the BDF/AM expression. In both cases, the solver sees a SymPy expression and does not need to know how it was constructed.
 
-<div class="uwtn-discuss"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=symbolic-time-derivatives-in-underworld3">Discuss this note on GitHub</a></div>
+<div class="uwtn-comments"><iframe src="https://giscus.app/en/widget?repo=Underworld-Technical-Notes%2Funderworldcode.org&repoId=R_kgDOTvdKWg&category=Announcements&categoryId=DIC_kwDOTvdKWs4DC1FQ&mapping=specific&term=symbolic-time-derivatives-in-underworld3&reactionsEnabled=1&emitMetadata=0&inputPosition=top&theme=preferred_color_scheme&lang=en" title="Comments" loading="lazy"></iframe></div>

@@ -137,4 +137,4 @@ The callback approach eliminates an entire class of bugs. You cannot forget to s
 
 The cost is one `id()` comparison per `.data` access and one callback dispatch per write. For user-level operations — setting initial conditions, post-processing solution fields, checkpointing — this is negligible. For solver-level operations — millions of quadrature evaluations — the direct `.vec` path bypasses it entirely.
 
-<div class="uwtn-discuss"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=mesh-variables-and-petsc-vectors-keeping-arrays-in-sync">Discuss this note on GitHub</a></div>
+<div class="uwtn-comments"><iframe src="https://giscus.app/en/widget?repo=Underworld-Technical-Notes%2Funderworldcode.org&repoId=R_kgDOTvdKWg&category=Announcements&categoryId=DIC_kwDOTvdKWs4DC1FQ&mapping=specific&term=mesh-variables-and-petsc-vectors-keeping-arrays-in-sync&reactionsEnabled=1&emitMetadata=0&inputPosition=top&theme=preferred_color_scheme&lang=en" title="Comments" loading="lazy"></iframe></div>

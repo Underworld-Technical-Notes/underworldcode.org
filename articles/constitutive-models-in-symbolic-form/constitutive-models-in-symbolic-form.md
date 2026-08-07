@@ -250,4 +250,4 @@ The boundary between the two is a SymPy Matrix. Everything on one side of that b
 
 In UW2, the physics and numerics were entangled in C. Changing one required understanding both. In UW3, you can write a new rheology in an afternoon, in a notebook, without compiling anything. That is the practical consequence of making constitutive models symbolic objects.
 
-<div class="uwtn-discuss"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=constitutive-models-in-symbolic-form">Discuss this note on GitHub</a></div>
+<div class="uwtn-comments"><iframe src="https://giscus.app/en/widget?repo=Underworld-Technical-Notes%2Funderworldcode.org&repoId=R_kgDOTvdKWg&category=Announcements&categoryId=DIC_kwDOTvdKWs4DC1FQ&mapping=specific&term=constitutive-models-in-symbolic-form&reactionsEnabled=1&emitMetadata=0&inputPosition=top&theme=preferred_color_scheme&lang=en" title="Comments" loading="lazy"></iframe></div>

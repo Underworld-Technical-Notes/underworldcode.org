@@ -84,4 +84,4 @@ Underworld3 3.0.0 marks the point where the new architecture is mature enough to
 
 In upcoming posts, we go deeper into the machinery: how SymPy expressions become C code, how particles navigate a parallel mesh, how the units system tracks physical dimensions through the pipeline, and how we build geographic meshes for regional models.
 
-<div class="uwtn-discuss"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=our-journey-from-underworld2-to-underworld3">Discuss this note on GitHub</a></div>
+<div class="uwtn-comments"><iframe src="https://giscus.app/en/widget?repo=Underworld-Technical-Notes%2Funderworldcode.org&repoId=R_kgDOTvdKWg&category=Announcements&categoryId=DIC_kwDOTvdKWs4DC1FQ&mapping=specific&term=our-journey-from-underworld2-to-underworld3&reactionsEnabled=1&emitMetadata=0&inputPosition=top&theme=preferred_color_scheme&lang=en" title="Comments" loading="lazy"></iframe></div>

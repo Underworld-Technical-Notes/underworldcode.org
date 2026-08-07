@@ -1,9 +1,11 @@
 # Comments, via Giscus — GitHub Discussions rendered in the page.
 #
-# Set `enabled: true` once the Giscus GitHub App is installed on this
-# repository: https://github.com/apps/giscus. Until then the API answers
-# {"error":"giscus is not installed on this repository"} and the widget would
-# render an error box, so articles carry a plain link to Discussions instead.
+# The Giscus GitHub App is installed on this repository (verified: the API
+# answers "Discussion not found" rather than "giscus is not installed", which
+# is the state before a thread's first comment -- Giscus creates each thread
+# when someone first comments).
+#
+# Set `enabled: false` to fall back to a plain link to Discussions.
 #
 # Delivered as Giscus's **iframe widget**, not its <script> tag. Two findings
 # behind that, both established rather than assumed:
@@ -19,7 +21,7 @@
 # our origin. The trade-off is that Giscus's auto-resize needs its script's
 # postMessage listener, so the frame has a fixed height and scrolls internally.
 
-enabled: false
+enabled: true
 
 repo: Underworld-Technical-Notes/underworldcode.org
 repo_id: R_kgDOTvdKWg

@@ -472,16 +472,26 @@ def test_dead_pages_are_not_carried_over():
         assert slug not in declared, "%s was carried over despite being dead" % slug
 
 
-def test_discussion_link_is_web_only():
-    """A live affordance belongs on the site, not in the fixed record."""
+def test_discussion_affordance_is_web_only():
+    """A live affordance belongs on the site, not in the fixed record.
+
+    It takes either form -- the embedded Giscus thread when comments are
+    enabled, a plain link to Discussions when they are not -- and the stripper
+    has to remove whichever is present, or a comment widget ends up in an
+    archival PDF.
+    """
     banner_body = load("banner_body")
     for path in sorted((ROOT / "articles").glob("*/*.md")):
-        assert "uwtn-discuss" in path.read_text(encoding="utf-8"), \
-            "%s has no discussion link" % path.parent.name
-    # And the stripper removes it, which is what keeps it out of the PDF.
-    sample = '---\ntitle: T\n---\nBody.\n\n<div class="uwtn-discuss"><a href="#">x</a></div>\n'
-    _head, _sep, body = sample.partition("\n---\n")
-    assert "uwtn-discuss" not in banner_body.DISCUSS_BLOCK.sub("\n", body)
+        text = path.read_text(encoding="utf-8")
+        assert "uwtn-discuss" in text or "uwtn-comments" in text, \
+            "%s offers no way to discuss it" % path.parent.name
+
+    for markup in ('<div class="uwtn-discuss"><a href="#">x</a></div>',
+                   '<div class="uwtn-comments"><iframe src="#"></iframe></div>'):
+        sample = "---\ntitle: T\n---\nBody.\n\n%s\n" % markup
+        _head, _sep, body = sample.partition("\n---\n")
+        stripped = banner_body.DISCUSS_BLOCK.sub("\n", body)
+        assert "uwtn-" not in stripped, "not stripped for the PDF: %s" % markup
 
 
 def test_no_third_party_scripts_are_loaded():
