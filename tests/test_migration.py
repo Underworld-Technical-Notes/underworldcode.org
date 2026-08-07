@@ -609,3 +609,42 @@ def test_bootstrap_javascript_parses():
         path = fh.name
     result = subprocess.run(["node", "--check", path], capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
+
+
+# --------------------------------------------------------------------------
+# DOI minting. The failure that must never happen is a second DOI for a note
+# that already has one -- see PUBLISHING.md.
+# --------------------------------------------------------------------------
+
+def test_no_article_can_be_deposited_twice():
+    """An article with a DOI must also record who minted it and its record id.
+
+    The publish command refuses to create a new record when
+    repository_record_id is set. That only works if the field is populated, so
+    the invariant is checked here rather than discovered at deposit time.
+    """
+    build_index = load("build_index")
+    for path in sorted((ROOT / "articles").glob("*/metadata.yml")):
+        meta = build_index.read_yaml(path)
+        if not meta.get("doi"):
+            continue
+        assert meta.get("doi_registrant"), \
+            "%s has a DOI but does not say who minted it" % path.parent.name
+        if meta["doi_registrant"] == "rogue-scholar":
+            # Legacy Crossref registrations: never re-deposited, so they carry
+            # no repository record of ours.
+            assert not meta.get("repository_record_id"), \
+                "%s is a legacy DOI and must not have a deposit record" % path.parent.name
+
+
+def test_legacy_dois_are_never_paired_with_a_new_registrant():
+    import csv
+    register = ROOT / "inventory" / "doi-register.csv"
+    with register.open(encoding="utf-8") as fh:
+        legacy = {row["slug"] for row in csv.DictReader(fh)}
+    build_index = load("build_index")
+    for path in sorted((ROOT / "articles").glob("*/metadata.yml")):
+        meta = build_index.read_yaml(path)
+        if meta.get("slug") in legacy:
+            assert meta.get("doi_registrant") == "rogue-scholar", \
+                "%s already has a Crossref DOI; depositing it would duplicate" % meta["slug"]
