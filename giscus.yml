@@ -5,7 +5,7 @@
 # is the state before a thread's first comment -- Giscus creates each thread
 # when someone first comments).
 #
-# Set `enabled: false` to fall back to a plain link to Discussions.
+# Set `enabled: true` to fall back to a plain link to Discussions.
 #
 # Delivered as Giscus's **iframe widget**, not its <script> tag. Two findings
 # behind that, both established rather than assumed:
@@ -21,7 +21,7 @@
 # our origin. The trade-off is that Giscus's auto-resize needs its script's
 # postMessage listener, so the frame has a fixed height and scrolls internally.
 
-enabled: false
+enabled: true
 
 repo: Underworld-Technical-Notes/underworldcode.org
 repo_id: R_kgDOTvdKWg
@@ -37,6 +37,6 @@ category_id: DIC_kwDOTvdKWs4DC1FQ
 site_url: https://underworld-technical-notes.github.io/underworldcode.org
 
 mapping: specific
-reactions_enabled: false
+reactions_enabled: true
 theme: preferred_color_scheme
 height: 520

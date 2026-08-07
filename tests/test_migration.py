@@ -563,3 +563,38 @@ def test_giscus_widget_carries_an_origin():
         return
     block = banner_body.discuss_block(ROOT / "articles" / "x" / "some-slug.md")
     assert "origin=" in block and "some-slug" in block.split("origin=")[1][:200]
+
+
+def test_giscus_bootstrap_waits_for_hydration():
+    """Anything present before hydration is reconciled away.
+
+    The theme calls hydrateRoot(document, ...), so React owns the whole
+    document. The bootstrap must therefore add nothing until hydration has
+    finished -- and must survive client-side navigation, since the theme never
+    reloads the page between articles.
+    """
+    inject = load("inject_comments")
+    config = inject.load_config()
+    if config.get("enabled") != "true":
+        return
+    script = inject.bootstrap(config)
+    assert 'addEventListener("load"' in script, "must wait for hydration"
+    assert "MutationObserver" in script, "must survive client-side navigation"
+    assert "giscus.app/client.js" in script, "must load the real script, not the iframe"
+    assert ".uwtn-discuss" in script, "the link stays as the fallback anchor"
+
+
+def test_bootstrap_javascript_parses():
+    import re
+    import subprocess
+    import tempfile
+    inject = load("inject_comments")
+    config = inject.load_config()
+    if config.get("enabled") != "true":
+        return
+    body = re.search(r"<script id=\"[^\"]*\">(.*)</script>", inject.bootstrap(config), re.S)
+    with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False) as fh:
+        fh.write(body.group(1))
+        path = fh.name
+    result = subprocess.run(["node", "--check", path], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
