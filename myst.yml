@@ -42,7 +42,6 @@ project:
         - file: pages/publications-using-uw.md
         - file: pages/ugcomm.md
         - file: pages/underworld-model-exchange.md
-        - file: pages/underworld-steering-committee.md
     - title: "2026"
       children:
         - file: articles/finding-particles-in-a-distributed-unstructured-mesh/finding-particles-in-a-distributed-unstructured-mesh.md
@@ -71,8 +70,6 @@ site:
           url: /ugcomm
         - title: "Credits"
           url: /credits
-        - title: "Steering committee"
-          url: /underworld-steering-committee
         - title: "How to cite"
           url: /how-to-cite-underworld
     - title: "Underworld"

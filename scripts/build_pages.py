@@ -69,8 +69,26 @@ def zotero_bibliography(group, collection, refresh=False):
     return body
 
 
+DOI_ANCHOR = re.compile(r'<a[^>]+href="https?://(?:dx\.)?doi\.org/([^"]+)"[^>]*>(.*?)</a>', re.S)
+# The converter emits markdown links, so the same rule has to apply to those.
+DOI_MARKDOWN = re.compile(r'\[([^\]]*)\]\(https?://(?:dx\.)?doi\.org/([^)]+)\)')
+
+
+def unlink_dois(text):
+    """Render DOIs as text rather than links.
+
+    MyST rewrites any doi.org href into a citation and appends a References
+    section built from them. On a page that is already a bibliography that
+    duplicates every entry; on a catalogue it lists works that have nothing to
+    do with the page. The DOI stays visible either way -- it is an identifier,
+    and this site is not the place it needs to be clickable.
+    """
+    text = DOI_ANCHOR.sub(lambda m: m.group(2) or m.group(1), text)
+    return DOI_MARKDOWN.sub(lambda m: m.group(1) or m.group(2), text)
+
+
 def bibliography_html(raw):
-    entries = re.findall(r'<div class="csl-entry">(.*?)</div>', raw, re.S)
+    entries = re.findall(r'<div class="csl-entry">(.*?)</div>', unlink_dois(raw), re.S)
     items = "".join(
         '<div class="uwtn-ref">%s</div>' % " ".join(entry.split()) for entry in entries)
     return len(entries), '<div class="uwtn-bibliography">%s</div>' % items
@@ -98,15 +116,22 @@ def main():
 
     written = []
     for slug, settings in config.items():
-        record = records.get(slug)
-        if record is None:
-            print("  MISSING from the Ghost export: %s" % slug, file=sys.stderr)
-            continue
-
-        conv = converter.GhostToMyst(slug)
-        conv.feed(record.get("html") or "")
-        conv.close()
-        body = conv.markdown()
+        written_source = settings.get("source")
+        if written_source:
+            # A hand-written replacement: the Ghost page was not worth
+            # migrating, but the page is worth having.
+            body = (ROOT / written_source).read_text(encoding="utf-8")
+            conv = converter.GhostToMyst(slug)
+            record = records.get(slug) or {}
+        else:
+            record = records.get(slug)
+            if record is None:
+                print("  MISSING from the Ghost export: %s" % slug, file=sys.stderr)
+                continue
+            conv = converter.GhostToMyst(slug)
+            conv.feed(record.get("html") or "")
+            conv.close()
+            body = unlink_dois(conv.markdown())
 
         note = ""
         if settings.get("zotero"):
@@ -122,9 +147,15 @@ def main():
             encoding="utf-8")
 
         for src, name, _alt, _cap in conv.figures:
+            # Already present means committed from an earlier run: page figures
+            # are kept in the repository because they come from the Ghost
+            # mirror and from GitHub, and CI has neither.
+            if (PAGES / "figures" / name).exists():
+                continue
             result = converter.copy_figure(src, name, PAGES / "figures")
             if not result.startswith(("copied", "localised")):
-                print("  %s: %s" % (slug, result), file=sys.stderr)
+                print("  %s: %s -- page figures must be committed"
+                      % (slug, result), file=sys.stderr)
 
         written.append((slug, len(body.split()), conv.dropped, note))
 

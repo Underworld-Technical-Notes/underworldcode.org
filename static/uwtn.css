@@ -440,3 +440,7 @@ a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); 
 .uwtn-discuss a { color: var(--uwtn-accent); text-decoration: none; }
 .uwtn-discuss a:hover { text-decoration: underline; }
 .uwtn-discuss a::after { content: " →"; }
+
+/* A DOI on a listing is an identifier, shown rather than linked -- see
+   scripts/build_index.py for why. */
+.uwtn-doi { color: var(--uwtn-muted); font-variant-numeric: tabular-nums; }

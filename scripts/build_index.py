@@ -106,8 +106,12 @@ def entry_html(meta, description, has_pdf, banner=None, lead=False):
         links.append('<a href="/%s/%s.pdf">PDF</a>' % (slug, slug))
     doi = meta.get("doi")
     if doi:
-        links.append('<a href="https://doi.org/%s"><span class="uwtn-doi-label">doi</span>%s</a>'
-                     % (doi, html.escape(doi)))
+        # Shown, not linked. MyST turns any doi.org href into a citation and
+        # appends a References section to the page, so linking the DOI here
+        # grew a bibliography of its own entries on the front page and on every
+        # topic page. The actionable DOI lives on the article itself.
+        links.append('<span class="uwtn-doi"><span class="uwtn-doi-label">doi</span>%s</span>'
+                     % html.escape(doi))
 
     facets = list(meta.get("subjects") or []) + list(meta.get("methods") or [])
     tags = "".join('<a class="uwtn-tag" href="/%s/">%s</a>'
