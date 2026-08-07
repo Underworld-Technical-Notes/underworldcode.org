@@ -40,6 +40,7 @@ project:
         - file: pages/how-to-cite-underworld.md
         - file: pages/intro-to-underworld.md
         - file: pages/publications-using-uw.md
+        - file: pages/submit.md
         - file: pages/ugcomm.md
         - file: pages/underworld-model-exchange.md
     - title: "2026"
@@ -82,6 +83,8 @@ site:
           url: /auscope-cloud
         - title: "Publications using Underworld"
           url: /publications-using-uw
+    - title: "Submit a note"
+      url: /submit
     - title: "Topics"
       url: /topics
   # END GENERATED NAV

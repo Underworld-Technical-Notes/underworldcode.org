@@ -10,7 +10,7 @@
 # be migration by inertia.
 #
 #   title   what the page is called here, if not what Ghost called it
-#   group   which header dropdown it belongs to
+#   group   which header dropdown it belongs to; omit for a top-level item
 #   source  a hand-written replacement, where the Ghost page is not worth
 #           migrating but the page itself is worth having
 #   zotero  <group>/<collection> for a bibliography baked in at build time
@@ -33,6 +33,10 @@
 #   lm-publications               One author's personal bibliography.
 #   group-publications            Superseded by publications-using-uw, which is
 #                                 the same idea done better.
+
+submit:
+  title: Submit a note
+  source: pages-src/submit.md
 
 ugcomm:
   title: About

@@ -1,5 +1,10 @@
 # Writing a technical note
 
+The reader-facing version of this is `/submit/` on the site, generated from
+`pages-src/submit.md`. That page explains what the series publishes and what
+happens after a pull request; this file is the mechanics for someone already
+in the repository. Keep them consistent — if the process changes, both move.
+
 ```bash
 pixi run new --slug my-note-slug --title "My note" --author louis
 ```

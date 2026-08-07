@@ -648,3 +648,16 @@ def test_legacy_dois_are_never_paired_with_a_new_registrant():
         if meta.get("slug") in legacy:
             assert meta.get("doi_registrant") == "rogue-scholar", \
                 "%s already has a Crossref DOI; depositing it would duplicate" % meta["slug"]
+
+
+def test_the_submission_route_is_discoverable():
+    """A route nobody can find is not a route.
+
+    The pull-request model is obvious once described and invisible until then,
+    so it has to be reachable from the front page and from the header.
+    """
+    ensure_generated()
+    assert 'href="/submit/"' in (ROOT / "index.md").read_text(encoding="utf-8"), \
+        "the front page does not say how to contribute"
+    assert "url: /submit" in (ROOT / "myst.yml").read_text(encoding="utf-8"), \
+        "Submit a note is missing from the header nav"

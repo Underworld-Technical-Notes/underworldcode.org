@@ -193,10 +193,14 @@ def write_nav():
             key, _, value = raw.strip().partition(":")
             pages[slug][key.strip()] = value.strip().strip('"')
 
-    groups = {}
+    groups, standalone = {}, []
     for slug, settings in pages.items():
-        groups.setdefault(settings.get("group", "More"), []).append(
-            (settings.get("title", slug), slug))
+        group = settings.get("group", "").strip()
+        if group:
+            groups.setdefault(group, []).append((settings.get("title", slug), slug))
+        else:
+            # No group: a plain nav item. A one-page dropdown is just a worse link.
+            standalone.append((settings.get("title", slug), slug))
 
     lines = ["  nav:"]
     for group, items in groups.items():
@@ -205,6 +209,9 @@ def write_nav():
         for title, slug in items:
             lines.append('        - title: "%s"' % title)
             lines.append("          url: /%s" % slug)
+    for title, slug in standalone:
+        lines.append('    - title: "%s"' % title)
+        lines.append("      url: /%s" % slug)
     lines.append('    - title: "Topics"')
     lines.append("      url: /topics")
 
@@ -444,7 +451,7 @@ site:
 %s
 </div>
 
-<div class="uwtn-colophon">%d notes, %d with a registered DOI. The DOI identifies the archival publication; this site is the current rendition and may carry corrections, updated links and discussion.</div>
+<div class="uwtn-colophon">%d notes, %d with a registered DOI. The DOI identifies the archival publication; this site is the current rendition and may carry corrections, updated links and discussion. Notes are written by the Underworld community — <a href="/submit/">how to submit one</a>.</div>
 """ % (entries, len(metas), with_doi)
 
     (ROOT / "index.md").write_text(page, encoding="utf-8")
