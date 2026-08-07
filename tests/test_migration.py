@@ -494,3 +494,28 @@ def test_no_third_party_scripts_are_loaded():
     for page in list(build.glob("*/index.html"))[:6]:
         for src in re.findall(r'<script[^>]+src="(https?://[^"]+)"', page.read_text(encoding="utf-8")):
             assert any(a in src for a in allowed), "third-party script: %s" % src
+
+
+def test_no_double_escaped_entities_in_generated_pages():
+    """MyST re-escapes text inside raw HTML blocks.
+
+    Pre-escaping it produced `&amp;amp;`, and the reader saw `&amp;` where an
+    ampersand belonged -- on every topic page and every tag chip.
+    """
+    import re
+    for path in [ROOT / "index.md"] + sorted((ROOT / "topics").glob("*.md")):
+        if not path.exists():
+            continue
+        assert "&amp;" not in path.read_text(encoding="utf-8"), \
+            "%s pre-escapes text that MyST will escape again" % path.name
+
+
+def test_text_helper_refuses_markup():
+    """Escaping angle brackets has the same doubling problem, so they are refused."""
+    build_index = load("build_index")
+    assert build_index.text("Benchmarks & validation") == "Benchmarks & validation"
+    try:
+        build_index.text("a <script> title")
+    except ValueError:
+        return
+    raise AssertionError("markup in a raw HTML block should be refused, not escaped")

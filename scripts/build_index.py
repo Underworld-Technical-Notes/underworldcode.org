@@ -27,6 +27,23 @@ ARTICLES = ROOT / "articles"
 FACET_LABELS = {}
 
 
+def text(value):
+    """Prepare a string for a raw HTML block that MyST will re-process.
+
+    MyST parses these blocks and escapes their text again on output, so
+    pre-escaping produces `&amp;amp;` and the reader sees `&amp;`. The text is
+    therefore passed through raw.
+
+    Angle brackets are refused rather than escaped: escaping them has the same
+    doubling problem, and a title containing markup is a mistake to surface
+    rather than to paper over.
+    """
+    value = str(value)
+    if "<" in value or ">" in value:
+        raise ValueError("angle brackets cannot be placed in a raw HTML block: %r" % value)
+    return value
+
+
 def read_yaml(path):
     """Parse the fixed-shape metadata.yml without a YAML dependency."""
     data, current_list, current_obj = {}, None, None
@@ -111,11 +128,11 @@ def entry_html(meta, description, has_pdf, banner=None, lead=False):
         # grew a bibliography of its own entries on the front page and on every
         # topic page. The actionable DOI lives on the article itself.
         links.append('<span class="uwtn-doi"><span class="uwtn-doi-label">doi</span>%s</span>'
-                     % html.escape(doi))
+                     % text(doi))
 
     facets = list(meta.get("subjects") or []) + list(meta.get("methods") or [])
     tags = "".join('<a class="uwtn-tag" href="/%s/">%s</a>'
-                   % (topic_slug(term), html.escape(FACET_LABELS.get(term, term)))
+                   % (topic_slug(term), text(FACET_LABELS.get(term, term)))
                    for term in facets)
 
     # MyST keeps div, span and a with their classes and drops everything else's
@@ -134,13 +151,13 @@ def entry_html(meta, description, has_pdf, banner=None, lead=False):
         thumb,
         '<div class="uwtn-entry-text">',
         '<div class="uwtn-entry-meta">',
-        '<span class="uwtn-id">%s</span>' % html.escape(str(meta.get("id") or "")),
+        '<span class="uwtn-id">%s</span>' % text(str(meta.get("id") or "")),
         '<span class="uwtn-date">%s</span>' % format_date(meta.get("publication_date")),
         '</div>',
         '<h2><a href="/%s/">%s</a></h2>' % (
-            slug, html.escape(str(meta.get("title") or slug))),
-        '<div class="uwtn-entry-byline">%s</div>' % html.escape(byline),
-        '<div class="uwtn-entry-summary">%s</div>' % html.escape(description),
+            slug, text(str(meta.get("title") or slug))),
+        '<div class="uwtn-entry-byline">%s</div>' % text(byline),
+        '<div class="uwtn-entry-summary">%s</div>' % text(description),
         '<div class="uwtn-entry-links">%s</div>' % " ".join(links),
         ('<div class="uwtn-tags">%s</div>' % tags) if tags else "",
         '</div>',
@@ -329,9 +346,9 @@ def write_topic_pages(metas):
             '<a href="/topics/">all topics</a></div>'
             '</div>\n\n'
             '<div class="uwtn-feed">\n{body}\n</div>\n'
-        ).format(label=html.escape(label_of.get(tag, tag)),
+        ).format(label=text(label_of.get(tag, tag)),
                  kicker="Subject" if axis_of.get(tag) == "subjects" else "Method",
-                 scope=html.escape(scope_of.get(tag, "")),
+                 scope=text(scope_of.get(tag, "")),
                  count=len(entries), plural="" if len(entries) == 1 else "s",
                  token=slug[len("topic-"):], body=body)
         (directory / ("%s.md" % slug)).write_text(page, encoding="utf-8")
@@ -343,7 +360,7 @@ def write_topic_pages(metas):
             continue
         links = "".join(
             '<a class="uwtn-topic-link" href="/%s/">%s<span class="uwtn-topic-count">%d</span></a>'
-            % (topic_slug(term), html.escape(label_of.get(term, term)), len(entries))
+            % (topic_slug(term), text(label_of.get(term, term)), len(entries))
             for term, entries in sorted(terms, key=lambda kv: (-len(kv[1]), kv[0])))
         unused = sorted(t_ for t_ in vocab.get(axis, {}) if t_ not in topics)
         note = ""
@@ -351,7 +368,7 @@ def write_topic_pages(metas):
             # Shown rather than hidden: an empty facet is a statement about the
             # corpus -- these are subjects the series has not covered yet.
             note = ('<div class="uwtn-unused">Not yet used: %s</div>'
-                    % ", ".join(html.escape(label_of[t_]) for t_ in unused))
+                    % ", ".join(text(label_of[t_]) for t_ in unused))
         sections.append('<div class="uwtn-axis"><div class="uwtn-year">%s</div>'
                         '<div class="uwtn-topic-list">%s</div>%s</div>'
                         % (heading, links, note))
