@@ -531,22 +531,39 @@ def test_text_helper_refuses_markup():
     raise AssertionError("markup in a raw HTML block should be refused, not escaped")
 
 
-def test_comments_use_the_iframe_widget_not_the_script():
-    """Giscus's <script> cannot work in this theme, twice over.
+def test_article_source_carries_no_giscus_embed():
+    """Giscus is attached after the build, never through the markdown.
 
-    MyST strips script from content and from theme parts, and the theme's
-    client entry calls hydrateRoot(document, ...) -- React owns the whole
-    document -- so injecting it into the built HTML is reconciled away at
-    hydration. The iframe widget needs neither.
+    An earlier version emitted a Giscus iframe here as well, so pages carried
+    two embeds -- and the stale one offered a sign-in that could never work,
+    because GitHub cannot be framed.
     """
     banner_body = load("banner_body")
-    config = banner_body.giscus_config()
-    if config is None:
-        return                      # comments not enabled yet
     block = banner_body.discuss_block(ROOT / "articles" / "x" / "some-slug.md")
-    assert "<script" not in block
-    assert "giscus.app/en/widget" in block
-    assert "term=some-slug" in block, "each article needs its own thread"
+    assert "giscus" not in block.lower()
+    assert "Read the discussion" in block
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        assert "giscus" not in path.read_text(encoding="utf-8").lower(), \
+            "%s has a Giscus embed in its source" % path.parent.name
+
+
+def test_discussion_block_survives_repeated_strip_and_restore():
+    """The block nests divs; a non-greedy match left fragments behind.
+
+    Every remove/add cycle then appended a fresh block on top of the remains,
+    so articles accumulated duplicates and the leftovers of earlier versions.
+    """
+    banner_body = load("banner_body")
+    body = "Body.\n\n" + banner_body.discuss_block(pathlib.Path("x/some-slug.md")) + "\n"
+    once = banner_body.DISCUSS_BLOCK.sub("\n", body)
+    assert "uwtn-discuss" not in once, "the whole block must be removed, not part of it"
+    assert once.strip() == "Body."
+
+
+def test_only_one_discussion_block_per_article():
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        assert path.read_text(encoding="utf-8").count('class="uwtn-discuss"') == 1, \
+            "%s has a duplicated discussion block" % path.parent.name
 
 
 def test_giscus_mapping_survives_the_cutover():
@@ -556,13 +573,7 @@ def test_giscus_mapping_survives_the_cutover():
         "a pathname mapping would orphan every thread at cutover"
 
 
-def test_giscus_widget_carries_an_origin():
-    """Without it the widget loads but cannot return a reader from sign-in."""
-    banner_body = load("banner_body")
-    if banner_body.giscus_config() is None:
-        return
-    block = banner_body.discuss_block(ROOT / "articles" / "x" / "some-slug.md")
-    assert "origin=" in block and "some-slug" in block.split("origin=")[1][:200]
+
 
 
 def test_giscus_bootstrap_waits_for_hydration():

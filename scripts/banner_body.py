@@ -32,26 +32,18 @@ BANNER_BLOCK = re.compile(
 
 # The discussion link is web-only for the same reason as the banner: it is a
 # live affordance, and an archival PDF should not invite a reader to click.
+# Greedy to the end of the file, deliberately. The block is always appended
+# last, and it now contains nested divs -- a non-greedy `.*?</div>` stopped at
+# the first inner closing tag, so every remove/add cycle left a fragment behind
+# and appended a fresh block on top of it. Articles accumulated the remains of
+# earlier versions, including a superseded iframe widget.
 DISCUSS_BLOCK = re.compile(
-    r'\n*<div class="uwtn-(?:discuss|comments)">.*?</div>\n*', re.S)
+    r'\n*<div class="uwtn-(?:discuss|comments)">.*\Z', re.S)
 
 REPO_URL = "https://github.com/Underworld-Technical-Notes/underworldcode.org"
 DISCUSS_URL = REPO_URL + "/discussions/new?category=general&title=%s"
 SEARCH_URL = REPO_URL + "/discussions?discussions_q=%s"
 
-
-def giscus_config():
-    """Settings from giscus.yml, or None if comments are not enabled."""
-    path = ROOT / "giscus.yml"
-    if not path.exists():
-        return None
-    config = {}
-    for raw in path.read_text(encoding="utf-8").splitlines():
-        if not raw.strip() or raw.lstrip().startswith("#") or ":" not in raw:
-            continue
-        key, _, value = raw.partition(":")
-        config[key.strip()] = value.split("#")[0].strip()
-    return config if config.get("enabled") == "true" else None
 
 
 def banner_from_frontmatter(text):
@@ -78,45 +70,20 @@ def credit_from_metadata(directory):
 
 
 def discuss_block(path):
-    """A link to open a GitHub Discussion about this note.
+    """The discussion block: where the conversation is, and how to join it.
 
-    Giscus would embed the thread in the page, and everything it needs is
-    recorded in giscus.yml -- but MyST strips <script> from page content and
-    from theme parts alike, so its official embed cannot be placed without
-    forking the theme. A link needs no JavaScript, keeps the conversation on
-    GitHub either way, and cannot break the way an embedded widget can.
+    Always the link form. Giscus itself is attached after the build by
+    scripts/inject_comments.py, which loads the real client script once React
+    has hydrated -- it cannot come through the markdown, because MyST strips
+    <script>. This block stays beneath the widget as the fallback: if Giscus is
+    blocked, offline or broken, the reader still has somewhere to go.
+
+    An earlier version emitted a Giscus iframe here when comments were enabled.
+    That left two embeds on the page, and the stale one offered a sign-in that
+    could never work, because GitHub cannot be framed.
     """
     import urllib.parse
-    slug = path.stem
-    config = giscus_config()
-    if config:
-        # Giscus's iframe widget. Its <script> cannot be used: MyST strips
-        # script from content and from theme parts, and the theme hydrates the
-        # whole document so post-build injection is reconciled away.
-        query = urllib.parse.urlencode({
-            "repo": config["repo"], "repoId": config["repo_id"],
-            "category": config["category"], "categoryId": config["category_id"],
-            "mapping": config.get("mapping", "specific"), "term": slug,
-            "reactionsEnabled": "1" if config.get("reactions_enabled") == "true" else "0",
-            "emitMetadata": "0", "inputPosition": "top",
-            # Without origin the widget renders but cannot return a reader
-            # from the GitHub sign-in, so there is no way to comment.
-            "origin": "%s/%s/" % (config["site_url"].rstrip("/"), slug),
-            "theme": config.get("theme", "preferred_color_scheme"), "lang": "en",
-        })
-        # The link stays beneath the embed. The widget is third-party and can
-        # fail -- blocked, offline, signed out -- and a reader should never be
-        # left with no way to respond.
-        return ('<div class="uwtn-comments">'
-                '<iframe src="https://giscus.app/en/widget?%s" '
-                'title="Comments" loading="lazy"></iframe>'
-                '<div class="uwtn-discuss-alt">'
-                '<a href="%s">Or open the thread on GitHub</a></div>'
-                '</div>' % (query, DISCUSS_URL % urllib.parse.quote(slug)))
-
-    # The only route, so it is presented as one rather than as a footnote:
-    # where the conversation is, how to read it, how to start it.
-    term = urllib.parse.quote(slug)
+    term = urllib.parse.quote(path.stem)
     return ('<div class="uwtn-discuss">'
             '<div class="uwtn-discuss-head">Comments</div>'
             '<div class="uwtn-discuss-body">Discussion of these notes happens in '
