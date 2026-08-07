@@ -464,3 +464,14 @@ a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); 
 }
 
 .uwtn-comments iframe { border: none; }
+
+/* Always reachable, even if the embed does not load. */
+.uwtn-discuss-alt {
+  font-family: var(--uwtn-sans);
+  font-size: 0.8rem;
+  margin-top: 0.8rem;
+}
+
+.uwtn-discuss-alt a { color: var(--uwtn-accent); text-decoration: none; }
+.uwtn-discuss-alt a:hover { text-decoration: underline; }
+.uwtn-discuss-alt a::after { content: " →"; }

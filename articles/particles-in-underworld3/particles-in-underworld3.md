@@ -145,5 +145,6 @@ This uniformity is important. It means you can start with a mesh-based viscosity
 ---
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code: [github.com/underworldcode/underworld3](https://github.com/underworldcode/underworld3)*
+</div>
 
-<div class="uwtn-comments"><iframe src="https://giscus.app/en/widget?repo=Underworld-Technical-Notes%2Funderworldcode.org&repoId=R_kgDOTvdKWg&category=Announcements&categoryId=DIC_kwDOTvdKWs4DC1FQ&mapping=specific&term=particles-in-underworld3&reactionsEnabled=1&emitMetadata=0&inputPosition=top&theme=preferred_color_scheme&lang=en" title="Comments" loading="lazy"></iframe></div>
+<div class="uwtn-comments"><iframe src="https://giscus.app/en/widget?repo=Underworld-Technical-Notes%2Funderworldcode.org&repoId=R_kgDOTvdKWg&category=Announcements&categoryId=DIC_kwDOTvdKWs4DC1FQ&mapping=specific&term=particles-in-underworld3&reactionsEnabled=1&emitMetadata=0&inputPosition=top&origin=https%3A%2F%2Funderworld-technical-notes.github.io%2Funderworldcode.org%2Fparticles-in-underworld3%2F&theme=preferred_color_scheme&lang=en" title="Comments" loading="lazy"></iframe><div class="uwtn-discuss-alt"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=particles-in-underworld3">Or open the thread on GitHub</a></div></div>

@@ -554,3 +554,12 @@ def test_giscus_mapping_survives_the_cutover():
     config = (ROOT / "giscus.yml").read_text(encoding="utf-8")
     assert "mapping: specific" in config, \
         "a pathname mapping would orphan every thread at cutover"
+
+
+def test_giscus_widget_carries_an_origin():
+    """Without it the widget loads but cannot return a reader from sign-in."""
+    banner_body = load("banner_body")
+    if banner_body.giscus_config() is None:
+        return
+    block = banner_body.discuss_block(ROOT / "articles" / "x" / "some-slug.md")
+    assert "origin=" in block and "some-slug" in block.split("origin=")[1][:200]

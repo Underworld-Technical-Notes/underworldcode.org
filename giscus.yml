@@ -31,6 +31,11 @@ category_id: DIC_kwDOTvdKWs4DC1FQ
 # `specific` with the article slug as the term, rather than `pathname`: the
 # staging site is served under /underworldcode.org/ and the production site
 # will not be, and a mapping that changes at cutover would orphan every thread.
+# The page each thread belongs to. Giscus needs this to send a reader back
+# after signing in with GitHub; without it the widget loads but offers no way
+# to comment. It changes at cutover, alongside the CNAME.
+site_url: https://underworld-technical-notes.github.io/underworldcode.org
+
 mapping: specific
 reactions_enabled: true
 theme: preferred_color_scheme

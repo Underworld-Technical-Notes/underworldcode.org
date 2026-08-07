@@ -98,12 +98,20 @@ def discuss_block(path):
             "mapping": config.get("mapping", "specific"), "term": slug,
             "reactionsEnabled": "1" if config.get("reactions_enabled") == "true" else "0",
             "emitMetadata": "0", "inputPosition": "top",
+            # Without origin the widget renders but cannot return a reader
+            # from the GitHub sign-in, so there is no way to comment.
+            "origin": "%s/%s/" % (config["site_url"].rstrip("/"), slug),
             "theme": config.get("theme", "preferred_color_scheme"), "lang": "en",
         })
+        # The link stays beneath the embed. The widget is third-party and can
+        # fail -- blocked, offline, signed out -- and a reader should never be
+        # left with no way to respond.
         return ('<div class="uwtn-comments">'
                 '<iframe src="https://giscus.app/en/widget?%s" '
                 'title="Comments" loading="lazy"></iframe>'
-                '</div>' % query)
+                '<div class="uwtn-discuss-alt">'
+                '<a href="%s">Or open the thread on GitHub</a></div>'
+                '</div>' % (query, DISCUSS_URL % urllib.parse.quote(slug)))
 
     return ('<div class="uwtn-discuss">'
             '<a href="%s">Discuss this note on GitHub</a>'
