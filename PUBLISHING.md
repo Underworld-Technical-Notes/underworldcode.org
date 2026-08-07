@@ -71,12 +71,40 @@ place already:
 
 ## Still to decide
 
-**Which account.** A personal figshare.com account, or ANU's institutional
-Figshare. This is the decision that most affects the outcome: institutional
-instances can have a different DOI prefix, storage quotas, group-level review
-before publication, and their own metadata requirements. Publishing under an
-institution also ties the record's custodianship to it. Worth settling before
-the first real deposit rather than after.
+**Which account — settled: a project account, not an institutional one and not
+a personal one.**
+
+ANU is ruled out deliberately. Leadership of Underworld will not always rest
+with one person at one institution, and an institutional Figshare mints under
+an institution-owned DOI prefix. Those DOIs cannot be re-minted, so they would
+carry ANU's identity permanently, including after any move.
+
+A personal figshare.com account mints under `10.6084` — Figshare's own prefix,
+carrying no institutional identity at all. That is the desired property.
+
+The account is held by the **project**, named as such (Underworld Geodynamics),
+not by a person and not by an invented one. A fictitious identity is a
+misrepresentation on a scholarly record, is visible as the depositor, and could
+never hold an ORCID — so it could never be verified, which is the one thing an
+archival record needs.
+
+This costs nothing, because **custodianship and authorship are separate in
+Figshare**: `authors` is set per record. The account owns the deposit; each
+note credits its real authors with their real ORCIDs, exactly as `authors.yml`
+already records them.
+
+**Continuity comes from the email address.** Register the account to an address
+on `underworldcode.org` — the project's own domain, held to 2035 — so the
+account follows the domain rather than a person or an employer. The domain
+currently has no MX records, so this needs mail forwarding adding at the
+registrar first.
+
+> Worth revisiting once: Figshare was chosen for the click-through experience
+> when a DOI is circulated. Zenodo has Communities as a first-class ownership
+> concept, which fits "owned by a project" more directly. The project-account
+> arrangement above gets Figshare most of the way there, but if succession
+> becomes the dominant criterion rather than the reader experience, that is the
+> reason to look again.
 
 **`defined_type`.** `preprint` reads as a paper awaiting formal publication;
 `online resource` is vaguer but truer for a note that is not going anywhere
