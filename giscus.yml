@@ -1,21 +1,35 @@
-# Everything Giscus needs, recorded so embedding it later is configuration
-# rather than archaeology.
+# Comments, via Giscus — GitHub Discussions rendered in the page.
 #
-# It is not embedded today. Giscus is delivered as a <script> tag, and MyST
-# strips <script> from page content *and* from theme parts -- verified for
-# both -- so the official embed cannot be placed without forking book-theme or
-# injecting it after the build, where the theme's React hydration is liable to
-# discard it. Article pages instead carry a plain link to open a Discussion,
-# which keeps the conversation on GitHub just the same and needs no script.
+# Set `enabled: true` once the Giscus GitHub App is installed on this
+# repository: https://github.com/apps/giscus. Until then the API answers
+# {"error":"giscus is not installed on this repository"} and the widget would
+# render an error box, so articles carry a plain link to Discussions instead.
 #
-# The site currently loads no third-party JavaScript at all. The Ghost site
-# loaded eight such scripts, including one from a service Oracle shut down in
-# 2023. That is worth weighing before adding one back.
+# Delivered as Giscus's **iframe widget**, not its <script> tag. Two findings
+# behind that, both established rather than assumed:
+#
+#   * MyST strips <script> from page content and from theme parts alike.
+#   * Injecting it into the built HTML afterwards does not work either. The
+#     theme's client entry calls `hydrateRoot(document, ...)` -- React owns the
+#     whole document, not a root div -- so anything added to the built page is
+#     reconciled away at hydration. That is also why an inlined stylesheet in
+#     <head> disappeared and had to be declared through `site.options.style`.
+#
+# MyST does pass <iframe> through, so the widget embeds without any script on
+# our origin. The trade-off is that Giscus's auto-resize needs its script's
+# postMessage listener, so the frame has a fixed height and scrolls internally.
+
+enabled: false
 
 repo: Underworld-Technical-Notes/underworldcode.org
 repo_id: R_kgDOTvdKWg
 category: Announcements          # only maintainers can open a thread
 category_id: DIC_kwDOTvdKWs4DC1FQ
-mapping: pathname
+
+# `specific` with the article slug as the term, rather than `pathname`: the
+# staging site is served under /underworldcode.org/ and the production site
+# will not be, and a mapping that changes at cutover would orphan every thread.
+mapping: specific
 reactions_enabled: true
 theme: preferred_color_scheme
+height: 520

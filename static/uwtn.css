@@ -444,3 +444,23 @@ a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); 
 /* A DOI on a listing is an identifier, shown rather than linked -- see
    scripts/build_index.py for why. */
 .uwtn-doi { color: var(--uwtn-muted); font-variant-numeric: tabular-nums; }
+
+/* ---- comments ---------------------------------------------------------- */
+
+/* MyST wraps an iframe in a fixed aspect-ratio box, which is right for a video
+   and wrong for a comment thread. The wrapper carries an inline
+   padding-bottom, so overriding it needs !important and a descendant selector
+   -- there is no class of ours to hang it on. */
+.uwtn-comments {
+  margin-top: 3rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--uwtn-rule);
+}
+
+.uwtn-comments div[style*="padding-bottom"] {
+  padding-bottom: 0 !important;
+  height: 520px;
+  width: 100% !important;
+}
+
+.uwtn-comments iframe { border: none; }

@@ -519,3 +519,28 @@ def test_text_helper_refuses_markup():
     except ValueError:
         return
     raise AssertionError("markup in a raw HTML block should be refused, not escaped")
+
+
+def test_comments_use_the_iframe_widget_not_the_script():
+    """Giscus's <script> cannot work in this theme, twice over.
+
+    MyST strips script from content and from theme parts, and the theme's
+    client entry calls hydrateRoot(document, ...) -- React owns the whole
+    document -- so injecting it into the built HTML is reconciled away at
+    hydration. The iframe widget needs neither.
+    """
+    banner_body = load("banner_body")
+    config = banner_body.giscus_config()
+    if config is None:
+        return                      # comments not enabled yet
+    block = banner_body.discuss_block(ROOT / "articles" / "x" / "some-slug.md")
+    assert "<script" not in block
+    assert "giscus.app/en/widget" in block
+    assert "term=some-slug" in block, "each article needs its own thread"
+
+
+def test_giscus_mapping_survives_the_cutover():
+    """`pathname` would change when the site leaves the /underworldcode.org/ prefix."""
+    config = (ROOT / "giscus.yml").read_text(encoding="utf-8")
+    assert "mapping: specific" in config, \
+        "a pathname mapping would orphan every thread at cutover"

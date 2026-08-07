@@ -32,10 +32,25 @@ BANNER_BLOCK = re.compile(
 
 # The discussion link is web-only for the same reason as the banner: it is a
 # live affordance, and an archival PDF should not invite a reader to click.
-DISCUSS_BLOCK = re.compile(r'\n*<div class="uwtn-discuss">.*?</div>\n*', re.S)
+DISCUSS_BLOCK = re.compile(
+    r'\n*<div class="uwtn-(?:discuss|comments)">.*?</div>\n*', re.S)
 
 DISCUSS_URL = ("https://github.com/Underworld-Technical-Notes/underworldcode.org"
                "/discussions/new?category=general&title=%s")
+
+
+def giscus_config():
+    """Settings from giscus.yml, or None if comments are not enabled."""
+    path = ROOT / "giscus.yml"
+    if not path.exists():
+        return None
+    config = {}
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if not raw.strip() or raw.lstrip().startswith("#") or ":" not in raw:
+            continue
+        key, _, value = raw.partition(":")
+        config[key.strip()] = value.split("#")[0].strip()
+    return config if config.get("enabled") == "true" else None
 
 
 def banner_from_frontmatter(text):
@@ -72,10 +87,27 @@ def discuss_block(path):
     """
     import urllib.parse
     slug = path.stem
-    title = urllib.parse.quote(slug)
+    config = giscus_config()
+    if config:
+        # Giscus's iframe widget. Its <script> cannot be used: MyST strips
+        # script from content and from theme parts, and the theme hydrates the
+        # whole document so post-build injection is reconciled away.
+        query = urllib.parse.urlencode({
+            "repo": config["repo"], "repoId": config["repo_id"],
+            "category": config["category"], "categoryId": config["category_id"],
+            "mapping": config.get("mapping", "specific"), "term": slug,
+            "reactionsEnabled": "1" if config.get("reactions_enabled") == "true" else "0",
+            "emitMetadata": "0", "inputPosition": "top",
+            "theme": config.get("theme", "preferred_color_scheme"), "lang": "en",
+        })
+        return ('<div class="uwtn-comments">'
+                '<iframe src="https://giscus.app/en/widget?%s" '
+                'title="Comments" loading="lazy"></iframe>'
+                '</div>' % query)
+
     return ('<div class="uwtn-discuss">'
             '<a href="%s">Discuss this note on GitHub</a>'
-            '</div>' % (DISCUSS_URL % title))
+            '</div>' % (DISCUSS_URL % urllib.parse.quote(slug)))
 
 
 def main():
