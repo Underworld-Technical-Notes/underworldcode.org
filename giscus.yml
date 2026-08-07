@@ -21,7 +21,7 @@
 # our origin. The trade-off is that Giscus's auto-resize needs its script's
 # postMessage listener, so the frame has a fixed height and scrolls internally.
 
-enabled: true
+enabled: false
 
 repo: Underworld-Technical-Notes/underworldcode.org
 repo_id: R_kgDOTvdKWg
@@ -37,6 +37,6 @@ category_id: DIC_kwDOTvdKWs4DC1FQ
 site_url: https://underworld-technical-notes.github.io/underworldcode.org
 
 mapping: specific
-reactions_enabled: true
+reactions_enabled: false
 theme: preferred_color_scheme
 height: 520

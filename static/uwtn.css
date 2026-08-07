@@ -431,15 +431,32 @@ a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); 
 
 .uwtn-discuss {
   margin-top: 3rem;
-  padding-top: 1.2rem;
-  border-top: 1px solid var(--uwtn-rule);
+  padding: 1.3rem 1.4rem;
+  border: 1px solid var(--uwtn-rule);
+  border-radius: 3px;
   font-family: var(--uwtn-sans);
-  font-size: 0.85rem;
 }
 
-.uwtn-discuss a { color: var(--uwtn-accent); text-decoration: none; }
-.uwtn-discuss a:hover { text-decoration: underline; }
-.uwtn-discuss a::after { content: " →"; }
+.uwtn-discuss-head {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--uwtn-accent);
+  margin-bottom: 0.45rem;
+}
+
+.uwtn-discuss-body {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--uwtn-muted);
+  max-width: 42em;
+  margin-bottom: 0.9rem;
+}
+
+.uwtn-discuss-links { display: flex; flex-wrap: wrap; gap: 1.4rem; font-size: 0.85rem; }
+.uwtn-discuss-links a { color: var(--uwtn-accent); text-decoration: none; }
+.uwtn-discuss-links a:hover { text-decoration: underline; }
+.uwtn-discuss-links a::after { content: " →"; }
 
 /* A DOI on a listing is an identifier, shown rather than linked -- see
    scripts/build_index.py for why. */

@@ -35,8 +35,9 @@ BANNER_BLOCK = re.compile(
 DISCUSS_BLOCK = re.compile(
     r'\n*<div class="uwtn-(?:discuss|comments)">.*?</div>\n*', re.S)
 
-DISCUSS_URL = ("https://github.com/Underworld-Technical-Notes/underworldcode.org"
-               "/discussions/new?category=general&title=%s")
+REPO_URL = "https://github.com/Underworld-Technical-Notes/underworldcode.org"
+DISCUSS_URL = REPO_URL + "/discussions/new?category=general&title=%s"
+SEARCH_URL = REPO_URL + "/discussions?discussions_q=%s"
 
 
 def giscus_config():
@@ -113,9 +114,18 @@ def discuss_block(path):
                 '<a href="%s">Or open the thread on GitHub</a></div>'
                 '</div>' % (query, DISCUSS_URL % urllib.parse.quote(slug)))
 
+    # The only route, so it is presented as one rather than as a footnote:
+    # where the conversation is, how to read it, how to start it.
+    term = urllib.parse.quote(slug)
     return ('<div class="uwtn-discuss">'
-            '<a href="%s">Discuss this note on GitHub</a>'
-            '</div>' % (DISCUSS_URL % urllib.parse.quote(slug)))
+            '<div class="uwtn-discuss-head">Comments</div>'
+            '<div class="uwtn-discuss-body">Discussion of these notes happens in '
+            'GitHub Discussions, so it stays with the source and is searchable '
+            'alongside it.</div>'
+            '<div class="uwtn-discuss-links">'
+            '<a href="%s">Read the discussion</a>'
+            '<a href="%s">Start one</a>'
+            '</div></div>' % (SEARCH_URL % term, DISCUSS_URL % term))
 
 
 def main():
