@@ -99,12 +99,29 @@ account follows the domain rather than a person or an employer. The domain
 currently has no MX records, so this needs mail forwarding adding at the
 registrar first.
 
-> Worth revisiting once: Figshare was chosen for the click-through experience
-> when a DOI is circulated. Zenodo has Communities as a first-class ownership
-> concept, which fits "owned by a project" more directly. The project-account
-> arrangement above gets Figshare most of the way there, but if succession
-> becomes the dominant criterion rather than the reader experience, that is the
-> reason to look again.
+### The series as a community object
+
+Figshare **collections** are first-class and answer this directly:
+`POST /account/collections`, their own `reserve_doi`, their own author list,
+categories and versions.
+
+So the community shows up in two places, neither of which is the login:
+
+- **each note** is an article carrying its real authors and their ORCIDs;
+- **the series** is a collection with *its own DOI*, citable as a whole and
+  identified independently of any person or institution.
+
+A collection DOI is worth having on its own terms — it gives the series
+something to cite, the way a journal has an ISSN — and it happens to be the
+same property succession needs.
+
+Zenodo's Communities were the reason to look again, and they turn out not to
+be. Their advantage over a collection is that many people can deposit into one
+community under curation. That does not apply here: the editorial model is
+single-depositor by design — contributors open pull requests and CI deposits on
+merge, which is what keeps the fifty registered DOIs safe from a stray
+publish. Figshare being chosen for the reader's click-through therefore
+stands.
 
 **`defined_type`.** `preprint` reads as a paper awaiting formal publication;
 `online resource` is vaguer but truer for a note that is not going anywhere
