@@ -667,3 +667,35 @@ def test_the_submission_route_is_discoverable():
         "the front page does not say how to contribute"
     assert "url: /submit" in (ROOT / "myst.yml").read_text(encoding="utf-8"), \
         "Submit a note is missing from the header nav"
+
+
+def test_every_orcid_passes_its_check_digit():
+    """Shape is not enough: a transposed pair still looks like an ORCID.
+
+    It would attribute an author's work to whoever really holds that
+    identifier, silently, on a record carrying a DOI.
+    """
+    validate = load("validate_metadata")
+    assert validate.orcid_checksum_ok("0000-0003-3685-174X")
+    assert not validate.orcid_checksum_ok("0000-0001-5685-1664")   # transposed
+    import re
+    for line in (ROOT / "authors.yml").read_text(encoding="utf-8").splitlines():
+        match = re.match(r"\s*orcid:\s*(\S+)", line)
+        if match and match.group(1) != "null":
+            assert validate.orcid_checksum_ok(match.group(1)), \
+                "%s in authors.yml fails its check digit" % match.group(1)
+
+
+def test_deposited_authors_will_propagate_to_orcid():
+    """A note's authors should all be identifiable before it is deposited.
+
+    A deposit carrying an ORCID appears in that author's record on its own; an
+    author without one has to be added by hand, for every note.
+    """
+    build_index = load("build_index")
+    missing = set()
+    for path in sorted((ROOT / "articles").glob("*/metadata.yml")):
+        for author in build_index.read_yaml(path).get("authors") or []:
+            if not author.get("orcid"):
+                missing.add(author.get("name"))
+    assert not missing, "no ORCID for: %s" % ", ".join(sorted(missing))

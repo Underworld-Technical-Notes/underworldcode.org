@@ -1,13 +1,22 @@
 # Author registry for Underworld Technical Notes.
 #
-# Ghost stores no ORCIDs (Louis's happens to sit in the author "website" field;
-# nobody else has one recorded). DOI-bearing articles should carry ORCIDs, so
-# they are collected here once rather than repeated per article.
+# Collected once here rather than repeated per article. ORCIDs matter more than
+# they look: a deposit carrying an author's ORCID propagates into that author's
+# ORCID record automatically, so an author without one has to be added by hand
+# afterwards, for every note.
 #
-# ORCIDs are left null rather than guessed: attaching a wrong ORCID attributes
-# someone's work to a stranger. Fill these in from the people themselves.
-# `scripts/validate_metadata.py` warns about nulls on DOI-bearing articles and
-# rejects anything that is present but malformed.
+# The ORCIDs below are transcribed from the Underworld3 JOSS paper
+# (`publications/joss-paper/paper.md` in the underworld3 repository), which is
+# the publication of record. Every check digit has been verified --
+# `scripts/validate_metadata.py` computes the ORCID mod-11-2 checksum, so a
+# transcription error fails the build rather than attributing someone's work to
+# a stranger.
+#
+# Still null: ask the person. Never guess, and never copy from a search result.
+#
+# Affiliations are as given in the JOSS paper (2024) and are not tracked over
+# time. They are a convenience for the record's metadata, not a claim about
+# where someone works today.
 
 authors:
   louis:
@@ -16,28 +25,38 @@ authors:
     affiliation: Australian National University
   john:
     name: John Mansour
-    orcid: null
-    affiliation: null
+    orcid: 0000-0001-5865-1664
+    affiliation: Monash University
   julian:
     name: Julian Giordani
-    orcid: null
-    affiliation: null
+    orcid: 0000-0003-4515-9296
+    affiliation: University of Sydney
   benknight:
     name: Ben Knight
-    orcid: null
-    affiliation: null
-  romain:
-    name: Romain Beucher
-    orcid: null
-    affiliation: null
-  neng:
-    name: Neng Lu
-    orcid: null
-    affiliation: null
+    orcid: 0000-0001-7919-2575
+    affiliation: Curtin University
   juan:
     name: Juan Carlos Graciosa
-    orcid: null
-    affiliation: null
+    orcid: 0000-0003-0817-354X
+    affiliation: Australian National University
+  neng:
+    name: Neng Lu
+    orcid: 0000-0001-9424-2315
+    affiliation: Australian National University
+  romain:
+    name: Romain Beucher
+    orcid: 0000-0003-3891-5444
+    affiliation: Australian National University
+  gthyagi:
+    name: Thyagarajulu Gollapalli
+    orcid: 0000-0001-9394-4104
+    affiliation: Monash University
+  knepley:
+    name: Matt Knepley
+    orcid: 0000-0002-2292-0735
+    affiliation: University at Buffalo
+
+  # Not on the JOSS paper; ORCIDs not yet known.
   haibin:
     name: Haibin Yang
     orcid: null
@@ -45,7 +64,7 @@ authors:
   ben-mather:
     name: Ben Mather
     orcid: null
-    affiliation: null
+    affiliation: University of Sydney
   rohan:
     name: Rohan Byrne
     orcid: null

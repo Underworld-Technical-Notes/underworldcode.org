@@ -9,11 +9,14 @@ authors:
     orcid: 0000-0003-3685-174X
     affiliation: Australian National University
   - name: John Mansour
-    orcid: null
+    orcid: 0000-0001-5865-1664
+    affiliation: Monash University
   - name: Julian Giordani
-    orcid: null
+    orcid: 0000-0003-4515-9296
+    affiliation: University of Sydney
   - name: Romain Beucher
-    orcid: null
+    orcid: 0000-0003-3891-5444
+    affiliation: Australian National University
 publication_date: 2026-03-23
 version: 1.0.0
 legacy_doi: 10.59350/brqdq-9yq62

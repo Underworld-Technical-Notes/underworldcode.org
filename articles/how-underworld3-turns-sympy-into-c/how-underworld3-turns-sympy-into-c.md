@@ -8,7 +8,13 @@ authors:
     affiliations:
       - Australian National University
   - name: John Mansour
+    orcid: 0000-0001-5865-1664
+    affiliations:
+      - Monash University
   - name: Julian Giordani
+    orcid: 0000-0003-4515-9296
+    affiliations:
+      - University of Sydney
 doi: 10.59350/kdve8-7es40
 license: CC-BY-4.0
 banner: figures/banner.jpg

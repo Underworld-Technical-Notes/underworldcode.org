@@ -8,6 +8,9 @@ authors:
     affiliations:
       - Australian National University
   - name: Ben Knight
+    orcid: 0000-0001-7919-2575
+    affiliations:
+      - Curtin University
 doi: 10.59350/2390e-w7d86
 license: CC-BY-4.0
 banner: figures/banner.jpg

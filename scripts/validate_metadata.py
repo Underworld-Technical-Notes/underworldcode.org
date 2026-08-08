@@ -28,6 +28,21 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SCHEMA = ROOT / "schemas" / "article-metadata.schema.json"
 
 ORCID_RE = re.compile(r"^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$")
+
+
+def orcid_checksum_ok(orcid):
+    """Verify an ORCID's mod-11-2 check digit.
+
+    The shape alone is not enough. A transposed pair of digits still looks like
+    an ORCID, and would attribute an author's work to whoever really holds that
+    identifier -- silently, and on a record with a DOI.
+    """
+    digits = orcid.replace("-", "")
+    total = 0
+    for char in digits[:-1]:
+        total = (total + int(char)) * 2
+    check = (12 - total % 11) % 11
+    return ("X" if check == 10 else str(check)) == digits[-1].upper()
 DOI_RE = re.compile(r"^10\.[0-9]{4,9}/[-._;()/:A-Za-z0-9]+$")
 ID_RE = re.compile(r"^UWTN [0-9]{4}-[0-9]{3}$")
 LEGACY_PREFIX = "10.59350/"
@@ -171,6 +186,10 @@ def main():
             orcid = author.get("orcid")
             if orcid and not ORCID_RE.match(str(orcid)):
                 errors.append("%s: malformed ORCID %r for %s"
+                              % (label, orcid, author.get("name")))
+            elif orcid and not orcid_checksum_ok(str(orcid)):
+                errors.append("%s: ORCID %s fails its check digit -- it belongs to "
+                              "someone else, or is mistyped (%s)"
                               % (label, orcid, author.get("name")))
             if (legacy or archive) and not orcid:
                 warnings.append("%s: no ORCID for %s on a DOI-bearing article"

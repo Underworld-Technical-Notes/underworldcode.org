@@ -3,6 +3,9 @@ title: New features of the surface-coupling framework in Underworld 2
 date: 2025-08-25
 authors:
   - name: Neng Lu
+    orcid: 0000-0001-9424-2315
+    affiliations:
+      - Australian National University
 doi: 10.59350/zqv83-gbf84
 license: CC-BY-4.0
 banner: figures/banner.png
