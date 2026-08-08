@@ -58,6 +58,65 @@ updates to a published article affect only the private copy until an explicit
 publish. That matches the brief: cosmetic web corrections need no deposit, and
 a substantive change is a new version.
 
+## Two eras of DOI, and why they behave differently
+
+A legacy DOI resolves to a **web page** on this site. A Figshare DOI resolves to
+a **record** whose PDF is the artefact. Readers will meet both.
+
+That cannot be unified, and should not be:
+
+- the fifty legacy DOIs are Crossref registrations under Front Matter's prefix.
+  We do not own them and cannot re-point them;
+- minting a second DOI for a note that already has one is duplicate
+  publication — the thing the whole design is built to prevent;
+- minting our own under our own prefix would mean becoming a DOI registration
+  agency, which the brief rules out.
+
+The right framing is that **the new behaviour is the correct one**. A Rogue
+Scholar DOI points at a living page that can change under it. A Figshare DOI
+points at a fixed record with checksums. The legacy behaviour is the compromise
+we are leaving, not a standard the new records should meet.
+
+What removes the difference in practice is cross-linking, which is required on
+both sides:
+
+- every Figshare record carries the live article URL in `related_materials`, so
+  a reader landing on the PDF can reach the living version;
+- every article page shows its DOI and links its PDF, so a reader landing on
+  the page can reach the fixed one.
+
+Either entry point reaches both artefacts. Which one comes first is all that
+differs.
+
+### The real fragility in the legacy DOIs
+
+Those fifty resolve to `www.underworldcode.org/<slug>/`, and **we cannot change
+where they point**. Today that is fine because we control the URL. It stops
+being fine the moment the URL has to move.
+
+This must be settled with Front Matter before Rogue Scholar is deactivated, and
+it is a different question from the one already on the list:
+
+1. Do the fifty registered DOIs keep resolving after deactivation? (asked)
+2. **Can their target URLs still be updated afterwards, and by whom?** (not yet
+   asked, and more important)
+
+If the answer to (2) is no, then `/​<slug>/` on this domain is a permanent,
+unbreakable commitment for fifty articles, and the DOI test in CI is the only
+thing standing between a refactor and fifty dead citations. If the answer is
+yes, the constraint is merely strict rather than absolute.
+
+### Which notes get a DOI
+
+`article_type` governs it, per the brief: technical notes, worked examples and
+benchmarks by default; development notes, how-tos and commentary selectively;
+news never.
+
+Note that the legacy set does not follow this — Rogue Scholar minted for
+everything it ingested, so a release note in the corpus already carries a DOI.
+That is not retrospectively fixable and is not worth trying to fix: the policy
+governs what we mint, not what was minted.
+
 ## The failure that must never happen
 
 Minting a *second* DOI for a note that already has one. Two guards, both in
