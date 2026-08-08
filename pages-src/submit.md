@@ -60,7 +60,7 @@ version and may pick up corrections, better links and discussion.
 ## Things worth knowing before you write
 
 **Commit your figure sources, not just the pictures.** If a figure is drawn from
-data, the script and the data belong beside it. Sixteen figures in the older
+data, the script and the data belong beside it. Seven figures in the older
 material on this site no longer exist, because they were linked from a server
 that went away — and nothing, not even the Internet Archive, kept a copy.
 

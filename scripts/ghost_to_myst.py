@@ -563,7 +563,7 @@ def localise_banner(rec, dest_dir):
     """Bring the post's feature image alongside the article.
 
     Ghost hot-links these to images.unsplash.com. They are decorative, but the
-    same hot-linking is why sixteen figures in this corpus no longer exist, so
+    same hot-linking is why seven figures in this corpus no longer exist, so
     they are fetched once and stored with the article.
 
     Returns the local filename, or None.
