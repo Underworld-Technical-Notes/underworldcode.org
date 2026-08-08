@@ -102,12 +102,14 @@ Full detail in `inventory/STAGE-0-FINDINGS.md`.
 4. **50 registered DOIs, all resolving to live records.** Three recent posts
    (Apr–Jun 2026) carry no DOI — Rogue Scholar had not ingested them.
 
-5. **Sixteen figures are broken**, across eight posts, seven of which have
-   DOIs. All are hot-linked to the retired `underworldcode.ghost.io` host, and
+5. **Sixteen figures were broken**, across eight posts, seven of which have
+   DOIs. All were hot-linked to the retired `underworldcode.ghost.io` host, and
    the Internet Archive never captured the image bytes — only the redirect.
-   Three turn out to be re-uploaded elsewhere in the same post and six were
-   recovered from the author's own copies; **seven are gone for good**.
-   `inventory/lost-figures.md` has the table.
+   **All sixteen have been recovered**: three were re-uploaded elsewhere in the
+   same post, six came from the author's own copies, and seven came from the
+   pre-Ghost Jekyll site, where they had been committed next to their posts all
+   along. `inventory/lost-figures.md` has the mapping, including one figure
+   whose number changed during the Ghost import.
 
 6. **MyST truncates page slugs to 50 characters** — documented behaviour, and it
    silently breaks **12 of the 50 registered DOIs**. Neither a frontmatter

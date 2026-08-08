@@ -60,9 +60,11 @@ version and may pick up corrections, better links and discussion.
 ## Things worth knowing before you write
 
 **Commit your figure sources, not just the pictures.** If a figure is drawn from
-data, the script and the data belong beside it. Seven figures in the older
-material on this site no longer exist, because they were linked from a server
-that went away — and nothing, not even the Internet Archive, kept a copy.
+data, the script and the data belong beside it. Sixteen figures in the older
+material on this site went dark when the server they were linked from was
+retired — and not one of them was recoverable from the Internet Archive. They
+came back only because copies existed elsewhere, which was luck rather than
+design.
 
 **Keep code lines under about 84 characters.** That is what fits the archival
 PDF's measure without wrapping mid-token.

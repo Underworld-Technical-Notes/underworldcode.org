@@ -300,7 +300,7 @@ def test_banner_block_round_trips():
 
 
 def test_every_banner_is_local():
-    """Hot-linking a feature image is how seven figures were already lost."""
+    """Hot-linking a feature image is how sixteen figures once went dark."""
     import re
     for path in sorted((ROOT / "articles").glob("*/*.md")):
         text = path.read_text(encoding="utf-8")
