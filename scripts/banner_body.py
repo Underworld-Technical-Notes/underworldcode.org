@@ -105,9 +105,10 @@ def main():
     changed = 0
     for path in sorted(ARTICLES.glob("*/*.md")):
         text = path.read_text(encoding="utf-8")
+        # A banner is optional; the discussion block is not. They were once
+        # handled together, which quietly denied comments to the two articles
+        # that have no banner image.
         banner = banner_from_frontmatter(text)
-        if not banner:
-            continue
 
         head, sep, body = text.partition("\n---\n")
         if not sep:
@@ -119,12 +120,13 @@ def main():
         if args.remove:
             new_body = stripped
         else:
-            credit = credit_from_metadata(path.parent)
-            block = '<div class="uwtn-banner"><img src="%s" alt="">' % banner
-            if credit:
-                block += '<div class="uwtn-credit">%s</div>' % credit
-            block += "</div>\n\n"
-            new_body = block + stripped.lstrip("\n")
+            new_body = stripped.lstrip("\n")
+            if banner:
+                credit = credit_from_metadata(path.parent)
+                block = '<div class="uwtn-banner"><img src="%s" alt="">' % banner
+                if credit:
+                    block += '<div class="uwtn-credit">%s</div>' % credit
+                new_body = block + "</div>\n\n" + new_body
             new_body = new_body.rstrip() + "\n\n" + discuss_block(path) + "\n"
 
         if new_body != body:

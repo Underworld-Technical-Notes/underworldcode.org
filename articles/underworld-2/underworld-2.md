@@ -166,3 +166,5 @@ Moresi, L. N., S. Quenette, V. Lemiale, C. Mériaux, B. Appelbe, and H. B. Muhlh
 2.
 
 Quenette, S., Moresi, L.N., Sunter, P.D., Appelbe, W.F., 2007. Explaining StGermain: An aspect oriented environment for building extensible computational mechanics modeling software, in:. Presented at the HIPS 2007 Workshop, Parallel and Distributed Processing Symposium, 2007. Proceedings. 19th IEEE International.
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld-2">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld-2">Start one</a></div></div>

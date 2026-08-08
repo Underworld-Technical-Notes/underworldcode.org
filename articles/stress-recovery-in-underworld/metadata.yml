@@ -17,6 +17,8 @@ legacy_paths:
   - /stress-recovery-in-underworld/
 subjects:
 methods:
+  - finite-elements
+  - particles-swarms
 ghost_tags:
   - Geodynamics
 banner: figures/banner.jpg

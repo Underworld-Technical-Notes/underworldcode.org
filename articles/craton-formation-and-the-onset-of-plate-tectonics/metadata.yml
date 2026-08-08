@@ -2,7 +2,7 @@
 id: UWTN 2018-001
 slug: craton-formation-and-the-onset-of-plate-tectonics
 title: Craton Formation and the Onset of Plate Tectonics
-article_type: technical-note
+article_type: worked-example
 status: migrated
 authors:
   - name: Louis Moresi
@@ -17,6 +17,8 @@ canonical_path: /craton-formation-and-the-onset-of-plate-tectonics/
 legacy_paths:
   - /craton-formation-and-the-onset-of-plate-tectonics/
 subjects:
+  - tectonics-lithosphere
+  - mantle-convection
 methods:
 ghost_tags:
   - Geodynamics

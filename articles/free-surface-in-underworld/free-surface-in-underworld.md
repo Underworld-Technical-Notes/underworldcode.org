@@ -79,3 +79,5 @@ All of the approaches to free surface simulations have been subject to instabili
 - Kaus, B. J., Mühlhaus, H., & May, D. A. (2010). A stabilization algorithm for geodynamic numerical simulations with a free surface. Physics of the Earth and Planetary Interiors, 181(1-2), 12-20.
 
 - Schmeling, H., Babeyko, A. Y., Enns, A., Faccenna, C., Funiciello, F., Gerya, T., ... & Van Hunen, J. (2008). A benchmark comparison of spontaneous subduction models—Towards a free surface. Physics of the Earth and Planetary Interiors, 171(1-4), 198-223.
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=free-surface-in-underworld">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=free-surface-in-underworld">Start one</a></div></div>

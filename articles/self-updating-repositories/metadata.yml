@@ -2,7 +2,7 @@
 id: UWTN 2020-006
 slug: self-updating-repositories
 title: Australian Seismometers in Schools - Noise monitoring dashboard
-article_type: technical-note
+article_type: how-to
 status: migrated
 authors:
   - name: Louis Moresi

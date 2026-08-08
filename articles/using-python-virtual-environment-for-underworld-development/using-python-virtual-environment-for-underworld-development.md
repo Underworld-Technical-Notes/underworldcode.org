@@ -235,3 +235,5 @@ You should now have a Python virtual environment with a working version of Under
 
 Python Virtual Environment can be useful for Underworld development. You can easily configure them so that they  point to a specific version of PETSc on your machine.  
 This make possible to test the code against different versions of PETSc, run tests and try different optimization options or configurations of the software stack.
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=using-python-virtual-environment-for-underworld-development">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=using-python-virtual-environment-for-underworld-development">Start one</a></div></div>

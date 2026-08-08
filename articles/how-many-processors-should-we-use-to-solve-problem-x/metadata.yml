@@ -21,6 +21,8 @@ legacy_paths:
   - /how-many-processors-should-we-use-to-solve-problem-x/
 subjects:
 methods:
+  - parallel-hpc
+  - benchmarks-validation
 ghost_tags:
   - Documentation
   - Tricks of the Trade

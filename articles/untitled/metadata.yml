@@ -2,7 +2,7 @@
 id: UWTN 2017-003
 slug: untitled
 title: Modelling Drips and Delamination with Underworld
-article_type: technical-note
+article_type: worked-example
 status: migrated
 authors:
   - name: Adam Beall
@@ -16,6 +16,8 @@ canonical_path: /untitled/
 legacy_paths:
   - /untitled/
 subjects:
+  - tectonics-lithosphere
+  - rheology
 methods:
 ghost_tags:
   - Geodynamics

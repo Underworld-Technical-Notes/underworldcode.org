@@ -69,3 +69,231 @@ underworld3-published-in-journal-of-open-source-software:
   article_type: release-note
   subjects: []
   methods: []
+
+# ---------------------------------------------------------------------------
+# The migrated backlog, 2014-2025, oldest first.
+#
+# The subject axis is no longer empty. The note above was written when the
+# corpus was eleven articles about the machinery; the older material is where
+# the science is, and cratons, delamination, shear bands and convection have
+# arrived with it. The method axis, by contrast, thins out: much of the backlog
+# is installation and release news, which is about the software rather than
+# about a technique, and an empty list is the honest answer there.
+#
+# `article_type` matters more here than anywhere else, because it governs which
+# notes get a DOI. Rogue Scholar minted for everything it ingested, so several
+# of the release notes and announcements below already carry one. That is not
+# retrospectively fixable; the type recorded here is what the article IS, and
+# the minting policy applies from now on.
+
+the-dynamics-of-continental-accretion:
+  article_type: worked-example
+  subjects: [tectonics-lithosphere]
+  methods: []
+
+underworld-2:
+  article_type: development-note
+  subjects: []
+  methods: []
+
+underworld-and-docker-part-1:
+  article_type: how-to
+  subjects: []
+  methods: []
+
+underworld-and-docker-part-2:
+  article_type: how-to
+  subjects: []
+  methods: []
+
+underworld2-workshop-at-cig-2016-meeting:
+  article_type: news
+  subjects: []
+  methods: []
+
+shear-bands-with-dilatancy-modelled-with-underworld:
+  article_type: worked-example
+  subjects: [rheology]
+  methods: []
+
+untitled-2:
+  article_type: technical-note
+  subjects: []
+  methods: [units-scaling]
+
+untitled:
+  article_type: worked-example
+  subjects: [tectonics-lithosphere, rheology]
+  methods: []
+
+craton-formation-and-the-onset-of-plate-tectonics:
+  article_type: worked-example
+  subjects: [tectonics-lithosphere, mantle-convection]
+  methods: []
+
+underworld-on-zenodo:
+  article_type: how-to
+  subjects: []
+  methods: []
+
+alaska-moho-model-reproducible-research-with-containers:
+  article_type: worked-example
+  subjects: [tectonics-lithosphere]
+  methods: []
+
+viscoelasticity:
+  article_type: technical-note
+  subjects: [rheology]
+  methods: [time-integration, finite-elements]
+
+underworld-release-2-8:
+  article_type: release-note
+  subjects: []
+  methods: []
+
+adding-zotero-references-to-a-webpage:
+  article_type: how-to
+  subjects: []
+  methods: []
+
+getting-started-60-seconds-to-underworld:
+  article_type: how-to
+  subjects: []
+  methods: []
+
+joss-publication-underworld-2:
+  article_type: news
+  subjects: []
+  methods: []
+
+underworld-2-9:
+  article_type: release-note
+  subjects: []
+  methods: []
+
+underworld-low-fat-cloud:
+  article_type: development-note
+  subjects: []
+  methods: []
+
+publication-news:
+  article_type: news
+  subjects: []
+  methods: []
+
+# Republished from The Conversation, and about seismic noise rather than about
+# Underworld. Kept because it is part of the record, classified as what it is.
+australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it:
+  article_type: commentary
+  subjects: []
+  methods: []
+
+self-updating-repositories:
+  article_type: how-to
+  subjects: []
+  methods: []
+
+covid-quiet-time:
+  article_type: commentary
+  subjects: []
+  methods: []
+
+stripy-2-0-released:
+  article_type: release-note
+  subjects: []
+  methods: [meshing]
+
+underworld-2-10:
+  article_type: release-note
+  subjects: []
+  methods: []
+
+here-comes-conda:
+  article_type: news
+  subjects: []
+  methods: []
+
+getting-started-with-pull-requests:
+  article_type: how-to
+  subjects: []
+  methods: []
+
+build-conda-packages:
+  article_type: how-to
+  subjects: []
+  methods: []
+
+stress-recovery-in-underworld:
+  article_type: technical-note
+  subjects: []
+  methods: [finite-elements, particles-swarms]
+
+scaling-in-underworld:
+  article_type: benchmark
+  subjects: []
+  methods: [parallel-hpc, benchmarks-validation]
+
+how-to-install-underworld-on-mac-osx-big-sur-apple-silicon-m1:
+  article_type: how-to
+  subjects: []
+  methods: []
+
+2-11-scaling:
+  article_type: benchmark
+  subjects: []
+  methods: [parallel-hpc, benchmarks-validation]
+
+free-surface-in-underworld:
+  article_type: technical-note
+  subjects: [surface-processes]
+  methods: [finite-elements, solvers]
+
+setting-up-underworld-dependencies:
+  article_type: how-to
+  subjects: []
+  methods: []
+
+using-python-virtual-environment-for-underworld-development:
+  article_type: how-to
+  subjects: []
+  methods: []
+
+uwgeodynamics-and-underworld-merge:
+  article_type: news
+  subjects: []
+  methods: []
+
+ismip-hom-benchmark-experiments-using-underworld:
+  article_type: benchmark
+  subjects: []
+  methods: [benchmarks-validation, finite-elements, solvers]
+
+compressible-convection-in-cartesian-coordinates-in-underworld3:
+  article_type: benchmark
+  subjects: [mantle-convection]
+  methods: [benchmarks-validation, finite-elements]
+
+30-years-of-citcom-ellipsis-and-underworld:
+  article_type: commentary
+  subjects: [mantle-convection]
+  methods: [finite-elements, particles-swarms]
+
+underworld3-come-and-get-it:
+  article_type: development-note
+  subjects: []
+  methods: [finite-elements, particles-swarms, symbolic-codegen]
+
+underworld-and-singularity:
+  article_type: technical-note
+  subjects: []
+  methods: [parallel-hpc, benchmarks-validation]
+
+perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop:
+  article_type: news
+  subjects: []
+  methods: []
+
+how-many-processors-should-we-use-to-solve-problem-x:
+  article_type: technical-note
+  subjects: []
+  methods: [parallel-hpc, benchmarks-validation]

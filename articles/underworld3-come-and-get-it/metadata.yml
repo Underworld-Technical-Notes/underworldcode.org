@@ -2,7 +2,7 @@
 id: UWTN 2024-002
 slug: underworld3-come-and-get-it
 title: Underworld3
-article_type: technical-note
+article_type: development-note
 status: migrated
 authors:
   - name: Louis Moresi
@@ -18,6 +18,9 @@ legacy_paths:
   - /underworld3-come-and-get-it/
 subjects:
 methods:
+  - finite-elements
+  - particles-swarms
+  - symbolic-codegen
 ghost_tags:
   - Underworld Code
   - petsc

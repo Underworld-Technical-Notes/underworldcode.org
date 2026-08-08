@@ -52,4 +52,6 @@ A quick-start guide to python that you can use as a refresher if your python ski
 
 This is a handy place to find links / find the community
 
-[Underworld geodynamics software platform and tools](https://github.com/underworldcode) — Computational tools for the geodynamics community. Built in Australia, used all over (and under) the world. For support / help visit @underworld-community - Underworld geodynamics software platform…
+[Underworld geodynamics software platform and tools](https://github.com/underworldcode) — Computational tools for the geodynamics community. Built in Australia, used all over (and under) the world. For support / help visit \@underworld-community - Underworld geodynamics software platform…
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop">Start one</a></div></div>

@@ -1,18 +1,25 @@
 #!/usr/bin/env python3
 """Restore full-length article URLs after a MyST build.
 
-MyST derives a page's URL from its filename and **limits the slug to 50
-characters** (documented behaviour, not a bug). Twelve of the fifty registered
-DOIs point at slugs longer than that, so an unmodified build silently serves
-those articles at a truncated path and those DOIs 404.
+MyST rewrites a page's URL from its filename in two ways that break a DOI:
 
-This renames each truncated directory back to the full slug and rewrites every
+  * it **limits the slug to 50 characters**, which moves twelve of the fifty
+    registered DOI targets;
+  * it **strips leading digits**, so `2-11-scaling` is published at `/scaling/`
+    and `30-years-of-citcom-...` at `/years-of-citcom-.../`, moving two more.
+
+Both are documented behaviour rather than bugs, and both are silent: the article
+builds, looks right, and its DOI 404s.
+
+This renames each mangled directory back to the full slug and rewrites every
 internal reference to match. It runs as part of the build task; the DOI test
-(`scripts/test_doi_urls.py`) is what proves it worked.
+(`scripts/test_doi_urls.py`) is what proves it worked -- and is what caught the
+leading-digit case, which nobody predicted.
 
-The truncation rule is **discovered, not assumed** -- for each article the
-script looks for a built directory whose name is a prefix of the full slug. If
-MyST changes its limit, this keeps working.
+The rule is **discovered, not assumed**: for each article the script looks for a
+built directory whose name is a prefix *or* a suffix of the full slug, so it
+covers characters removed from either end without encoding which. If MyST
+changes its limit, or starts stripping something else, this keeps working.
 
 Usage:
     python3 scripts/fix_slugs.py [--build _build/html] [--dry-run]
@@ -61,43 +68,58 @@ def main():
             print("  %s -> %s" % (key, ", ".join(group)), file=sys.stderr)
         sys.exit("cannot rename unambiguously; rename the source files")
 
-    renames = []
+    renames, claimed = [], {}
     for slug in slugs:
         if slug in built:
             continue                      # already correct, nothing to do
-        candidates = [b for b in built if slug.startswith(b) and b != slug]
+        heads = [b for b in built if slug.startswith(b) and b != slug]
+        tails = [b for b in built if slug.endswith(b) and b != slug]
+        candidates = heads + tails
         if not candidates:
             print("  WARNING: no built page found for %s" % slug, file=sys.stderr)
             continue
-        truncated = max(candidates, key=len)   # longest prefix is the real one
-        renames.append((truncated, slug))
+        mangled = max(candidates, key=len)   # the longest match is the real one
+        if mangled in claimed:
+            sys.exit("AMBIGUOUS: /%s/ could belong to %s or %s -- rename the "
+                     "source files" % (mangled, claimed[mangled], slug))
+        claimed[mangled] = slug
+        renames.append((mangled, slug, mangled in heads))
 
     if not renames:
         print("all %d article URL(s) already full length" % len(slugs))
         return
 
-    print("restoring %d truncated URL(s):" % len(renames))
-    for truncated, slug in renames:
-        print("  /%s/  ->  /%s/" % (truncated, slug))
+    print("restoring %d mangled URL(s):" % len(renames))
+    for mangled, slug, _head in renames:
+        print("  /%s/  ->  /%s/" % (mangled, slug))
     if args.dry_run:
         print("\n--dry-run: nothing changed")
         return
 
     # 1. Move the directories and their sibling .json payloads.
-    for truncated, slug in renames:
-        src, dest = build / truncated, build / slug
+    for mangled, slug, _head in renames:
+        src, dest = build / mangled, build / slug
         if dest.exists():
             shutil.rmtree(dest)
         src.rename(dest)
-        src_json, dest_json = build / (truncated + ".json"), build / (slug + ".json")
+        src_json, dest_json = build / (mangled + ".json"), build / (slug + ".json")
         if src_json.exists():
             src_json.rename(dest_json)
 
-    # 2. Rewrite references. The truncated name is a prefix of the full slug, so
-    #    a plain replace would corrupt already-correct occurrences. The negative
-    #    lookahead only matches the truncated form when it is not followed by a
-    #    slug character -- i.e. never inside the full slug.
-    patterns = [(re.compile(re.escape(t) + r"(?![A-Za-z0-9_-])"), s) for t, s in renames]
+    # 2. Rewrite references. The mangled name is part of the full slug, so a
+    #    plain replace would corrupt already-correct occurrences. The negative
+    #    lookahead only matches it when not followed by a slug character -- i.e.
+    #    never inside the full slug.
+    #
+    #    A name mangled at the FRONT needs more care, because what is left can be
+    #    an ordinary English word: `2-11-scaling` publishes at `/scaling/`, and
+    #    rewriting every "scaling" in the prose would be worse than the bug. Those
+    #    are matched only after a URL or JSON delimiter, never after a space.
+    patterns = []
+    for mangled, slug, head in renames:
+        before = "" if head else r"(?<=[/\"=#])"
+        patterns.append(
+            (re.compile(before + re.escape(mangled) + r"(?![A-Za-z0-9_-])"), slug))
     touched = 0
     for path in build.rglob("*"):
         if not path.is_file() or path.suffix not in REWRITE_SUFFIXES:

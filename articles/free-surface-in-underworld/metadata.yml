@@ -17,7 +17,10 @@ canonical_path: /free-surface-in-underworld/
 legacy_paths:
   - /free-surface-in-underworld/
 subjects:
+  - surface-processes
 methods:
+  - finite-elements
+  - solvers
 ghost_tags:
 banner: figures/banner.jpg
 banner_credit: null

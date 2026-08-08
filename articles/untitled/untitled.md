@@ -51,6 +51,8 @@ ping, many of the vectors are sheared so much that they are sub-parallel.
 
 ```{figure} figures/comparison.png
 :alt: comparison
+
+Deformation of drip and delamination end-members (from Beall et al. 2017).
 ```
 
 *Deformation of drip and delamination end-members (from beall et. al. 2017)*
@@ -59,6 +61,8 @@ It is now worth asking - if we trigger an instability with $$D'>0$$ and values o
 
 ```{figure} figures/triggereddripping.png
 :alt: triggereddripping
+
+Comparison of 'triggered dripping' and delamination models (from Beall et al. 2017).
 ```
 
 *Comparison of 'triggered dripping' and delamination models (from beall et. al. 2017)*
@@ -73,6 +77,8 @@ This measurement is complicated by the presence of multiple wavelengths and a sw
 
 ```{figure} figures/timescales.png
 :alt: timescales
+
+Time-scales for various instability mechanisms (from Beall et al. 2017).
 ```
 
 *Time-scales for various instability mechanisms (from Beall et. al. 2017).*
@@ -90,3 +96,5 @@ These simple models demonstrate that for a given package of dense lower crust or
 Bird, P. (1979). Continental delamination and the Colorado Plateau. Journal of Geophysical Research: Solid Earth, 84(B13), 7561-7571.
 
 Jones, C. H., & Saleeby, J. B. (2013). Introduction: Geodynamics and consequences of lithospheric removal in the Sierra Nevada, California. Geosphere, 9(2), 188-190.
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=untitled">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=untitled">Start one</a></div></div>

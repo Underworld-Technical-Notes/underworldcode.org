@@ -70,3 +70,5 @@ The results will also likely provoke significant re-interpretation of some ancie
 ```{figure} figures/ImpKS6BgT4WPS9aLFRjq_AdditionalImages3.png
 :alt: Additional Images #3
 ```
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=the-dynamics-of-continental-accretion">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=the-dynamics-of-continental-accretion">Start one</a></div></div>

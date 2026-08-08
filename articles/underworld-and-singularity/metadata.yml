@@ -18,6 +18,8 @@ legacy_paths:
   - /underworld-and-singularity/
 subjects:
 methods:
+  - parallel-hpc
+  - benchmarks-validation
 ghost_tags:
   - Underworld Code
   - Tricks of the Trade

@@ -16,7 +16,10 @@ canonical_path: /viscoelasticity/
 legacy_paths:
   - /viscoelasticity/
 subjects:
+  - rheology
 methods:
+  - time-integration
+  - finite-elements
 ghost_tags:
   - Geodynamics
   - Underworld Code

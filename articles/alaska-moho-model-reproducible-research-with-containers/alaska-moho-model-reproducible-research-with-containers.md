@@ -59,3 +59,5 @@ The software is also tracked on Zenodo
 1.  Miller, M. S., and L. Moresi (2018), Mapping the Alaskan Moho, Seismological Research Letters, 1–7, doi:10.1785/0220180222.
 
 2. Louis Moresi. (2018, October 12). lmoresi/miller-moho-binder: Miller and Moresi, Seismological Research Letters (Version v1.0). Zenodo. http://doi.org/10.5281/zenodo.1459110
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=alaska-moho-model-reproducible-research-with-containers">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=alaska-moho-model-reproducible-research-with-containers">Start one</a></div></div>

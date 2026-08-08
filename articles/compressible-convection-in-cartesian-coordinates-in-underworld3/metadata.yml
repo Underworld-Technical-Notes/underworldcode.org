@@ -2,7 +2,7 @@
 id: UWTN 2023-002
 slug: compressible-convection-in-cartesian-coordinates-in-underworld3
 title: Compressible convection in cartesian coordinates with Underworld3
-article_type: technical-note
+article_type: benchmark
 status: migrated
 authors:
   - name: Juan Carlos Graciosa
@@ -17,7 +17,10 @@ canonical_path: /compressible-convection-in-cartesian-coordinates-in-underworld3
 legacy_paths:
   - /compressible-convection-in-cartesian-coordinates-in-underworld3/
 subjects:
+  - mantle-convection
 methods:
+  - benchmarks-validation
+  - finite-elements
 ghost_tags:
   - Geodynamics
 banner: figures/banner.jpg

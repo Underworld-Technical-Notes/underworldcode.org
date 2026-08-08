@@ -88,3 +88,5 @@ You can access the contents of the `/workspace` volume to save any changes you m
 ## Caution !!
 
 Some actions within Kitematic have unexpected side effects. Renaming a container actually will stop and restart it which means it reverts to the original image and you will lose any changes you have made within the container.
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld-and-docker-part-2">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld-and-docker-part-2">Start one</a></div></div>

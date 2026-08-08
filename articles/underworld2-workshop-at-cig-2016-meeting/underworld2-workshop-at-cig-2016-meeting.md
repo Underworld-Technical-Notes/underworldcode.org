@@ -58,3 +58,5 @@ Docker Underworld images are the preferred avenue for Underworld usage.
 **Linux**: Docker toolbox (see [https://docs.docker.com/linux/](https://docs.docker.com/linux/) for linux specific information). An overview of dockers, as well as details on installing Underworld2 via the docker command line interface is available [here](/posts/Underworld-and-Dockers).
 
 Those wishing to compile natively are directed to the [Underworld2 github](https://github.com/underworldcode/underworld2/) page for details.
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld2-workshop-at-cig-2016-meeting">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld2-workshop-at-cig-2016-meeting">Start one</a></div></div>

@@ -35,3 +35,5 @@ The [UWGeodynamics](https://github.com/underworldcode/UWGeodynamics) repository 
 We encourage users to update their Underworld package as soon as possible.
 
 We understand this can be an inconvenience to some users. This will allow us to focus on development by reducing maintenance work.
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=uwgeodynamics-and-underworld-merge">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=uwgeodynamics-and-underworld-merge">Start one</a></div></div>

@@ -70,3 +70,5 @@ conda install -c underworldcode stripy
 ## Make Stripy better!
 
 We welcome contributions to the code. If you want to add something you think is missing in Stripy, submit a pull request and if it looks good we'll merge your changes. Check out our [contribution guidelines](https://github.com/underworldcode/stripy/blob/master/CONTRIBUTING.md) for more details.
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=stripy-2-0-released">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=stripy-2-0-released">Start one</a></div></div>

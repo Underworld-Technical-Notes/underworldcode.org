@@ -67,3 +67,5 @@ The Underworld development team are continuing to work with the Gadi system admi
 The analytic solution **SolDB3D** used as the reference model is based on the work by Dohrmann, C & Bochev, Pavel. 2004 [1], for the implementation details of of SolDB3D in Underworld see [here](https://underworld2.readthedocs.io/en/latest/build/underworld.function.analytic.html#underworld.function.analytic.SolDB3d)
 
 [1]: Dohrmann, C & Bochev, Pavel. (2004). A stabilized finite element method for the Stokes problem based on polynomial pressure projections. International Journal for Numerical Methods in Fluids. 46. 183-201.
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=scaling-in-underworld">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=scaling-in-underworld">Start one</a></div></div>

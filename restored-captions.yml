@@ -1,0 +1,21 @@
+# Captions the Ghost import dropped, put back from the original publication.
+#
+# Source: github.com/underworldcode/underworldcode.github.io.retired, the Jekyll
+# site that preceded Ghost. Its posts still carry the figcaptions that the
+# import lost, and for the pre-2019 material it is the publication of record.
+#
+# Applied only where the figure has NO caption in the Ghost HTML, so this can
+# never overwrite something the import did carry across. The converter reports
+# how many it restored; a stale entry simply stops being applied, which is why
+# the count is printed rather than assumed.
+#
+# Keyed by the figure's filename, since that is stable across the two sites even
+# where the surrounding markup is not.
+
+# _posts/2017-06-29-Sub-Continental-Instabilities.md. All three cite the paper
+# the figures come from, which is exactly the context a reader needs and exactly
+# what was lost.
+untitled:
+  comparison.png: "Deformation of drip and delamination end-members (from Beall et al. 2017)."
+  triggereddripping.png: "Comparison of 'triggered dripping' and delamination models (from Beall et al. 2017)."
+  timescales.png: "Time-scales for various instability mechanisms (from Beall et al. 2017)."

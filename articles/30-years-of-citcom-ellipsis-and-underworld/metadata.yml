@@ -2,7 +2,7 @@
 id: UWTN 2024-001
 slug: 30-years-of-citcom-ellipsis-and-underworld
 title: "30 Years of Citcom, Ellipsis and Underworld"
-article_type: technical-note
+article_type: commentary
 status: migrated
 authors:
   - name: Louis Moresi
@@ -17,7 +17,10 @@ canonical_path: /30-years-of-citcom-ellipsis-and-underworld/
 legacy_paths:
   - /30-years-of-citcom-ellipsis-and-underworld/
 subjects:
+  - mantle-convection
 methods:
+  - finite-elements
+  - particles-swarms
 ghost_tags:
   - Underworld Code
   - Geophysics

@@ -27,3 +27,16 @@ ismip-hom-benchmark-experiments-using-underworld:
     why: >-
       Trailing ", 2022." captured into the URL, so the DOI 404s at doi.org.
       (Article not yet migrated; correction recorded for when it is.)
+
+adding-zotero-references-to-a-webpage:
+  - find: groups/<strong>2386948</strong>/
+    replace: groups/<code>2386948</code>/
+    why: >-
+      The article bolds two fragments of a URL to point them out, and both break
+      the Typst export. This one renders as */ -- the END of a block comment,
+      with no beginning -- and the next as /*, its start. Marked up as code
+      instead, which is what an opaque identifier is, and which reads the same.
+  - find: collectionKey/<strong>QNARWBUC.</strong>
+    replace: collectionKey/<code>QNARWBUC</code>.
+    why: >-
+      The second of the two. See above.

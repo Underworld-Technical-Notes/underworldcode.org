@@ -154,6 +154,32 @@ def load_classification():
 CLASSIFICATION = load_classification()
 
 
+def load_restored_captions():
+    """slug -> {figure filename: caption} from restored-captions.yml.
+
+    The Ghost import dropped some captions on the way in. Where the pre-Ghost
+    site still has them they are put back -- but only where the figure has no
+    caption at all, so this can never overwrite what Ghost did carry across.
+    """
+    path = ROOT / "restored-captions.yml"
+    entries, slug = {}, None
+    if not path.exists():
+        return entries
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        if not raw.startswith(" ") and raw.rstrip().endswith(":"):
+            slug = raw.rstrip()[:-1]
+            entries[slug] = {}
+        elif slug and ":" in raw:
+            name, _, caption = raw.strip().partition(":")
+            entries[slug][name.strip()] = _scalar(caption.strip())
+    return entries
+
+
+RESTORED_CAPTIONS = load_restored_captions()
+
+
 def load_attribution():
     """slug -> [author key] from attribution.yml.
 
@@ -204,6 +230,62 @@ def author_entry(author):
     return name, orcid, known.get("affiliation")
 
 
+# Magic bytes -> the extension the file should have had.
+SIGNATURES = [
+    (b"\x89PNG\r\n\x1a\n", ".png"),
+    (b"\xff\xd8\xff", ".jpg"),
+    (b"GIF87a", ".gif"),
+    (b"GIF89a", ".gif"),
+    (b"RIFF", ".webp"),
+]
+
+
+def asset_name(src):
+    """The filename a figure is stored and referenced under.
+
+    Normally the name from the URL -- but Ghost accepted uploads whose extension
+    disagrees with their contents, and one of these is a JPEG called `.png`. A
+    browser sniffs the bytes and shows it anyway; Typst trusts the extension,
+    fails to decode, and the whole PDF export dies with "Invalid PNG signature".
+    So the extension is corrected from the magic bytes, here rather than at copy
+    time, because the markdown has to refer to it by the same name.
+    """
+    name = urllib.parse.unquote(src.rsplit("/", 1)[-1].split("?")[0])
+    stem, dot, ext = name.rpartition(".")
+    if not dot:
+        return name
+    path, error = cached_asset(src)
+    if error or not path.exists():
+        return name
+    try:
+        head = path.open("rb").read(12)
+    except OSError:
+        return name
+    for signature, correct in SIGNATURES:
+        if head.startswith(signature):
+            if ("." + ext.lower()) not in (correct, ".jpeg" if correct == ".jpg" else correct):
+                return stem + correct
+            return name
+    return name
+
+
+AT_SIGN = re.compile(r"@(?=[A-Za-z0-9])")
+
+
+def escape_at_signs(text):
+    """Escape `@` in prose, so MyST does not read it as a citation.
+
+    `@rbeucher` is a GitHub handle, `@underworld-community` is an organisation
+    and `anyone@underworldcode.org` is an email address. MyST reads all three as
+    citation keys, finds no bibliography, and the Typst export fails outright --
+    three articles produced no PDF at all because of it. Nothing in the legacy
+    corpus cites by key, so every `@` in it is prose.
+
+    Code is unaffected: `_write` is not used inside <pre>.
+    """
+    return AT_SIGN.sub(r"\\@", text)
+
+
 INLINE_WRAP = {
     "strong": "**", "b": "**",
     "em": "*", "i": "*",
@@ -235,6 +317,7 @@ class GhostToMyst(HTMLParser):
         self.inline_images = 0
         self.linked_images = 0
         self.galleries = 0
+        self.restored_captions = 0
 
     # -- helpers ---------------------------------------------------------
 
@@ -251,6 +334,7 @@ class GhostToMyst(HTMLParser):
     def _write(self, text):
         if self._skip_depth:
             return
+        text = escape_at_signs(text)
         if self._in_caption and self._fig is not None:
             self._fig["caption"] += text
         elif self._href is not None:
@@ -446,7 +530,7 @@ class GhostToMyst(HTMLParser):
 
     @staticmethod
     def _asset_name(src):
-        return urllib.parse.unquote(src.rsplit("/", 1)[-1].split("?")[0])
+        return asset_name(src)
 
     def _close_figure(self):
         if not self._fig or not self._fig["panels"]:
@@ -454,6 +538,12 @@ class GhostToMyst(HTMLParser):
             return
         panels = self._fig["panels"]
         caption = " ".join(self._fig["caption"].split())
+        if not caption and len(panels) == 1:
+            restored = RESTORED_CAPTIONS.get(self.slug, {}).get(
+                self._asset_name(panels[0][0]))
+            if restored:
+                caption = restored
+                self.restored_captions += 1
         for src, alt in panels:
             self.figures.append((src, self._asset_name(src), alt, caption))
 
@@ -672,7 +762,8 @@ def frontmatter(rec, doi, article_id, banner=None):
     lines = ["---", "title: %s" % yaml_str(rec.get("title") or "")]
     subtitle = (rec.get("custom_excerpt") or "").strip()
     if subtitle:
-        lines.append("description: %s" % yaml_str(" ".join(subtitle.split())))
+        lines.append("description: %s"
+                     % yaml_str(" ".join(subtitle.split()).replace("@", "&#64;")))
     lines.append("date: %s" % ((rec.get("published_at") or "")[:10]))
     if authors:
         lines.append("authors:")
@@ -697,7 +788,12 @@ def frontmatter(rec, doi, article_id, banner=None):
     if tags:
         lines.append("keywords:")
         lines += ["  - %s" % yaml_str(t) for t in tags]
-    abstract = " ".join((rec.get("custom_excerpt") or rec.get("excerpt") or "").split())
+    # An email address in the excerpt reads as a citation key and takes the
+    # whole PDF export down with it -- but this one ends up inside a quoted YAML
+    # scalar, where a backslash is doubled and so stops escaping anything. The
+    # numeric character reference survives quoting and renders as "@".
+    abstract = " ".join(
+        (rec.get("custom_excerpt") or rec.get("excerpt") or "").split()).replace("@", "&#64;")
     lines += [
         "exports:",
         "  - format: typst",
@@ -870,6 +966,7 @@ def main():
     inline = 0
     linked = 0
     galleries = 0
+    restored = 0
 
     for rec in selected:
         slug = rec["slug"]
@@ -911,6 +1008,7 @@ def main():
         unbolded += conv.unbolded_captions
         inline += conv.inline_images
         galleries += conv.galleries
+        restored += conv.restored_captions
         linked += conv.linked_images
         all_dropped.update(conv.dropped)
 
@@ -938,6 +1036,9 @@ def main():
             print("    %-52s %s" % (slug[:52], note), file=sys.stderr)
     if linked:
         print("  %d linked image(s) emitted as {image} with :target:" % linked,
+              file=sys.stderr)
+    if restored:
+        print("  %d caption(s) restored from the pre-Ghost site" % restored,
               file=sys.stderr)
     if galleries:
         print("  %d gallery card(s) emitted as multi-panel figures" % galleries,

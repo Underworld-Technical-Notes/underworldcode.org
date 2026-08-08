@@ -68,3 +68,5 @@ It is quite common to see code repositories with badges that show if the current
 ### Can I use this ?
 
 Of course — all of these codes are open source including everything we built in the template to make the dashboards.
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=self-updating-repositories">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=self-updating-repositories">Start one</a></div></div>

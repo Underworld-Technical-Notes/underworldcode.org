@@ -2,7 +2,7 @@
 id: UWTN 2023-001
 slug: ismip-hom-benchmark-experiments-using-underworld
 title: ISMIP-HOM benchmark experiments using Underworld
-article_type: technical-note
+article_type: benchmark
 status: migrated
 authors:
   - name: Haibin Yang
@@ -17,6 +17,9 @@ legacy_paths:
   - /ismip-hom-benchmark-experiments-using-underworld/
 subjects:
 methods:
+  - benchmarks-validation
+  - finite-elements
+  - solvers
 ghost_tags:
 banner: figures/banner.png
 banner_credit: null

@@ -96,3 +96,5 @@ The admin users of the hub are also able to configure the server itself via the 
 ### Why Digital Ocean ?
 
 Digital ocean provides very flexible virtual servers (droplets) that can be spun up and down very quickly and very cost effectively. It is simple to resize a resource and the whole process can, in principle, be automated.
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld-low-fat-cloud">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld-low-fat-cloud">Start one</a></div></div>

@@ -29,3 +29,5 @@ A new paper by [John Mansour](/author/john) and others has just been published i
 The JOSS paper is intended as a reference citation for recent iterations of the code and is specifically tied to the recent *v2.9* release.
 
 JOSS is an online, completely-open journal that uses GitHub for the review process, zenodo to store reference releases, and takes a very collaborative approach between editor, reviewers and authors in order to steer a paper to publication. The review for our paper is[available to read](https://github.com/openjournals/joss-reviews/issues/1797) for all time !
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=joss-publication-underworld-2">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=joss-publication-underworld-2">Start one</a></div></div>

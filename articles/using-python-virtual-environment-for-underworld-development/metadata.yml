@@ -2,7 +2,7 @@
 id: UWTN 2022-002
 slug: using-python-virtual-environment-for-underworld-development
 title: Developing Underworld using Python Virtual Environments
-article_type: technical-note
+article_type: how-to
 status: migrated
 authors:
   - name: Romain Beucher

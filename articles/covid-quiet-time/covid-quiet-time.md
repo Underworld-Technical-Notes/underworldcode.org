@@ -64,3 +64,5 @@ The study was the result of a unique collaboration involving 76 authors from 66 
 - [Australian cities are quiet during lockdown. Earthquake scientists are making the most of it](/articles/australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it/)
 
 - [Australian Seismometers in Schools - Noise monitoring dashboard](/articles/self-updating-repositories/)Australian Seismometers in Schools - Noise monitoring dashboard
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=covid-quiet-time">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=covid-quiet-time">Start one</a></div></div>

@@ -46,3 +46,5 @@ The example is available here:
 And if you want to explore the convection simulation:
 
 [M. Kronbichler, T. Heister, and W. Bangerth. High accuracy mantle convection simulationthrough modern numerical methods.Geophysics Journal International, 191:12–29, 2012.]
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=untitled-2">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=untitled-2">Start one</a></div></div>

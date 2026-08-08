@@ -80,3 +80,5 @@ Note that, for the above, you will also need to have a parallel enabled version 
 **Other**: The following should also be installed via a system package manager (such as apt on Ubuntu):`swig`, `git` and  `libxml2-dev` (or equivalent). The following should be installed via pip:`scons` and `numpy`.
 
 Please refer to the `Installation.rst` file located at the top level of the project repository for the latest installation information and guidelines.
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld-2-9">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld-2-9">Start one</a></div></div>

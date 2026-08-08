@@ -2,7 +2,7 @@
 id: UWTN 2021-002
 slug: scaling-in-underworld
 title: Scaling in Underworld
-article_type: technical-note
+article_type: benchmark
 status: migrated
 authors:
   - name: Julian Giordani
@@ -24,6 +24,8 @@ legacy_paths:
   - /scaling-in-underworld/
 subjects:
 methods:
+  - parallel-hpc
+  - benchmarks-validation
 ghost_tags:
   - Documentation
   - Underworld Code

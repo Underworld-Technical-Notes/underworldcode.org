@@ -102,3 +102,5 @@ Bostock, M.G., 1998, Mantle stratigraphy and evolution of the Slave province: Jo
 -
 
 Calò, M., Bodin, T., and Romanowicz, B., 2016, Layered structure in the upper mantle across North America from joint inversion of long and short period seismic data: Earth and Planetary Science Letters, v. 449, p. 164–175, [https://doi.org/10.1016/j.epsl.2016.05.054](https://doi.org/10.1016/j.epsl.2016.05.054)
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=craton-formation-and-the-onset-of-plate-tectonics">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=craton-formation-and-the-onset-of-plate-tectonics">Start one</a></div></div>

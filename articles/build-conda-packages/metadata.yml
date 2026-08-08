@@ -2,7 +2,7 @@
 id: UWTN 2020-012
 slug: build-conda-packages
 title: "How to build Conda packages?"
-article_type: technical-note
+article_type: how-to
 status: migrated
 authors:
   - name: Romain Beucher

@@ -84,3 +84,5 @@ For container creation, Dockerfile considerations.
 For singularity execution.  
 Bind Mounts:   
 The --bind argument when running *singularity* forces directories on the host machine to map into the running container filesystem. For Underworld, we map the HPC's MPI implementation directories into our running container on Gadi to access the high performance network of the HPC.
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld-and-singularity">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld-and-singularity">Start one</a></div></div>
