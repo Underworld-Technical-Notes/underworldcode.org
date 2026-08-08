@@ -121,7 +121,9 @@ def entry_html(meta, description, has_pdf, banner=None, lead=False):
     links = ['<a class="uwtn-read" href="/%s/">Read</a>' % slug]
     if has_pdf:
         links.append('<a href="/%s/%s.pdf">PDF</a>' % (slug, slug))
-    doi = meta.get("doi")
+    # The archival DOI is the one to circulate; until a note is deposited, the
+    # legacy DOI is all there is.
+    doi = meta.get("archive_doi") or meta.get("legacy_doi")
     if doi:
         # Shown, not linked. MyST turns any doi.org href into a citation and
         # appends a References section to the page, so linking the DOI here

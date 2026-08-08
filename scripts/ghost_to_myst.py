@@ -506,11 +506,12 @@ def write_metadata(path, rec, doi, figures, article_id, banner=None, credit=None
     lines += [
         "publication_date: %s" % ((rec.get("published_at") or "")[:10] or "null"),
         "version: 1.0.0",
-        "doi: %s" % (doi or "null"),
-        # The 50 legacy DOIs are Crossref registrations made by Rogue Scholar under
-        # a prefix we do not control. They are never re-minted; new notes get a DOI
-        # from the repository provider instead. This field keeps the two eras apart.
-        "doi_registrant: %s" % ("rogue-scholar" if doi else "null"),
+        # Two DOIs, two objects. legacy_doi resolves to this page and is not
+        # ours to re-point; archive_doi will resolve to the deposited PDF and is
+        # the one to circulate. Depositing is not duplicate publication because
+        # the record declares itself a variant form of the legacy DOI.
+        "legacy_doi: %s" % (doi or "null"),
+        "archive_doi: null",
         "license: CC-BY-4.0",
         "canonical_path: /%s/" % rec["slug"],
         "legacy_paths:",
@@ -615,6 +616,8 @@ def frontmatter(rec, doi, article_id, banner=None):
                 lines.append("    affiliations:")
                 lines.append("      - %s" % yaml_str(affiliation))
     if doi:
+        # Until a deposit exists this is the legacy DOI; the publish command
+        # replaces it with the archival one, which is what should be cited.
         lines.append("doi: %s" % doi)
     lines.append("license: CC-BY-4.0")
     if banner:

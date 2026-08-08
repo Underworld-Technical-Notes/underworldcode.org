@@ -58,35 +58,49 @@ updates to a published article affect only the private copy until an explicit
 publish. That matches the brief: cosmetic web corrections need no deposit, and
 a substantive change is a new version.
 
-## Two eras of DOI, and why they behave differently
+## Two DOIs, two objects
 
-A legacy DOI resolves to a **web page** on this site. A Figshare DOI resolves to
-a **record** whose PDF is the artefact. Readers will meet both.
+**Every archived note is deposited**, not only the new ones — excepting the
+types that get no DOI at all. So a migrated note ends up with two identifiers,
+and that is deliberate:
 
-That cannot be unified, and should not be:
+| field | resolves to | minted by |
+|---|---|---|
+| `legacy_doi` | the article's **page** on this site | Rogue Scholar, Crossref, `10.59350` |
+| `archive_doi` | the deposited **PDF record** | us, via Figshare, `10.6084` |
 
-- the fifty legacy DOIs are Crossref registrations under Front Matter's prefix.
-  We do not own them and cannot re-point them;
-- minting a second DOI for a note that already has one is duplicate
-  publication — the thing the whole design is built to prevent;
-- minting our own under our own prefix would mean becoming a DOI registration
-  agency, which the brief rules out.
+`archive_doi` is the one to circulate. It is what appears on the PDF, on the
+page and in citations, and it resolves to a fixed record with checksums rather
+than to a page that can change underneath it.
 
-The right framing is that **the new behaviour is the correct one**. A Rogue
-Scholar DOI points at a living page that can change under it. A Figshare DOI
-points at a fixed record with checksums. The legacy behaviour is the compromise
-we are leaving, not a standard the new records should meet.
+**This is not duplicate publication, provided the relation is declared.** The
+two identify different objects — a living page and a fixed document — and
+Figshare carries DataCite's full relation vocabulary, so every deposit states
+the relationship rather than leaving a reader to infer it:
 
-What removes the difference in practice is cross-linking, which is required on
-both sides:
+```
+related_materials: [{
+  identifier:      "<legacy_doi>",
+  identifier_type: "DOI",
+  relation:        "IsVariantFormOf",
+  is_linkout:      true          # shown in the record's call-out box
+}]
+```
 
-- every Figshare record carries the live article URL in `related_materials`, so
-  a reader landing on the PDF can reach the living version;
-- every article page shows its DOI and links its PDF, so a reader landing on
-  the page can reach the fixed one.
+Without that, two DOIs for one note is exactly the duplication the design
+exists to prevent. With it, it is an ordinary variant relation of the kind that
+links a preprint to its published version.
 
-Either entry point reaches both artefacts. Which one comes first is all that
-differs.
+The legacy DOIs are left alone. They keep resolving to the page, which is a
+reasonable thing for them to do, and we could not re-point them anyway.
+
+### What must never happen
+
+A note deposited **twice** — two archival records, two DOIs, for one PDF.
+`repository_record_id` is the guard: the publish command refuses to create when
+it is set, and offers a new version instead. Validation therefore treats an
+`archive_doi` without a record id as an error, because the guard would have
+nothing to check.
 
 ### The real fragility in the legacy DOIs
 

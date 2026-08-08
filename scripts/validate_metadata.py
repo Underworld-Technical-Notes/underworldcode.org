@@ -137,18 +137,25 @@ def main():
             errors.append("%s: id %r already used by %s" % (label, article_id, seen_ids[article_id]))
         seen_ids[article_id] = label
 
-        doi, registrant = meta.get("doi"), meta.get("doi_registrant")
+        legacy, archive = meta.get("legacy_doi"), meta.get("archive_doi")
         registered = register.get(slug)
-        if registered and doi != registered:
-            errors.append("%s: DOI %r does not match the register's %r"
-                          % (label, doi, registered))
-        if doi and doi.startswith(LEGACY_PREFIX) and registrant != "rogue-scholar":
-            errors.append("%s: DOI %s is a legacy Crossref registration but "
-                          "doi_registrant is %r -- re-minting it would duplicate "
-                          "a published DOI" % (label, doi, registrant))
-        if registered and not doi:
+        if registered and legacy != registered:
+            errors.append("%s: legacy_doi %r does not match the register's %r"
+                          % (label, legacy, registered))
+        if registered and not legacy:
             errors.append("%s: has a registered DOI (%s) but metadata says none"
                           % (label, registered))
+        if legacy and not legacy.startswith(LEGACY_PREFIX):
+            errors.append("%s: legacy_doi %s is not a Rogue Scholar registration"
+                          % (label, legacy))
+        # The archival DOI is ours; it must never be one of the fifty we cannot
+        # re-point, which would mean a deposit had claimed a legacy identifier.
+        if archive and archive.startswith(LEGACY_PREFIX):
+            errors.append("%s: archive_doi %s is a legacy Crossref DOI"
+                          % (label, archive))
+        if archive and not meta.get("repository_record_id"):
+            errors.append("%s: has an archive_doi but no repository_record_id, so "
+                          "a re-run could deposit it a second time" % label)
 
         # Facet terms must exist in vocabulary.yml. The schema enum is
         # generated from it, so a term that is merely plausible fails here
@@ -165,7 +172,7 @@ def main():
             if orcid and not ORCID_RE.match(str(orcid)):
                 errors.append("%s: malformed ORCID %r for %s"
                               % (label, orcid, author.get("name")))
-            if doi and not orcid:
+            if (legacy or archive) and not orcid:
                 warnings.append("%s: no ORCID for %s on a DOI-bearing article"
                                 % (label, author.get("name")))
 

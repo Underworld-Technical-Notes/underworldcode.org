@@ -10,8 +10,8 @@ authors:
     affiliation: Australian National University
 publication_date: 2026-06-04
 version: 1.0.0
-doi: null
-doi_registrant: null
+legacy_doi: null
+archive_doi: null
 license: CC-BY-4.0
 canonical_path: /finding-particles-in-a-distributed-unstructured-mesh/
 legacy_paths:

@@ -10,8 +10,8 @@ authors:
     affiliation: Australian National University
 publication_date: 2026-03-23
 version: 1.0.0
-doi: 10.59350/rmayz-81x80
-doi_registrant: rogue-scholar
+legacy_doi: 10.59350/rmayz-81x80
+archive_doi: null
 license: CC-BY-4.0
 canonical_path: /ai-and-scientific-software-what-we-learned-rebuilding-underworld3/
 legacy_paths:

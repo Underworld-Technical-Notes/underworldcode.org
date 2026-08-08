@@ -616,38 +616,44 @@ def test_bootstrap_javascript_parses():
 # that already has one -- see PUBLISHING.md.
 # --------------------------------------------------------------------------
 
-def test_no_article_can_be_deposited_twice():
-    """An article with a DOI must also record who minted it and its record id.
+def test_an_article_is_never_deposited_twice():
+    """Depositing twice is the failure; depositing once alongside a legacy DOI is not.
 
-    The publish command refuses to create a new record when
-    repository_record_id is set. That only works if the field is populated, so
-    the invariant is checked here rather than discovered at deposit time.
+    The two DOIs identify different objects -- a living page and a fixed PDF --
+    and the deposit says so with an IsVariantFormOf relation. What must never
+    happen is a second deposit of the same article, so an archival DOI without
+    a record id is an error: the guard that prevents it would have nothing to
+    check.
     """
     build_index = load("build_index")
     for path in sorted((ROOT / "articles").glob("*/metadata.yml")):
         meta = build_index.read_yaml(path)
-        if not meta.get("doi"):
-            continue
-        assert meta.get("doi_registrant"), \
-            "%s has a DOI but does not say who minted it" % path.parent.name
-        if meta["doi_registrant"] == "rogue-scholar":
-            # Legacy Crossref registrations: never re-deposited, so they carry
-            # no repository record of ours.
-            assert not meta.get("repository_record_id"), \
-                "%s is a legacy DOI and must not have a deposit record" % path.parent.name
+        if meta.get("archive_doi"):
+            assert meta.get("repository_record_id"), \
+                "%s could be deposited again" % path.parent.name
 
 
-def test_legacy_dois_are_never_paired_with_a_new_registrant():
-    import csv
-    register = ROOT / "inventory" / "doi-register.csv"
-    with register.open(encoding="utf-8") as fh:
-        legacy = {row["slug"] for row in csv.DictReader(fh)}
+def test_an_archival_doi_is_never_a_legacy_one():
+    """A deposit must mint its own identifier, never claim one of the fifty."""
     build_index = load("build_index")
     for path in sorted((ROOT / "articles").glob("*/metadata.yml")):
         meta = build_index.read_yaml(path)
-        if meta.get("slug") in legacy:
-            assert meta.get("doi_registrant") == "rogue-scholar", \
-                "%s already has a Crossref DOI; depositing it would duplicate" % meta["slug"]
+        archive = meta.get("archive_doi")
+        assert not (archive and archive.startswith("10.59350/")), \
+            "%s claims a Crossref DOI we do not own" % path.parent.name
+
+
+def test_every_registered_doi_is_recorded_as_legacy():
+    import csv
+    with (ROOT / "inventory" / "doi-register.csv").open(encoding="utf-8") as fh:
+        register = {row["slug"]: row["doi"] for row in csv.DictReader(fh)}
+    build_index = load("build_index")
+    for path in sorted((ROOT / "articles").glob("*/metadata.yml")):
+        meta = build_index.read_yaml(path)
+        expected = register.get(meta.get("slug"))
+        if expected:
+            assert meta.get("legacy_doi") == expected, \
+                "%s: legacy DOI does not match the register" % meta["slug"]
 
 
 def test_the_submission_route_is_discoverable():
