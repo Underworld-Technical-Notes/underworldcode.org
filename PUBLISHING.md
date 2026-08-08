@@ -94,6 +94,21 @@ links a preprint to its published version.
 The legacy DOIs are left alone. They keep resolving to the page, which is a
 reasonable thing for them to do, and we could not re-point them anyway.
 
+**Citations already in the wild should move to `archive_doi`.** There are not
+many — chiefly ORCID records — and repointing them is an improvement on its own
+terms: an ORCID entry currently cites a page that can change, and would instead
+cite a fixed record with checksums.
+
+Sequencing matters. A note cannot be cited by its archival DOI until it has
+one, so the order is: build the deposit tooling, deposit the backfill, *then*
+make one pass through ORCID. Doing it earlier means doing it twice.
+
+Much of it should not need doing by hand at all: ORCID auto-populates from
+DataCite, so deposits carrying an author's ORCID should appear in their record
+without being added. The manual work is removing or replacing the old entries,
+not creating the new ones — which is a reason to put the ORCIDs into
+`authors.yml` before the backfill rather than after.
+
 ### What must never happen
 
 A note deposited **twice** — two archival records, two DOIs, for one PDF.
