@@ -1,0 +1,28 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2017-002
+slug: untitled-2
+title: Using physical units in Underworld
+article_type: technical-note
+status: migrated
+authors:
+  - name: Romain Beucher
+    orcid: 0000-0003-3891-5444
+    affiliation: Australian National University
+publication_date: 2017-05-24
+version: 1.0.0
+legacy_doi: 10.59350/ts8za-rv858
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /untitled-2/
+legacy_paths:
+  - /untitled-2/
+subjects:
+methods:
+ghost_tags:
+  - Underworld Code
+  - "#editors-pick"
+banner: figures/banner.png
+banner_credit: null
+figures: 0
+source: ghost-migration
+ghost_uuid: 2b917f05-da8c-40cc-b531-8cd338515b23

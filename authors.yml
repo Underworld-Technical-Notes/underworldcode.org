@@ -56,20 +56,33 @@ authors:
     orcid: 0000-0002-2292-0735
     affiliation: University at Buffalo
 
-  # Not on the JOSS paper; ORCIDs not yet known.
+  # Not on the JOSS paper. Supplied by the author, not found by searching.
+  ben-mather:
+    name: Ben Mather
+    orcid: 0000-0003-3566-1557
+    affiliation: University of Sydney
+  rebecca:
+    name: Rebecca Farrington
+    orcid: 0000-0002-2594-6965
+    affiliation: null
+
+  # `no_orcid: true` means asked, and there is none -- as against `orcid: null`
+  # below, which means not yet looked up. The validator warns about the second
+  # and not the first, so the reminder stays on the authors who could still
+  # supply one. A deposit for an author with no ORCID will not propagate into an
+  # ORCID record automatically; that is the cost, and it is theirs to weigh.
+  adam:
+    name: Adam Beall
+    orcid: null
+    no_orcid: true
+    affiliation: null
+
+  # ORCIDs not yet known.
   haibin:
     name: Haibin Yang
     orcid: null
     affiliation: null
-  ben-mather:
-    name: Ben Mather
-    orcid: null
-    affiliation: University of Sydney
   rohan:
     name: Rohan Byrne
-    orcid: null
-    affiliation: null
-  rebecca:
-    name: Rebecca Farrington
     orcid: null
     affiliation: null

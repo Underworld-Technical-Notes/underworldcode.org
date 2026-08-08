@@ -1,0 +1,29 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2014-001
+slug: the-dynamics-of-continental-accretion
+title: The Dynamics of Continental Accretion
+article_type: technical-note
+status: migrated
+authors:
+  - name: Louis Moresi
+    orcid: 0000-0003-3685-174X
+    affiliation: Australian National University
+publication_date: 2014-04-01
+version: 1.0.0
+legacy_doi: 10.59350/73ded-8k350
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /the-dynamics-of-continental-accretion/
+legacy_paths:
+  - /the-dynamics-of-continental-accretion/
+subjects:
+methods:
+ghost_tags:
+  - Geodynamics
+  - Underworld Code
+  - "#editors-pick"
+banner: figures/banner.png
+banner_credit: null
+figures: 4
+source: ghost-migration
+ghost_uuid: 1d9dbde3-2b56-44bd-b076-ab35ebde274a

@@ -112,6 +112,59 @@ def check_schema(meta, schema, errors, label):
             errors.append("%s: %s = %r does not match %s" % (label, field, value, pattern))
 
 
+def authors_without_orcid():
+    """Names flagged `no_orcid: true` in authors.yml.
+
+    "Asked, and there is none" is an answer. Warning about it every build turns
+    a settled question back into an open one, and trains everyone to read past
+    the warnings that still matter.
+    """
+    path = ROOT / "authors.yml"
+    if not path.exists():
+        return set()
+    names, name = set(), None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if stripped.startswith("name:"):
+            name = scalar(stripped.split(":", 1)[1].strip())
+        elif stripped.startswith("no_orcid:") and "true" in stripped and name:
+            names.add(name)
+    return names
+
+
+def check_attribution(errors):
+    """Every attribution.yml entry names a real slug and real authors.
+
+    An override that silently does nothing is worse than no override: the
+    article keeps a wrong byline while the file says it was fixed. A typo in
+    either the slug or an author key is an error, not a shrug.
+    """
+    path = ROOT / "attribution.yml"
+    if not path.exists():
+        return
+    known = set()
+    authors = ROOT / "authors.yml"
+    if authors.exists():
+        for line in authors.read_text(encoding="utf-8").splitlines():
+            if line.startswith("  ") and not line.startswith("    ") \
+                    and line.strip().endswith(":"):
+                known.add(line.strip()[:-1])
+
+    slug = None
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        if not raw.startswith(" ") and raw.rstrip().endswith(":"):
+            slug = raw.rstrip()[:-1]
+            if not (ROOT / "articles" / slug).exists():
+                errors.append("attribution.yml: no article %r" % slug)
+        elif raw.strip().startswith("- "):
+            key = raw.strip()[2:].strip()
+            if key not in known:
+                errors.append("attribution.yml: %s names %r, which is not in "
+                              "authors.yml" % (slug, key))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--strict", action="store_true", help="treat warnings as errors")
@@ -129,6 +182,9 @@ def main():
     metas = sorted((ROOT / "articles").glob("*/metadata.yml"))
     if not metas:
         sys.exit("no articles found -- run scripts/ghost_to_myst.py first")
+
+    check_attribution(errors)
+    no_orcid = authors_without_orcid()
 
     for meta_path in metas:
         directory = meta_path.parent
@@ -191,7 +247,8 @@ def main():
                 errors.append("%s: ORCID %s fails its check digit -- it belongs to "
                               "someone else, or is mistyped (%s)"
                               % (label, orcid, author.get("name")))
-            if (legacy or archive) and not orcid:
+            if (legacy or archive) and not orcid \
+                    and author.get("name") not in no_orcid:
                 warnings.append("%s: no ORCID for %s on a DOI-bearing article"
                                 % (label, author.get("name")))
 

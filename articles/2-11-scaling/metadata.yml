@@ -1,0 +1,31 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2021-004
+slug: 2-11-scaling
+title: Underworld 2.11 Scaling
+article_type: technical-note
+status: migrated
+authors:
+  - name: Julian Giordani
+    orcid: 0000-0003-4515-9296
+    affiliation: University of Sydney
+  - name: John Mansour
+    orcid: 0000-0001-5865-1664
+    affiliation: Monash University
+publication_date: 2021-09-30
+version: 1.0.0
+legacy_doi: 10.59350/3wz3c-c8w65
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /2-11-scaling/
+legacy_paths:
+  - /2-11-scaling/
+subjects:
+methods:
+ghost_tags:
+  - Underworld Code
+  - Documentation
+banner: figures/banner.jpg
+banner_credit: null
+figures: 4
+source: ghost-migration
+ghost_uuid: ef6438d1-3d62-4d05-8196-9fef5aed0866

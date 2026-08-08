@@ -1,0 +1,27 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2020-001
+slug: joss-publication-underworld-2
+title: JOSS publication - Underworld 2
+article_type: technical-note
+status: migrated
+authors:
+  - name: John Mansour
+    orcid: 0000-0001-5865-1664
+    affiliation: Monash University
+publication_date: 2020-03-11
+version: 1.0.0
+legacy_doi: 10.59350/gbzdq-dtj52
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /joss-publication-underworld-2/
+legacy_paths:
+  - /joss-publication-underworld-2/
+subjects:
+methods:
+ghost_tags:
+  - Underworld Code
+banner: figures/banner.png
+banner_credit: null
+figures: 0
+source: ghost-migration
+ghost_uuid: 746c1749-5b5f-45c4-a467-d18f1433dbb6

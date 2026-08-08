@@ -1,0 +1,28 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2025-001
+slug: underworld-and-singularity
+title: Underworld and Singularity
+article_type: technical-note
+status: migrated
+authors:
+  - name: Julian Giordani
+    orcid: 0000-0003-4515-9296
+    affiliation: University of Sydney
+publication_date: 2025-04-09
+version: 1.0.0
+legacy_doi: 10.59350/hfgvn-dkk05
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /underworld-and-singularity/
+legacy_paths:
+  - /underworld-and-singularity/
+subjects:
+methods:
+ghost_tags:
+  - Underworld Code
+  - Tricks of the Trade
+banner: figures/banner.jpg
+banner_credit: "Photo by <a href=\"https://unsplash.com/@hooverpaul55?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Paul Teysen</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplas</a>"
+figures: 2
+source: ghost-migration
+ghost_uuid: 9d5e8d64-85f2-47f6-8b43-21d358cdfaa1

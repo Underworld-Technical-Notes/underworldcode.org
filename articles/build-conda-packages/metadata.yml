@@ -1,0 +1,29 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2020-012
+slug: build-conda-packages
+title: "How to build Conda packages?"
+article_type: technical-note
+status: migrated
+authors:
+  - name: Romain Beucher
+    orcid: 0000-0003-3891-5444
+    affiliation: Australian National University
+publication_date: 2020-11-23
+version: 1.0.0
+legacy_doi: 10.59350/7x9h6-y1x53
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /build-conda-packages/
+legacy_paths:
+  - /build-conda-packages/
+subjects:
+methods:
+ghost_tags:
+  - Tricks of the Trade
+  - Documentation
+  - "#editors-pick"
+banner: figures/banner.jpg
+banner_credit: null
+figures: 1
+source: ghost-migration
+ghost_uuid: 1ffc2f11-2df0-418f-9f03-c9e74c7e4fad

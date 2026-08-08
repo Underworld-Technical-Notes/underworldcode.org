@@ -1,0 +1,28 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2019-001
+slug: viscoelasticity
+title: Viscoelasticity in Underworld2
+article_type: technical-note
+status: migrated
+authors:
+  - name: Rebecca Farrington
+    orcid: 0000-0002-2594-6965
+publication_date: 2019-08-12
+version: 1.0.0
+legacy_doi: 10.59350/3atx2-v4j54
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /viscoelasticity/
+legacy_paths:
+  - /viscoelasticity/
+subjects:
+methods:
+ghost_tags:
+  - Geodynamics
+  - Underworld Code
+  - "#editors-pick"
+banner: figures/banner.png
+banner_credit: null
+figures: 1
+source: ghost-migration
+ghost_uuid: 6389e46c-0eab-4df7-8cbd-66e1cfa33b79

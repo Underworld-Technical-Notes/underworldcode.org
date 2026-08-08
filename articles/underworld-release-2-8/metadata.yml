@@ -1,0 +1,28 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2019-002
+slug: underworld-release-2-8
+title: Underworld Release 2.8
+article_type: technical-note
+status: migrated
+authors:
+  - name: John Mansour
+    orcid: 0000-0001-5865-1664
+    affiliation: Monash University
+publication_date: 2019-09-03
+version: 1.0.0
+legacy_doi: 10.59350/90fe7-qqe67
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /underworld-release-2-8/
+legacy_paths:
+  - /underworld-release-2-8/
+subjects:
+methods:
+ghost_tags:
+  - Underworld Code
+  - Documentation
+banner: null
+banner_credit: null
+figures: 1
+source: ghost-migration
+ghost_uuid: 314bd43a-6e97-4735-9d90-699aefcaba38

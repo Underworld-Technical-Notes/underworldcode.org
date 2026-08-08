@@ -1,0 +1,28 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2020-005
+slug: australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it
+title: Australian cities are quiet during lockdown. Earthquake scientists are making the most of it
+article_type: technical-note
+status: migrated
+authors:
+  - name: Louis Moresi
+    orcid: 0000-0003-3685-174X
+    affiliation: Australian National University
+publication_date: 2020-07-17
+version: 1.0.0
+legacy_doi: 10.59350/qpft6-wks47
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it/
+legacy_paths:
+  - /australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it/
+subjects:
+methods:
+ghost_tags:
+  - Geodynamics
+  - Geophysics
+banner: figures/banner.png
+banner_credit: null
+figures: 3
+source: ghost-migration
+ghost_uuid: 2df0466a-8ae3-4990-90ce-b523156b34e4

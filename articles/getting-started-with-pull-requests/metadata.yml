@@ -1,0 +1,28 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2020-011
+slug: getting-started-with-pull-requests
+title: Getting started with Pull requests
+article_type: technical-note
+status: migrated
+authors:
+  - name: Romain Beucher
+    orcid: 0000-0003-3891-5444
+    affiliation: Australian National University
+publication_date: 2020-11-17
+version: 1.0.0
+legacy_doi: 10.59350/cj1d1-e4445
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /getting-started-with-pull-requests/
+legacy_paths:
+  - /getting-started-with-pull-requests/
+subjects:
+methods:
+ghost_tags:
+  - Tricks of the Trade
+  - Documentation
+banner: figures/banner.jpg
+banner_credit: null
+figures: 4
+source: ghost-migration
+ghost_uuid: dc2f7191-b48f-4fb0-80ec-29fcad196a17

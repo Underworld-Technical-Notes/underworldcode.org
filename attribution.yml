@@ -1,0 +1,19 @@
+# Who wrote an article, where Ghost got it wrong.
+#
+# Ghost's author field records whoever owned the post in Ghost, which for the
+# imported material is often whoever ran the import rather than the author. Keys
+# are entries in authors.yml. Anything not listed here keeps Ghost's answer.
+#
+# Kept outside articles/, which the conversion regenerates, so a correction is
+# not undone by re-running it. `pixi run validate` checks the names resolve.
+#
+# These articles carry DOIs. A DOI-bearing article credited to the wrong person
+# is the worst kind of migration defect: it looks fine, it propagates into ORCID
+# records and citation indexes, and only the real author would ever notice.
+
+# Ghost says Louis Moresi. The pre-Ghost Jekyll site, which is where this was
+# first published, says Adam Beall -- and every figure in it is credited "from
+# Beall et al. 2017". See underworldcode.github.io.retired,
+# _posts/2017-06-29-Sub-Continental-Instabilities.md.
+untitled:
+  - adam

@@ -1,0 +1,27 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2023-002
+slug: compressible-convection-in-cartesian-coordinates-in-underworld3
+title: Compressible convection in cartesian coordinates with Underworld3
+article_type: technical-note
+status: migrated
+authors:
+  - name: Juan Carlos Graciosa
+    orcid: 0000-0003-0817-354X
+    affiliation: Australian National University
+publication_date: 2023-10-04
+version: 1.0.0
+legacy_doi: 10.59350/g4ysn-pv176
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /compressible-convection-in-cartesian-coordinates-in-underworld3/
+legacy_paths:
+  - /compressible-convection-in-cartesian-coordinates-in-underworld3/
+subjects:
+methods:
+ghost_tags:
+  - Geodynamics
+banner: figures/banner.jpg
+banner_credit: "Photo by <a href=\"https://unsplash.com/@v2osk?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">v2osk</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplas</a>"
+figures: 6
+source: ghost-migration
+ghost_uuid: d5fc00aa-1490-4b42-98b0-c51bfdac1df2

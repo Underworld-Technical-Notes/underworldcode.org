@@ -1,0 +1,28 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2017-001
+slug: shear-bands-with-dilatancy-modelled-with-underworld
+title: Shear Bands with Dilatancy modelled with Underworld
+article_type: technical-note
+status: migrated
+authors:
+  - name: Louis Moresi
+    orcid: 0000-0003-3685-174X
+    affiliation: Australian National University
+publication_date: 2017-05-05
+version: 1.0.0
+legacy_doi: 10.59350/awc90-63186
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /shear-bands-with-dilatancy-modelled-with-underworld/
+legacy_paths:
+  - /shear-bands-with-dilatancy-modelled-with-underworld/
+subjects:
+methods:
+ghost_tags:
+  - Geodynamics
+  - Underworld Code
+banner: figures/banner.png
+banner_credit: null
+figures: 2
+source: ghost-migration
+ghost_uuid: 0a2768ca-c491-4bca-9cbd-404b02289562

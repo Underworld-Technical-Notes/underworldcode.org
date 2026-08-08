@@ -1,0 +1,28 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2016-001
+slug: underworld2-workshop-at-cig-2016-meeting
+title: Underworld2 Workshop at CIG 2016 Meeting
+article_type: technical-note
+status: migrated
+authors:
+  - name: John Mansour
+    orcid: 0000-0001-5865-1664
+    affiliation: Monash University
+publication_date: 2016-02-29
+version: 1.0.0
+legacy_doi: 10.59350/m1brb-ah254
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /underworld2-workshop-at-cig-2016-meeting/
+legacy_paths:
+  - /underworld2-workshop-at-cig-2016-meeting/
+subjects:
+methods:
+ghost_tags:
+  - Underworld Code
+  - Underworld Workshops
+banner: figures/banner.jpg
+banner_credit: null
+figures: 0
+source: ghost-migration
+ghost_uuid: 94e58145-1ff8-48e3-8e1d-c82942637d47

@@ -17,7 +17,11 @@ new = "python3 scripts/new_article.py"
 
 # Legacy migration only. New notes are authored from templates/article-template,
 # where a figure, a badge and an inline image are stated rather than inferred.
-convert = "python3 scripts/ghost_to_myst.py --since 2025-08-05"
+# Skips articles that already exist: conversion is the first step of the
+# migration, and re-running it over a finished article discards the merged
+# original text and the rebuilt vector figures. `--force` overwrites, and then
+# merge-originals and rebuild-figures have to be run again.
+convert = "python3 scripts/ghost_to_myst.py"
 
 # index.md is generated from article metadata and is gitignored, so it must be
 # built before ANY myst invocation -- it is the project's root toc entry, and

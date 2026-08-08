@@ -1,0 +1,30 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2020-009
+slug: underworld-2-10
+title: Underworld 2.10
+article_type: technical-note
+status: migrated
+authors:
+  - name: Julian Giordani
+    orcid: 0000-0003-4515-9296
+    affiliation: University of Sydney
+  - name: John Mansour
+    orcid: 0000-0001-5865-1664
+    affiliation: Monash University
+publication_date: 2020-09-04
+version: 1.0.0
+legacy_doi: 10.59350/dwxt3-tgj66
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /underworld-2-10/
+legacy_paths:
+  - /underworld-2-10/
+subjects:
+methods:
+ghost_tags:
+  - Underworld Code
+banner: figures/banner.png
+banner_credit: null
+figures: 1
+source: ghost-migration
+ghost_uuid: f457bb06-41cb-48a7-b743-9309b11d2a2d

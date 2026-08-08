@@ -1,0 +1,26 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2022-003
+slug: uwgeodynamics-and-underworld-merge
+title: Folding UWGeodynamics into Underworld
+article_type: technical-note
+status: migrated
+authors:
+  - name: Romain Beucher
+    orcid: 0000-0003-3891-5444
+    affiliation: Australian National University
+publication_date: 2022-05-24
+version: 1.0.0
+legacy_doi: 10.59350/ng0d5-23959
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /uwgeodynamics-and-underworld-merge/
+legacy_paths:
+  - /uwgeodynamics-and-underworld-merge/
+subjects:
+methods:
+ghost_tags:
+banner: figures/banner.jpg
+banner_credit: "Photo by <a href=\"https://unsplash.com/@lisanto_?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Lisanto 李奕良</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplash</a>"
+figures: 0
+source: ghost-migration
+ghost_uuid: c11d1291-8695-440a-a3fd-d60c0426d961

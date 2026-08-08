@@ -1,0 +1,29 @@
+# Article metadata. Validated in CI against schemas/article-metadata.schema.json.
+id: UWTN 2025-002
+slug: perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop
+title: "Underworld Geodynamic Modelling Workshop. Perth, 7 May 2025"
+article_type: technical-note
+status: migrated
+authors:
+  - name: Louis Moresi
+    orcid: 0000-0003-3685-174X
+    affiliation: Australian National University
+publication_date: 2025-04-29
+version: 1.0.0
+legacy_doi: 10.59350/8vp5e-6cx59
+archive_doi: null
+license: CC-BY-4.0
+canonical_path: /perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop/
+legacy_paths:
+  - /perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop/
+subjects:
+methods:
+ghost_tags:
+  - Underworld Workshops
+  - Getting Started
+  - Geodynamics
+banner: figures/banner.jpg
+banner_credit: "Photo by <a href=\"https://unsplash.com/@marvelous?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Marvin Meyer</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplash</a>"
+figures: 1
+source: ghost-migration
+ghost_uuid: 6a24efe5-32a6-4983-889c-59481907e6d2

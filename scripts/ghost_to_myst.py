@@ -49,6 +49,7 @@ from html.parser import HTMLParser
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 EXPORT = ROOT / "inventory" / "ghost-export"
 MIRROR = ROOT / "assets"
+RECOVERED = ROOT / "inventory" / "recovered-figures"
 ARTICLES = ROOT / "articles"
 SITE = "https://www.underworldcode.org"
 
@@ -153,6 +154,42 @@ def load_classification():
 CLASSIFICATION = load_classification()
 
 
+def load_attribution():
+    """slug -> [author key] from attribution.yml.
+
+    Ghost's author field records who ran the import, not always who wrote the
+    article. Where a more authoritative source exists -- chiefly the pre-Ghost
+    Jekyll site, which carries a byline in each post's front matter -- it is
+    recorded here and wins. Like classification.yml this lives outside
+    articles/, so re-running the conversion does not undo it.
+    """
+    path = ROOT / "attribution.yml"
+    entries, slug = {}, None
+    if not path.exists():
+        return entries
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        if not raw.startswith(" ") and raw.rstrip().endswith(":"):
+            slug = raw.rstrip()[:-1]
+            entries[slug] = []
+        elif slug and raw.strip().startswith("- "):
+            entries[slug].append(raw.strip()[2:].strip())
+    return entries
+
+
+ATTRIBUTION = load_attribution()
+
+
+def article_authors(rec):
+    """[(name, orcid, affiliation)] for an article, override first."""
+    override = ATTRIBUTION.get(rec["slug"])
+    if override:
+        return [(AUTHORS[k]["name"], AUTHORS[k].get("orcid"),
+                 AUTHORS[k].get("affiliation")) for k in override]
+    return [author_entry(a) for a in (rec.get("authors") or [])]
+
+
 def author_entry(author):
     """Merge a Ghost author record with the registry."""
     slug = author.get("slug") or ""
@@ -197,6 +234,7 @@ class GhostToMyst(HTMLParser):
         self.unbolded_captions = 0
         self.inline_images = 0
         self.linked_images = 0
+        self.galleries = 0
 
     # -- helpers ---------------------------------------------------------
 
@@ -279,13 +317,19 @@ class GhostToMyst(HTMLParser):
                 self._buf.append("  " * depth + marker)
         elif tag == "figure":
             self._flush()
-            self._fig = {"src": "", "alt": "", "caption": ""}
+            # panels: one entry per <img>. Ghost's gallery card puts several
+            # images inside a single <figure>, and keeping only the last one
+            # silently deleted nine images from this corpus before anyone
+            # noticed. MyST renders a multi-image figure as labelled panels
+            # under one numbered caption, in HTML and in the PDF alike, which
+            # is what a gallery meant in the first place.
+            self._fig = {"panels": [], "caption": ""}
         elif tag == "img":
             src = attrs.get("src", "")
             alt = " ".join((attrs.get("alt") or "").split())
             if self._fig is not None:
                 # Inside <figure>: a numbered figure with a caption.
-                self._fig["src"], self._fig["alt"] = src, alt
+                self._fig["panels"].append((src, alt))
             else:
                 # A bare <img> is a badge or an inline graphic, not a figure --
                 # numbering it would put "Figure 1:" under a JOSS status badge.
@@ -405,15 +449,22 @@ class GhostToMyst(HTMLParser):
         return urllib.parse.unquote(src.rsplit("/", 1)[-1].split("?")[0])
 
     def _close_figure(self):
-        if not self._fig or not self._fig["src"]:
+        if not self._fig or not self._fig["panels"]:
             self._fig = None
             return
-        src = self._fig["src"]
-        name = self._asset_name(src)
-        alt = " ".join(self._fig["alt"].split())
+        panels = self._fig["panels"]
         caption = " ".join(self._fig["caption"].split())
-        self.figures.append((src, name, alt, caption))
+        for src, alt in panels:
+            self.figures.append((src, self._asset_name(src), alt, caption))
 
+        if len(panels) > 1:
+            self.galleries += 1
+            self._emit(self._panel_block(panels, caption))
+            self._fig = None
+            return
+
+        src, alt = panels[0]
+        name = self._asset_name(src)
         block = ["```{figure} figures/%s" % name]
         if alt:
             block.append(":alt: %s" % alt)
@@ -422,16 +473,35 @@ class GhostToMyst(HTMLParser):
             # and fights the lighter caption style. Strip the outer bold only
             # when it wraps the whole caption, so partial emphasis (panel
             # labels and the like) survives untouched.
-            stripped = caption.strip()
-            if (stripped.startswith("**") and stripped.endswith("**")
-                    and stripped.count("**") == 2):
-                caption = stripped[2:-2].strip()
-                self.unbolded_captions += 1
             block.append("")
-            block.append(caption)
+            block.append(self._unbold(caption))
         block.append("```")
         self._emit("\n".join(block))
         self._fig = None
+
+    def _panel_block(self, panels, caption):
+        """A multi-image figure, as panels under one numbered caption.
+
+        Colon fences, not backticks: the panel images are markdown inside the
+        directive body, and a backtick fence would take them literally.
+        """
+        block = [":::{figure}"]
+        for src, alt in panels:
+            block.append("![%s](figures/%s)" % (alt, self._asset_name(src)))
+        if caption:
+            block.append("")
+            block.append(self._unbold(caption))
+        block.append(":::")
+        return "\n".join(block)
+
+    def _unbold(self, caption):
+        """Drop bold that wraps a caption end to end. See _close_figure."""
+        stripped = caption.strip()
+        if (stripped.startswith("**") and stripped.endswith("**")
+                and stripped.count("**") == 2):
+            self.unbolded_captions += 1
+            return stripped[2:-2].strip()
+        return caption
 
     @staticmethod
     def _clean_href(href):
@@ -486,7 +556,7 @@ def yaml_str(value):
 
 
 def write_metadata(path, rec, doi, figures, article_id, banner=None, credit=None):
-    authors = rec.get("authors") or []
+    authors = article_authors(rec)
     lines = [
         "# Article metadata. Validated in CI against schemas/article-metadata.schema.json.",
         "id: %s" % yaml_str(article_id),
@@ -497,8 +567,7 @@ def write_metadata(path, rec, doi, figures, article_id, banner=None, credit=None
         "status: migrated",
         "authors:",
     ]
-    for author in authors:
-        name, orcid, affiliation = author_entry(author)
+    for name, orcid, affiliation in authors:
         lines.append("  - name: %s" % yaml_str(name))
         lines.append("    orcid: %s" % (orcid or "null"))
         if affiliation:
@@ -599,7 +668,7 @@ def banner_block(banner, credit):
 
 
 def frontmatter(rec, doi, article_id, banner=None):
-    authors = rec.get("authors") or []
+    authors = article_authors(rec)
     lines = ["---", "title: %s" % yaml_str(rec.get("title") or "")]
     subtitle = (rec.get("custom_excerpt") or "").strip()
     if subtitle:
@@ -607,8 +676,7 @@ def frontmatter(rec, doi, article_id, banner=None):
     lines.append("date: %s" % ((rec.get("published_at") or "")[:10]))
     if authors:
         lines.append("authors:")
-        for author in authors:
-            name, orcid, affiliation = author_entry(author)
+        for name, orcid, affiliation in authors:
             lines.append("  - name: %s" % yaml_str(name))
             if orcid:
                 lines.append("    orcid: %s" % orcid)
@@ -669,6 +737,37 @@ def cached_asset(src):
     return cache, None
 
 
+BOOKMARK = re.compile(r'<figure[^>]*kg-bookmark-card.*?</figure>', re.S)
+
+
+def simplify_bookmark_cards(source):
+    """Turn Ghost's link-preview cards into ordinary links.
+
+    A bookmark card is chrome: the target site's favicon, its social thumbnail,
+    its meta description and its publisher name, wrapped in one big anchor. Fed
+    to the converter as-is it becomes a numbered figure of a favicon next to a
+    book cover, followed by a link whose text is every one of those fields run
+    together. Neither survives into print, and the real content -- what was
+    linked to, and what it is -- is one sentence.
+
+    Done here rather than in the parser because the card is a fixed Ghost
+    structure: matching it is honest pattern-matching, whereas threading four
+    nested div classes through a streaming parser is not.
+    """
+    def replace(match):
+        card = match.group(0)
+        href = re.search(r'href="([^"]+)"', card)
+        title = re.search(r'kg-bookmark-title">(.*?)</div>', card, re.S)
+        desc = re.search(r'kg-bookmark-description">(.*?)</div>', card, re.S)
+        if not href or not title:
+            return card
+        text = '<p><a href="%s">%s</a>' % (href.group(1), title.group(1).strip())
+        if desc:
+            text += " &mdash; %s" % desc.group(1).strip()
+        return text + "</p>"
+    return BOOKMARK.sub(replace, source)
+
+
 def intrinsic_width(path):
     """Pixel width of an SVG or PNG, or None.
 
@@ -695,9 +794,20 @@ def copy_figure(src, name, dest_dir):
     Site-hosted images come from the local mirror. External ones are fetched
     once and cached: an archival PDF has to be self-contained, and a figure
     loaded from someone else's server is a figure that will disappear -- as
-    fifteen of this corpus's own figures already have.
+    sixteen of this corpus's own figures nearly did.
+
+    Those sixteen are checked for first. They point at a host that no longer
+    exists, so the mirror has nothing for them and the fetch would fail; the
+    replacements are held in `inventory/recovered-figures/<slug>/<name>`, keyed
+    by the name the article refers to rather than by where it was found. See
+    inventory/lost-figures.md for where each one came from.
     """
     dest_dir.mkdir(parents=True, exist_ok=True)
+    recovered = RECOVERED / dest_dir.parent.name / name
+    if recovered.exists():
+        shutil.copy2(recovered, dest_dir / name)
+        return "recovered"
+
     source, error = cached_asset(src)
     if error:
         return "EXTERNAL, could not fetch (%s)" % error
@@ -714,6 +824,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--since", help="only posts published on or after YYYY-MM-DD")
     parser.add_argument("--slug", action="append", help="convert specific slug(s)")
+    parser.add_argument("--force", action="store_true",
+                        help="overwrite articles that already exist (see below)")
     args = parser.parse_args()
 
     payload = json.loads((EXPORT / "posts.json").read_text(encoding="utf-8"))
@@ -725,7 +837,7 @@ def main():
             for row in csv.DictReader(fh):
                 dois[row["slug"]] = row["doi"]
 
-    selected = []
+    selected, existing = [], []
     for rec in payload["posts"]:
         slug = rec["slug"]
         if re.match(r"^(rce(-\d+)?|sysinfo-[0-9a-f]+)$", slug):
@@ -734,7 +846,20 @@ def main():
             continue
         if args.since and (rec.get("published_at") or "")[:10] < args.since:
             continue
+        # Conversion is the FIRST step, not the only one: an article may since
+        # have had its text merged from the author's original, its figures
+        # rebuilt as vectors, or a caption restored by hand. Re-running the
+        # converter over it silently throws all of that away, which is a quiet
+        # and expensive kind of damage. Existing articles are therefore skipped
+        # unless asked for explicitly, and --force means "and re-run the rest of
+        # the pipeline afterwards".
+        if (ARTICLES / slug).exists() and not args.force:
+            existing.append(slug)
+            continue
         selected.append(rec)
+    if existing:
+        print("skipping %d article(s) that already exist; --force to overwrite"
+              % len(existing), file=sys.stderr)
     selected.sort(key=lambda r: r.get("published_at") or "")
     ids = article_ids(payload["posts"])
 
@@ -744,6 +869,7 @@ def main():
     unbolded = 0
     inline = 0
     linked = 0
+    galleries = 0
 
     for rec in selected:
         slug = rec["slug"]
@@ -758,6 +884,7 @@ def main():
                 applied.append((slug, find))
             else:
                 stale.append((slug, find))
+        source = simplify_bookmark_cards(source)
 
         conv = GhostToMyst(slug)
         conv.feed(source)
@@ -776,13 +903,14 @@ def main():
         fig_notes = []
         for src, name, _alt, _cap in conv.figures:
             result = copy_figure(src, name, dest / "figures")
-            if not result.startswith(("copied", "localised")):
+            if not result.startswith(("copied", "localised", "recovered")):
                 fig_notes.append("%s -- %s" % (name, result))
                 problems.append((slug, result))
 
         all_unknown.update(conv.unknown)
         unbolded += conv.unbolded_captions
         inline += conv.inline_images
+        galleries += conv.galleries
         linked += conv.linked_images
         all_dropped.update(conv.dropped)
 
@@ -810,6 +938,9 @@ def main():
             print("    %-52s %s" % (slug[:52], note), file=sys.stderr)
     if linked:
         print("  %d linked image(s) emitted as {image} with :target:" % linked,
+              file=sys.stderr)
+    if galleries:
+        print("  %d gallery card(s) emitted as multi-panel figures" % galleries,
               file=sys.stderr)
     if inline:
         print("  %d inline image(s) kept inline rather than numbered as figures"
