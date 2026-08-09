@@ -16,7 +16,7 @@ keywords:
   - Auscope
 exports:
   - format: typst
-    source_url: https://www.underworldcode.org/ai-and-scientific-software-what-we-learned-rebuilding-underworld3/
+    origin_url: https://www.underworldcode.org/ai-and-scientific-software-what-we-learned-rebuilding-underworld3/
     template: ../../templates/pdf
     output: ai-and-scientific-software-what-we-learned-rebuilding-underworld3.pdf
     article_id: UWTN 2026-001

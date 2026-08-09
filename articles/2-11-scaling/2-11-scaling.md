@@ -18,7 +18,7 @@ keywords:
   - Documentation
 exports:
   - format: typst
-    source_url: https://www.underworldcode.org/2-11-scaling/
+    origin_url: https://www.underworldcode.org/2-11-scaling/
     template: ../../templates/pdf
     output: 2-11-scaling.pdf
     article_id: UWTN 2021-004

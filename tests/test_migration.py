@@ -945,3 +945,27 @@ def test_the_pdf_carries_the_archival_doi_once_a_note_is_deposited():
         assert found and found.group(1).strip() == wanted, \
             "%s: front matter says %s, metadata says %s" % (
                 meta["slug"], found.group(1).strip() if found else "(none)", wanted)
+
+
+def test_the_archival_stamp_stays_a_string_in_the_export_block():
+    """YAML reads an unquoted ISO-8601 stamp as a timestamp, not a string.
+
+    The template option is declared as a string, so an unquoted value was
+    dropped without a word and the PDF simply had no Archived line. Nothing
+    failed; the fact was just missing.
+    """
+    import re as _re
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        head = path.read_text(encoding="utf-8").split("\n---\n")[0]
+        found = _re.search(r"^    archived:\s*(.+)$", head, _re.M)
+        if found:
+            assert found.group(1).strip().startswith('"'), \
+                "%s: archived must be quoted, got %s" % (path.parent.name,
+                                                         found.group(1))
+
+
+def test_a_broken_pdf_build_cannot_report_success():
+    """It did. The task swallowed the failure and CI deposited no article."""
+    task = (ROOT / "pixi.toml").read_text(encoding="utf-8")
+    assert "build-pdf = { cmd = \"python3 scripts/build_pdf.py\"" in task, \
+        "the PDF build must go through the wrapper that propagates its status"

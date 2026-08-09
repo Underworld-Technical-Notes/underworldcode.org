@@ -13,7 +13,7 @@ keywords:
   - Geodynamics
 exports:
   - format: typst
-    source_url: https://www.underworldcode.org/compressible-convection-in-cartesian-coordinates-in-underworld3/
+    origin_url: https://www.underworldcode.org/compressible-convection-in-cartesian-coordinates-in-underworld3/
     template: ../../templates/pdf
     output: compressible-convection-in-cartesian-coordinates-in-underworld3.pdf
     article_id: UWTN 2023-002

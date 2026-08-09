@@ -15,7 +15,7 @@ keywords:
   - Tricks of the Trade
 exports:
   - format: typst
-    source_url: https://www.underworldcode.org/underworld-and-singularity/
+    origin_url: https://www.underworldcode.org/underworld-and-singularity/
     template: ../../templates/pdf
     output: underworld-and-singularity.pdf
     article_id: UWTN 2025-001

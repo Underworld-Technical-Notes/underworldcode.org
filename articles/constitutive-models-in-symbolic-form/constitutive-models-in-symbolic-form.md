@@ -16,7 +16,7 @@ keywords:
   - development
 exports:
   - format: typst
-    source_url: https://www.underworldcode.org/constitutive-models-in-symbolic-form/
+    origin_url: https://www.underworldcode.org/constitutive-models-in-symbolic-form/
     template: ../../templates/pdf
     output: constitutive-models-in-symbolic-form.pdf
     article_id: UWTN 2026-006

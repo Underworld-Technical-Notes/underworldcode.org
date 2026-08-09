@@ -93,8 +93,8 @@
 [# if options.archived #]
   archived: "[-options.archived-]",
 [# endif #]
-[# if options.source_url #]
-  source-url: "[-options.source_url-]",
+[# if options.origin_url #]
+  source-url: "[-options.origin_url-]",
 [# endif #]
 [# if options.software_version #]
   software-version: "[-options.software_version-]",

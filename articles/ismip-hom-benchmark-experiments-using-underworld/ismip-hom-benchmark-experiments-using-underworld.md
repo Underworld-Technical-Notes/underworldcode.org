@@ -9,7 +9,7 @@ license: CC-BY-4.0
 banner: figures/banner.png
 exports:
   - format: typst
-    source_url: https://www.underworldcode.org/ismip-hom-benchmark-experiments-using-underworld/
+    origin_url: https://www.underworldcode.org/ismip-hom-benchmark-experiments-using-underworld/
     template: ../../templates/pdf
     output: ismip-hom-benchmark-experiments-using-underworld.pdf
     article_id: UWTN 2023-001

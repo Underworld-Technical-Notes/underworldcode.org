@@ -23,7 +23,7 @@ keywords:
   - Underworld Code
 exports:
   - format: typst
-    source_url: https://www.underworldcode.org/scaling-in-underworld/
+    origin_url: https://www.underworldcode.org/scaling-in-underworld/
     template: ../../templates/pdf
     output: scaling-in-underworld.pdf
     article_id: UWTN 2021-002

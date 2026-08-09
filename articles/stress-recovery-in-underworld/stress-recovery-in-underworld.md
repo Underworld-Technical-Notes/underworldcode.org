@@ -11,7 +11,7 @@ keywords:
   - Geodynamics
 exports:
   - format: typst
-    source_url: https://www.underworldcode.org/stress-recovery-in-underworld/
+    origin_url: https://www.underworldcode.org/stress-recovery-in-underworld/
     template: ../../templates/pdf
     output: stress-recovery-in-underworld.pdf
     article_id: UWTN 2021-001

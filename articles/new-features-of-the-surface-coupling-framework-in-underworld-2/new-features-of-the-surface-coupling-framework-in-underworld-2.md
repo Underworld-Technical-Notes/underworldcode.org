@@ -13,7 +13,7 @@ keywords:
   - Underworld Code
 exports:
   - format: typst
-    source_url: https://www.underworldcode.org/new-features-of-the-surface-coupling-framework-in-underworld-2/
+    origin_url: https://www.underworldcode.org/new-features-of-the-surface-coupling-framework-in-underworld-2/
     template: ../../templates/pdf
     output: new-features-of-the-surface-coupling-framework-in-underworld-2.pdf
     article_id: UWTN 2025-004

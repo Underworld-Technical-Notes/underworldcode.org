@@ -15,7 +15,7 @@ keywords:
   - petsc
 exports:
   - format: typst
-    source_url: https://www.underworldcode.org/underworld3-come-and-get-it/
+    origin_url: https://www.underworldcode.org/underworld3-come-and-get-it/
     template: ../../templates/pdf
     output: underworld3-come-and-get-it.pdf
     article_id: UWTN 2024-002

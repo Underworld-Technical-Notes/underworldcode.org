@@ -65,8 +65,10 @@ options:
   - id: archived
     type: string
     description: When this archival PDF was made, ISO-8601 UTC
-  - id: source_url
+  - id: origin_url
     type: string
+    # NOT source_url: MyST reserves that as an export property and rejects the
+    # whole template with "'id' cannot use reserved export property".
     description: The web article this PDF was made from
   - id: wide_body
     type: boolean

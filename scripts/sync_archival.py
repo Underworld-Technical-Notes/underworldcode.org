@@ -96,11 +96,18 @@ def main():
 
         source_url = SITE + str(meta.get("canonical_path") or ("/%s/" % slug))
         wants = {"doi": wanted}
-        exports = {"source_url": source_url}
+        exports = {"origin_url": source_url}
         if meta.get("archived_at"):
-            exports["archived"] = meta["archived_at"]
+            # Quoted, because YAML reads an unquoted ISO-8601 stamp as a
+            # timestamp rather than a string -- and the template option is
+            # declared as a string, so it was being dropped on the floor
+            # without a word. The PDF simply had no Archived line.
+            exports["archived"] = '"%s"' % meta["archived_at"]
 
         before = head
+        # An option that was once written under a different name stays in the
+        # file forever otherwise, and MyST reports it as unknown on every build.
+        head = re.sub(r"^    source_url:.*\n", "", head, flags=re.M)
         for key, value in wants.items():
             head = set_frontmatter(head, key, value)
         for key, value in exports.items():

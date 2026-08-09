@@ -13,7 +13,7 @@ keywords:
   - Tricks of the Trade
 exports:
   - format: typst
-    source_url: https://www.underworldcode.org/adding-zotero-references-to-a-webpage/
+    origin_url: https://www.underworldcode.org/adding-zotero-references-to-a-webpage/
     template: ../../templates/pdf
     output: adding-zotero-references-to-a-webpage.pdf
     article_id: UWTN 2019-003

@@ -16,7 +16,7 @@ keywords:
   - Python/Jupyter
 exports:
   - format: typst
-    source_url: https://www.underworldcode.org/underworld-low-fat-cloud/
+    origin_url: https://www.underworldcode.org/underworld-low-fat-cloud/
     template: ../../templates/pdf
     output: underworld-low-fat-cloud.pdf
     article_id: UWTN 2020-003
