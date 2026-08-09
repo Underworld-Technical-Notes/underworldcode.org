@@ -12,6 +12,7 @@ keywords:
   - "#editors-pick"
 exports:
   - format: typst
+    archived: "2026-08-09T14:06:33Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/untitled/

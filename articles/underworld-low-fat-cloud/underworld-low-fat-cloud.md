@@ -7,7 +7,7 @@ authors:
     orcid: 0000-0003-3685-174X
     affiliations:
       - Australian National University
-doi: 10.59350/mw43c-vn265
+doi: 10.6084/m9.figshare.33193422
 license: CC-BY-4.0
 banner: figures/banner.png
 keywords:
@@ -16,6 +16,7 @@ keywords:
   - Python/Jupyter
 exports:
   - format: typst
+    archived: "2026-08-09T14:30:28Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/underworld-low-fat-cloud/

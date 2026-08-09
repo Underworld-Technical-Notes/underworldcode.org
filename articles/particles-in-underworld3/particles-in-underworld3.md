@@ -15,6 +15,7 @@ keywords:
   - development
 exports:
   - format: typst
+    archived: "2026-08-09T15:44:09Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/particles-in-underworld3/
@@ -24,6 +25,7 @@ exports:
     article_version: 1.0.0
 parts:
   abstract: "Underworld is built around the idea of active Lagrangian tracer particles that carry history and composition information as the material deforms. How do we combine this information with our symbolic mathematical framework ?"
+doi: 10.6084/m9.figshare.33193599
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@resourcedatabase?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Resource Database</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 

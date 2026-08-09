@@ -6,7 +6,7 @@ authors:
     orcid: 0000-0003-3685-174X
     affiliations:
       - Australian National University
-doi: 10.59350/c4g09-htk29
+doi: 10.6084/m9.figshare.33193398
 license: CC-BY-4.0
 banner: figures/banner.jpg
 keywords:
@@ -14,6 +14,7 @@ keywords:
   - Underworld Code
 exports:
   - format: typst
+    archived: "2026-08-09T14:15:30Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/craton-formation-and-the-onset-of-plate-tectonics/

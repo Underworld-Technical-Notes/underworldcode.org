@@ -4,11 +4,12 @@ date: 2023-02-20
 authors:
   - name: Haibin Yang
     orcid: 0000-0002-8628-3704
-doi: 10.59350/8196m-xmj49
+doi: 10.6084/m9.figshare.33193518
 license: CC-BY-4.0
 banner: figures/banner.png
 exports:
   - format: typst
+    archived: "2026-08-09T15:02:11Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/ismip-hom-benchmark-experiments-using-underworld/

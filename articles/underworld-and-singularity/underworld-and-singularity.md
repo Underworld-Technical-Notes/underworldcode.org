@@ -7,7 +7,7 @@ authors:
     orcid: 0000-0003-4515-9296
     affiliations:
       - University of Sydney
-doi: 10.59350/hfgvn-dkk05
+doi: 10.6084/m9.figshare.33193545
 license: CC-BY-4.0
 banner: figures/banner.jpg
 keywords:
@@ -15,6 +15,7 @@ keywords:
   - Tricks of the Trade
 exports:
   - format: typst
+    archived: "2026-08-09T15:13:50Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/underworld-and-singularity/

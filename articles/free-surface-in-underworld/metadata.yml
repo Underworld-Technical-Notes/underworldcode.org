@@ -3,7 +3,7 @@ id: UWTN 2021-005
 slug: free-surface-in-underworld
 title: Free surface in Underworld
 article_type: technical-note
-status: migrated
+status: published
 authors:
   - name: Neng Lu
     orcid: 0000-0001-9424-2315
@@ -11,7 +11,7 @@ authors:
 publication_date: 2021-12-03
 version: 1.0.0
 legacy_doi: 10.59350/1a3e6-3v712
-archive_doi: null
+archive_doi: 10.6084/m9.figshare.33193503
 license: CC-BY-4.0
 canonical_path: /free-surface-in-underworld/
 legacy_paths:
@@ -27,3 +27,5 @@ banner_credit: null
 figures: 3
 source: ghost-migration
 ghost_uuid: d64f9a68-f753-4109-92af-24fb36c2e75a
+repository_record_id: 33193503
+archived_at: 2026-08-09T14:53:08Z

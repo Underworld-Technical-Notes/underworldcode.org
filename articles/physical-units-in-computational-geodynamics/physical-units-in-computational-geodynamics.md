@@ -11,7 +11,7 @@ authors:
     orcid: 0000-0001-7919-2575
     affiliations:
       - Curtin University
-doi: 10.59350/2390e-w7d86
+doi: 10.6084/m9.figshare.33193587
 license: CC-BY-4.0
 banner: figures/banner.jpg
 keywords:
@@ -19,6 +19,7 @@ keywords:
   - development
 exports:
   - format: typst
+    archived: "2026-08-09T15:35:16Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/physical-units-in-computational-geodynamics/

@@ -3,7 +3,7 @@ id: UWTN 2021-003
 slug: how-to-install-underworld-on-mac-osx-big-sur-apple-silicon-m1
 title: How to install Underworld on Mac OSX (Apple Silicon M1)
 article_type: how-to
-status: migrated
+status: published
 authors:
   - name: Romain Beucher
     orcid: 0000-0003-3891-5444
@@ -11,7 +11,7 @@ authors:
 publication_date: 2021-09-07
 version: 1.0.0
 legacy_doi: 10.59350/8nsyv-btx30
-archive_doi: null
+archive_doi: 10.6084/m9.figshare.33193455
 license: CC-BY-4.0
 canonical_path: /how-to-install-underworld-on-mac-osx-big-sur-apple-silicon-m1/
 legacy_paths:
@@ -27,3 +27,5 @@ banner_credit: null
 figures: 0
 source: ghost-migration
 ghost_uuid: 8b2a021e-19a5-4a6d-8389-68b87f0084ac
+repository_record_id: 33193455
+archived_at: 2026-08-09T14:47:02Z

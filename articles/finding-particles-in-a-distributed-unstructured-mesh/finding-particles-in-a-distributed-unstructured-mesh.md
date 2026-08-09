@@ -23,6 +23,7 @@ exports:
     article_version: 1.0.0
 parts:
   abstract: It can be difficult to figure out where you are in an unstructured mesh of triangles or tetrahedra; worse when the mesh is distributed in parallel. We have to solve this problem for particle-in-cell type codes such as Underworld3. This is how we do it.
+doi: 10.6084/m9.figshare.33193611
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@syinq?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Susan Q Yin</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 

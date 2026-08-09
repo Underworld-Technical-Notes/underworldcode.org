@@ -6,13 +6,14 @@ authors:
     orcid: 0000-0001-9424-2315
     affiliations:
       - Australian National University
-doi: 10.59350/zqv83-gbf84
+doi: 10.6084/m9.figshare.33193557
 license: CC-BY-4.0
 banner: figures/banner.png
 keywords:
   - Underworld Code
 exports:
   - format: typst
+    archived: "2026-08-09T15:20:00Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/new-features-of-the-surface-coupling-framework-in-underworld-2/

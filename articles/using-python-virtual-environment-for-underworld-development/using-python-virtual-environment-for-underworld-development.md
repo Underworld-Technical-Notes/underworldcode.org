@@ -6,7 +6,7 @@ authors:
     orcid: 0000-0003-3891-5444
     affiliations:
       - Australian National University
-doi: 10.59350/681vw-w9h32
+doi: 10.6084/m9.figshare.33193515
 license: CC-BY-4.0
 banner: figures/banner.png
 keywords:
@@ -15,6 +15,7 @@ keywords:
   - Python/Jupyter
 exports:
   - format: typst
+    archived: "2026-08-09T14:59:09Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/using-python-virtual-environment-for-underworld-development/

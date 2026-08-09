@@ -7,7 +7,7 @@ authors:
     orcid: 0000-0003-3685-174X
     affiliations:
       - Australian National University
-doi: 10.59350/6mxqs-3p708
+doi: 10.6084/m9.figshare.33193578
 license: CC-BY-4.0
 banner: figures/banner.jpg
 keywords:
@@ -15,6 +15,7 @@ keywords:
   - development
 exports:
   - format: typst
+    archived: "2026-08-09T15:32:16Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/mesh-variables-and-petsc-vectors-keeping-arrays-in-sync/

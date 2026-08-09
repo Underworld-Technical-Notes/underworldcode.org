@@ -4,13 +4,14 @@ description: "As the old truism states, the best way to learn is by doing. This 
 date: 2019-11-21
 authors:
   - name: Rohan Byrne
-doi: 10.59350/3y92k-n4v30
+doi: 10.6084/m9.figshare.33193419
 license: CC-BY-4.0
 banner: figures/banner.jpg
 keywords:
   - Documentation
 exports:
   - format: typst
+    archived: "2026-08-09T14:27:51Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/getting-started-60-seconds-to-underworld/

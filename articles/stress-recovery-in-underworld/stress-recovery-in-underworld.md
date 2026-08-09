@@ -4,13 +4,14 @@ date: 2021-01-11
 authors:
   - name: Haibin Yang
     orcid: 0000-0002-8628-3704
-doi: 10.59350/97evt-ays09
+doi: 10.6084/m9.figshare.33193446
 license: CC-BY-4.0
 banner: figures/banner.jpg
 keywords:
   - Geodynamics
 exports:
   - format: typst
+    archived: "2026-08-09T14:41:27Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/stress-recovery-in-underworld/

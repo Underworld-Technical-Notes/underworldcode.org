@@ -19,7 +19,7 @@ authors:
     orcid: 0000-0003-3891-5444
     affiliations:
       - Australian National University
-doi: 10.59350/brqdq-9yq62
+doi: 10.6084/m9.figshare.33193566
 license: CC-BY-4.0
 banner: figures/banner.jpg
 keywords:
@@ -28,6 +28,7 @@ keywords:
   - Tricks of the Trade
 exports:
   - format: typst
+    archived: "2026-08-09T15:26:01Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/our-journey-from-underworld2-to-underworld3/

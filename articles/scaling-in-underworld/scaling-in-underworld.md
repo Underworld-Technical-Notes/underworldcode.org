@@ -15,7 +15,7 @@ authors:
     orcid: 0000-0001-5865-1664
     affiliations:
       - Monash University
-doi: 10.59350/qvgm0-yz754
+doi: 10.6084/m9.figshare.33193452
 license: CC-BY-4.0
 banner: figures/banner.jpg
 keywords:
@@ -23,6 +23,7 @@ keywords:
   - Underworld Code
 exports:
   - format: typst
+    archived: "2026-08-09T14:44:11Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/scaling-in-underworld/

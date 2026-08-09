@@ -7,7 +7,7 @@ authors:
     orcid: 0000-0003-3891-5444
     affiliations:
       - Australian National University
-doi: 10.59350/8nsyv-btx30
+doi: 10.6084/m9.figshare.33193455
 license: CC-BY-4.0
 banner: figures/banner.jpg
 keywords:
@@ -16,6 +16,7 @@ keywords:
   - Underworld Code
 exports:
   - format: typst
+    archived: "2026-08-09T14:47:02Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/how-to-install-underworld-on-mac-osx-big-sur-apple-silicon-m1/

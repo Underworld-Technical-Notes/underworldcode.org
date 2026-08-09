@@ -6,13 +6,14 @@ authors:
     orcid: 0000-0003-3685-174X
     affiliations:
       - Australian National University
-doi: 10.59350/qnz5b-4dt16
+doi: 10.6084/m9.figshare.33193416
 license: CC-BY-4.0
 banner: figures/banner.png
 keywords:
   - Tricks of the Trade
 exports:
   - format: typst
+    archived: "2026-08-09T14:24:50Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/adding-zotero-references-to-a-webpage/

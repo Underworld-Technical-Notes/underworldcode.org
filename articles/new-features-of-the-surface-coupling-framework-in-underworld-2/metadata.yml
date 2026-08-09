@@ -3,7 +3,7 @@ id: UWTN 2025-004
 slug: new-features-of-the-surface-coupling-framework-in-underworld-2
 title: New features of the surface-coupling framework in Underworld 2
 article_type: technical-note
-status: migrated
+status: published
 authors:
   - name: Neng Lu
     orcid: 0000-0001-9424-2315
@@ -11,7 +11,7 @@ authors:
 publication_date: 2025-08-25
 version: 1.0.0
 legacy_doi: 10.59350/zqv83-gbf84
-archive_doi: null
+archive_doi: 10.6084/m9.figshare.33193557
 license: CC-BY-4.0
 canonical_path: /new-features-of-the-surface-coupling-framework-in-underworld-2/
 legacy_paths:
@@ -29,3 +29,5 @@ banner_credit: null
 figures: 5
 source: ghost-migration
 ghost_uuid: ba04ae00-5f7f-4655-89ef-c58d6060c9c7
+repository_record_id: 33193557
+archived_at: 2026-08-09T15:20:00Z

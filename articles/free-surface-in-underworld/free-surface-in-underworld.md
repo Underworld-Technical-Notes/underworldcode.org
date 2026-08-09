@@ -6,11 +6,12 @@ authors:
     orcid: 0000-0001-9424-2315
     affiliations:
       - Australian National University
-doi: 10.59350/1a3e6-3v712
+doi: 10.6084/m9.figshare.33193503
 license: CC-BY-4.0
 banner: figures/banner.jpg
 exports:
   - format: typst
+    archived: "2026-08-09T14:53:08Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/free-surface-in-underworld/

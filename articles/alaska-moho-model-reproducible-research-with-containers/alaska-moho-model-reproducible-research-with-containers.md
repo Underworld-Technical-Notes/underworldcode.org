@@ -6,7 +6,7 @@ authors:
     orcid: 0000-0003-3685-174X
     affiliations:
       - Australian National University
-doi: 10.59350/pn8gh-98592
+doi: 10.6084/m9.figshare.33193410
 license: CC-BY-4.0
 banner: figures/banner.png
 keywords:
@@ -14,6 +14,7 @@ keywords:
   - Geodynamics
 exports:
   - format: typst
+    archived: "2026-08-09T14:21:43Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/alaska-moho-model-reproducible-research-with-containers/

@@ -10,7 +10,7 @@ authors:
     orcid: 0000-0001-5865-1664
     affiliations:
       - Monash University
-doi: 10.59350/3wz3c-c8w65
+doi: 10.6084/m9.figshare.33193458
 license: CC-BY-4.0
 banner: figures/banner.jpg
 keywords:
@@ -18,6 +18,7 @@ keywords:
   - Documentation
 exports:
   - format: typst
+    archived: "2026-08-09T14:50:16Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/2-11-scaling/

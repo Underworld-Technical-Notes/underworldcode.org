@@ -16,6 +16,7 @@ keywords:
   - development
 exports:
   - format: typst
+    archived: "2026-08-09T15:41:10Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/symbolic-time-derivatives-in-underworld3/
@@ -25,6 +26,7 @@ exports:
     article_version: 1.0.0
 parts:
   abstract: "In Underworld3, the time derivative is a symbolic object. It appears in the solver's strong form as a SymPy expression, alongside the constitutive stress and the body force."
+doi: 10.6084/m9.figshare.33193596
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@aronvisuals?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Aron Visuals</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 

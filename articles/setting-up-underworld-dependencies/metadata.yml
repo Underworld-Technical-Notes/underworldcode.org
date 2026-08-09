@@ -3,7 +3,7 @@ id: UWTN 2022-001
 slug: setting-up-underworld-dependencies
 title: Configuring and Installing PETSc for Underworld
 article_type: how-to
-status: migrated
+status: published
 authors:
   - name: Romain Beucher
     orcid: 0000-0003-3891-5444
@@ -11,7 +11,7 @@ authors:
 publication_date: 2022-01-20
 version: 1.0.0
 legacy_doi: 10.59350/t7ghx-8f823
-archive_doi: null
+archive_doi: 10.6084/m9.figshare.33193509
 license: CC-BY-4.0
 canonical_path: /setting-up-underworld-dependencies/
 legacy_paths:
@@ -27,3 +27,5 @@ banner_credit: "Photo by <a href=\"https://unsplash.com/@markusspiske?utm_source
 figures: 0
 source: ghost-migration
 ghost_uuid: 9af84caf-571e-4fa7-893d-93143feced3e
+repository_record_id: 33193509
+archived_at: 2026-08-09T14:56:07Z

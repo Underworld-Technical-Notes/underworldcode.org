@@ -3,7 +3,7 @@ id: UWTN 2026-009
 slug: finding-particles-in-a-distributed-unstructured-mesh
 title: "Finding Particles in a Distributed, Unstructured Mesh"
 article_type: technical-note
-status: migrated
+status: published
 authors:
   - name: Louis Moresi
     orcid: 0000-0003-3685-174X
@@ -11,7 +11,7 @@ authors:
 publication_date: 2026-06-04
 version: 1.0.0
 legacy_doi: null
-archive_doi: null
+archive_doi: 10.6084/m9.figshare.33193611
 license: CC-BY-4.0
 canonical_path: /finding-particles-in-a-distributed-unstructured-mesh/
 legacy_paths:
@@ -29,3 +29,5 @@ banner_credit: "Photo by <a href=\"https://unsplash.com/@syinq?utm_source=underw
 figures: 4
 source: ghost-migration
 ghost_uuid: 1b9677b5-5308-4c90-a192-d29aad4000b7
+repository_record_id: 33193611
+archived_at: 2026-08-09T15:47:13Z
