@@ -882,3 +882,51 @@ def test_deposit_workflow_can_write_back_the_identifiers():
     """
     workflow = (ROOT / ".github" / "workflows" / "deposit.yml").read_text(encoding="utf-8")
     assert "permissions:" in workflow and "contents: write" in workflow
+
+
+def test_reconversion_never_destroys_the_deposit_identifiers():
+    """metadata.yml is regenerated, and one field in it must survive that.
+
+    repository_record_id is the whole guard against minting a second DOI for a
+    note that already has one. Losing it does not look like damage -- the file
+    validates, the site builds -- and the next deposit quietly creates a rival
+    record. This happened, on a note that had a reserved DOI.
+    """
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        path = pathlib.Path(tmp) / "metadata.yml"
+        path.write_text("slug: x\narchive_doi: 10.6084/m9.figshare.1\n"
+                        "repository_record_id: 42\n", encoding="utf-8")
+        kept = ghost_to_myst.preserved_deposit_fields(path)
+    assert kept["repository_record_id"] == "42"
+    assert kept["archive_doi"] == "10.6084/m9.figshare.1"
+
+
+def test_a_null_identifier_is_not_carried_over_as_a_string():
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        path = pathlib.Path(tmp) / "metadata.yml"
+        path.write_text("archive_doi: null\n", encoding="utf-8")
+        assert ghost_to_myst.preserved_deposit_fields(path) == {}
+
+
+def test_the_pdf_carries_the_archival_doi_once_a_note_is_deposited():
+    """The reserved DOI has to reach the front matter the template renders.
+
+    Reserving it before the PDF exists is the entire reason this provider was
+    chosen; it counts for nothing if the document then prints a different
+    identifier. The first live rehearsal printed the legacy DOI.
+    """
+    build_index = load("build_index")
+    for meta_path in sorted((ROOT / "articles").glob("*/metadata.yml")):
+        meta = build_index.read_yaml(meta_path)
+        wanted = meta.get("archive_doi") or meta.get("legacy_doi")
+        if not wanted:
+            continue
+        source = meta_path.parent / ("%s.md" % meta["slug"])
+        import re as _re
+        found = _re.search(r"^doi:\s*(.+)$",
+                           source.read_text(encoding="utf-8"), _re.M)
+        assert found and found.group(1).strip() == wanted, \
+            "%s: front matter says %s, metadata says %s" % (
+                meta["slug"], found.group(1).strip() if found else "(none)", wanted)

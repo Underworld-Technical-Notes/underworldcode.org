@@ -40,3 +40,14 @@ adding-zotero-references-to-a-webpage:
     replace: collectionKey/<code>QNARWBUC</code>.
     why: >-
       The second of the two. See above.
+
+viscoelasticity:
+  - find: <p>A uniform visc</p><p>oelastic material
+    replace: <p>A uniform viscoelastic material
+    why: >-
+      The Ghost import split a word across two paragraphs, so the article reads
+      "A uniform visc" and then, after a paragraph break, "oelastic material
+      undergoes simple shear". The pre-Ghost site has the sentence intact --
+      see underworldcode.github.io.retired,
+      _posts/2016-06-24-ViscoelasticityInUnderworld2.md -- so this restores what
+      was published rather than guessing at it.

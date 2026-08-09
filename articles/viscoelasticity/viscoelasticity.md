@@ -4,7 +4,7 @@ date: 2019-08-12
 authors:
   - name: Rebecca Farrington
     orcid: 0000-0002-2594-6965
-doi: 10.59350/3atx2-v4j54
+doi: 10.6084/m9.figshare.33191160
 license: CC-BY-4.0
 banner: figures/banner.png
 keywords:
@@ -18,7 +18,7 @@ exports:
     article_id: UWTN 2019-001
     article_version: 1.0.0
 parts:
-  abstract: "Viscoelastic materials exhibit the properies of both solids and liquids, with deformation rates dependent on both the viscous stress and elastic stress rate. In a Maxwell viscoelastic material the strain rate $D$ is proportional to the sum of the stress $\\tau$ and the stress rate $\\dot\\tau$, \\begin{equation} D_{ij} = D^v_{ij} + D^e_{ij} = \\frac{\\tau_{ij}}{2\\eta} + \\frac{\\dot\\tau_{ij}}{2\\mu} \\end{equation} with $\\eta$ viscosity and $\\mu$ shear modulus. In Underworld this rheology can be implem"
+  abstract: "Viscoelastic materials exhibit the properies of both solids and liquids, with deformation rates dependent on both the viscous stress and elastic stress rate. In a Maxwell viscoelastic material the strain rate D is proportional to the sum of the stress and the stress rate, with viscosity and shear modulus."
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 
@@ -38,9 +38,7 @@ with $p$ pressure, $\eta_{eff} = (\eta\Delta t_e)/(\alpha + \Delta t_e)$ the eff
 
 ### Viscoelasticity in simple shear
 
-A uniform visc
-
-oelastic material undergoes simple shear at a constant rate until $t = 4$. The shearing velocity is then taken to zero with the stress decaying with time.
+A uniform viscoelastic material undergoes simple shear at a constant rate until $t = 4$. The shearing velocity is then taken to zero with the stress decaying with time.
 
 ```{figure} figures/stressHistory_dAlpha-1.png
 

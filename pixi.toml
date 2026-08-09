@@ -32,11 +32,11 @@ pages = "python3 scripts/build_pages.py"
 # `myst build --html` truncates slugs to 50 characters, MyST's own `style`
 # option never loads the stylesheet, and PDFs are written beside the sources
 # rather than into the site. Each post-step fixes one of those.
-build-html = { cmd = "myst build --html && python3 scripts/fix_slugs.py && python3 scripts/inject_style.py && python3 scripts/stage_downloads.py && python3 scripts/inject_comments.py", depends-on = ["index"] }
+build-html = { cmd = "python3 scripts/sync_doi.py && myst build --html && python3 scripts/fix_slugs.py && python3 scripts/inject_style.py && python3 scripts/stage_downloads.py && python3 scripts/inject_comments.py", depends-on = ["index"] }
 # The banner belongs on the web, not on page one of an archival PDF. It is
 # derived from the `banner:` front matter, so it can be taken out for the Typst
 # build and put back after; both directions are idempotent.
-build-pdf = { cmd = "python3 scripts/banner_body.py --remove && myst build --typst; python3 scripts/banner_body.py --add", depends-on = ["index"] }
+build-pdf = { cmd = "python3 scripts/sync_doi.py && python3 scripts/banner_body.py --remove && myst build --typst; python3 scripts/banner_body.py --add", depends-on = ["index"] }
 build = { depends-on = ["build-pdf", "build-html"] }
 
 validate = "python3 scripts/validate_metadata.py"

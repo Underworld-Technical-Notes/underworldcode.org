@@ -310,6 +310,33 @@ def asset_name(src):
 AT_SIGN = re.compile(r"@(?=[A-Za-z0-9])")
 
 
+def clean_excerpt(text):
+    """Ghost's excerpt, fit to be an abstract.
+
+    Ghost builds an excerpt by taking the first 300-odd characters of the post,
+    markup and all, and cutting wherever that lands. For a note whose first
+    paragraph contains an equation the result is raw LaTeX in the abstract --
+    `\\begin{equation}` and all -- rendered literally on the PDF's title page,
+    followed by a word chopped in half.
+
+    So: drop display maths rather than flatten it, strip the markup, and end at
+    the last complete sentence.
+    """
+    text = re.sub(r"\\begin\{.*?\\end\{[a-zA-Z*]+\}", " ", text, flags=re.S)
+    text = re.sub(r"\$\$.*?\$\$", " ", text, flags=re.S)
+    text = re.sub(r"\\[a-zA-Z]+", "", text)
+    text = re.sub(r"[*_`$\\{}]", "", text)
+    text = re.sub(r"\s+([,.;:])", r"\1", text)
+    text = " ".join(text.split())
+    # Ghost's cut leaves a half-word; a shorter abstract that ends is better
+    # than a longer one that stops.
+    if text and text[-1] not in ".!?":
+        cut = max(text.rfind(". "), text.rfind("! "), text.rfind("? "))
+        if cut > 80:
+            text = text[:cut + 1]
+    return text
+
+
 def escape_at_signs(text):
     """Escape `@` in prose, so MyST does not read it as a citation.
 
@@ -683,7 +710,32 @@ def yaml_str(value):
     return text
 
 
+DEPOSIT_FIELDS = ("archive_doi", "repository_record_id")
+
+
+def preserved_deposit_fields(path):
+    """Identifiers the deposit wrote, which conversion must never destroy.
+
+    metadata.yml is regenerated from the Ghost export, so a re-run would
+    otherwise clear `repository_record_id` -- and that field is the entire guard
+    against minting a second DOI for a note that already has one. Losing it does
+    not look like damage: the file still validates, the site still builds, and
+    the next deposit quietly creates a rival record.
+
+    This is the one direction the conversion is not the source of truth in.
+    """
+    if not path.exists():
+        return {}
+    kept = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        key, _, value = line.partition(":")
+        if key in DEPOSIT_FIELDS and value.strip() not in ("", "null", "~"):
+            kept[key] = value.strip()
+    return kept
+
+
 def write_metadata(path, rec, doi, figures, article_id, banner=None, credit=None):
+    kept = preserved_deposit_fields(path)
     authors = article_authors(rec)
     lines = [
         "# Article metadata. Validated in CI against schemas/article-metadata.schema.json.",
@@ -708,7 +760,7 @@ def write_metadata(path, rec, doi, figures, article_id, banner=None, credit=None
         # the one to circulate. Depositing is not duplicate publication because
         # the record declares itself a variant form of the legacy DOI.
         "legacy_doi: %s" % (doi or "null"),
-        "archive_doi: null",
+        "archive_doi: %s" % kept.get("archive_doi", "null"),
         "license: CC-BY-4.0",
         "canonical_path: /%s/" % rec["slug"],
         "legacy_paths:",
@@ -732,6 +784,8 @@ def write_metadata(path, rec, doi, figures, article_id, banner=None, credit=None
         "source: ghost-migration",
         "ghost_uuid: %s" % (rec.get("uuid") or "null"),
     ]
+    if kept.get("repository_record_id"):
+        lines.append("repository_record_id: %s" % kept["repository_record_id"])
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -830,8 +884,8 @@ def frontmatter(rec, doi, article_id, banner=None):
     # whole PDF export down with it -- but this one ends up inside a quoted YAML
     # scalar, where a backslash is doubled and so stops escaping anything. The
     # numeric character reference survives quoting and renders as "@".
-    abstract = " ".join(
-        (rec.get("custom_excerpt") or rec.get("excerpt") or "").split()).replace("@", "&#64;")
+    abstract = clean_excerpt(
+        rec.get("custom_excerpt") or rec.get("excerpt") or "").replace("@", "&#64;")
     # An archival PDF only where the content is load-bearing. An announcement is
     # dated by nature, and a citable snapshot of "version 2.10 is out" serves
     # nobody -- see article-types.yml, which is the one place that decides.
