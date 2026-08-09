@@ -157,28 +157,11 @@ class Figshare(Provider):
                         entry = {"id": match["id"]}
                         break
 
-            # Every author must end up as an ID.
-            #
-            # Passing {name, orcid_id} inline looks like it works: the create
-            # succeeds and the record comes back with an authors list. It then
-            # fails at PUBLISH with "authors is missing", because an inline
-            # author is not a real author record. Authors who already have a
-            # Figshare account are found by the search above; the rest have to
-            # be created, and then referenced by the id that comes back.
-            if "id" not in entry:
-                created = self._call("POST", "/account/authors",
-                                     body={"authors": [entry]})
-                location = ""
-                if isinstance(created, list) and created:
-                    location = created[0].get("location") or ""
-                elif isinstance(created, dict):
-                    location = created.get("location") or ""
-                author_id = location.rstrip("/").rsplit("/", 1)[-1]
-                if not author_id.isdigit():
-                    raise DepositError(
-                        "could not create a Figshare author for %s: %r"
-                        % (entry.get("name"), created))
-                entry = {"id": int(author_id)}
+            # An author with no Figshare account stays inline, as
+            # {name, orcid_id}. There is no endpoint to create one --
+            # POST /account/authors returns 404 -- and, now that the real cause
+            # of the publish failures is known to have been empty keywords,
+            # inline authors are not the problem they looked like.
             resolved.append(entry)
         return resolved
 
@@ -630,9 +613,6 @@ def run(slug, provider, live, publish, new_version, delete_draft,
         missing = [field for field in ("title", "authors", "files",
                                        "categories", "tags")
                    if not record.get(field)]
-        # An author with no id is an inline one, which publish rejects.
-        if not missing and any(not a.get("id") for a in record.get("authors") or []):
-            missing.append("a real author record (one author is inline only)")
         if missing:
             raise DepositError(
                 "%s (record %s) is missing %s -- refusing to publish an "
