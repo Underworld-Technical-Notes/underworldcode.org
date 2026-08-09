@@ -6,7 +6,7 @@ authors:
     orcid: 0000-0003-3685-174X
     affiliations:
       - Australian National University
-doi: 10.59350/73ded-8k350
+doi: 10.6084/m9.figshare.33193179
 license: CC-BY-4.0
 banner: figures/banner.png
 keywords:
@@ -15,6 +15,7 @@ keywords:
   - "#editors-pick"
 exports:
   - format: typst
+    archived: "2026-08-09T13:08:35Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/the-dynamics-of-continental-accretion/
