@@ -13,6 +13,7 @@ keywords:
   - Tricks of the Trade
 exports:
   - format: typst
+    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/adding-zotero-references-to-a-webpage/
     template: ../../templates/pdf

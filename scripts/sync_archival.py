@@ -159,6 +159,7 @@ def main():
         # repeated in 41 front matter blocks by hand. Path relative to the
         # article, which is how MyST resolves an export option's file.
         exports = {"origin_url": source_url,
+                   "series": '"Underworld Technical Notes"',
                    "logo": "../../static/uwtn-logo.png"}
         if meta.get("archived_at"):
             # Quoted, because YAML reads an unquoted ISO-8601 stamp as a

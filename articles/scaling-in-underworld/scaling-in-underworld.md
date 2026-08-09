@@ -23,6 +23,7 @@ keywords:
   - Underworld Code
 exports:
   - format: typst
+    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/scaling-in-underworld/
     template: ../../templates/pdf

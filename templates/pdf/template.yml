@@ -65,6 +65,9 @@ options:
   - id: archived
     type: string
     description: When this archival PDF was made, ISO-8601 UTC
+  - id: series
+    type: string
+    description: The publication this note belongs to
   - id: origin_url
     type: string
     # NOT source_url: MyST reserves that as an export property and rejects the

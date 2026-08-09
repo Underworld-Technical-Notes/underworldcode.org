@@ -16,6 +16,7 @@ keywords:
   - Underworld Code
 exports:
   - format: typst
+    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/how-to-install-underworld-on-mac-osx-big-sur-apple-silicon-m1/
     template: ../../templates/pdf

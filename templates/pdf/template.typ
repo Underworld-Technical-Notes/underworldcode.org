@@ -93,6 +93,9 @@
 [# if options.archived #]
   archived: "[-options.archived-]",
 [# endif #]
+[# if options.series #]
+  series: "[-options.series-]",
+[# endif #]
 [# if options.origin_url #]
   source-url: "[-options.origin_url-]",
 [# endif #]

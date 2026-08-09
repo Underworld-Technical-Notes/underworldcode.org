@@ -14,6 +14,7 @@ keywords:
   - development
 exports:
   - format: typst
+    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/finding-particles-in-a-distributed-unstructured-mesh/
     template: ../../templates/pdf

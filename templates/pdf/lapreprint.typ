@@ -28,6 +28,10 @@
   // where the living version is, and how old this snapshot of it is.
   archived: none,
   source-url: none,
+  // The publication this note belongs to. It leads the first-page header, where
+  // a reader looks to find out what they are holding -- the DOI was there, and
+  // an identifier answers a different question than a name does.
+  series: none,
   heading-numbering: "1.a.i",
   // Show an Open Access badge on the first page, and support open science, default is true, because that is what the default should be.
   open-access: true,
@@ -102,7 +106,7 @@
       if(loc.page() == 1) {
         let headers = (
           if (open-access) {smallcaps[Open Access]},
-          if (doi != none) { link("https://doi.org/" + doi, "https://doi.org/" + doi)}
+          if (series != none) { smallcaps(series) }
         )
         return align(left, text(size: 8pt, fill: gray, headers.filter(header => header != none).join(spacer)))
       } else {
@@ -269,6 +273,16 @@
         affiliation.name
       }).join(", ")
     })
+  }
+
+  // Under the byline: the identifier belongs with the authorship, which is what
+  // a reader assembles when they go to cite the note.
+  if (doi != none) {
+    block(below: 12pt, text(size: 9pt, fill: gray.darken(20%), {
+      smallcaps[doi]
+      h(5pt)
+      link("https://doi.org/" + doi, "https://doi.org/" + doi)
+    }))
   }
 
 

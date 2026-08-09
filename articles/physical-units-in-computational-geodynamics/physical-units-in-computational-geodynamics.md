@@ -19,6 +19,7 @@ keywords:
   - development
 exports:
   - format: typst
+    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/physical-units-in-computational-geodynamics/
     template: ../../templates/pdf
