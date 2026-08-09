@@ -3,7 +3,7 @@ title: Modelling Drips and Delamination with Underworld
 date: 2017-06-29
 authors:
   - name: Adam Beall
-doi: 10.59350/x638s-dpr14
+doi: 10.6084/m9.figshare.33193386
 license: CC-BY-4.0
 banner: figures/banner.png
 keywords:
