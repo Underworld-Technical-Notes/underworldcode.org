@@ -1105,3 +1105,18 @@ def test_every_mapped_category_is_a_leaf():
             ids.update(values)
     offenders = sorted(ids - leaves)
     assert not offenders, "not assignable (parent categories): %s" % offenders
+
+
+def test_the_two_halves_of_the_build_cannot_race():
+    """build-pdf and build-html both mutate the article sources.
+
+    build-pdf strips the web-only banner and discussion block for the duration
+    of the Typst run. pixi runs independent tasks concurrently, so in parallel
+    the HTML was built from stripped sources and the blocks were missing from
+    the tree afterwards -- three tests caught it, which is the only reason it
+    was noticed.
+    """
+    task = (ROOT / "pixi.toml").read_text(encoding="utf-8")
+    line = [l for l in task.splitlines() if l.startswith("build-html")][0]
+    assert 'depends-on = ["build-pdf"]' in line, \
+        "build-html must depend on build-pdf, or the two race over the sources"

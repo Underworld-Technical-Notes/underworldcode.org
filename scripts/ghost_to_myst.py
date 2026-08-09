@@ -390,6 +390,7 @@ class GhostToMyst(HTMLParser):
         self._in_list_item = False
         self._after_marker = False
         self.restored_captions = 0
+        self.has_reference_list = False
 
     # -- helpers ---------------------------------------------------------
 
@@ -556,6 +557,22 @@ class GhostToMyst(HTMLParser):
                     # A DOI is written as code rather than a link: any link to
                     # doi.org becomes a citation, which would pull a second
                     # References section onto articles that already have one.
+                    if DOI_IN_URL.search(href) and not self.has_reference_list:
+                        # A DOI badge IS a citation, so let it be one: MyST
+                        # gives a live link and a proper reference entry, which
+                        # is what a badge was standing in for.
+                        #
+                        # Only where the article has no reference list of its
+                        # own. Two of the three DOI badges in this corpus sit in
+                        # articles that already list the same work by hand, and a
+                        # citation there would add a SECOND References section
+                        # repeating an entry the author already wrote.
+                        self._buf = []
+                        self._emit("[%s](%s)" % (href.replace("https://doi.org/", ""),
+                                                 href))
+                        self._href, self._link_text = None, []
+                        self.linked_images += 1
+                        return
                     if DOI_IN_URL.search(href):
                         block.append("")
                         block.append("`%s`" % href)
@@ -1184,6 +1201,10 @@ def main():
         source = simplify_bookmark_cards(source)
 
         conv = GhostToMyst(slug)
+        # Known before parsing, because whether a DOI badge may become a
+        # citation depends on whether the article already lists its references.
+        conv.has_reference_list = bool(re.search(
+            r"<h[1-6][^>]*>\s*(References|Bibliography)\s*</h", source, re.I))
         conv.feed(source)
         conv.close()
         body = conv.markdown()

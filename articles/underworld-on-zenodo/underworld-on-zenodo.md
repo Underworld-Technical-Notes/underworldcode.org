@@ -30,13 +30,7 @@ Underworld can be cited via a zenodo DOI. There is a master DOI for all releases
 
 If you are using a development branch and wish to obtain a DOI for your specific version we ask that you [contact](mailto:anyone@underworldcode.org) us  to make an interim release under the master DOI.
 
-```{image} figures/zenodo.1436039.svg
-:alt: DOI
-:target: https://doi.org/10.5281/zenodo.1436039
-:width: 183px
-```
-
-`https://doi.org/10.5281/zenodo.1436039`
+[10.5281/zenodo.1436039](https://doi.org/10.5281/zenodo.1436039)
 
 Underworld is listed under the  [AuScope community](https://zenodo.org/communities/auscope/) on Zenodo.
 

@@ -32,7 +32,13 @@ pages = "python3 scripts/build_pages.py"
 # `myst build --html` truncates slugs to 50 characters, MyST's own `style`
 # option never loads the stylesheet, and PDFs are written beside the sources
 # rather than into the site. Each post-step fixes one of those.
-build-html = { cmd = "python3 scripts/sync_archival.py && myst build --html && python3 scripts/fix_slugs.py && python3 scripts/inject_style.py && python3 scripts/stage_downloads.py && python3 scripts/inject_comments.py", depends-on = ["index"] }
+#
+# It depends on build-pdf so the two run IN ORDER. Both mutate the article
+# sources -- build-pdf strips the web-only banner and discussion block for the
+# duration of the Typst run -- and pixi runs independent tasks concurrently. Run
+# in parallel they raced: the HTML was built from banner-stripped sources, and
+# the blocks were missing from the tree afterwards.
+build-html = { cmd = "myst build --html && python3 scripts/fix_slugs.py && python3 scripts/inject_style.py && python3 scripts/stage_downloads.py && python3 scripts/inject_comments.py", depends-on = ["build-pdf"] }
 # The banner belongs on the web, not on page one of an archival PDF. It is
 # derived from the `banner:` front matter, so it can be taken out for the Typst
 # build and put back after; both directions are idempotent.
