@@ -16,6 +16,7 @@ keywords:
   - development
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/constitutive-models-in-symbolic-form/
     template: ../../templates/pdf
     output: constitutive-models-in-symbolic-form.pdf

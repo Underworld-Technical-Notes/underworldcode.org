@@ -18,6 +18,7 @@ keywords:
   - Documentation
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/2-11-scaling/
     template: ../../templates/pdf
     output: 2-11-scaling.pdf

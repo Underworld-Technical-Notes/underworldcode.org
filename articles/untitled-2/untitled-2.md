@@ -14,6 +14,7 @@ keywords:
   - "#editors-pick"
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/untitled-2/
     template: ../../templates/pdf
     output: untitled-2.pdf

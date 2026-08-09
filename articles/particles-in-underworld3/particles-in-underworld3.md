@@ -15,6 +15,8 @@ keywords:
   - development
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
+    origin_url: https://www.underworldcode.org/particles-in-underworld3/
     template: ../../templates/pdf
     output: particles-in-underworld3.pdf
     article_id: UWTN 2026-008

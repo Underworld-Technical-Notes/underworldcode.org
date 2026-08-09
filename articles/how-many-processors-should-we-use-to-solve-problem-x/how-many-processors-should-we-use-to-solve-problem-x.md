@@ -20,6 +20,7 @@ keywords:
   - Underworld Code
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/how-many-processors-should-we-use-to-solve-problem-x/
     template: ../../templates/pdf
     output: how-many-processors-should-we-use-to-solve-problem-x.pdf

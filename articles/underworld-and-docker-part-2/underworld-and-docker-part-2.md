@@ -17,6 +17,7 @@ keywords:
   - AuScope UW Cloud
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/underworld-and-docker-part-2/
     template: ../../templates/pdf
     output: underworld-and-docker-part-2.pdf

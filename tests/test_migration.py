@@ -969,3 +969,20 @@ def test_a_broken_pdf_build_cannot_report_success():
     task = (ROOT / "pixi.toml").read_text(encoding="utf-8")
     assert "build-pdf = { cmd = \"python3 scripts/build_pdf.py\"" in task, \
         "the PDF build must go through the wrapper that propagates its status"
+
+
+def test_every_archival_pdf_is_branded_and_says_where_it_came_from():
+    """The logo and the source URL belong on all of them, DOI or not.
+
+    sync_archival returned early for articles with no DOI, so the three notes
+    that have none came out unbranded and without a source link -- a scope bug
+    that produced correct-looking output for 38 of 41 articles.
+    """
+    import re as _re
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        head = path.read_text(encoding="utf-8").split("\n---\n")[0]
+        if "  - format: typst" not in head:
+            continue
+        for option in ("logo", "origin_url"):
+            assert _re.search(r"^    %s:\s*\S" % option, head, _re.M), \
+                "%s: the archival PDF has no %s" % (path.parent.name, option)

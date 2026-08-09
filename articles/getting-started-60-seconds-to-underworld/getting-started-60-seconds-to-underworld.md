@@ -11,6 +11,7 @@ keywords:
   - Documentation
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/getting-started-60-seconds-to-underworld/
     template: ../../templates/pdf
     output: getting-started-60-seconds-to-underworld.pdf

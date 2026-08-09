@@ -15,6 +15,7 @@ keywords:
   - Tricks of the Trade
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/underworld-and-singularity/
     template: ../../templates/pdf
     output: underworld-and-singularity.pdf

@@ -23,6 +23,7 @@ keywords:
   - Python/Jupyter
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/underworld3-published-in-journal-of-open-source-software/
     template: ../../templates/pdf
     output: underworld3-published-in-journal-of-open-source-software.pdf

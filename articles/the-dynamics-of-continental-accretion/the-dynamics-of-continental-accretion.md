@@ -15,6 +15,7 @@ keywords:
   - "#editors-pick"
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/the-dynamics-of-continental-accretion/
     template: ../../templates/pdf
     output: the-dynamics-of-continental-accretion.pdf

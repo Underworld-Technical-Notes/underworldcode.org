@@ -258,6 +258,10 @@
     })
   }
   if affiliations.len() > 0 {
+    // On its own line. Both of these are inline boxes, so without the break
+    // the affiliation ran straight into the author's ORCID mark --
+    // "Louis Moresi(1)(orcid)(1)Australian National University".
+    linebreak()
     box(inset: (bottom: 10pt), {
       affiliations.map(affiliation => {
         super(affiliation.id)

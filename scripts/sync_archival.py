@@ -84,9 +84,10 @@ def main():
     for meta_path in sorted(ARTICLES.glob("*/metadata.yml")):
         meta = build_index.read_yaml(meta_path)
         slug = meta.get("slug")
+        # Not skipped when there is no DOI. Three notes have none, and they
+        # still need the logo and the source URL -- an earlier version returned
+        # early here, so those three quietly came out unbranded.
         wanted = meta.get("archive_doi") or meta.get("legacy_doi")
-        if not wanted:
-            continue
 
         source = meta_path.parent / ("%s.md" % slug)
         text = source.read_text(encoding="utf-8")
@@ -95,8 +96,12 @@ def main():
             continue
 
         source_url = SITE + str(meta.get("canonical_path") or ("/%s/" % slug))
-        wants = {"doi": wanted}
-        exports = {"origin_url": source_url}
+        wants = {"doi": wanted} if wanted else {}
+        # The logo is the same on every note, so it is set here rather than
+        # repeated in 41 front matter blocks by hand. Path relative to the
+        # article, which is how MyST resolves an export option's file.
+        exports = {"origin_url": source_url,
+                   "logo": "../../static/uwtn-logo.png"}
         if meta.get("archived_at"):
             # Quoted, because YAML reads an unquoted ISO-8601 stamp as a
             # timestamp rather than a string -- and the template option is
@@ -115,8 +120,9 @@ def main():
         if head == before:
             continue
 
-        stale.append("%s: doi %s%s" % (
-            slug, wanted, ", archived %s" % meta["archived_at"]
+        stale.append("%s: %s%s" % (
+            slug, "doi %s" % wanted if wanted else "no doi",
+            ", archived %s" % meta["archived_at"]
             if meta.get("archived_at") else ""))
         if args.check:
             continue
@@ -130,7 +136,7 @@ def main():
             sys.exit("%d article(s) would carry the wrong DOI on their PDF" % len(stale))
         print("every article's front matter carries the right DOI")
         return
-    print("synced the DOI on %d article(s)" % changed)
+    print("synced archival metadata on %d article(s)" % changed)
 
 
 if __name__ == "__main__":

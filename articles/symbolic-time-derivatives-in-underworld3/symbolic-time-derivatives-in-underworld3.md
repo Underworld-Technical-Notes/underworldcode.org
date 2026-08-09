@@ -16,6 +16,8 @@ keywords:
   - development
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
+    origin_url: https://www.underworldcode.org/symbolic-time-derivatives-in-underworld3/
     template: ../../templates/pdf
     output: symbolic-time-derivatives-in-underworld3.pdf
     article_id: UWTN 2026-007

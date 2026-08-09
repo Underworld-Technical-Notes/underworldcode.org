@@ -15,6 +15,7 @@ keywords:
   - "#editors-pick"
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/build-conda-packages/
     template: ../../templates/pdf
     output: build-conda-packages.pdf

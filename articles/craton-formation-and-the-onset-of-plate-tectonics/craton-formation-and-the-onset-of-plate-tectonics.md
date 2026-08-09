@@ -14,6 +14,7 @@ keywords:
   - Underworld Code
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/craton-formation-and-the-onset-of-plate-tectonics/
     template: ../../templates/pdf
     output: craton-formation-and-the-onset-of-plate-tectonics.pdf

@@ -13,6 +13,7 @@ keywords:
   - "#editors-pick"
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/viscoelasticity/
     archived: "2026-08-09T08:53:38Z"
     template: ../../templates/pdf

@@ -14,6 +14,7 @@ keywords:
   - Geodynamics
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/alaska-moho-model-reproducible-research-with-containers/
     template: ../../templates/pdf
     output: alaska-moho-model-reproducible-research-with-containers.pdf

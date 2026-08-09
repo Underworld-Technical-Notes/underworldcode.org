@@ -16,6 +16,7 @@ keywords:
   - Python/Jupyter
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/underworld-low-fat-cloud/
     template: ../../templates/pdf
     output: underworld-low-fat-cloud.pdf

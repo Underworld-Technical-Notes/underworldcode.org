@@ -24,6 +24,7 @@ keywords:
   - development
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/how-underworld3-turns-sympy-into-c/
     template: ../../templates/pdf
     output: how-underworld3-turns-sympy-into-c.pdf
