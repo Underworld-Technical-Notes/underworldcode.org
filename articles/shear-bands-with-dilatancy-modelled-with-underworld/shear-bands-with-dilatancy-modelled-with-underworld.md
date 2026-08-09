@@ -6,7 +6,7 @@ authors:
     orcid: 0000-0003-3685-174X
     affiliations:
       - Australian National University
-doi: 10.59350/awc90-63186
+doi: 10.6084/m9.figshare.33193365
 license: CC-BY-4.0
 banner: figures/banner.png
 keywords:
