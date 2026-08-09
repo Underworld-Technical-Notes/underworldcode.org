@@ -730,12 +730,21 @@ def test_deposited_authors_will_propagate_to_orcid():
         if stripped.startswith("name:"):
             known.add(stripped.split(":", 1)[1].strip())
 
+    settled = set()
+    name = None
+    for line in (ROOT / "authors.yml").read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if stripped.startswith("name:"):
+            name = stripped.split(":", 1)[1].strip()
+        elif stripped.startswith("no_orcid:") and "true" in stripped and name:
+            settled.add(name)
+
     unknown, deposited = set(), set()
     for path in sorted((ROOT / "articles").glob("*/metadata.yml")):
         meta = build_index.read_yaml(path)
         for author in meta.get("authors") or []:
-            if author.get("orcid"):
-                continue
+            if author.get("orcid") or author.get("name") in settled:
+                continue          # has one, or has none and we asked
             if author.get("name") not in known:
                 unknown.add("%s (%s)" % (author.get("name"), path.parent.name))
             if meta.get("archive_doi"):
