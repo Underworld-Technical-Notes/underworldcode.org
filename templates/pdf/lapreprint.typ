@@ -218,21 +218,21 @@
 
 
   if (logo != none) {
-    place(
-      top,
-      dx: -12%,
-      float: false,
-      box(
-        width: 10%,
-        {
-          if (type(logo) == content) {
-            logo
-          } else {
-            image(logo, width: 100%)
-          }
-        },
-      ),
-    )
+    // In the flow, not placed. `place` takes the logo out of the layout, so it
+    // sat on top of the title -- the bat's wings across the first line. As a
+    // block it reserves its own height and the title starts below it, which is
+    // the arrangement JOSS uses. `move` reaches into the left margin without
+    // giving back the space, so the leftward shift costs nothing.
+    block(below: 14pt, move(dx: -11%, box(
+      width: 18%,
+      {
+        if (type(logo) == content) {
+          logo
+        } else {
+          image(logo, width: 100%)
+        }
+      },
+    )))
   }
 
 
