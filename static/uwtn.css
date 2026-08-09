@@ -473,3 +473,108 @@ a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); 
 
 .uwtn-comments iframe { border: none; width: 100%; }
 
+
+/* ---- front page -------------------------------------------------------- */
+
+/* The front page is Underworld's own, not the series'. It leads with the
+   software and what it is for; the Technical Notes are one thing among
+   several, reached from the header. The masthead above is reserved for
+   /notes/, so that the two pages are visibly different publications. */
+
+.uwtn-hero {
+  border-bottom: 1px solid var(--uwtn-rule);
+  padding-bottom: 1.8rem;
+  margin-bottom: 2rem;
+}
+
+.uwtn-hero-title {
+  font-family: var(--uwtn-serif);
+  font-weight: 600;
+  font-size: clamp(2.4rem, 7vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--uwtn-ink);
+  margin: 0 0 0.8rem;
+}
+
+.uwtn-hero .uwtn-standfirst { font-size: 1.15rem; max-width: 36em; }
+
+.uwtn-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.4rem;
+  align-items: center;
+  margin-top: 1.4rem;
+  font-family: var(--uwtn-sans);
+  font-size: 0.9rem;
+}
+
+.uwtn-hero-actions a { color: var(--uwtn-accent); text-decoration: none; }
+.uwtn-hero-actions a:hover { text-decoration: underline; }
+
+.uwtn-cta {
+  background: var(--uwtn-accent);
+  color: var(--uwtn-paper) !important;
+  padding: 0.5rem 1.1rem;
+  border-radius: 3px;
+  font-weight: 600;
+}
+.uwtn-cta:hover { filter: brightness(1.12); text-decoration: none !important; }
+
+/* Three recent notes, as a pointer into the series rather than a feed of it.
+   Deliberately terser than .uwtn-entry: this is a signpost, not the contents. */
+.uwtn-briefs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.2rem;
+  margin: 1.6rem 0 2.4rem;
+}
+
+.uwtn-brief {
+  display: block;
+  border-top: 2px solid var(--uwtn-accent);
+  padding-top: 0.7rem;
+  text-decoration: none;
+  color: inherit;
+}
+.uwtn-brief:hover .uwtn-brief-title { text-decoration: underline; }
+
+.uwtn-brief-id {
+  display: block;
+  font-family: var(--uwtn-sans);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--uwtn-accent);
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.uwtn-brief-title {
+  display: block;
+  font-family: var(--uwtn-serif);
+  font-size: 1.08rem;
+  line-height: 1.25;
+  color: var(--uwtn-ink);
+  margin-bottom: 0.35rem;
+}
+
+.uwtn-brief-summary {
+  display: block;
+  font-family: var(--uwtn-serif);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--uwtn-muted);
+}
+
+/* The front page's own headings, which come from markdown rather than from a
+   generated block, so they need bringing into the same typography. */
+.uwtn-hero + * h2,
+main > h2 {
+  font-family: var(--uwtn-serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  border-top: 1px solid var(--uwtn-rule);
+  padding-top: 1.6rem;
+  margin-top: 2.4rem;
+}

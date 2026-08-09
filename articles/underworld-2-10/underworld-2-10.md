@@ -16,12 +16,6 @@ license: CC-BY-4.0
 banner: figures/banner.png
 keywords:
   - Underworld Code
-exports:
-  - format: typst
-    template: ../../templates/pdf
-    output: underworld-2-10.pdf
-    article_id: UWTN 2020-009
-    article_version: 1.0.0
 parts:
   abstract: "Underworld 2.10 has dropped... kidding this is a benchmark model proposed by Schmalholz, 2011, A simple analytical solution for slab detachment."
 ---

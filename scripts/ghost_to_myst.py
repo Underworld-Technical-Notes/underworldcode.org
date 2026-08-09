@@ -154,6 +154,38 @@ def load_classification():
 CLASSIFICATION = load_classification()
 
 
+def load_article_types():
+    """type -> {stream, archival} from article-types.yml."""
+    path = ROOT / "article-types.yml"
+    types, current = {}, None
+    if not path.exists():
+        return types
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        if not raw.startswith(" ") and raw.rstrip().endswith(":"):
+            current = raw.rstrip()[:-1]
+            types[current] = {}
+        elif current and ":" in raw:
+            key, _, value = raw.strip().partition(":")
+            types[current][key] = value.strip()
+    return types
+
+
+ARTICLE_TYPES = load_article_types()
+
+
+def is_archival(slug):
+    """Whether this article gets an archival PDF.
+
+    Unknown types are treated as archival: erring towards producing a fixed
+    rendition is the safe direction, and the build reports the type as
+    unclassified elsewhere.
+    """
+    kind = CLASSIFICATION.get(slug, {}).get("article_type") or "technical-note"
+    return ARTICLE_TYPES.get(kind, {}).get("archival", "true") != "false"
+
+
 def load_restored_captions():
     """slug -> {figure filename: caption} from restored-captions.yml.
 
@@ -800,14 +832,18 @@ def frontmatter(rec, doi, article_id, banner=None):
     # numeric character reference survives quoting and renders as "@".
     abstract = " ".join(
         (rec.get("custom_excerpt") or rec.get("excerpt") or "").split()).replace("@", "&#64;")
-    lines += [
-        "exports:",
-        "  - format: typst",
-        "    template: ../../templates/pdf",
-        "    output: %s.pdf" % rec["slug"],
-        "    article_id: %s" % yaml_str(article_id),
-        "    article_version: 1.0.0",
-    ]
+    # An archival PDF only where the content is load-bearing. An announcement is
+    # dated by nature, and a citable snapshot of "version 2.10 is out" serves
+    # nobody -- see article-types.yml, which is the one place that decides.
+    if is_archival(rec["slug"]):
+        lines += [
+            "exports:",
+            "  - format: typst",
+            "    template: ../../templates/pdf",
+            "    output: %s.pdf" % rec["slug"],
+            "    article_id: %s" % yaml_str(article_id),
+            "    article_version: 1.0.0",
+        ]
     if abstract:
         lines += ["parts:", "  abstract: %s" % yaml_str(abstract)]
     lines += ["---", ""]

@@ -13,12 +13,6 @@ banner: figures/banner.jpg
 keywords:
   - Stripy
   - Python/Jupyter
-exports:
-  - format: typst
-    template: ../../templates/pdf
-    output: stripy-2-0-released.pdf
-    article_id: UWTN 2020-008
-    article_version: 1.0.0
 parts:
   abstract: Generating Voronoi diagrams and interpolating / smoothing with spline tensions are among a list of new features in Stripy 2.0
 ---

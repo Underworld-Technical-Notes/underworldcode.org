@@ -13,12 +13,6 @@ banner: figures/banner.png
 keywords:
   - Geodynamics
   - Geophysics
-exports:
-  - format: typst
-    template: ../../templates/pdf
-    output: australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it.pdf
-    article_id: UWTN 2020-005
-    article_version: 1.0.0
 parts:
   abstract: Meghan S. Miller (ANU) Louis Moresi (ANU) Our responses to the COVID-19 pandemic have dramatically changed human activity all over the world. Sensitive instruments are detecting far less of the noise and vibration produced by humans in motion.
 ---

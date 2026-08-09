@@ -24,12 +24,6 @@ license: CC-BY-4.0
 banner: figures/banner.jpg
 keywords:
   - Underworld Code
-exports:
-  - format: typst
-    template: ../../templates/pdf
-    output: underworld-2-9.pdf
-    article_id: UWTN 2020-002
-    article_version: 1.0.0
 parts:
   abstract: "The Underworld 2.9 release is available from Github, as a docker container and via zenodo (doi:10.5281/zenodo.3964957) it is also available through pip install for the first time"
 ---

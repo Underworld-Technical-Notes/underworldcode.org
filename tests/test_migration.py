@@ -237,7 +237,7 @@ def ensure_generated():
         sys.argv = ["generate"]
         if not list((ROOT / "pages").glob("*.md")):
             load("build_pages").main()
-        if not (ROOT / "index.md").exists():
+        if not (ROOT / "index.md").exists() or not (ROOT / "notes.md").exists():
             load("build_index").main()
     finally:
         sys.argv = original
@@ -248,11 +248,29 @@ def index_source():
     return (ROOT / "index.md").read_text(encoding="utf-8")
 
 
-def test_index_lists_every_published_article():
-    index = index_source()
+def test_every_article_is_listed_in_exactly_one_stream():
+    """The split must partition the corpus, not sample it.
+
+    The front page carries news, releases and guides; /notes/ carries the
+    Technical Notes. An article that reaches neither is unreachable except by
+    its URL -- and an article in both feeds is listed twice, which reads as an
+    editorial statement nobody made.
+
+    Compared on the FEEDS, not on any link: the front page also signposts the
+    three most recent notes, and that is the point of it rather than a leak.
+    """
+    def listed(text):
+        return {slug for slug in slugs
+                if 'href="/%s/"' % slug in "".join(
+                    block.split("</div>\n\n")[0] for block in
+                    text.split('<div class="uwtn-feed">')[1:])}
+
     slugs = {p.parent.name for p in (ROOT / "articles").glob("*/*.md")}
-    for slug in slugs:
-        assert 'href="/%s/"' % slug in index, "%s missing from the landing page" % slug
+    front = listed(index_source())
+    notes = listed((ROOT / "notes.md").read_text(encoding="utf-8"))
+    assert not (front & notes), "in both feeds: %s" % ", ".join(sorted(front & notes))
+    assert not (slugs - front - notes), \
+        "in neither feed: %s" % ", ".join(sorted(slugs - front - notes))
 
 
 def test_index_entries_carry_no_blank_lines():

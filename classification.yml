@@ -273,8 +273,13 @@ compressible-convection-in-cartesian-coordinates-in-underworld3:
   subjects: [mantle-convection]
   methods: [benchmarks-validation, finite-elements]
 
+# Reclassified from commentary. It is a history of how this codebase came to
+# be what it is, written by the person who wrote the first version of it -- a
+# development note in the most literal sense, and load-bearing enough to
+# deserve an archival rendition. "Commentary" is reserved for pieces
+# republished from elsewhere, which have a publisher of their own.
 30-years-of-citcom-ellipsis-and-underworld:
-  article_type: commentary
+  article_type: development-note
   subjects: [mantle-convection]
   methods: [finite-elements, particles-swarms]
 

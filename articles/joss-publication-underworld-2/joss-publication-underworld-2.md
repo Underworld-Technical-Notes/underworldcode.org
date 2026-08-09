@@ -11,12 +11,6 @@ license: CC-BY-4.0
 banner: figures/banner.png
 keywords:
   - Underworld Code
-exports:
-  - format: typst
-    template: ../../templates/pdf
-    output: joss-publication-underworld-2.pdf
-    article_id: UWTN 2020-001
-    article_version: 1.0.0
 parts:
   abstract: "A new paper by John Mansour [https://www.underworldcode.org/author/john] and others has just been published in the Journal of Open Source Software. * Mansour, J., Giordani, J., Moresi, L., Beucher, R., Kaluza, O., Velic, M., Farrington, R., Quenette, S., Beall, A., 2020, Underworld2: Python Geodynamics Modelling for Desktop, HPC and Cloud, Journal of Open Source Software, 5(47), 1797, https://doi.org/10.21105/joss.01797 The JOSS paper is intended as a reference citation for re"
 ---

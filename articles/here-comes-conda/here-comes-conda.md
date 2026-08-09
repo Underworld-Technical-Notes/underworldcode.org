@@ -14,12 +14,6 @@ keywords:
   - Underworld Code
   - Documentation
   - AuScope UW Cloud
-exports:
-  - format: typst
-    template: ../../templates/pdf
-    output: here-comes-conda.pdf
-    article_id: UWTN 2020-010
-    article_version: 1.0.0
 parts:
   abstract: Sharing a workflow environment is also paramount if we want to make sure that reproducibility can be effectively tested. An environment management system such as conda allows us to do so.
 ---

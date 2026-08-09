@@ -12,12 +12,6 @@ banner: figures/banner.jpg
 keywords:
   - Underworld Code
   - Underworld Workshops
-exports:
-  - format: typst
-    template: ../../templates/pdf
-    output: underworld2-workshop-at-cig-2016-meeting.pdf
-    article_id: UWTN 2016-001
-    article_version: 1.0.0
 parts:
   abstract: "Underworld2 is a python-friendly version of the Underworld geodynamics code which provides a programmable and flexible front end to all the functionality of the code running in a parallel HPC environment. This gives signficant advantages to the user, with access to the power of python libraries for setup of complex problems, analysis at runtime, problem steering, and coupling of multiple problems. Underworld2 is integrated with the literate programming environment of the jupyter notebook [https:"
 ---

@@ -13,12 +13,6 @@ banner: figures/banner.png
 keywords:
   - Geophysics
   - Python/Jupyter
-exports:
-  - format: typst
-    template: ../../templates/pdf
-    output: covid-quiet-time.pdf
-    article_id: UWTN 2020-007
-    article_version: 1.0.0
 parts:
   abstract: "A new study by an international team of scientists found lockdown measures to stop the spread of COVID-19 led to a 50 per cent reduction in seismic noise around the world. The researchers, including Meghan Miller and Louis Moresi from ANU analysed datasets from over 300 seismic stations."
 ---

@@ -1,10 +1,21 @@
 #!/usr/bin/env python3
-"""Generate the landing page as a reverse-chronological feed of notes.
+"""Generate the front page, the Technical Notes series page, and the topics.
+
+The site has two streams, declared in ``article-types.yml``:
+
+  * the FRONT PAGE is Underworld's own site -- news, releases, and the guides
+    that tell you how to get it running. Someone arriving at underworldcode.org
+    is usually looking for the software, and should not land on a journal's
+    table of contents;
+  * ``/notes/`` is the TECHNICAL NOTES series, reached from its own tab.
+
+The front page's prose lives in ``pages-src/landing.md`` and is hand-written;
+this only fills in the feeds.
 
 MyST has no listing or view feature -- ``jupyter-book/mystmd#840`` is still
-open -- so a blog-style index has to be produced rather than declared. Doing it
-from ``metadata.yml`` means the front page cannot drift from the articles: add a
-note, rebuild, and it appears with the right date, authors, DOI and downloads.
+open -- so a feed has to be produced rather than declared. Doing it from
+``metadata.yml`` means the pages cannot drift from the articles: add a note,
+rebuild, and it appears with the right date, authors, DOI and downloads.
 
 The markup is emitted as raw HTML with its own class names. MyST passes that
 through untouched, which avoids styling around the theme's utility classes and
@@ -25,6 +36,47 @@ ARTICLES = ROOT / "articles"
 
 # Filled from vocabulary.yml at start-up so entries can show readable labels.
 FACET_LABELS = {}
+
+
+def article_types():
+    """type -> {stream, archival} from article-types.yml.
+
+    An unknown type is fatal rather than defaulted. Guessing would put a new
+    kind of article on whichever page the default named, silently, and the
+    whole point of that file is that the placement is a stated decision.
+    """
+    path = ROOT / "article-types.yml"
+    types, current = {}, None
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        if not raw.startswith(" ") and raw.rstrip().endswith(":"):
+            current = raw.rstrip()[:-1]
+            types[current] = {}
+        elif current and ":" in raw:
+            key, _, value = raw.strip().partition(":")
+            value = value.strip()
+            types[current][key] = value == "true" if value in ("true", "false") else value
+    return types
+
+
+TYPES = {}
+
+
+def _type_of(meta):
+    kind = meta.get("article_type") or ""
+    if kind not in TYPES:
+        sys.exit("%s: article_type %r is not in article-types.yml"
+                 % (meta.get("slug"), kind))
+    return TYPES[kind]
+
+
+def stream_of(meta):
+    return _type_of(meta)["stream"]
+
+
+def is_archival(meta):
+    return bool(_type_of(meta)["archival"])
 
 
 def text(value):
@@ -214,6 +266,10 @@ def write_nav():
     for title, slug in standalone:
         lines.append('    - title: "%s"' % title)
         lines.append("      url: /%s" % slug)
+    # First in the header, because it is the thing this site publishes that
+    # exists nowhere else. The front page deliberately does not lead with it.
+    lines.insert(1, '    - title: "Technical Notes"')
+    lines.insert(2, "      url: /notes")
     lines.append('    - title: "Topics"')
     lines.append("      url: /topics")
 
@@ -229,12 +285,12 @@ def write_nav():
 
 
 def write_toc(metas):
-    """Rewrite the toc in myst.yml, grouped by year, newest first.
+    """Rewrite the toc in myst.yml: the two streams, each grouped by year.
 
-    The sidebar is the reader's sense of the series over time, so it is
-    organised the way the article ids are: by year. If the series ever adopts
-    volumes, this is where that renaming happens -- nothing else depends on the
-    grouping.
+    The sidebar follows the same division as the navigation, so a reader who
+    opens the Technical Notes does not find release announcements interleaved
+    with them. Within a stream the grouping is by year, the way the article ids
+    are; if the series ever adopts volumes, this is where that renaming happens.
 
     Generated between markers rather than by rewriting the whole file, so the
     rest of myst.yml stays hand-edited.
@@ -244,12 +300,26 @@ def write_toc(metas):
     if TOC_BEGIN not in text or TOC_END not in text:
         sys.exit("myst.yml is missing the generated-toc markers")
 
-    by_year = {}
+    streams = {"notes": {}, "posts": {}}
     for meta, _description, _pdf in metas:
         year = str(meta.get("publication_date") or "")[:4] or "undated"
-        by_year.setdefault(year, []).append(meta)
+        streams[stream_of(meta)].setdefault(year, []).append(meta)
 
     lines = ["  toc:", "    - file: index.md"]
+    for stream, title in (("notes", "Technical Notes"), ("posts", "News & guides")):
+        by_year = streams[stream]
+        if not by_year:
+            continue
+        lines.append('    - title: "%s"' % title)
+        lines.append("      children:")
+        if stream == "notes":
+            lines.append("        - file: notes.md")
+        for year in sorted(by_year, reverse=True):
+            lines.append('        - title: "%s"' % year)
+            lines.append("          children:")
+            for meta in by_year[year]:
+                slug = meta["slug"]
+                lines.append("            - file: articles/%s/%s.md" % (slug, slug))
     topic_files = sorted((ROOT / "topics").glob("topic-*.md"))
     if topic_files:
         lines.append('    - title: "Topics"')
@@ -263,18 +333,11 @@ def write_toc(metas):
         lines.append("      children:")
         for path in page_files:
             lines.append("        - file: pages/%s" % path.name)
-    for year in sorted(by_year, reverse=True):
-        lines.append('    - title: "%s"' % year)
-        lines.append("      children:")
-        for meta in by_year[year]:
-            slug = meta["slug"]
-            lines.append("        - file: articles/%s/%s.md" % (slug, slug))
-
     head, _, rest = text.partition(TOC_BEGIN)
     _, _, tail = rest.partition(TOC_END)
     myst.write_text("%s%s\n%s\n%s%s" % (head, TOC_BEGIN, "\n".join(lines), TOC_END, tail),
                     encoding="utf-8")
-    return by_year
+    return streams
 
 
 def vocabulary():
@@ -402,7 +465,82 @@ def banner_of(directory):
     return None
 
 
+def feed(entries, lead_first=False):
+    """A year-grouped run of entries, as one raw HTML block."""
+    blocks, seen_year = [], None
+    for index, (meta, description, has_pdf) in enumerate(entries):
+        year = str(meta.get("publication_date") or "")[:4]
+        if year != seen_year:
+            blocks.append('<div class="uwtn-year">%s</div>' % year)
+            seen_year = year
+        lead = lead_first and index == 0
+        blocks.append(entry_html(
+            meta, description, has_pdf,
+            banner=banner_of(ARTICLES / meta["slug"]) if lead else None,
+            lead=lead))
+    return '<div class="uwtn-feed">\n%s\n</div>' % "\n".join(blocks)
+
+
+def brief(meta, description):
+    """One technical note, compact -- for the signpost on the front page."""
+    slug = meta["slug"]
+    return "".join([
+        '<a class="uwtn-brief" href="/%s/">' % slug,
+        '<span class="uwtn-brief-id">%s</span>' % text(str(meta.get("id") or "")),
+        '<span class="uwtn-brief-title">%s</span>' % text(str(meta.get("title") or slug)),
+        '<span class="uwtn-brief-summary">%s</span>' % text(description),
+        '</a>',
+    ])
+
+
+def write_landing(posts, notes, with_doi):
+    """The front page: hand-written prose, with the feeds filled in."""
+    source = ROOT / "pages-src" / "landing.md"
+    if not source.exists():
+        sys.exit("pages-src/landing.md is missing -- the front page has no prose")
+    body = re.sub(r"^<!--.*?-->\n+", "", source.read_text(encoding="utf-8"),
+                  count=1, flags=re.S)
+
+    counts = ('<div class="uwtn-standfirst">%d notes on how the code works and what it '
+              'has been used for \u2014 methods, worked examples, benchmarks and design '
+              'rationale. %d carry a registered DOI and a fixed archival PDF. '
+              '<a href="/notes/">Read the series</a>, or '
+              '<a href="/submit/">contribute one</a>.</div>'
+              % (len(notes), with_doi))
+    briefs = ('<div class="uwtn-briefs">%s</div>'
+              % "".join(brief(m, d) for m, d, _p in notes[:3]))
+
+    for marker, replacement in (("<!-- COUNTS -->", counts),
+                                ("<!-- LATEST-NOTES -->", briefs),
+                                ("<!-- LATEST-POSTS -->", feed(posts))):
+        if body.count(marker) != 1:
+            sys.exit("pages-src/landing.md must contain %s exactly once" % marker)
+        body = body.replace(marker, replacement)
+
+    (ROOT / "index.md").write_text(
+        "---\ntitle: Underworld\nsite:\n  hide_outline: true\n"
+        "  hide_title_block: true\n---\n\n" + body, encoding="utf-8")
+
+
+def write_notes_page(notes, with_doi):
+    """/notes/ -- the series, as a table of contents."""
+    (ROOT / "notes.md").write_text("""---
+title: Underworld Technical Notes
+site:
+  hide_outline: true
+  hide_title_block: true
+---
+
+<div class="uwtn-masthead"><div class="uwtn-kicker">Underworld</div><div class="uwtn-wordmark">Technical Notes</div><div class="uwtn-standfirst">Methods, implementation notes, benchmarks and worked examples from the <a href="https://github.com/underworldcode/underworld3">Underworld</a> geodynamics code. Each note is a living web article and, where it carries a DOI, a fixed archival PDF.</div></div>
+
+%s
+
+<div class="uwtn-colophon">%d notes, %d with a registered DOI. The DOI identifies the archival publication; this site is the current rendition and may carry corrections, updated links and discussion. Notes are written by the Underworld community \u2014 <a href="/submit/">how to submit one</a>.</div>
+""" % (feed(notes, lead_first=True), len(notes), with_doi), encoding="utf-8")
+
+
 def main():
+    TYPES.update(article_types())
     for axis, terms in vocabulary().items():
         for term, (label, _scope) in terms.items():
             FACET_LABELS[term] = label
@@ -421,49 +559,30 @@ def main():
     if not metas:
         sys.exit("no articles found -- run `pixi run migrate` first")
 
-    with_doi = sum(1 for m, _d, _p in metas if m.get("doi"))
+    notes = [m for m in metas if stream_of(m[0]) == "notes"]
+    posts = [m for m in metas if stream_of(m[0]) == "posts"]
+    notes_with_doi = sum(1 for m, _d, _p in notes
+                         if m.get("legacy_doi") or m.get("archive_doi"))
+
     topics = write_topic_pages(metas)
     pages = write_nav()
-    by_year = write_toc(metas)
+    write_toc(metas)
+    write_notes_page(notes, notes_with_doi)
+    write_landing(posts, notes, notes_with_doi)
 
-    # The most recent note leads, shown larger and with its banner; the rest
-    # follow as a compact list under a rule for each year.
-    blocks, seen_year = [], None
-    for index, (meta, description, has_pdf) in enumerate(metas):
-        year = str(meta.get("publication_date") or "")[:4]
-        if year != seen_year:
-            blocks.append('<div class="uwtn-year">%s</div>' % year)
-            seen_year = year
-        directory = ARTICLES / meta["slug"]
-        blocks.append(entry_html(meta, description, has_pdf,
-                                 banner=banner_of(directory) if index == 0 else None,
-                                 lead=(index == 0)))
-    entries = "\n".join(blocks)
-
-    page = """---
-title: Underworld Technical Notes
-site:
-  hide_outline: true
-  hide_title_block: true
----
-
-<div class="uwtn-masthead"><div class="uwtn-kicker">Underworld</div><div class="uwtn-wordmark">Technical Notes</div><div class="uwtn-standfirst">Methods, implementation notes, benchmarks and worked examples from the <a href="https://github.com/underworldcode/underworld3">Underworld</a> geodynamics code. Each note is a living web article and, where it carries a DOI, a fixed archival PDF.</div></div>
-
-<div class="uwtn-feed">
-%s
-</div>
-
-<div class="uwtn-colophon">%d notes, %d with a registered DOI. The DOI identifies the archival publication; this site is the current rendition and may carry corrections, updated links and discussion. Notes are written by the Underworld community — <a href="/submit/">how to submit one</a>.</div>
-""" % (entries, len(metas), with_doi)
-
-    (ROOT / "index.md").write_text(page, encoding="utf-8")
     print("nav: %d standing page(s)" % len(pages))
     print("topics: %d (%s)" % (len(topics), ", ".join(sorted(topics))))
-    print("index.md: %d note(s), %d with a DOI, %d with a PDF"
-          % (len(metas), with_doi, sum(1 for _m, _d, p in metas if p)))
-    for meta, _description, _pdf in metas:
-        print("  %-12s %-11s %s" % (meta.get("id"), meta.get("publication_date"),
-                                    str(meta.get("title"))[:52]))
+    print("notes.md: %d note(s), %d with a DOI" % (len(notes), notes_with_doi))
+    print("index.md: %d post(s) on the front page" % len(posts))
+    missing = [m["slug"] for m, _d, pdf in metas if is_archival(m) and not pdf]
+    if missing:
+        print("  %d archival article(s) built without a PDF: %s"
+              % (len(missing), ", ".join(missing[:4])), file=sys.stderr)
+    for label, group in (("note", notes), ("post", posts)):
+        for meta, _description, _pdf in group:
+            print("  %-5s %-12s %-11s %s"
+                  % (label, meta.get("id"), meta.get("publication_date"),
+                     str(meta.get("title"))[:48]))
 
 
 if __name__ == "__main__":

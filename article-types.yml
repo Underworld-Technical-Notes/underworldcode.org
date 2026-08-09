@@ -1,0 +1,63 @@
+# What each kind of article is, and what the site does with it.
+#
+# Two independent properties, because they answer different questions.
+#
+# `stream` is about the READER. The front page is Underworld's own site --
+# news, releases, and the guides that tell you how to get it running. The
+# Technical Notes are the peer-facing series, and they live behind their own
+# tab so that arriving at underworldcode.org does not feel like arriving at a
+# journal's table of contents.
+#
+# `archival` is about the CONTENT. A note with load-bearing information earns a
+# fixed rendition -- an archival PDF, and a DOI that resolves to it -- because
+# somebody may need to cite exactly what it said. An announcement does not: it
+# is dated by nature, and a citable snapshot of "version 2.10 is out" serves
+# nobody.
+#
+# The two do not line up, and that is the point. Every how-to is on the front
+# page and every how-to gets a PDF: "how to configure PETSc" is information
+# somebody depends on, even though it is not scholarship.
+#
+# When a guide goes out of date -- the container instructions are already
+# heading that way -- the answer is a NEW VERSION of the same deposit, related
+# to its predecessor, not a new article. The identifier keeps pointing at the
+# thing it named; the reader gets the current text; the old text stays
+# retrievable. See PUBLISHING.md.
+
+technical-note:
+  stream: notes
+  archival: true
+
+worked-example:
+  stream: notes
+  archival: true
+
+benchmark:
+  stream: notes
+  archival: true
+
+development-note:
+  stream: notes
+  archival: true
+
+# On the front page, because a reader looking for these is looking for the
+# software, not for the series. Archival all the same: an installation
+# procedure is the definition of load-bearing.
+how-to:
+  stream: posts
+  archival: true
+
+# Announcements. Dated by nature, and superseded by the next one.
+release-note:
+  stream: posts
+  archival: false
+
+news:
+  stream: posts
+  archival: false
+
+# Pieces republished from elsewhere, which already have a publisher and an
+# identifier of their own. Ours to host, not ours to deposit.
+commentary:
+  stream: posts
+  archival: false

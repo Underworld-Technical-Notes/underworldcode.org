@@ -9,12 +9,6 @@ authors:
 doi: 10.59350/ng0d5-23959
 license: CC-BY-4.0
 banner: figures/banner.jpg
-exports:
-  - format: typst
-    template: ../../templates/pdf
-    output: uwgeodynamics-and-underworld-merge.pdf
-    article_id: UWTN 2022-003
-    article_version: 1.0.0
 parts:
   abstract: "Yeah, one repo, one vision! In an effort to simplify maintenance and compatibility between Underworld and UWGeodynamics, we have decided to merge the codes into a single repository. Starting with version 2.13, UWGeodynamics will now live under Underworld. All UWGeodynamics functionalities and workflows will remain available to the users. From version 2.13 users will be able to import UWGeodynamics after installing Underworld (see documentation for install options), using from underworld impor"
 ---

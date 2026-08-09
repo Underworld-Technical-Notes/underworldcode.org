@@ -14,12 +14,6 @@ keywords:
   - Underworld Workshops
   - Getting Started
   - Geodynamics
-exports:
-  - format: typst
-    template: ../../templates/pdf
-    output: perth-youre-invited-to-the-underworld-geodynamic-modelling-workshop.pdf
-    article_id: UWTN 2025-002
-    article_version: 1.0.0
 parts:
   abstract: "You are invited to a full-day workshop on Underworld — a computational Geodynamics / Tectonics modelling framework. This is an excellent opportunity for researchers, students, and professionals interested in computational geodynamics and Earth science modelling to learn about Underworld."
 ---
