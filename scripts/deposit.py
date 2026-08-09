@@ -397,13 +397,6 @@ def check_eligible(slug, meta):
     has a record, a note whose type gets no archival rendition, and the fifty
     legacy registrations that must never be re-minted.
     """
-    if meta.get("repository_record_id"):
-        raise DepositError(
-            "%s already has repository_record_id %s. Depositing again would "
-            "create a SECOND record and a second DOI for one note. Use "
-            "--new-version to publish a new version of the existing record."
-            % (slug, meta["repository_record_id"]))
-
     import build_index
     build_index.TYPES.update(build_index.article_types())
     if not build_index.is_archival(meta):
@@ -419,6 +412,26 @@ def check_eligible(slug, meta):
 
     package = ROOT / "dist" / ("%s.zip" % slug)
     return package
+
+
+def check_resumable(slug, record, new_version):
+    """A draft may be resumed. A published record may not be re-deposited.
+
+    The distinction matters and the first version of this got it wrong: it
+    refused any run at all once a record id existed, which killed the upload
+    step -- the legitimate continuation of the very deposit that had just
+    created the record. Resuming a draft IS the design; what must never happen
+    is a second record for a note that already has a published one.
+    """
+    if not record.get("published_date"):
+        return
+    if new_version:
+        return
+    raise DepositError(
+        "%s is already PUBLISHED as record %s (%s). Depositing it again would "
+        "create a second record and a second DOI for one note. Use "
+        "--new-version to publish a new version of the existing record."
+        % (slug, record.get("id"), record.get("doi") or "no doi"))
 
 
 def run(slug, provider, live, publish, new_version, delete_draft):
@@ -461,6 +474,7 @@ def run(slug, provider, live, publish, new_version, delete_draft):
                      % ("adopted existing" if adopted else "created", record_id))
     else:
         record_id = int(record_id)
+        check_resumable(slug, provider.get_record(record_id), new_version)
         steps.append("resuming draft %s" % record_id)
 
     doi = meta.get("archive_doi")

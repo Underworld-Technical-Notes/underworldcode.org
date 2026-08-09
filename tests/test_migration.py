@@ -770,16 +770,27 @@ def test_no_figure_name_breaks_the_upload():
 deposit = load("deposit")
 
 
-def test_deposit_refuses_an_article_that_already_has_a_record():
+def test_deposit_refuses_to_redeposit_a_published_record():
     """The failure this design exists to prevent: two DOIs for one note."""
-    meta = {"slug": "x", "article_type": "technical-note",
-            "repository_record_id": 12345}
+    published = {"id": 12345, "published_date": "2026-01-01", "doi": "10.6084/x"}
     try:
-        deposit.check_eligible("x", meta)
+        deposit.check_resumable("x", published, new_version=False)
     except deposit.DepositError as exc:
-        assert "SECOND record" in str(exc)
+        assert "second record" in str(exc)
     else:
-        raise AssertionError("a second deposit must be refused")
+        raise AssertionError("re-depositing a published record must be refused")
+
+
+def test_deposit_resumes_an_unpublished_draft():
+    """Resuming is the design; the first version of the guard refused it.
+
+    That killed the upload step -- the legitimate continuation of the deposit
+    that had just created the record.
+    """
+    draft = {"id": 12345, "published_date": None}
+    deposit.check_resumable("x", draft, new_version=False)
+    deposit.check_resumable("x", {"id": 1, "published_date": "2026-01-01"},
+                            new_version=True)
 
 
 def test_deposit_refuses_a_type_with_no_archival_rendition():
