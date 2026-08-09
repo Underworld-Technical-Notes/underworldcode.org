@@ -6,10 +6,11 @@ technical publication series with DOI-backed archival PDFs.
 Design brief: `~/Downloads/underworld-technical-notes-implementation-brief.md`
 Implementation plan: `~/.claude/plans/the-job-i-have-peppy-origami.md`
 
-**Status: Stage 1 complete — a working pilot of the twelve most recent months.**
-Eleven articles converted from Ghost, building as a MyST site and as eleven
-archival PDFs. This is a local working repository; it has not yet been pushed to
-a GitHub organisation. See *Blocked on Louis* below.
+**Status: Stage 2 complete — the whole corpus is migrated.**
+All 53 articles converted from Ghost, building as a MyST site and as 53 archival
+PDFs, with every one of the 50 registered DOIs resolving in the build. Published
+at <https://underworld-technical-notes.github.io/underworldcode.org/>. What
+remains before the droplet can be switched off is in *Blocked on Louis* below.
 
 ```bash
 pixi run migrate      # convert -> rebuild figures -> merge with the drafts
@@ -34,10 +35,13 @@ articles/<slug>/        one directory per article
 templates/pdf/          archival PDF template (fork of lapreprint-typst)
 schemas/                article metadata JSON Schema
 authors.yml             author registry: names, ORCIDs, affiliations
+attribution.yml         who wrote an article, where Ghost's answer is wrong
+classification.yml      subject/method facets and article type, per article
 corrections.yml         declared content fixes applied during conversion
+restored-captions.yml   captions the Ghost import dropped, from the older site
 scripts/
   ghost_to_myst.py      strict, sanitising Ghost -> MyST converter
-  fix_slugs.py          restores full URLs after MyST's 50-char truncation
+  fix_slugs.py          restores full URLs MyST truncates or strips digits from
   validate_metadata.py  schema + cross-file invariants
   test_doi_urls.py      THE critical test: no registered DOI may 404
   inventory_site.py     read-only inventory via Ghost's public Content API
@@ -208,9 +212,12 @@ Nothing in `articles/`, the templates or the tests depends on this choice.
 
 ## Blocked on Louis
 
-- **Create the GitHub organisation** and add a second owner. The local `gh`
-  token holds `gist`, `read:org`, `repo` only — no `admin:org` — so this cannot
-  be done from here. Suggested: org `underworld-technical-notes`, repo `underworldcode.org`.
+- **Two ORCIDs still unknown**: Haibin Yang and Rohan Byrne, both on DOI-bearing
+  articles. Adam Beall has none, and that is recorded rather than left open.
+- **Who wrote the Docker posts?** Ghost credits both parts to Julian Giordani;
+  the pre-Ghost site credits part 2 to Louis Moresi and leaves part 1 unsigned.
+  Two authoritative sources disagree, so nothing has been changed. Settle it and
+  `attribution.yml` takes the answer.
 - **Cull the pages.** 16 Ghost pages are classified `migrate`; decide which
   survive. See the table in `STAGE-0-FINDINGS.md`.
 - **Contact Front Matter** to deactivate Rogue Scholar ingestion and get written

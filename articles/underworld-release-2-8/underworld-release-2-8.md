@@ -149,12 +149,12 @@ In the future we hope to allow the usage of NN behaviour dynamically, such that 
 
 For large parallel simulations, data IO operations can quickly begin to dominate wall time. While previous version of Underworld collectively opened and closed files to avoid filesystem locking, the data writing itself was essentially a serial operation. This is reflected in the graph below, with total write times tracking with job size (dashed line).
 
-```{figure} figures/1*1wKV7RUPKbbw4RLT_GwuVQ.png
+```{figure} figures/1-1wKV7RUPKbbw4RLT_GwuVQ.png
 
 Save operation times for sequential writing (dashed line) and collective writing (solid lines). Fixed mesh size (32x32x32) per process. Collective writing introduced in UW2.8.
 ```
 
-Indeed disk write time (for the mesh) exceeds system solve time (light blue line) for jobs of greater size than 216 processes. In Underworld v2.8, dramatic improvements in write times have been achieved by enabling collective writing via `h5py` (shout out to Rui@NCI for flagging this to us!). For mesh objects, collective writing results in a flattening of the timing curves, with a two orders of magnitude improvement observed for the largest simulations. The picture was less clear for swarm objects however, with resulting write time changes being neither here nor there. This is due to the differences in writing patterns for particle and mesh data. We hope to make further improvements for writing swarm objects in future releases.
+Indeed disk write time (for the mesh) exceeds system solve time (light blue line) for jobs of greater size than 216 processes. In Underworld v2.8, dramatic improvements in write times have been achieved by enabling collective writing via `h5py` (shout out to Rui\@NCI for flagging this to us!). For mesh objects, collective writing results in a flattening of the timing curves, with a two orders of magnitude improvement observed for the largest simulations. The picture was less clear for swarm objects however, with resulting write time changes being neither here nor there. This is due to the differences in writing patterns for particle and mesh data. We hope to make further improvements for writing swarm objects in future releases.
 
 Collective writing is enabled in UW2.8 for mesh objects, and optional for swarm objects (defaults to off). As always, we urge users to minimise their requirement for writing data to disk, and instead where possible perform analytics inline within their simulations scripts. Obviously writing to disk incurs a time overhead, but there is also the associated burden of file handling which for large datasets becomes non-trivial. For very large simulations, inlined analytics may be the only viable option.
 

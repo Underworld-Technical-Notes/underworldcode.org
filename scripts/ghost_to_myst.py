@@ -251,6 +251,12 @@ def asset_name(src):
     time, because the markdown has to refer to it by the same name.
     """
     name = urllib.parse.unquote(src.rsplit("/", 1)[-1].split("?")[0])
+    # Medium's CDN names files things like `1*1wKV7RUPKbbw4RLT_G.png`. The
+    # asterisk is legal on disk and in a URL, and GitHub's artifact upload
+    # rejects the whole build over it -- so the characters Windows and the
+    # Actions runner both refuse are replaced here, once, at the only point
+    # where the name is decided.
+    name = re.sub(r'[*:?"<>|]', "-", name)
     stem, dot, ext = name.rpartition(".")
     if not dot:
         return name

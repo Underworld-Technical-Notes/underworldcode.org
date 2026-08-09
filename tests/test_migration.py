@@ -726,3 +726,19 @@ def test_deposited_authors_will_propagate_to_orcid():
                          "for them: %s" % ", ".join(sorted(unknown)))
     assert not deposited, ("deposited without an ORCID, which cannot be "
                            "corrected afterwards: %s" % ", ".join(sorted(deposited)))
+
+
+def test_no_figure_name_breaks_the_upload():
+    """Figure filenames must survive a CI artifact upload.
+
+    Medium's CDN serves images named `1*1wKV7RUPKbbw4RLT_G.png`. The asterisk is
+    legal on disk and in a URL, so everything built and tested clean locally --
+    and GitHub's artifact upload rejected the entire site over it. Windows
+    refuses the same set, so this is the portable answer rather than a
+    workaround for one runner.
+    """
+    import re as _re
+    illegal = _re.compile(r'[*:?"<>|]')
+    offenders = [str(p.relative_to(ROOT)) for p in (ROOT / "articles").rglob("*")
+                 if illegal.search(p.name)]
+    assert not offenders, "unuploadable filename(s): %s" % ", ".join(offenders)
