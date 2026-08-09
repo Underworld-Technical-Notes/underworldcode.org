@@ -17,3 +17,13 @@
 # _posts/2017-06-29-Sub-Continental-Instabilities.md.
 untitled:
   - adam
+
+# Ghost credits both Docker posts to Julian Giordani; the pre-Ghost Jekyll site
+# credits part 2 to Louis Moresi and leaves part 1 unsigned. Settled by the
+# authors: Julian wrote both, with Louis a co-author on the second.
+underworld-and-docker-part-1:
+  - julian
+
+underworld-and-docker-part-2:
+  - julian
+  - louis

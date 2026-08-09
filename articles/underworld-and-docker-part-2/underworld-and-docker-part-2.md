@@ -6,10 +6,10 @@ authors:
     orcid: 0000-0003-4515-9296
     affiliations:
       - University of Sydney
-  - name: John Mansour
-    orcid: 0000-0001-5865-1664
+  - name: Louis Moresi
+    orcid: 0000-0003-3685-174X
     affiliations:
-      - Monash University
+      - Australian National University
 doi: 10.59350/4cqwc-rth67
 license: CC-BY-4.0
 banner: figures/banner.png

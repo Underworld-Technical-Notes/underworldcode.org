@@ -3,6 +3,7 @@ title: ISMIP-HOM benchmark experiments using Underworld
 date: 2023-02-20
 authors:
   - name: Haibin Yang
+    orcid: 0000-0002-8628-3704
 doi: 10.59350/8196m-xmj49
 license: CC-BY-4.0
 banner: figures/banner.png

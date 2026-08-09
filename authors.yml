@@ -77,12 +77,16 @@ authors:
     no_orcid: true
     affiliation: null
 
-  # ORCIDs not yet known.
   haibin:
     name: Haibin Yang
-    orcid: null
+    orcid: 0000-0002-8628-3704
     affiliation: null
+
+  # No ORCID, and unlikely to acquire one -- the identifier follows from
+  # publishing, and this author has not. Recorded so the question is closed
+  # rather than re-asked at every deposit.
   rohan:
     name: Rohan Byrne
     orcid: null
+    no_orcid: true
     affiliation: null

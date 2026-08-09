@@ -212,12 +212,6 @@ Nothing in `articles/`, the templates or the tests depends on this choice.
 
 ## Blocked on Louis
 
-- **Two ORCIDs still unknown**: Haibin Yang and Rohan Byrne, both on DOI-bearing
-  articles. Adam Beall has none, and that is recorded rather than left open.
-- **Who wrote the Docker posts?** Ghost credits both parts to Julian Giordani;
-  the pre-Ghost site credits part 2 to Louis Moresi and leaves part 1 unsigned.
-  Two authoritative sources disagree, so nothing has been changed. Settle it and
-  `attribution.yml` takes the answer.
 - **Cull the pages.** 16 Ghost pages are classified `migrate`; decide which
   survive. See the table in `STAGE-0-FINDINGS.md`.
 - **Contact Front Matter** to deactivate Rogue Scholar ingestion and get written

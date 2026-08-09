@@ -3,6 +3,7 @@ title: Stress recovery in Underworld
 date: 2021-01-11
 authors:
   - name: Haibin Yang
+    orcid: 0000-0002-8628-3704
 doi: 10.59350/97evt-ays09
 license: CC-BY-4.0
 banner: figures/banner.jpg
