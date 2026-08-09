@@ -542,6 +542,26 @@ class GhostToMyst(HTMLParser):
                     if small:
                         block.append(":width: %dpx" % width)
                     block.append("```")
+                    # `:target:` is silently ignored by BOTH renderers, so the
+                    # badge became decoration with no destination -- a "launch
+                    # binder" button that does nothing, in a PDF where nobody
+                    # can guess the URL.
+                    #
+                    # A markdown linked image is clickable but cannot be sized
+                    # (a {width=} attribute leaks through as literal text), and
+                    # for a doi.org target MyST destroys the image and turns it
+                    # into a citation. So the destination goes UNDERNEATH, where
+                    # it can be read whether or not it can be clicked.
+                    #
+                    # A DOI is written as code rather than a link: any link to
+                    # doi.org becomes a citation, which would pull a second
+                    # References section onto articles that already have one.
+                    if DOI_IN_URL.search(href):
+                        block.append("")
+                        block.append("`%s`" % href)
+                    else:
+                        block.append("")
+                        block.append("[%s](%s)" % (link_label(href), href))
                     self._emit("\n".join(block))
                     self._href, self._link_text = None, []
                     self.linked_images += 1
@@ -1003,6 +1023,20 @@ def simplify_bookmark_cards(source):
 
 
 SVG_MASK = re.compile(r'\s*mask="url\(#[^)]*\)"')
+
+
+def link_label(href):
+    """Readable text for a badge's destination.
+
+    The URL itself, shortened to host and first path segment: enough to say
+    where it goes, short enough not to wrap in the margin of a PDF.
+    """
+    parts = urllib.parse.urlsplit(href)
+    label = parts.netloc.replace("www.", "")
+    segments = [s for s in parts.path.split("/") if s]
+    if segments:
+        label += "/" + segments[0]
+    return label
 
 
 def strip_svg_mask(path):

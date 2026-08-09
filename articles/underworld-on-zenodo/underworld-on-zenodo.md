@@ -36,6 +36,8 @@ If you are using a development branch and wish to obtain a DOI for your specific
 :width: 183px
 ```
 
+`https://doi.org/10.5281/zenodo.1436039`
+
 Underworld is listed under the  [AuScope community](https://zenodo.org/communities/auscope/) on Zenodo.
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld-on-zenodo">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld-on-zenodo">Start one</a></div></div>

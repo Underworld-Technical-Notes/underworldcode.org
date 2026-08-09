@@ -34,6 +34,8 @@ For a *quick* taste of Underworld try our binder cloud resource, a temporary "vi
 :width: 109px
 ```
 
+[mybinder.org/v2](https://mybinder.org/v2/gh/underworldcode/underworld2/v2.10.1b)
+
 ---
 
 This new release includes the following:

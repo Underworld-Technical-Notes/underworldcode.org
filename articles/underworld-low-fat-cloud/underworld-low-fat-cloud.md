@@ -65,6 +65,8 @@ Why not try it out and see for yourself ? Users first need to sign up to use the
 :width: 120px
 ```
 
+[demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/signup)
+
 The server is then accessed either via the hub url itself or via a link that also populates the notebooks etc in the style of a binder link.
 
 ```{image} figures/Cloud_User-Launch_Demo_Notebooks-blue
@@ -72,6 +74,8 @@ The server is then accessed either via the hub url itself or via a link that als
 :target: https://demon.underworldcloud.org/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Funderworld-geodynamics-cloud%2Funderworld-cloud-droplet&urlpath=lab%2Ftree%2Funderworld-cloud-droplet%2FStartHere.ipynb
 :width: 218px
 ```
+
+[demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Funderworld-geodynamics-cloud%2Funderworld-cloud-droplet&urlpath=lab%2Ftree%2Funderworld-cloud-droplet%2FStartHere.ipynb)
 
 We use [nbgitpuller](https://jupyterhub.github.io/nbgitpuller/) to draw in content for each user on the fly. nbgitpuller is designed to distribute content in a repository to students and to manage (gracefully) the issues associated with merging updated content and existing work. There is a link generator that can be used to make the badges for users to launch the server for a given repository.
 
@@ -87,6 +91,8 @@ The class server can be administered by an instructor who does not have to have 
 :width: 190px
 ```
 
+[demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/admin)
+
 There is a page that can be used to authorize or un-authorize users' access to the service.
 
 ```{image} figures/Cloud_Admin-Authorize_Users-Red
@@ -94,6 +100,8 @@ There is a page that can be used to authorize or un-authorize users' access to t
 :target: https://demon.underworldcloud.org/hub/authorize
 :width: 178px
 ```
+
+[demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/authorize)
 
 The admin users of the hub are also able to configure the server itself via the jupyter terminal.
 

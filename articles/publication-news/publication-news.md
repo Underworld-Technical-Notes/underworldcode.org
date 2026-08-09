@@ -27,6 +27,8 @@ The published model input files are available at the Underworld-Community [GitHu
 :width: 109px
 ```
 
+[mybinder.org/v2](https://mybinder.org/v2/gh/underworld-community/cenki-tok-et-al-crustal-roots-in-stable-continents/master)
+
 Reproducible science at the click of a button - Bang!!!
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=publication-news">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=publication-news">Start one</a></div></div>

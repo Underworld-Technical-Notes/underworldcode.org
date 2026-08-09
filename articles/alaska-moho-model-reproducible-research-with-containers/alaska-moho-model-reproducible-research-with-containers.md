@@ -46,6 +46,8 @@ But, since the software we release is also used to interpolate the surfaces, and
 :width: 92px
 ```
 
+[mybinder.org/v2](https://mybinder.org/v2/gh/lmoresi/miller-moho-binder/publication)
+
 See [pypi.org/project/miller_alaskamoho_srl2018](https://pypi.org/project/miller_alaskamoho_srl2018/) for a full list of installation / running options.
 
 The software is also tracked on Zenodo
@@ -55,6 +57,8 @@ The software is also tracked on Zenodo
 :target: https://doi.org/10.5281/zenodo.1459110
 :width: 183px
 ```
+
+`https://doi.org/10.5281/zenodo.1459110`
 
 #### References
 
