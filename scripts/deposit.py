@@ -133,11 +133,25 @@ class Figshare(Provider):
             entry = {"name": str(author.get("name") or "")}
             if orcid:
                 entry["orcid_id"] = orcid
-                try:
-                    matches = self._call("POST", "/account/authors/search",
-                                         body={"search_for": orcid})
-                except DepositError:
-                    matches = []
+                # Retried, and NOT swallowed. The first version caught the
+                # failure and carried on with {name, orcid_id} -- which Figshare
+                # accepts on create and then quietly drops, because the ORCID
+                # belongs to an existing user. The record ends up with no
+                # authors at all, and the first sign of it is "authors is
+                # missing" at publish, several steps later.
+                matches = None
+                for attempt in range(3):
+                    try:
+                        matches = self._call("POST", "/account/authors/search",
+                                             body={"search_for": orcid})
+                        break
+                    except DepositError as exc:
+                        last = exc
+                if matches is None:
+                    raise DepositError(
+                        "could not look up the Figshare author for ORCID %s "
+                        "after 3 attempts, and depositing without the lookup "
+                        "silently loses the author: %s" % (orcid, last))
                 for match in matches if isinstance(matches, list) else []:
                     if str(match.get("orcid_id") or "") == orcid and match.get("id"):
                         entry = {"id": match["id"]}
@@ -563,6 +577,18 @@ def run(slug, provider, live, publish, new_version, delete_draft,
                  % (package.name, digest[:16], file_id))
 
     if publish or new_version:
+        # Look at the record before making it permanent. Figshare accepts a
+        # payload and then drops fields it does not like -- an author whose
+        # ORCID belongs to an existing user is dropped on create, and nothing
+        # says so until publish fails. Publishing is the one step that cannot be
+        # undone, so it is the one worth checking first.
+        record = provider.get_record(record_id)
+        missing = [field for field in ("title", "authors", "files")
+                   if not record.get(field)]
+        if missing:
+            raise DepositError(
+                "%s (record %s) is missing %s -- refusing to publish an "
+                "incomplete record" % (slug, record_id, ", ".join(missing)))
         result = provider.publish(record_id)
         steps.append("PUBLISHED: %s" % (result.get("location") or record_id))
         set_field(slug, "status", "published")

@@ -1033,3 +1033,25 @@ def test_identifiers_are_recorded_even_when_a_deposit_fails():
     workflow = (ROOT / ".github" / "workflows" / "deposit.yml").read_text(encoding="utf-8")
     commit = workflow.split("- name: Commit the identifiers")[1]
     assert "always()" in commit.split("run:")[0]
+
+
+def test_an_incomplete_record_is_not_published():
+    """Publishing is the one step that cannot be undone.
+
+    Figshare accepts a payload and then drops fields it dislikes: an author
+    whose ORCID belongs to an existing user is dropped on create, and nothing
+    says so until publish fails with "authors is missing". Look at the record
+    before making it permanent.
+    """
+    source = (ROOT / "scripts" / "deposit.py").read_text(encoding="utf-8")
+    guard = source.split("if publish or new_version:")[1].split("provider.publish")[0]
+    for field in ('"title"', '"authors"', '"files"'):
+        assert field in guard, "publish does not check %s on the record" % field
+
+
+def test_the_author_lookup_never_degrades_quietly():
+    """Carrying on without the lookup loses the author, silently."""
+    source = (ROOT / "scripts" / "deposit.py").read_text(encoding="utf-8")
+    lookup = source.split("def resolve_authors")[1].split("def create_draft")[0]
+    assert "raise DepositError" in lookup, \
+        "a failed author lookup must stop the deposit, not fall back"
