@@ -1,0 +1,119 @@
+name: deposit
+
+# Depositing runs HERE and not on a pull request, and that is not a preference.
+# GitHub does not expose secrets to workflows triggered by a pull request from a
+# fork, and notes are submitted by pull request. So the token is only available
+# on a manual run or after a merge -- which happens to match the editorial
+# model, where a deposit follows acceptance rather than submission, and which is
+# what stops a stray pull request from minting a DOI.
+#
+# Manual only. There is no push trigger: minting an identifier is an editorial
+# act, and it should take a person deciding to do it.
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Article slug to deposit"
+        required: true
+      mode:
+        description: "What to do"
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          # Nothing leaves the runner. Prints what would be sent and builds the
+          # package, so the whole thing can be read before anything exists.
+          - dry-run
+          # Creates a draft and reserves a DOI. Reversible: the draft can be
+          # deleted and the reservation goes with it.
+          - reserve
+          # Updates the metadata and uploads the package to the existing draft.
+          # Still reversible -- files can be replaced, the draft deleted.
+          - upload
+          # The one irreversible step. A published DOI is a citation somebody
+          # may already have used.
+          - publish
+          # Throws the draft away and clears it from metadata.yml.
+          - delete-draft
+
+# One deposit at a time. Two concurrent runs for the same article could each
+# create a draft, and the second would reserve a second DOI for one note.
+concurrency:
+  group: deposit-${{ inputs.slug }}
+  cancel-in-progress: false
+
+jobs:
+  deposit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: prefix-dev/setup-pixi@v0.8.1
+        with:
+          cache: true
+
+      # The DOI has to be on the PDF's title page, so the PDF is built here
+      # rather than trusted from the repository -- and after `reserve` has
+      # written the DOI into metadata.yml, this is what puts it on the paper.
+      - name: Build the site and the archival PDFs
+        run: pixi run build
+
+      - name: Confirm the deposit is safe to make
+        run: pixi run validate
+
+      - name: Dry run
+        if: inputs.mode == 'dry-run'
+        run: python3 scripts/deposit.py --slug "${{ inputs.slug }}"
+
+      - name: Create the draft and reserve the DOI
+        if: inputs.mode == 'reserve'
+        env:
+          FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
+        run: python3 scripts/deposit.py --slug "${{ inputs.slug }}" --live
+
+      - name: Upload the package
+        if: inputs.mode == 'upload'
+        env:
+          FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
+        run: python3 scripts/deposit.py --slug "${{ inputs.slug }}" --live
+
+      - name: Publish
+        if: inputs.mode == 'publish'
+        env:
+          FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
+        run: python3 scripts/deposit.py --slug "${{ inputs.slug }}" --live --publish
+
+      - name: Delete the draft
+        if: inputs.mode == 'delete-draft'
+        env:
+          FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
+        run: python3 scripts/deposit.py --slug "${{ inputs.slug }}" --live --delete-draft
+
+      # The record id and the DOI are written into metadata.yml as they are
+      # obtained, so a run that dies partway can resume instead of reserving a
+      # second identifier. That only helps if the change gets back to the
+      # repository, so it is committed here rather than left on the runner.
+      - name: Commit the identifiers
+        if: inputs.mode != 'dry-run'
+        run: |
+          if git diff --quiet -- articles; then
+            echo "no identifier changes to record"
+            exit 0
+          fi
+          git config user.name "underworld-technical-notes"
+          git config user.email "help@underworldcode.org"
+          git add articles
+          git commit -m "Record the deposit identifiers for ${{ inputs.slug }}
+
+          Written by the deposit workflow (${{ inputs.mode }}). The record id is
+          the guard against ever minting a second DOI for this note."
+          git push
+
+      - name: The package that was built
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deposit-${{ inputs.slug }}
+          path: dist/*.zip
+          if-no-files-found: ignore

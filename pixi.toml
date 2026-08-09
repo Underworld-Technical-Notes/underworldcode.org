@@ -40,6 +40,12 @@ build-pdf = { cmd = "python3 scripts/banner_body.py --remove && myst build --typ
 build = { depends-on = ["build-pdf", "build-html"] }
 
 validate = "python3 scripts/validate_metadata.py"
+
+# Deposit. Dry run by default and on every path that is not spelled out: the
+# command refuses --publish without --live, and the workflow makes each step a
+# separate deliberate choice. `package` is provider-neutral and needs no token.
+package = "python3 scripts/archive_package.py"
+deposit = "python3 scripts/deposit.py"
 test-dois = "python3 scripts/test_doi_urls.py"
 test-assets = "python3 scripts/check_build_assets.py"
 test-links = "python3 scripts/check_links.py"

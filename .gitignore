@@ -38,3 +38,8 @@ articles/*/*.pdf
 # committed for the same reason the article figures are: a build must not
 # depend on a server still being there.
 /pages/*.md
+
+# Deposit packages. Rebuilt deterministically from the article by
+# `pixi run package`, and uploaded rather than kept -- the copy that matters is
+# the one attached to the DOI.
+/dist/

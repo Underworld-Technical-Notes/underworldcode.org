@@ -760,3 +760,78 @@ def test_no_figure_name_breaks_the_upload():
     offenders = [str(p.relative_to(ROOT)) for p in (ROOT / "articles").rglob("*")
                  if illegal.search(p.name)]
     assert not offenders, "unuploadable filename(s): %s" % ", ".join(offenders)
+
+
+# --------------------------------------------------------------------------
+# Deposit. None of the safety here comes from the Figshare token, which has
+# exactly one scope and can publish and delete; it all comes from these guards.
+# --------------------------------------------------------------------------
+
+deposit = load("deposit")
+
+
+def test_deposit_refuses_an_article_that_already_has_a_record():
+    """The failure this design exists to prevent: two DOIs for one note."""
+    meta = {"slug": "x", "article_type": "technical-note",
+            "repository_record_id": 12345}
+    try:
+        deposit.check_eligible("x", meta)
+    except deposit.DepositError as exc:
+        assert "SECOND record" in str(exc)
+    else:
+        raise AssertionError("a second deposit must be refused")
+
+
+def test_deposit_refuses_a_type_with_no_archival_rendition():
+    meta = {"slug": "x", "article_type": "news"}
+    try:
+        deposit.check_eligible("x", meta)
+    except deposit.DepositError as exc:
+        assert "nothing to deposit" in str(exc)
+    else:
+        raise AssertionError("a news item must not be deposited")
+
+
+def test_deposit_refuses_a_doi_with_no_record_id():
+    """An archive_doi without a record id leaves the duplicate guard blind."""
+    meta = {"slug": "x", "article_type": "technical-note",
+            "archive_doi": "10.6084/m9.figshare.1"}
+    try:
+        deposit.check_eligible("x", meta)
+    except deposit.DepositError as exc:
+        assert "nothing to check" in str(exc)
+    else:
+        raise AssertionError("a DOI without a record id must be refused")
+
+
+def test_deposit_declares_the_relation_between_the_two_dois():
+    """Two DOIs for one note is duplication unless the relation is stated."""
+    body = deposit.article_body({
+        "slug": "x", "title": "T", "abstract": "A",
+        "legacy_doi": "10.59350/abc", "authors": []})
+    related = body["related_materials"][0]
+    assert related["relation"] == "IsVariantFormOf"
+    assert related["identifier"] == "10.59350/abc"
+
+
+def test_deposit_never_ships_markup_into_a_description():
+    out = deposit.plain(
+        r"See [the note](/x/) where $\eta$ matters. \begin{equation} a=b "
+        r"\end{equation} And more prose besides.")
+    for fragment in ("[", "](", "\\begin", "\\eta", "$"):
+        assert fragment not in out, "%r survived into %r" % (fragment, out)
+    assert "the note" in out and "And more prose besides." in out
+
+
+def test_every_archival_article_can_be_packaged():
+    """The package builder must cope with every article it will be given."""
+    import build_index
+    build_index.TYPES.update(build_index.article_types())
+    archive_package = load("archive_package")
+    for path in sorted((ROOT / "articles").glob("*/metadata.yml")):
+        meta = build_index.read_yaml(path)
+        if not build_index.is_archival(meta):
+            continue
+        files = dict(archive_package.collect(meta["slug"], meta))
+        assert "%s.md" % meta["slug"] in files
+        assert "CITATION.cff" in files and "README.md" in files
