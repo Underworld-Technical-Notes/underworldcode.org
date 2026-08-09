@@ -859,3 +859,15 @@ def test_categories_are_deduplicated():
     ids = deposit.categories_for(meta)
     assert len(ids) == len(set(ids)), ids
     assert deposit.CATEGORIES["default"][0] in ids
+
+
+def test_deposit_workflow_can_write_back_the_identifiers():
+    """The deposit succeeded once and the identifiers never reached the repo.
+
+    The default GITHUB_TOKEN is read-only, so the commit that records the
+    Figshare record id failed with a 403 -- leaving a draft on Figshare that the
+    duplicate-mint guard knew nothing about. The permission is the fix; this is
+    the reminder of why it is there.
+    """
+    workflow = (ROOT / ".github" / "workflows" / "deposit.yml").read_text(encoding="utf-8")
+    assert "permissions:" in workflow and "contents: write" in workflow

@@ -136,7 +136,38 @@ class Figshare(Provider):
             resolved.append(entry)
         return resolved
 
+    def find_draft(self, meta):
+        """An unpublished draft for this note that we lost track of.
+
+        Belt and braces for the case that actually happened: the deposit
+        succeeded, and the commit that records the id failed, so Figshare held a
+        draft the repository knew nothing about. Creating another one would give
+        the note two records and, on publish, two DOIs -- the exact failure the
+        record id exists to prevent, arriving through the one path the record id
+        cannot cover.
+
+        Matched on the exact title among unpublished articles.
+        """
+        title = str(meta.get("title") or "")
+        try:
+            listing = self._call("GET", "/account/articles?page_size=1000")
+        except DepositError:
+            return None
+        matches = [a for a in (listing if isinstance(listing, list) else [])
+                   if str(a.get("title") or "") == title
+                   and not a.get("published_date")]
+        if len(matches) > 1:
+            raise DepositError(
+                "%d unpublished drafts already have the title %r (ids %s). "
+                "Delete the extras in Figshare before depositing."
+                % (len(matches), title,
+                   ", ".join(str(a.get("id")) for a in matches)))
+        return matches[0].get("id") if matches else None
+
     def create_draft(self, meta):
+        existing = self.find_draft(meta)
+        if existing:
+            return int(existing)
         body = article_body(meta)
         body["authors"] = self.resolve_authors(meta)
         try:

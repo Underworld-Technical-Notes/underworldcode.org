@@ -46,6 +46,12 @@ concurrency:
 jobs:
   deposit:
     runs-on: ubuntu-latest
+    # The identifiers are committed back, and the default token is read-only.
+    # Without this the deposit succeeds and the record id never reaches the
+    # repository -- which is precisely the state the duplicate-mint guard needs
+    # to avoid.
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
