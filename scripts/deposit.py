@@ -448,7 +448,24 @@ def check_resumable(slug, record, new_version):
         % (slug, record.get("id"), record.get("doi") or "no doi"))
 
 
-def run(slug, provider, live, publish, new_version, delete_draft):
+def pending():
+    """Archival articles with no record yet, oldest first.
+
+    Oldest first so the article ids and the deposit order agree, and so that if
+    a run stops early the gap is at the recent end where it is obvious.
+    """
+    import build_index
+    build_index.TYPES.update(build_index.article_types())
+    ready = []
+    for path in sorted(ARTICLES.glob("*/metadata.yml")):
+        meta = build_index.read_yaml(path)
+        if build_index.is_archival(meta) and not meta.get("repository_record_id"):
+            ready.append((str(meta.get("publication_date") or ""), meta["slug"]))
+    return [slug for _date, slug in sorted(ready)]
+
+
+def run(slug, provider, live, publish, new_version, delete_draft,
+        rebuild=False):
     import archive_package
 
     meta = load(slug)
@@ -496,12 +513,22 @@ def run(slug, provider, live, publish, new_version, delete_draft):
         doi = provider.reserve_doi(record_id)
         set_field(slug, "archive_doi", doi)
         steps.append("reserved %s" % doi)
-        print("\n".join("  " + s for s in steps))
-        print("\nThe DOI is now in metadata.yml. REBUILD THE PDF before "
-              "uploading, so the DOI is on its title page:\n"
-              "    pixi run build\n"
-              "then run this again to upload.")
-        return
+        if not rebuild:
+            print("\n".join("  " + s for s in steps))
+            print("\nThe DOI is now in metadata.yml. REBUILD THE PDF before "
+                  "uploading, so the DOI is on its title page:\n"
+                  "    pixi run build\n"
+                  "then run this again to upload.")
+            return
+
+    # The reserved DOI has to be on the title page of the document it
+    # identifies, so the PDF is rebuilt between reserving and uploading. In the
+    # step-at-a-time flow a person does this; end to end, the command does it.
+    if rebuild:
+        import subprocess
+        if subprocess.call([sys.executable, "scripts/build_pdf.py"], cwd=ROOT) != 0:
+            raise DepositError("the PDF failed to build; nothing uploaded")
+        steps.append("rebuilt the PDF with the reserved DOI on it")
 
     # Stamped once, at the moment the archival copy is first made, and never
     # again: the package is byte-reproducible, and it stays that way only if
@@ -547,7 +574,7 @@ def run(slug, provider, live, publish, new_version, delete_draft):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--slug", required=True)
+    parser.add_argument("--slug", help="one article; omit with --all")
     parser.add_argument("--live", action="store_true",
                         help="actually talk to the provider")
     parser.add_argument("--publish", action="store_true",
@@ -556,17 +583,37 @@ def main():
                         help="publish a new version of an existing record")
     parser.add_argument("--delete-draft", action="store_true",
                         help="delete an unpublished draft and forget it")
+    parser.add_argument("--all", action="store_true",
+                        help="every archival article not yet deposited")
     args = parser.parse_args()
 
     if args.publish and not args.live:
         sys.exit("--publish needs --live. Refusing to guess.")
 
     provider = Figshare(os.environ.get("FIGSHARE_TOKEN")) if args.live else None
-    try:
-        run(args.slug, provider, args.live, args.publish, args.new_version,
-            args.delete_draft)
-    except DepositError as exc:
-        sys.exit("REFUSED: %s" % exc)
+
+    slugs = [args.slug] if args.slug else pending()
+    if not slugs:
+        print("nothing to deposit -- every archival note already has a record")
+        return
+
+    # One at a time, and a failure stops the run rather than being counted and
+    # skipped. Each of these mints an identifier; a loop that shrugs off errors
+    # and carries on is how you end up with a set of records nobody can account
+    # for.
+    failed = []
+    for index, slug in enumerate(slugs, 1):
+        if len(slugs) > 1:
+            print("\n--- %d/%d  %s" % (index, len(slugs), slug))
+        try:
+            run(slug, provider, args.live, args.publish, args.new_version,
+                args.delete_draft, rebuild=args.live and not args.delete_draft)
+        except DepositError as exc:
+            failed.append((slug, str(exc)))
+            print("REFUSED: %s" % exc, file=sys.stderr)
+            break
+    if failed:
+        sys.exit("stopped at %s" % failed[0][0])
 
 
 if __name__ == "__main__":
