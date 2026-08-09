@@ -93,15 +93,13 @@ parts:
       abstract will prepare readers for the detailed information to follow,
       communicate the essence of the article and help readers take away and remember key points.
     max_words: 500
-  - id: summary
-    description: Plain language summary
-    max_words: 500
-    required: false
-  - id: acknowledgements
-    description: >
-      Acknowledgements printed in the margin
-    max_words: 500
-  - id: availability
-    description: >
-      Data availability statement printed in the margin
-    max_words: 500
+  # summary / acknowledgements / availability are NOT declared.
+  #
+  # A declared part is filled from a body section with a matching heading, so
+  # declaring them LIFTS those sections out of the article and prints them in
+  # the front-matter block instead. One migrated note has an ordinary "Summary"
+  # section; it was silently relocated, which made the front block so tall that
+  # Typst pushed it to page two and left page one nearly empty.
+  #
+  # These authors wrote for a blog, where a heading is just a heading. Declare
+  # only what this publication actually uses.
