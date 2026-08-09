@@ -496,7 +496,11 @@ def pending():
     ready = []
     for path in sorted(ARTICLES.glob("*/metadata.yml")):
         meta = build_index.read_yaml(path)
-        if build_index.is_archival(meta) and not meta.get("repository_record_id"):
+        # Not "has no record" -- "is not published". A note whose deposit died
+        # after the draft was created has a record id and no publication, and
+        # keying on the id alone silently skipped exactly the articles that
+        # needed finishing.
+        if build_index.is_archival(meta) and meta.get("status") != "published":
             ready.append((str(meta.get("publication_date") or ""), meta["slug"]))
     return [slug for _date, slug in sorted(ready)]
 
@@ -615,7 +619,19 @@ def run(slug, provider, live, publish, new_version, delete_draft,
             raise DepositError(
                 "%s (record %s) is missing %s -- refusing to publish an "
                 "incomplete record" % (slug, record_id, ", ".join(missing)))
-        result = provider.publish(record_id)
+        steps.append("record has authors %s"
+                     % [(a.get("id"), a.get("full_name")) for a in record["authors"]])
+        try:
+            result = provider.publish(record_id)
+        except DepositError as exc:
+            # Figshare's publish validation reports a field as missing when it
+            # is present but not in the form it wants. Guessing at that has
+            # already cost several runs, so the record it is complaining about
+            # gets printed in full.
+            print("\n".join("  " + s for s in steps), file=sys.stderr)
+            print("\nthe record Figshare rejected:\n%s"
+                  % json.dumps(record, indent=2)[:3000], file=sys.stderr)
+            raise
         steps.append("PUBLISHED: %s" % (result.get("location") or record_id))
         set_field(slug, "status", "published")
     else:
