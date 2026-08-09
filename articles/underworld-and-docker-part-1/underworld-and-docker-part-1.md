@@ -14,6 +14,7 @@ keywords:
   - "#editors-pick"
 exports:
   - format: typst
+    archived: "2026-08-09T13:19:40Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/underworld-and-docker-part-1/
