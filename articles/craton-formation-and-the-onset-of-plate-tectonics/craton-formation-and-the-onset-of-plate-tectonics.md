@@ -69,40 +69,26 @@ The model cratons form cold and from material that was originally crystallised a
 
 *Papers on the longevity of the deep cratonic lithosphere:*
 
--
-
-O'Reilly, S. Y., W. L. Griffin, Y. H. P. Djomani, and P. Morgan (2001), Are lithospheres forever? Tracking changes in subcontinental lithospheric mantle through time, GSA Today, 11(4), 4–10.
+- O'Reilly, S. Y., W. L. Griffin, Y. H. P. Djomani, and P. Morgan (2001), Are lithospheres forever? Tracking changes in subcontinental lithospheric mantle through time, GSA Today, 11(4), 4–10.
 
 - Jordan, T. H. (1975), The continental tectosphere, Reviews of Geophysics, 13(3), 1–12, doi:10.1029/RG013i003p00001.
 
 *Read about the formation and structure of the ancient continental lithosphere:*
 
--
+- Cooper, C. M., A. Lenardic, A. Levander, and L. N. Moresi (2013), Creation and Preservation of Cratonic Lithosphere: Seismic Constraints And Geodynamic Models, in Archean Geodynamics and Environments, vol. 164, pp. 75–88, American Geophysical Union, Washington, D. C.
 
-Cooper, C. M., A. Lenardic, A. Levander, and L. N. Moresi (2013), Creation and Preservation of Cratonic Lithosphere: Seismic Constraints And Geodynamic Models, in Archean Geodynamics and Environments, vol. 164, pp. 75–88, American Geophysical Union, Washington, D. C.
-
--
-
-Cooper, C. M., M. S. Miller, and L. Moresi (2016), The structural evolution of the deep continental lithosphere, Tectonophysics, 695, 1–89, doi:10.1016/j.tecto.2016.12.004.
+- Cooper, C. M., M. S. Miller, and L. Moresi (2016), The structural evolution of the deep continental lithosphere, Tectonophysics, 695, 1–89, doi:10.1016/j.tecto.2016.12.004.
 
 *Heat pipe models of the early Earth:*
 
--
+- Moore, W. B., and A. A. G. Webb (2013), Heat-pipe earth, Nature, 501(7468), 501–505, doi:10.1038/nature12473.
 
-Moore, W. B., and A. A. G. Webb (2013), Heat-pipe earth, Nature, 501(7468), 501–505, doi:10.1038/nature12473.
-
--
-
-Rozel, A. B., G. J. Golabek, C. Jain, P. J. Tackley, and T. V. Gerya (2017), Continental crust formation on early Earth controlled by intrusive magmatism, Nature, 545(7654), 332–335, doi:10.1038/nature22042.
+- Rozel, A. B., G. J. Golabek, C. Jain, P. J. Tackley, and T. V. Gerya (2017), Continental crust formation on early Earth controlled by intrusive magmatism, Nature, 545(7654), 332–335, doi:10.1038/nature22042.
 
 *The observations of structure in the ancient cratons:*
 
--
+- Bostock, M.G., 1998, Mantle stratigraphy and evolution of the Slave province: Journal of Geophysical Research. Solid Earth, v. 103, p. 21183–21200, [https://doi.org/10.1029/98JB01069](https://doi.org/10.1029/98JB01069).
 
-Bostock, M.G., 1998, Mantle stratigraphy and evolution of the Slave province: Journal of Geophysical Research. Solid Earth, v. 103, p. 21183–21200, [https://doi.org/10.1029/98JB01069](https://doi.org/10.1029/98JB01069).
-
--
-
-Calò, M., Bodin, T., and Romanowicz, B., 2016, Layered structure in the upper mantle across North America from joint inversion of long and short period seismic data: Earth and Planetary Science Letters, v. 449, p. 164–175, [https://doi.org/10.1016/j.epsl.2016.05.054](https://doi.org/10.1016/j.epsl.2016.05.054)
+- Calò, M., Bodin, T., and Romanowicz, B., 2016, Layered structure in the upper mantle across North America from joint inversion of long and short period seismic data: Earth and Planetary Science Letters, v. 449, p. 164–175, [https://doi.org/10.1016/j.epsl.2016.05.054](https://doi.org/10.1016/j.epsl.2016.05.054)
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=craton-formation-and-the-onset-of-plate-tectonics">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=craton-formation-and-the-onset-of-plate-tectonics">Start one</a></div></div>

@@ -387,6 +387,8 @@ class GhostToMyst(HTMLParser):
         self.galleries = 0
         self.raw_references = 0
         self._in_references = False
+        self._in_list_item = False
+        self._after_marker = False
         self.restored_captions = 0
 
     # -- helpers ---------------------------------------------------------
@@ -404,6 +406,13 @@ class GhostToMyst(HTMLParser):
     def _write(self, text):
         if self._skip_depth:
             return
+        # The newline between `<li>` and the `<p>` inside it would otherwise
+        # land between the bullet and its text, splitting the item in two.
+        if self._after_marker:
+            if not text.strip():
+                return
+            text = text.lstrip("\n\r\t ")
+            self._after_marker = False
         text = escape_at_signs(text)
         if self._in_caption and self._fig is not None:
             self._fig["caption"] += text
@@ -425,7 +434,13 @@ class GhostToMyst(HTMLParser):
             return
 
         if tag == "p":
-            self._flush()
+            # A <p> INSIDE a list item must not flush. Ghost writes
+            # `<li><p>text</p><ul>...</ul></li>` for a nested list, and flushing
+            # here emitted the bullet marker on its own and then the text as a
+            # loose paragraph -- an empty bullet followed by an orphaned
+            # citation, repeated down a whole reading list.
+            if not self._in_list_item:
+                self._flush()
         elif tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
             self._flush()
             self._in_references = False   # cleared by the next heading of any level
@@ -464,12 +479,14 @@ class GhostToMyst(HTMLParser):
             self._list.append([tag, 0])
         elif tag == "li":
             self._flush()
+            self._in_list_item = True
             if self._list:
                 self._list[-1][1] += 1
                 depth = len(self._list) - 1
                 kind, n = self._list[-1]
                 marker = "- " if kind == "ul" else "%d. " % n
                 self._buf.append("  " * depth + marker)
+                self._after_marker = True
         elif tag == "figure":
             self._flush()
             # panels: one entry per <img>. Ghost's gallery card puts several
@@ -553,7 +570,8 @@ class GhostToMyst(HTMLParser):
             return
 
         if tag == "p":
-            self._flush()
+            if not self._in_list_item:
+                self._flush()
         elif tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
             # A hand-written reference list starts here. Ghost gave authors no
             # citation system, so this heading plus a run of links is how every
@@ -585,6 +603,7 @@ class GhostToMyst(HTMLParser):
             if self._list:
                 self._list.pop()
         elif tag == "li":
+            self._in_list_item = False
             self._flush()
         elif tag == "figcaption":
             self._in_caption = False
@@ -983,6 +1002,31 @@ def simplify_bookmark_cards(source):
     return BOOKMARK.sub(replace, source)
 
 
+SVG_MASK = re.compile(r'\s*mask="url\(#[^)]*\)"')
+
+
+def strip_svg_mask(path):
+    """Remove `mask="url(#...)"` from a badge SVG.
+
+    A shields.io badge draws its label twice -- once in #010101 as a shadow,
+    once in #fff -- over coloured rectangles inside a masked group. The mask is
+    there only to round the corners. Where a renderer does not honour it the
+    group vanishes, the coloured rectangles with it, and what is left is white
+    text on a white page with a grey shadow behind it: illegible, and exactly
+    what it looked like on the site.
+
+    Dropping the mask costs the rounded corners and guarantees the colours.
+    These are badges; the corners are not the point.
+    """
+    try:
+        text = path.read_text(encoding="utf-8")
+    except (UnicodeDecodeError, OSError):
+        return
+    if "mask=\"url(" not in text:
+        return
+    path.write_text(SVG_MASK.sub("", text), encoding="utf-8")
+
+
 def intrinsic_width(path):
     """Pixel width of an SVG or PNG, or None.
 
@@ -1029,6 +1073,8 @@ def copy_figure(src, name, dest_dir):
     if not source.exists():
         return "MISSING from mirror: %s" % src
     shutil.copy2(source, dest_dir / name)
+    if name.lower().endswith(".svg"):
+        strip_svg_mask(dest_dir / name)
     external = urllib.parse.urlsplit(src).netloc
     if external and "underworldcode.org" not in external:
         return "localised from %s" % external

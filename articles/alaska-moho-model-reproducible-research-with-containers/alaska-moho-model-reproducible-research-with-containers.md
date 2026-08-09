@@ -58,7 +58,7 @@ The software is also tracked on Zenodo
 
 #### References
 
-1.  Miller, M. S., and L. Moresi (2018), Mapping the Alaskan Moho, Seismological Research Letters, 1–7, doi:10.1785/0220180222.
+1. Miller, M. S., and L. Moresi (2018), Mapping the Alaskan Moho, Seismological Research Letters, 1–7, doi:10.1785/0220180222.
 
 2. Louis Moresi. (2018, October 12). lmoresi/miller-moho-binder: Miller and Moresi, Seismological Research Letters (Version v1.0). Zenodo. http://doi.org/10.5281/zenodo.1459110
 

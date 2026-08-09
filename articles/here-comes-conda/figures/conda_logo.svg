@@ -51,14 +51,14 @@
                                     <use xlink:href="#path-1"></use>
                                 </mask>
                                 <g id="SVGID_2_"></g>
-                                <g id="g99" mask="url(#mask-2)">
+                                <g id="g99">
                                     <g transform="translate(-9.238298, -63.513300)">
                                         <g id="rect107-Clipped">
                                             <mask id="mask-4" fill="white">
                                                 <use xlink:href="#path-3"></use>
                                             </mask>
                                             <g id="SVGID_4_"></g>
-                                            <rect id="rect107" stroke="#2DB24A" stroke-width="0.25" fill="#FFFFFF" mask="url(#mask-4)" x="2.65600956" y="56.1226612" width="88.3412259" height="49.6558525"></rect>
+                                            <rect id="rect107" stroke="#2DB24A" stroke-width="0.25" fill="#FFFFFF" x="2.65600956" y="56.1226612" width="88.3412259" height="49.6558525"></rect>
                                         </g>
                                         <g id="use109">
                                             <rect id="SVGID_4_" stroke="#2DB24A" stroke-width="0.25" x="0.461917216" y="0.577393633" width="90.535324" height="103.930854"></rect>
