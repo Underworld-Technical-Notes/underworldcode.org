@@ -106,8 +106,52 @@ class Figshare(Provider):
 
     # -- operations ---------------------------------------------------------
 
+    def resolve_authors(self, meta):
+        """Match each author to an existing Figshare user by ORCID.
+
+        Figshare refuses to create a second author entity for an ORCID that
+        already belongs to a user: "There can't be 2 users having the same
+        orcid." Several of this series' authors have Figshare accounts, so most
+        deposits would fail on the first call.
+
+        Linking to the real account is better than working around it. The
+        deposit then belongs to that person's Figshare identity, which is the
+        same identity the ORCID auto-population works from.
+        """
+        resolved = []
+        for author in meta.get("authors") or []:
+            orcid = author.get("orcid")
+            entry = {"name": str(author.get("name") or "")}
+            if orcid:
+                entry["orcid_id"] = orcid
+                try:
+                    matches = self._call("POST", "/account/authors/search",
+                                         body={"search_for": orcid})
+                except DepositError:
+                    matches = []
+                for match in matches if isinstance(matches, list) else []:
+                    if str(match.get("orcid_id") or "") == orcid and match.get("id"):
+                        entry = {"id": match["id"]}
+                        break
+            resolved.append(entry)
+        return resolved
+
     def create_draft(self, meta):
-        result = self._call("POST", "/account/articles", body=article_body(meta))
+        body = article_body(meta)
+        body["authors"] = self.resolve_authors(meta)
+        try:
+            result = self._call("POST", "/account/articles", body=body)
+        except DepositError as exc:
+            # The search should have caught this, but the error names the user
+            # it collided with, so use it rather than making a person go and
+            # look the id up by hand.
+            match = re.search(r"Similar user_id: (\d+)", str(exc))
+            if not match:
+                raise
+            body["authors"] = [{"id": int(match.group(1))}
+                               if len(body["authors"]) == 1 else a
+                               for a in body["authors"]]
+            result = self._call("POST", "/account/articles", body=body)
         location = result.get("location") or ""
         record_id = location.rstrip("/").rsplit("/", 1)[-1]
         if not record_id.isdigit():
@@ -122,7 +166,9 @@ class Figshare(Provider):
         return doi
 
     def update_metadata(self, record_id, meta):
-        self._call("PUT", "/account/articles/%d" % record_id, body=article_body(meta))
+        body = article_body(meta)
+        body["authors"] = self.resolve_authors(meta)
+        self._call("PUT", "/account/articles/%d" % record_id, body=body)
 
     def get_record(self, record_id):
         return self._call("GET", "/account/articles/%d" % record_id)
@@ -153,11 +199,59 @@ class Figshare(Provider):
         self._call("DELETE", "/account/articles/%d" % record_id)
 
 
+def load_categories():
+    """facet -> [Figshare category id], plus the defaults, from categories.yml.
+
+    Figshare validates categories on publish, so getting this wrong surfaces at
+    the worst moment. The ids were read from the public /v2/categories endpoint.
+    """
+    path = ROOT / "categories.yml"
+    data, section, facet = {"default": [], "subjects": {}, "methods": {}}, None, None
+    if not path.exists():
+        return data
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.split("#")[0].rstrip()
+        if not line.strip():
+            continue
+        if not line.startswith(" ") and line.rstrip().endswith(":"):
+            section, facet = line.rstrip()[:-1], None
+        elif line.startswith("  ") and not line.startswith("    ") and ":" in line:
+            facet, _, inline = line.strip().partition(":")
+            if section in ("subjects", "methods"):
+                data[section][facet] = [int(x) for x in re.findall(r"\d+", inline)]
+        elif line.strip().startswith("- "):
+            value = int(re.search(r"\d+", line).group(0))
+            if section == "default":
+                data["default"].append(value)
+            elif facet is not None:
+                data[section].setdefault(facet, []).append(value)
+    return data
+
+
+CATEGORIES = load_categories()
+
+
+def categories_for(meta):
+    """Every category this note belongs in, deduplicated, order preserved."""
+    ids = list(CATEGORIES.get("default") or [])
+    for axis in ("subjects", "methods"):
+        for facet in (meta.get(axis) or []):
+            ids += CATEGORIES.get(axis, {}).get(facet, [])
+    seen, out = set(), []
+    for value in ids:
+        if value not in seen:
+            seen.add(value)
+            out.append(value)
+    return out
+
+
 def article_body(meta):
     """The Figshare fields, from our metadata.
 
     Authorship and custodianship are separate: the account owns the deposit,
-    each record credits its real authors with their real ORCIDs.
+    each record credits its real authors. The `authors` list here is a
+    placeholder -- the provider replaces it with resolved Figshare identities,
+    which it cannot do without the network.
     """
     authors = []
     for author in meta.get("authors") or []:
@@ -174,6 +268,7 @@ def article_body(meta):
         "defined_type": DEFINED_TYPE,
         "keywords": [t for t in (list(meta.get("subjects") or [])
                                  + list(meta.get("methods") or [])) if t],
+        "categories": categories_for(meta),
         "is_metadata_record": False,
     }
 

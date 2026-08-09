@@ -1,0 +1,62 @@
+# Our facets, mapped onto Figshare's category vocabulary.
+#
+# Figshare validates categories when an article is published, so a mapping that
+# does not exist is discovered at the worst possible moment. The ids below were
+# read from `GET https://api.figshare.com/v2/categories` -- a public endpoint,
+# no token needed -- and not from memory.
+#
+# Figshare uses ANZSRC Fields of Research, the Australian and New Zealand
+# scheme. That is a lucky fit rather than a designed one: this is an Australian
+# project, and "Geodynamics" is a category in its own right rather than
+# something to be approximated.
+#
+# Two are applied to EVERY note, because they are true of every note:
+#
+#   25855  Geodynamics
+#   25789  Computational modelling and simulation in earth sciences
+#
+# Everything else is added from the article's own subjects and methods. A facet
+# with no sensible category maps to nothing rather than to something merely
+# adjacent -- a wrong category is worse than a missing one, because it is what
+# somebody browsing that category will find.
+
+default:
+  - 25855   # Geodynamics
+  - 25789   # Computational modelling and simulation in earth sciences
+
+subjects:
+  mantle-convection:
+    - 25843   # Geophysics
+  tectonics-lithosphere:
+    - 25834   # Structural geology and tectonics
+  earthquakes-faults:
+    - 25870   # Seismology and seismic exploration
+  rheology:
+    - 26614   # Non-Newtonian fluid flows (incl. rheology)
+    - 26773   # Solid mechanics
+  surface-processes:
+    - 25915   # Geomorphology and earth surface processes
+  planetary:
+    - 25822   # Planetary geology
+
+methods:
+  finite-elements:
+    - 29854   # Partial differential equations
+    - 29812   # Numerical analysis
+  solvers:
+    - 29812   # Numerical analysis
+  meshing:
+    - 29224   # Numerical computation and mathematical software
+  particles-swarms:
+    - 29224   # Numerical computation and mathematical software
+  symbolic-codegen:
+    - 29224   # Numerical computation and mathematical software
+  time-integration:
+    - 29812   # Numerical analysis
+  parallel-hpc:
+    - 28987   # High performance computing
+  benchmarks-validation:
+    - 29806   # Numerical and computational mathematics
+  # No category. Non-dimensionalisation is a practice rather than a field, and
+  # every candidate here would be a stretch.
+  units-scaling: []

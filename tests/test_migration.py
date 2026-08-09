@@ -835,3 +835,27 @@ def test_every_archival_article_can_be_packaged():
         files = dict(archive_package.collect(meta["slug"], meta))
         assert "%s.md" % meta["slug"] in files
         assert "CITATION.cff" in files and "README.md" in files
+
+
+def test_every_category_id_is_a_number_and_the_defaults_are_present():
+    """Figshare validates categories on publish -- the worst place to find out."""
+    assert deposit.CATEGORIES["default"], "every note needs at least one category"
+    for axis in ("subjects", "methods"):
+        for facet, ids in deposit.CATEGORIES[axis].items():
+            assert all(isinstance(i, int) for i in ids), "%s: %r" % (facet, ids)
+
+
+def test_every_facet_in_the_vocabulary_has_a_category_decision():
+    """A facet with no entry is an oversight; one mapped to [] is a decision."""
+    build_index = load("build_index")
+    vocab = build_index.vocabulary()
+    for axis in ("subjects", "methods"):
+        missing = set(vocab.get(axis, {})) - set(deposit.CATEGORIES[axis])
+        assert not missing, "no categories.yml entry for: %s" % ", ".join(sorted(missing))
+
+
+def test_categories_are_deduplicated():
+    meta = {"subjects": ["rheology"], "methods": ["finite-elements", "solvers"]}
+    ids = deposit.categories_for(meta)
+    assert len(ids) == len(set(ids)), ids
+    assert deposit.CATEGORIES["default"][0] in ids
