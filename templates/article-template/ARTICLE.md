@@ -74,5 +74,27 @@ verified by rendering (see `templates/pdf/README.md`):
 
 ## Citing
 
-Cite by DOI in text and MyST resolves it: [](https://doi.org/10.21105/joss.07831).
-A references section is generated automatically.
+**Do not write a References section.** MyST generates one from your citations,
+and a hand-written list next to it produces two -- which is what happened to
+every migrated note that had one.
+
+The quickest way, with no bibliography file at all: cite the DOI, and MyST
+fetches the reference from doi.org.
+
+    Narrative:      @10.21105/joss.07831 showed that ...
+    Parenthetical:  ... as others have found [@10.21105/joss.07831].
+
+Both render as "Moresi et al. (2025)" and "(Moresi et al., 2025)", and the full
+entry appears under an automatic **References** heading at the end.
+
+For a note with many references, or one citing work without a DOI, put a
+`references.bib` beside the article and name it in the front matter:
+
+    bibliography:
+      - references.bib
+
+then cite by key -- `@farrington2014` or `[@farrington2014]` -- exactly as
+above. The two can be mixed freely.
+
+Verified by rendering: all four forms work in the web page and in the archival
+PDF, and produce one references section.

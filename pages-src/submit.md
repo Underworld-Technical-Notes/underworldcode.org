@@ -77,6 +77,24 @@ live with; it cannot be changed afterwards without breaking a citation.
 
 **Maths is LaTeX**, inline as `$...$` and displayed as `$$...$$`.
 
+**Do not write a References section by hand.** Cite the DOI and MyST fetches the
+reference and builds the list for you:
+
+```markdown
+@10.21105/joss.07831 showed that ...
+... as others have found [@10.21105/joss.07831].
+```
+
+That needs no bibliography file. For a note with many references, or work
+without a DOI, add a `references.bib` beside the article, name it in the front
+matter as `bibliography: [references.bib]`, and cite by key — `@farrington2014`
+or `[@farrington2014]`. The two styles mix freely.
+
+This is worth insisting on because the alternative is not merely untidy. A
+hand-written list whose entries are links gets read as citations, and the note
+ends up with two reference sections: the older material on this site is being
+repaired for exactly that.
+
 Everything is published under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/),
 so you keep the credit and anyone may build on the work.
 
