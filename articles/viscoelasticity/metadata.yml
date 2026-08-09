@@ -10,7 +10,7 @@ authors:
 publication_date: 2019-08-12
 version: 1.0.0
 legacy_doi: 10.59350/3atx2-v4j54
-archive_doi: null
+archive_doi: 10.6084/m9.figshare.33191160
 license: CC-BY-4.0
 canonical_path: /viscoelasticity/
 legacy_paths:
@@ -29,3 +29,4 @@ banner_credit: null
 figures: 1
 source: ghost-migration
 ghost_uuid: 6389e46c-0eab-4df7-8cbd-66e1cfa33b79
+repository_record_id: 33191160
