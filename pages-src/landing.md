@@ -31,14 +31,14 @@ Underworld is open source, developed in the open, and supported by
 [AuScope](https://www.auscope.org.au/) under the Australian Government's NCRIS
 programme.
 
-## Technical Notes
+<div class="uwtn-section">Technical Notes</div>
 
 <!-- COUNTS -->
 
 <!-- LATEST-NOTES -->
 
-## Latest
+<div class="uwtn-section">Latest</div>
 
-News, releases, and guides to getting Underworld running.
+<div class="uwtn-section-note">News, releases, and guides to getting Underworld running.</div>
 
 <!-- LATEST-POSTS -->

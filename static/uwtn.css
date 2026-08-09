@@ -567,14 +567,25 @@ a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); 
   color: var(--uwtn-muted);
 }
 
-/* The front page's own headings, which come from markdown rather than from a
-   generated block, so they need bringing into the same typography. */
-.uwtn-hero + * h2,
-main > h2 {
+/* Section headings on the front page.
+ *
+ * A div, not a markdown heading. The theme nests headings several levels
+ * inside <main>, so a selector aimed at them either misses -- as `main > h2`
+ * did -- or has to reach through the template's own classes and breaks the
+ * next time they change. The outline is hidden on this page, so nothing is
+ * lost by not making these real headings. */
+.uwtn-section {
   font-family: var(--uwtn-serif);
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   font-weight: 600;
+  color: var(--uwtn-ink);
   border-top: 1px solid var(--uwtn-rule);
   padding-top: 1.6rem;
-  margin-top: 2.4rem;
+  margin: 2.6rem 0 0.4rem;
+}
+
+.uwtn-section-note {
+  font-family: var(--uwtn-serif);
+  color: var(--uwtn-muted);
+  margin: 0 0 1.2rem;
 }
