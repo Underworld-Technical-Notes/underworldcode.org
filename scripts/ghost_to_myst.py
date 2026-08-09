@@ -710,7 +710,7 @@ def yaml_str(value):
     return text
 
 
-DEPOSIT_FIELDS = ("archive_doi", "repository_record_id")
+DEPOSIT_FIELDS = ("archive_doi", "repository_record_id", "archived_at")
 
 
 def preserved_deposit_fields(path):
@@ -761,6 +761,7 @@ def write_metadata(path, rec, doi, figures, article_id, banner=None, credit=None
         # the record declares itself a variant form of the legacy DOI.
         "legacy_doi: %s" % (doi or "null"),
         "archive_doi: %s" % kept.get("archive_doi", "null"),
+        "archived_at: %s" % kept.get("archived_at", "null"),
         "license: CC-BY-4.0",
         "canonical_path: /%s/" % rec["slug"],
         "legacy_paths:",

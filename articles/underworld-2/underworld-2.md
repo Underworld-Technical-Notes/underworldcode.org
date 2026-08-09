@@ -13,6 +13,7 @@ keywords:
   - Underworld Code
 exports:
   - format: typst
+    source_url: https://www.underworldcode.org/underworld-2/
     template: ../../templates/pdf
     output: underworld-2.pdf
     article_id: UWTN 2015-001

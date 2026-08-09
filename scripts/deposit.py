@@ -28,6 +28,7 @@ Usage:
 """
 
 import argparse
+import datetime
 import hashlib
 import json
 import os
@@ -42,6 +43,7 @@ ARTICLES = ROOT / "articles"
 sys.path.insert(0, str(ROOT / "scripts"))
 
 API = "https://api.figshare.com/v2"
+SITE = "https://www.underworldcode.org"
 
 # Verified against docs.figshare.com/swagger.json.
 LICENSE_CC_BY_4 = 1
@@ -66,6 +68,13 @@ class Provider:
     def update_metadata(self, record_id, meta): raise NotImplementedError
     def upload(self, record_id, path): raise NotImplementedError
     def get_record(self, record_id): raise NotImplementedError
+    def list_files(self, record_id):
+        result = self._call("GET", "/account/articles/%d/files" % record_id)
+        return result if isinstance(result, list) else []
+
+    def delete_file(self, record_id, file_id):
+        self._call("DELETE", "/account/articles/%d/files/%s" % (record_id, file_id))
+
     def publish(self, record_id): raise NotImplementedError
     def new_version(self, record_id): raise NotImplementedError
     def delete_draft(self, record_id): raise NotImplementedError
@@ -303,18 +312,23 @@ def article_body(meta):
         "is_metadata_record": False,
     }
 
-    # The two DOIs identify different objects -- a living page and a fixed
-    # document -- and the relation is DECLARED rather than left to be inferred.
-    # Without this, two DOIs for one note is the duplication the design exists
-    # to prevent; with it, it is an ordinary variant relation.
-    if meta.get("legacy_doi"):
-        body["related_materials"] = [{
-            "identifier": meta["legacy_doi"],
-            "identifier_type": "DOI",
-            "relation": "IsVariantFormOf",
-            "title": "The web version of this note, as first published",
-            "is_linkout": True,
-        }]
+    # What an archival record most needs to say: which living article this is a
+    # fixed copy of. The URL, not the older Rogue Scholar DOI -- that identifier
+    # exists and keeps resolving, and is respected for that, but building the
+    # deposit around it made the record about our migration history rather than
+    # about the article. A reader wants somewhere to go and see the current
+    # version; `archived_at` tells them how old this copy is.
+    body["related_materials"] = [{
+        "identifier": SITE + str(meta.get("canonical_path") or "/"),
+        "identifier_type": "URL",
+        "relation": "IsVariantFormOf",
+        "title": "The living version of this article",
+        "is_linkout": True,
+    }]
+    if meta.get("archived_at"):
+        body["description"] += (
+            "\n\nArchival version of %s%s, made %s."
+            % (SITE, meta.get("canonical_path") or "/", meta["archived_at"]))
     return body
 
 
@@ -489,8 +503,32 @@ def run(slug, provider, live, publish, new_version, delete_draft):
               "then run this again to upload.")
         return
 
+    # Stamped once, at the moment the archival copy is first made, and never
+    # again: the package is byte-reproducible, and it stays that way only if
+    # nothing in it comes from the clock at build time.
+    if not meta.get("archived_at"):
+        stamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+        set_field(slug, "archived_at", stamp.isoformat().replace("+00:00", "Z"))
+        steps.append("stamped archived_at %s" % stamp.isoformat())
+
     provider.update_metadata(record_id, load(slug))
     steps.append("updated metadata")
+
+    # Re-uploading must replace, not accumulate. Otherwise a corrected package
+    # sits beside the one it corrects and a reader has to guess.
+    for existing in provider.list_files(record_id):
+        provider.delete_file(record_id, existing.get("id"))
+        steps.append("removed previous file %s" % existing.get("name"))
+
+    # The PDF goes up as its own file, FIRST and unwrapped. The reason for
+    # choosing this provider was that a DOI lands the reader on a readable
+    # document -- and a zip does not preview, so it lands them on a download
+    # button and a file browser instead. The archive package is the supplement:
+    # source, figures and checksums for whoever wants to rebuild it.
+    pdf = ARTICLES / slug / ("%s.pdf" % slug)
+    if pdf.exists():
+        provider.upload(record_id, pdf)
+        steps.append("uploaded %s -- the previewable article" % pdf.name)
 
     package, _count, digest = archive_package.build(slug, ROOT / "dist")
     file_id = provider.upload(record_id, package)

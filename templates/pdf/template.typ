@@ -90,6 +90,12 @@
 [# if doc.license.content.id #]
   license: "[-doc.license.content.id-]",
 [# endif #]
+[# if options.archived #]
+  archived: "[-options.archived-]",
+[# endif #]
+[# if options.source_url #]
+  source-url: "[-options.source_url-]",
+[# endif #]
 [# if options.software_version #]
   software-version: "[-options.software_version-]",
 [# endif #]

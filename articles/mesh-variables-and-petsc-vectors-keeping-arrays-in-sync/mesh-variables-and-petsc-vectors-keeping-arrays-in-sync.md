@@ -15,6 +15,7 @@ keywords:
   - development
 exports:
   - format: typst
+    source_url: https://www.underworldcode.org/mesh-variables-and-petsc-vectors-keeping-arrays-in-sync/
     template: ../../templates/pdf
     output: mesh-variables-and-petsc-vectors-keeping-arrays-in-sync.pdf
     article_id: UWTN 2026-004

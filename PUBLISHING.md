@@ -70,56 +70,46 @@ Publishing it as a *new article* instead would give the same guide two
 identifiers with nothing connecting them, and leave whoever cited the first one
 holding a reference to advice the project no longer gives.
 
-## Two DOIs, two objects
+## One identifier to circulate, and what the record says about the original
 
-**Every archived note is deposited**, not only the new ones — excepting the
-types that get no DOI at all. So a migrated note ends up with two identifiers,
-and that is deliberate:
+**Every archival note is deposited**, excepting the types that get no archival
+rendition. `archive_doi` is the identifier: it appears on the PDF, on the page
+and in citations, and it resolves to a fixed record with checksums.
 
-| field | resolves to | minted by |
-|---|---|---|
-| `legacy_doi` | the article's **page** on this site | Rogue Scholar, Crossref, `10.59350` |
-| `archive_doi` | the deposited **PDF record** | us, via Figshare, `10.6084` |
+The older Rogue Scholar registrations under `10.59350` are **left alone**. They
+exist, they keep resolving to the web pages, and that is a perfectly reasonable
+thing for them to do. Nothing is built on them and nothing is said about them in
+the deposit -- an earlier design declared each new record a variant form of its
+legacy DOI, which made the archival record a statement about our migration
+history rather than about the article.
 
-`archive_doi` is the one to circulate. It is what appears on the PDF, on the
-page and in citations, and it resolves to a fixed record with checksums rather
-than to a page that can change underneath it.
+What an archival record should say instead is what a reader of a fixed document
+actually needs:
 
-**This is not duplicate publication, provided the relation is declared.** The
-two identify different objects — a living page and a fixed document — and
-Figshare carries DataCite's full relation vocabulary, so every deposit states
-the relationship rather than leaving a reader to infer it:
+| field | says |
+|---|---|
+| the source URL | where the living article is, so they can see the current version |
+| `archived_at` | when this copy was taken, so they can judge how much may have moved on |
 
-```
-related_materials: [{
-  identifier:      "<legacy_doi>",
-  identifier_type: "DOI",
-  relation:        "IsVariantFormOf",
-  is_linkout:      true          # shown in the record's call-out box
-}]
-```
+Both go into the deposit's `related_materials` and description, onto the PDF's
+margin strip, and into the package's README and `CITATION.cff`. A snapshot with
+no date cannot be judged against the article it came from; a date with no link
+cannot be followed up.
 
-Without that, two DOIs for one note is exactly the duplication the design
-exists to prevent. With it, it is an ordinary variant relation of the kind that
-links a preprint to its published version.
+`archived_at` is stamped **once**, when the archival copy is first made, and
+never changed. The package is byte-reproducible, and it only stays that way if
+nothing inside it comes from the clock at build time.
 
-The legacy DOIs are left alone. They keep resolving to the page, which is a
-reasonable thing for them to do, and we could not re-point them anyway.
+### What the reader clicks
 
-**Citations already in the wild should move to `archive_doi`.** There are not
-many — chiefly ORCID records — and repointing them is an improvement on its own
-terms: an ORCID entry currently cites a page that can change, and would instead
-cite a fixed record with checksums.
+The DOI must land on something readable. **The PDF is deposited as its own file,
+unwrapped and first**, because that is what Figshare previews -- a zip does not,
+and a reader who follows a citation to a download button and a file browser has
+been failed by the choice of provider.
 
-Sequencing matters. A note cannot be cited by its archival DOI until it has
-one, so the order is: build the deposit tooling, deposit the backfill, *then*
-make one pass through ORCID. Doing it earlier means doing it twice.
-
-Much of it should not need doing by hand at all: ORCID auto-populates from
-DataCite, so deposits carrying an author's ORCID should appear in their record
-without being added. The manual work is removing or replacing the old entries,
-not creating the new ones — which is a reason to put the ORCIDs into
-`authors.yml` before the backfill rather than after.
+The archive package sits beside it as the supplement: source, figures,
+checksums, `CITATION.cff`. Re-depositing replaces the files rather than adding
+to them, so a corrected package never sits beside the one it corrects.
 
 ### What must never happen
 

@@ -14,6 +14,7 @@ keywords:
   - Documentation
 exports:
   - format: typst
+    source_url: https://www.underworldcode.org/getting-started-with-pull-requests/
     template: ../../templates/pdf
     output: getting-started-with-pull-requests.pdf
     article_id: UWTN 2020-011

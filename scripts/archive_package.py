@@ -84,15 +84,13 @@ def citation_cff(meta):
     doi = meta.get("archive_doi") or meta.get("legacy_doi")
     if doi:
         lines.append("doi: %s" % doi)
-    if meta.get("archive_doi") and meta.get("legacy_doi"):
-        # Both exist and identify different objects. Saying so in the citation
-        # file is cheaper than expecting a reader to work it out.
-        lines += [
-            "identifiers:",
-            "  - type: doi",
-            "    value: %s" % meta["legacy_doi"],
-            "    description: The web version of this note, as first published.",
-        ]
+    if meta.get("archived_at"):
+        # What a citation file can usefully say about a fixed copy: which
+        # version of the living article it is, and when it was taken. The older
+        # Rogue Scholar registration is deliberately not listed -- it exists and
+        # keeps resolving, but putting it here would offer a second identifier
+        # to cite, which is the confusion this is meant to avoid.
+        lines.append("date-accessed: %s" % meta["archived_at"][:10])
     return "\n".join(lines) + "\n"
 
 
@@ -109,12 +107,14 @@ DOI: %(doi)s
 Part of Underworld Technical Notes, a series about the Underworld geodynamics
 code: methods, worked examples, benchmarks and design rationale.
 
-This archive is the fixed version of the note. The web version at
+This archive is the fixed version of the note. It was made from
 
     %(url)s
 
-is the living one, and may since have picked up corrections, better links and
-discussion. Where the two differ, this archive is what the DOI identifies.
+on %(archived)s. That page is the living version and may since have picked up
+corrections, better links and discussion; the gap between that date and today is
+what tells you how much may have changed. Where the two differ, this archive is
+what the DOI identifies.
 
 ## What is in here
 
@@ -141,6 +141,7 @@ is at https://github.com/Underworld-Technical-Notes/underworldcode.org
         "date": meta.get("publication_date") or "",
         "doi": doi,
         "url": SITE + str(meta.get("canonical_path") or "/"),
+        "archived": meta.get("archived_at") or "(date not recorded)",
         "listing": listing,
         "license": meta.get("license") or "CC-BY-4.0",
     }
@@ -184,7 +185,10 @@ def build(slug, out_dir):
     files.sort(key=lambda item: item[0])
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    target = out_dir / ("%s.zip" % slug)
+    # Named for what it is. The PDF is deposited separately and unwrapped so it
+    # previews; this is the supplement beside it, and the name should not invite
+    # a reader to open it looking for the article.
+    target = out_dir / ("%s-archive.zip" % slug)
     # ZIP_DEFLATED at a fixed level, and no compresslevel drift between Python
     # versions that would change the bytes without changing the content.
     with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as archive:

@@ -11,6 +11,7 @@ license: CC-BY-4.0
 banner: figures/banner.jpg
 exports:
   - format: typst
+    source_url: https://www.underworldcode.org/free-surface-in-underworld/
     template: ../../templates/pdf
     output: free-surface-in-underworld.pdf
     article_id: UWTN 2021-005

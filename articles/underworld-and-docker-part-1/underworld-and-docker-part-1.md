@@ -14,6 +14,7 @@ keywords:
   - "#editors-pick"
 exports:
   - format: typst
+    source_url: https://www.underworldcode.org/underworld-and-docker-part-1/
     template: ../../templates/pdf
     output: underworld-and-docker-part-1.pdf
     article_id: UWTN 2015-002

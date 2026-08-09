@@ -245,6 +245,13 @@
         }
       ],
       "description": "DOI we mint for the archival PDF, resolving to its deposited record. This is the identifier to circulate. It identifies a different object from legacy_doi -- a fixed PDF rather than a living page -- and the deposit declares that relation explicitly."
+    },
+    "archived_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "When the archival PDF was made, ISO-8601 UTC. Stamped once by the deposit and never changed: it is what tells a reader of the fixed copy how far the living article may have moved on."
     }
   },
   "allOf": [

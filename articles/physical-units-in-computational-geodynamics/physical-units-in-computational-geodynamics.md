@@ -19,6 +19,7 @@ keywords:
   - development
 exports:
   - format: typst
+    source_url: https://www.underworldcode.org/physical-units-in-computational-geodynamics/
     template: ../../templates/pdf
     output: physical-units-in-computational-geodynamics.pdf
     article_id: UWTN 2026-005

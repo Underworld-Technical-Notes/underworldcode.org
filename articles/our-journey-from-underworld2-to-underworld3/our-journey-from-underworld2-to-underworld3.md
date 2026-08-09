@@ -28,6 +28,7 @@ keywords:
   - Tricks of the Trade
 exports:
   - format: typst
+    source_url: https://www.underworldcode.org/our-journey-from-underworld2-to-underworld3/
     template: ../../templates/pdf
     output: our-journey-from-underworld2-to-underworld3.pdf
     article_id: UWTN 2026-002

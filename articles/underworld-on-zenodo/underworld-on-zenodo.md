@@ -13,6 +13,7 @@ keywords:
   - Documentation
 exports:
   - format: typst
+    source_url: https://www.underworldcode.org/underworld-on-zenodo/
     template: ../../templates/pdf
     output: underworld-on-zenodo.pdf
     article_id: UWTN 2018-002

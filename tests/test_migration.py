@@ -6,6 +6,7 @@ and without a build.
 """
 
 import importlib.util
+import json
 import pathlib
 import sys
 
@@ -815,14 +816,28 @@ def test_deposit_refuses_a_doi_with_no_record_id():
         raise AssertionError("a DOI without a record id must be refused")
 
 
-def test_deposit_declares_the_relation_between_the_two_dois():
-    """Two DOIs for one note is duplication unless the relation is stated."""
+def test_the_record_points_at_the_living_article_not_the_old_doi():
+    """An archival record should say where the living version is.
+
+    An earlier design declared each deposit a variant form of its Rogue Scholar
+    DOI, which made the record a statement about our migration history rather
+    than about the article. Those registrations are left alone; the record
+    points at the URL a reader can actually follow.
+    """
     body = deposit.article_body({
-        "slug": "x", "title": "T", "abstract": "A",
+        "slug": "x", "title": "T", "canonical_path": "/x/",
         "legacy_doi": "10.59350/abc", "authors": []})
     related = body["related_materials"][0]
-    assert related["relation"] == "IsVariantFormOf"
-    assert related["identifier"] == "10.59350/abc"
+    assert related["identifier"] == "https://www.underworldcode.org/x/"
+    assert related["identifier_type"] == "URL"
+    assert "10.59350" not in json.dumps(body), "the legacy DOI is not deposit metadata"
+
+
+def test_the_description_records_when_the_copy_was_taken():
+    body = deposit.article_body({
+        "slug": "x", "title": "T", "canonical_path": "/x/", "authors": [],
+        "archived_at": "2026-08-09T08:45:00Z"})
+    assert "2026-08-09T08:45:00Z" in body["description"]
 
 
 def test_deposit_never_ships_markup_into_a_description():

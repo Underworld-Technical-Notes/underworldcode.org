@@ -15,6 +15,7 @@ keywords:
   - "#editors-pick"
 exports:
   - format: typst
+    source_url: https://www.underworldcode.org/the-dynamics-of-continental-accretion/
     template: ../../templates/pdf
     output: the-dynamics-of-continental-accretion.pdf
     article_id: UWTN 2014-001

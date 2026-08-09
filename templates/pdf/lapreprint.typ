@@ -23,6 +23,11 @@
   logo: none,
   // A DOI link, shown in the header on the first page. Should be just the DOI, e.g. `10.10123/123456` ,not a URL
   doi: none,
+  // When this archival PDF was made, and the web article it was made from.
+  // Together these say what a reader of a fixed document most needs to know:
+  // where the living version is, and how old this snapshot of it is.
+  archived: none,
+  source-url: none,
   heading-numbering: "1.a.i",
   // Show an Open Access badge on the first page, and support open science, default is true, because that is what the default should be.
   open-access: true,
@@ -298,6 +303,13 @@
   // the website and do not belong on the archival record.
   if (doi != none) {
     cells.push(field("DOI", doi, link-target: "https://doi.org/" + doi))
+  }
+  // A fixed document should say when it was fixed, and against what. Without
+  // the date a reader cannot tell whether the living article has moved on;
+  // without the link they cannot go and see.
+  if (archived != none) { cells.push(field("Archived", archived)) }
+  if (source-url != none) {
+    cells.push(field("Source", source-url, link-target: source-url))
   }
   for side in margin {
     if ("title" in side) {

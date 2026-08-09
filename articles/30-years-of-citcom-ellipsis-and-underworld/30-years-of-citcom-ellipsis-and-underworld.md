@@ -16,6 +16,7 @@ keywords:
   - Auscope
 exports:
   - format: typst
+    source_url: https://www.underworldcode.org/30-years-of-citcom-ellipsis-and-underworld/
     template: ../../templates/pdf
     output: 30-years-of-citcom-ellipsis-and-underworld.pdf
     article_id: UWTN 2024-001

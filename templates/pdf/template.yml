@@ -62,6 +62,12 @@ options:
   - id: software_version
     type: string
     description: Underworld version the article describes
+  - id: archived
+    type: string
+    description: When this archival PDF was made, ISO-8601 UTC
+  - id: source_url
+    type: string
+    description: The web article this PDF was made from
   - id: wide_body
     type: boolean
     description: >

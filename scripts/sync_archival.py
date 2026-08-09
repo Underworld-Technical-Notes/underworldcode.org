@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Put the archival DOI on the article, before the PDF is built.
+"""Put the archival facts on the article, before the PDF is built.
 
 The whole reason Figshare was chosen is that a DOI can be reserved *before* the
 document exists, so it can be printed on the document it identifies. That only
@@ -20,8 +20,19 @@ Which DOI wins:
     the web page. For the fifty migrated notes that is all there is until they
     are deposited.
 
+Three things travel from `metadata.yml` into the front matter and the export
+options, so the PDF can state them:
+
+  * `archive_doi`, the identifier that resolves to this document;
+  * `archived_at`, when the archival version was made;
+  * the source URL, where the living article is.
+
+Together the last two are what a reader of a fixed document most needs: a
+snapshot with no date cannot be judged against the article it came from, and a
+date with no link cannot be followed up.
+
 Usage:
-    python3 scripts/sync_doi.py [--check]
+    python3 scripts/sync_archival.py [--check]
 """
 
 import argparse
@@ -32,6 +43,33 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 ARTICLES = ROOT / "articles"
 sys.path.insert(0, str(ROOT / "scripts"))
+
+
+SITE = "https://www.underworldcode.org"
+
+
+def set_frontmatter(head, key, value):
+    if re.search(r"^%s:\s*.+$" % key, head, re.M):
+        return re.sub(r"^%s:.*$" % key, "%s: %s" % (key, value), head,
+                      count=1, flags=re.M)
+    return head.rstrip("\n") + "\n%s: %s" % (key, value)
+
+
+def set_export_option(head, key, value):
+    """Set a key inside the typst export block.
+
+    The export block is where the PDF template's own options live, and it is
+    indented under `exports:`; a top-level key of the same name would be
+    ignored. Articles that get no archival PDF have no export block, and are
+    left alone.
+    """
+    if "  - format: typst" not in head:
+        return head
+    if re.search(r"^    %s:\s*.+$" % key, head, re.M):
+        return re.sub(r"^    %s:.*$" % key, "    %s: %s" % (key, value), head,
+                      count=1, flags=re.M)
+    return re.sub(r"^(  - format: typst\n)", r"\g<1>    %s: %s\n" % (key, value),
+                  head, count=1, flags=re.M)
 
 
 def main():
@@ -56,19 +94,25 @@ def main():
         if not sep:
             continue
 
-        current = re.search(r"^doi:\s*(.+)$", head, re.M)
-        if current and current.group(1).strip() == wanted:
+        source_url = SITE + str(meta.get("canonical_path") or ("/%s/" % slug))
+        wants = {"doi": wanted}
+        exports = {"source_url": source_url}
+        if meta.get("archived_at"):
+            exports["archived"] = meta["archived_at"]
+
+        before = head
+        for key, value in wants.items():
+            head = set_frontmatter(head, key, value)
+        for key, value in exports.items():
+            head = set_export_option(head, key, value)
+        if head == before:
             continue
 
-        stale.append("%s: %s -> %s"
-                     % (slug, current.group(1).strip() if current else "(none)", wanted))
+        stale.append("%s: doi %s%s" % (
+            slug, wanted, ", archived %s" % meta["archived_at"]
+            if meta.get("archived_at") else ""))
         if args.check:
             continue
-
-        if current:
-            head = re.sub(r"^doi:.*$", "doi: %s" % wanted, head, count=1, flags=re.M)
-        else:
-            head = head.rstrip("\n") + "\ndoi: %s" % wanted
         source.write_text(head + sep + body, encoding="utf-8")
         changed += 1
 

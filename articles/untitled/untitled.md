@@ -12,6 +12,7 @@ keywords:
   - "#editors-pick"
 exports:
   - format: typst
+    source_url: https://www.underworldcode.org/untitled/
     template: ../../templates/pdf
     output: untitled.pdf
     article_id: UWTN 2017-003

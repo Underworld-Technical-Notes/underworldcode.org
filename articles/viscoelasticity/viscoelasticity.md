@@ -13,6 +13,8 @@ keywords:
   - "#editors-pick"
 exports:
   - format: typst
+    archived: 2026-08-09T08:45:00Z
+    source_url: https://www.underworldcode.org/viscoelasticity/
     template: ../../templates/pdf
     output: viscoelasticity.pdf
     article_id: UWTN 2019-001

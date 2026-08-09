@@ -14,6 +14,7 @@ keywords:
   - Underworld Code
 exports:
   - format: typst
+    source_url: https://www.underworldcode.org/shear-bands-with-dilatancy-modelled-with-underworld/
     template: ../../templates/pdf
     output: shear-bands-with-dilatancy-modelled-with-underworld.pdf
     article_id: UWTN 2017-001

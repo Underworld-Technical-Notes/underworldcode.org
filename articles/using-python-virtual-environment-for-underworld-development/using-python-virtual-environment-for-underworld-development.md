@@ -15,6 +15,7 @@ keywords:
   - Python/Jupyter
 exports:
   - format: typst
+    source_url: https://www.underworldcode.org/using-python-virtual-environment-for-underworld-development/
     template: ../../templates/pdf
     output: using-python-virtual-environment-for-underworld-development.pdf
     article_id: UWTN 2022-002

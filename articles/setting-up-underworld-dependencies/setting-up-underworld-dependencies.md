@@ -15,6 +15,7 @@ keywords:
   - Underworld Code
 exports:
   - format: typst
+    source_url: https://www.underworldcode.org/setting-up-underworld-dependencies/
     template: ../../templates/pdf
     output: setting-up-underworld-dependencies.pdf
     article_id: UWTN 2022-001

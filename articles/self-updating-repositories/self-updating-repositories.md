@@ -17,6 +17,7 @@ keywords:
   - Python/Jupyter
 exports:
   - format: typst
+    source_url: https://www.underworldcode.org/self-updating-repositories/
     template: ../../templates/pdf
     output: self-updating-repositories.pdf
     article_id: UWTN 2020-006
