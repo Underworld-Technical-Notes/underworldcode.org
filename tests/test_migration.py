@@ -1055,3 +1055,23 @@ def test_the_author_lookup_never_degrades_quietly():
     lookup = source.split("def resolve_authors")[1].split("def create_draft")[0]
     assert "raise DepositError" in lookup, \
         "a failed author lookup must stop the deposit, not fall back"
+
+
+def test_a_deposit_always_carries_keywords():
+    """Figshare will not publish a record with no keywords.
+
+    It reports that as "authors is missing", which cost four batch runs and two
+    wrong diagnoses. Every failure was an article with no subject and no method
+    facets -- the release notes and how-tos, which are about the software rather
+    than about a technique.
+    """
+    assert deposit.keywords_for({"subjects": [], "methods": []})
+    with_facets = deposit.keywords_for({"subjects": ["rheology"], "methods": []})
+    assert "rheology" in with_facets and "underworld" in with_facets
+
+
+def test_publish_checks_the_fields_figshare_requires():
+    source = (ROOT / "scripts" / "deposit.py").read_text(encoding="utf-8")
+    guard = source.split("if publish or new_version:")[1].split("provider.publish")[0]
+    for field in ('"title"', '"authors"', '"files"', '"categories"', '"tags"'):
+        assert field in guard, "publish does not check %s" % field

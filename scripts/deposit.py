@@ -322,6 +322,16 @@ def categories_for(meta):
     return out
 
 
+def keywords_for(meta):
+    """The article's facets, plus terms true of every note. Never empty."""
+    terms = [t for t in (list(meta.get("subjects") or [])
+                         + list(meta.get("methods") or [])) if t]
+    for generic in ("underworld", "geodynamics"):
+        if generic not in terms:
+            terms.append(generic)
+    return terms
+
+
 def article_body(meta):
     """The Figshare fields, from our metadata.
 
@@ -343,8 +353,15 @@ def article_body(meta):
         "authors": authors,
         "license": LICENSE_CC_BY_4,
         "defined_type": DEFINED_TYPE,
-        "keywords": [t for t in (list(meta.get("subjects") or [])
-                                 + list(meta.get("methods") or [])) if t],
+        # Never empty. Figshare refuses to publish a record with no keywords,
+        # and reports it as "authors is missing" -- which cost four runs and two
+        # wrong diagnoses. Every failure was an article with no facets: the
+        # release notes and how-tos, which are about the software rather than
+        # about a method.
+        #
+        # The two generic terms are true of every note in the series, and they
+        # are what somebody browsing Figshare would search for.
+        "keywords": keywords_for(meta),
         "categories": categories_for(meta),
         "is_metadata_record": False,
     }
@@ -610,7 +627,8 @@ def run(slug, provider, live, publish, new_version, delete_draft,
         # says so until publish fails. Publishing is the one step that cannot be
         # undone, so it is the one worth checking first.
         record = provider.get_record(record_id)
-        missing = [field for field in ("title", "authors", "files")
+        missing = [field for field in ("title", "authors", "files",
+                                       "categories", "tags")
                    if not record.get(field)]
         # An author with no id is an inline one, which publish rejects.
         if not missing and any(not a.get("id") for a in record.get("authors") or []):
