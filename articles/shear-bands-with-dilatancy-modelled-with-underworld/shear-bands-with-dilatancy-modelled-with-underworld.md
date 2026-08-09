@@ -15,15 +15,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T13:57:03Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/shear-bands-with-dilatancy-modelled-with-underworld/
     template: ../../templates/pdf
     output: shear-bands-with-dilatancy-modelled-with-underworld.pdf
     article_id: UWTN 2017-001
     article_version: 1.0.0
-parts:
-  abstract: "In honour of Hans Mühlhaus' 70th birthday this month, here are some shear band simulations made with Underworld. We are investigating the role of dilatancy in the geometry of the shear bands for a box of material when a small trapdoor is opened. The extent to which large-scale deformation is needed to release material through the trapdoor depends on how much the material dilates when shear bands form. This is a taster: Three snapshots of the total shear strain for a model with low dilatancy (A"
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 

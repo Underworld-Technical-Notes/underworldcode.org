@@ -15,15 +15,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:04:08Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/untitled-2/
     template: ../../templates/pdf
     output: untitled-2.pdf
     article_id: UWTN 2017-002
     article_version: 1.0.0
-parts:
-  abstract: "Using physical units and how to appropriately scale a model is a top question users ask when beginning with Underworld. The equations Underworld solves are stated in a physically correct form, they remain valid as long as every material constant, geometry, time, etc., are expressed in the same system. There is no explicit concept of units no scaling in Underworld, the choice is entirely left to the user. One can thus decide to use the Meter Kilometer Second system or a dimensionless system, def"
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 

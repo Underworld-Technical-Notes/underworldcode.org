@@ -3,7 +3,7 @@ id: UWTN 2017-003
 slug: untitled
 title: Modelling Drips and Delamination with Underworld
 article_type: worked-example
-status: published
+status: migrated
 authors:
   - name: Adam Beall
     orcid: null
@@ -11,6 +11,7 @@ publication_date: 2017-06-29
 version: 1.0.0
 legacy_doi: 10.59350/x638s-dpr14
 archive_doi: 10.6084/m9.figshare.33193386
+archived_at: 2026-08-09T14:06:33Z
 license: CC-BY-4.0
 canonical_path: /untitled/
 legacy_paths:
@@ -29,4 +30,3 @@ figures: 4
 source: ghost-migration
 ghost_uuid: b711e6d6-68ce-496c-a0be-01c9b3af50da
 repository_record_id: 33193386
-archived_at: 2026-08-09T14:06:33Z

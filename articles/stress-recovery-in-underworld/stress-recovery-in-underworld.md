@@ -12,15 +12,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:41:27Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/stress-recovery-in-underworld/
     template: ../../templates/pdf
     output: stress-recovery-in-underworld.pdf
     article_id: UWTN 2021-001
     article_version: 1.0.0
-parts:
-  abstract: "Issues with intra-element discontinuities in PIC-FEM The classical finite element method (FEM) has been widely used to simulate diverse problems in engineering. Unlike most engineering problems, geological simulations are dominated by emergence of geometrical structures due to the non-linear processes involved. For the structurally conforming FEM meshes, the large deformations result in distorted meshes, which often require repeated re-meshing in computation. The particle-in-cell (PIC) method"
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
 

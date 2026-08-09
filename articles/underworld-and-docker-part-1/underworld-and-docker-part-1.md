@@ -15,15 +15,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T13:19:40Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/underworld-and-docker-part-1/
     template: ../../templates/pdf
     output: underworld-and-docker-part-1.pdf
     article_id: UWTN 2015-002
     article_version: 1.0.0
-parts:
-  abstract: "While huge improvements in usability have been achieved in Underworld2, the installation process is still unfortunately as painful as ever. This difficulty is in large part due to Underworld's numerous dependencies, and also the multiple platforms we try to support. Compounding this, the legacy of a individual user's machine often conspires against success, rarely in obvious ways. Simply, compiling is not fun. Enter docker. What are docker containers ? Essentially, docker containers allow de"
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 

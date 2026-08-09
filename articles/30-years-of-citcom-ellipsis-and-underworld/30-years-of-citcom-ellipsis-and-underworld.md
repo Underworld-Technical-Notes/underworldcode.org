@@ -17,8 +17,8 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T15:08:01Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/30-years-of-citcom-ellipsis-and-underworld/
     template: ../../templates/pdf
     output: 30-years-of-citcom-ellipsis-and-underworld.pdf

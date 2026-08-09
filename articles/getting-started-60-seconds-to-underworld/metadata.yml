@@ -3,7 +3,7 @@ id: UWTN 2019-004
 slug: getting-started-60-seconds-to-underworld
 title: "Getting started: 60 seconds to Underworld"
 article_type: how-to
-status: published
+status: migrated
 authors:
   - name: Rohan Byrne
     orcid: null
@@ -11,6 +11,7 @@ publication_date: 2019-11-21
 version: 1.0.0
 legacy_doi: 10.59350/3y92k-n4v30
 archive_doi: 10.6084/m9.figshare.33193419
+archived_at: 2026-08-09T14:27:51Z
 license: CC-BY-4.0
 canonical_path: /getting-started-60-seconds-to-underworld/
 legacy_paths:
@@ -25,4 +26,3 @@ figures: 10
 source: ghost-migration
 ghost_uuid: f0a9cac5-2f6d-4674-8c3d-630486f6177b
 repository_record_id: 33193419
-archived_at: 2026-08-09T14:27:51Z

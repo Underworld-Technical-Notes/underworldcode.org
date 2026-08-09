@@ -3,7 +3,7 @@ id: UWTN 2021-001
 slug: stress-recovery-in-underworld
 title: Stress recovery in Underworld
 article_type: technical-note
-status: published
+status: migrated
 authors:
   - name: Haibin Yang
     orcid: 0000-0002-8628-3704
@@ -11,6 +11,7 @@ publication_date: 2021-01-11
 version: 1.0.0
 legacy_doi: 10.59350/97evt-ays09
 archive_doi: 10.6084/m9.figshare.33193446
+archived_at: 2026-08-09T14:41:27Z
 license: CC-BY-4.0
 canonical_path: /stress-recovery-in-underworld/
 legacy_paths:
@@ -27,4 +28,3 @@ figures: 1
 source: ghost-migration
 ghost_uuid: 2c41cc15-f54f-49f8-9379-00607a49f518
 repository_record_id: 33193446
-archived_at: 2026-08-09T14:41:27Z

@@ -24,8 +24,8 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:44:11Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/scaling-in-underworld/
     template: ../../templates/pdf
     output: scaling-in-underworld.pdf

@@ -18,15 +18,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T13:33:19Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/underworld-and-docker-part-2/
     template: ../../templates/pdf
     output: underworld-and-docker-part-2.pdf
     article_id: UWTN 2015-003
     article_version: 1.0.0
-parts:
-  abstract: "By the way, before you read this post, catch up with how we use docker by reading part 1 Docker allows us to distribute pre-built applications which are hosted in a virtual machine and are therefore platform independent. This simplifies things for us (only one platform we need to support) and for the users (you get a universal binary with complete reproducibility across platforms). However, if you are not running on a native linux machine, you have to understand the way docker works before bein"
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 

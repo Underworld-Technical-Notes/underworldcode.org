@@ -8,6 +8,7 @@ rebuild it, without this website:
       <slug>.pdf          the archival rendition, with its DOI on the title page
       <slug>.md           the MyST source it was built from
       figures/            every figure, as referenced by the source
+      examples/           runnable notebooks and data, where the note has them
       metadata.json       the article's metadata, machine-readable
       CITATION.cff        how to cite it, in a format tools already read
       README.md           what this is, for a human opening the zip in ten years
@@ -121,8 +122,12 @@ what the DOI identifies.
 %(listing)s
 
 The PDF is the article. The markdown is the source it was built from, in MyST
-Markdown; the figures are as the source references them. SHA256SUMS covers every
-other file, so this archive can be checked against itself:
+Markdown; the figures are as the source references them. Where there is an
+`examples/` directory it holds the notebooks and data the note describes, as
+they stood on the date above -- they will need a newer Underworld than that
+before long, and a later version of this record may carry updated ones.
+SHA256SUMS covers every other file, so this archive can be checked against
+itself:
 
     shasum -a 256 -c SHA256SUMS
 
@@ -165,6 +170,18 @@ def collect(slug, meta):
             if figure.is_file():
                 files.append(("figures/" + str(figure.relative_to(figures)),
                               figure.read_bytes()))
+
+    # Runnable examples, if the note has any. A how-to whose notebook is only on
+    # the website is a how-to that stops working when the website does, and the
+    # whole point of the deposit is that it does not depend on us still being
+    # here. Examples date faster than the prose around them; that is what
+    # versioning the deposit is for.
+    examples = directory / "examples"
+    if examples.is_dir():
+        for item in sorted(examples.rglob("*")):
+            if item.is_file():
+                files.append(("examples/" + str(item.relative_to(examples)),
+                              item.read_bytes()))
 
     files.append(("metadata.json",
                   (json.dumps(meta, indent=2, sort_keys=True) + "\n").encode()))

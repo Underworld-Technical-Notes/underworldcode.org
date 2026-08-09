@@ -19,15 +19,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:50:16Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/2-11-scaling/
     template: ../../templates/pdf
     output: 2-11-scaling.pdf
     article_id: UWTN 2021-004
     article_version: 1.0.0
-parts:
-  abstract: "How does Underworld scale on a HPC? In this post we showcase how Underworld 2.11 scales across two of Australia's premiere HPC systems. * Gadi - https://nci.org.au/our-systems/hpc-systems * Magnus - https://pawsey.org.au/systems/magnus/ The reference model chosen for this scaling showcase is a extended 3D stokes flow: Analytic Solution SolDB3D [https://underworld2.readthedocs.io/en/latest/build/underworld.function.analytic.html?highlight=solDB#underworld.function.analytic.SolDB3d] . Q1P0 el"
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
 

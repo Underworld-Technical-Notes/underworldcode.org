@@ -16,15 +16,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:38:40Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/build-conda-packages/
     template: ../../templates/pdf
     output: build-conda-packages.pdf
     article_id: UWTN 2020-012
     article_version: 1.0.0
-parts:
-  abstract: "As mentioned, packages can be installed directly from our conda channel. You may however want to build your own package at some point in the future or you may want to fix some of ours by submitting a Pull Request on github (You are more welcome to do so...) The following goes through the steps of building a conda package for Badlands which contains Python and Fortran code. This is relatively advanced but not really difficult. Installing and Updating conda-build To install conda-build, in you"
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
 

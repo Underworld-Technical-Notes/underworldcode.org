@@ -16,15 +16,15 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T15:13:50Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/underworld-and-singularity/
     template: ../../templates/pdf
     output: underworld-and-singularity.pdf
     article_id: UWTN 2025-001
     article_version: 1.0.0
 parts:
-  abstract: "TL; DR: Underworld is now Singularity-enabled, making it easier and somewhat quicker to use compared to traditional HPC installs. We demonstrate results using over 10,000 CPUs and more than one billion unknowns for solving the Stokes equation with Underworld 2.16"
+  abstract: "TL; DR: Underworld is now Singularity-enabled, making it easier and somewhat quicker to use compared to traditional HPC installs."
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@hooverpaul55?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Paul Teysen</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplas</a></div></div>
 

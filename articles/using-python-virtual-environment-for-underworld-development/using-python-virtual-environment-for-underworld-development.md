@@ -16,15 +16,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:59:09Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/using-python-virtual-environment-for-underworld-development/
     template: ../../templates/pdf
     output: using-python-virtual-environment-for-underworld-development.pdf
     article_id: UWTN 2022-002
     article_version: 1.0.0
-parts:
-  abstract: The Underworld Community has been supporting usage of Docker containers for developing and running Underworld powered scientific models. They provide a good option to control the running environment (dependencies). Docker container can be used for developing the code base but creating a suitable development workflow has proven challenging so far and I have opted for a more simple solution involving native builds of PETSc and Python Virtual Environment. In the following I describe how I insta
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 

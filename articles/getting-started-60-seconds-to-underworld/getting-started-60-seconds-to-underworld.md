@@ -12,8 +12,8 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:27:51Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/getting-started-60-seconds-to-underworld/
     template: ../../templates/pdf
     output: getting-started-60-seconds-to-underworld.pdf

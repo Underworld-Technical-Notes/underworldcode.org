@@ -3,7 +3,7 @@ id: UWTN 2021-002
 slug: scaling-in-underworld
 title: Scaling in Underworld
 article_type: benchmark
-status: published
+status: migrated
 authors:
   - name: Julian Giordani
     orcid: 0000-0003-4515-9296
@@ -18,6 +18,7 @@ publication_date: 2021-03-09
 version: 1.0.0
 legacy_doi: 10.59350/qvgm0-yz754
 archive_doi: 10.6084/m9.figshare.33193452
+archived_at: 2026-08-09T14:44:11Z
 license: CC-BY-4.0
 canonical_path: /scaling-in-underworld/
 legacy_paths:
@@ -35,4 +36,3 @@ figures: 3
 source: ghost-migration
 ghost_uuid: 59bc6e20-d41f-4564-ba0a-8bf61b8dc55a
 repository_record_id: 33193452
-archived_at: 2026-08-09T14:44:11Z

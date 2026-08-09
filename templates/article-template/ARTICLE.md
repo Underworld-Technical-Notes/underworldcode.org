@@ -98,3 +98,12 @@ above. The two can be mixed freely.
 
 Verified by rendering: all four forms work in the web page and in the archival
 PDF, and produce one references section.
+
+## Examples
+
+Notebooks and small data files go in `examples/` beside this file. They are
+deposited with the note, so the archived record carries working code.
+
+When a release breaks one, update it and publish a **new version** of the same
+deposit rather than a new note — the DOI already in circulation then resolves to
+the working notebook.

@@ -9,8 +9,6 @@ authors:
 doi: 10.59350/ng0d5-23959
 license: CC-BY-4.0
 banner: figures/banner.jpg
-parts:
-  abstract: "Yeah, one repo, one vision! In an effort to simplify maintenance and compatibility between Underworld and UWGeodynamics, we have decided to merge the codes into a single repository. Starting with version 2.13, UWGeodynamics will now live under Underworld. All UWGeodynamics functionalities and workflows will remain available to the users. From version 2.13 users will be able to import UWGeodynamics after installing Underworld (see documentation for install options), using from underworld impor"
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@lisanto_?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Lisanto 李奕良</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 

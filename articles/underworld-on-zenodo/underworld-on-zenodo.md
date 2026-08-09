@@ -14,15 +14,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:18:35Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/underworld-on-zenodo/
     template: ../../templates/pdf
     output: underworld-on-zenodo.pdf
     article_id: UWTN 2018-002
     article_version: 1.0.0
-parts:
-  abstract: "Zenodo [http://www.zenodo.org] is a repository for immutable versions of software that are provided with a persistent DOI for the purposes of citation and reproducibility. Underworld can be cited via a zenodo DOI. There is a master DOI for all releases (10.5281/zenodo.1436039) and releases after 2.6.0 are automatically given a DOI _under the master_. If you are using a development branch and wish to obtain a DOI for your specific version we ask that you contact [anyone&#64;underworldcode.org] us"
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 

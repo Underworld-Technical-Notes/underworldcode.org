@@ -21,8 +21,8 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T15:16:51Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/how-many-processors-should-we-use-to-solve-problem-x/
     template: ../../templates/pdf
     output: how-many-processors-should-we-use-to-solve-problem-x.pdf

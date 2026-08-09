@@ -14,15 +14,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:24:50Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/adding-zotero-references-to-a-webpage/
     template: ../../templates/pdf
     output: adding-zotero-references-to-a-webpage.pdf
     article_id: UWTN 2019-003
     article_version: 1.0.0
-parts:
-  abstract: "How we added an auto-updating set of citations to underworld in our publications [https://www.underworldcode.org/publications-using-uw/] webpage. We need to curate all the publications that we can find that use the underworld [https://www.underworldcode.org/intro-to-underworld/] geodynamics code and provide this information on our website. To avoid needless repetition, we take advantage of the fact that nearly all the information we require is online and automatically construct the bibliograph"
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 

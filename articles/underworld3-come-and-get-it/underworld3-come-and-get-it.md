@@ -16,8 +16,8 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T15:10:52Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/underworld3-come-and-get-it/
     template: ../../templates/pdf
     output: underworld3-come-and-get-it.pdf

@@ -14,15 +14,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T15:05:05Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/compressible-convection-in-cartesian-coordinates-in-underworld3/
     template: ../../templates/pdf
     output: compressible-convection-in-cartesian-coordinates-in-underworld3.pdf
     article_id: UWTN 2023-002
     article_version: 1.0.0
-parts:
-  abstract: "Introduction and benchmarking The convection of the Earth’s mantle is usually modelled as an incompressible process, referred to as the Boussinesq approximation. However, in the Earth’s mantle, the pressure increase associated with depth also increases the density due to self-compression (King et al. 2010). In some applications, this compressibility may be non-negligible and modelling it may be desirable. Over the years, several mantle convection formulations have been devised to take this comp"
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@v2osk?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">v2osk</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplas</a></div></div>
 

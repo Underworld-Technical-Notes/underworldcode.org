@@ -11,8 +11,6 @@ license: CC-BY-4.0
 keywords:
   - Underworld Code
   - Documentation
-parts:
-  abstract: "-------------------------------------------------------------------------------- Version 2.8 of Underworld has been released recently. As with all major releases, this release brings numerous new features, enhancements and bug fixes. A summary of changes may be found within the usual CHANGES.md [https://github.com/underworldcode/underworld2/blob/v2.8.0b/CHANGES.md] file. As is also usually the case, numerous API changes have been necessary or warranted. Most significantly, this release marks a"
 ---
 ---
 

@@ -18,8 +18,8 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:33:08Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/self-updating-repositories/
     template: ../../templates/pdf
     output: self-updating-repositories.pdf

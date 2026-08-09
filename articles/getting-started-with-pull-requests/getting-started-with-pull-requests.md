@@ -15,15 +15,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:35:56Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/getting-started-with-pull-requests/
     template: ../../templates/pdf
     output: getting-started-with-pull-requests.pdf
     article_id: UWTN 2020-011
     article_version: 1.0.0
-parts:
-  abstract: "Version control systems and online-communities such as Github have made contributing to the development of opensource software incredibly easy. That is assuming that people get over their initial fear of sharing their code! In this short blog post I go through how to submit a pull request to one of our repository. Do not fear and join us for some fun! You may actually learn some interesting things along the way and we will acknowledge your contribution. The open source community is by definiti"
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
 

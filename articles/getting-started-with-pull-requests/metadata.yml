@@ -3,7 +3,7 @@ id: UWTN 2020-011
 slug: getting-started-with-pull-requests
 title: Getting started with Pull requests
 article_type: how-to
-status: published
+status: migrated
 authors:
   - name: Romain Beucher
     orcid: 0000-0003-3891-5444
@@ -12,6 +12,7 @@ publication_date: 2020-11-17
 version: 1.0.0
 legacy_doi: 10.59350/cj1d1-e4445
 archive_doi: 10.6084/m9.figshare.33193434
+archived_at: 2026-08-09T14:35:56Z
 license: CC-BY-4.0
 canonical_path: /getting-started-with-pull-requests/
 legacy_paths:
@@ -27,4 +28,3 @@ figures: 4
 source: ghost-migration
 ghost_uuid: dc2f7191-b48f-4fb0-80ec-29fcad196a17
 repository_record_id: 33193434
-archived_at: 2026-08-09T14:35:56Z

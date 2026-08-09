@@ -10,15 +10,13 @@ banner: figures/banner.png
 exports:
   - format: typst
     archived: "2026-08-09T15:02:11Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/ismip-hom-benchmark-experiments-using-underworld/
     template: ../../templates/pdf
     output: ismip-hom-benchmark-experiments-using-underworld.pdf
     article_id: UWTN 2023-001
     article_version: 1.0.0
-parts:
-  abstract: Abstract Numerical models have become an indispensable tool for understanding and predicting the flow of ice sheets and glaciers. Here we present the full-Stokes software package Underworld to the glaciological community. The code is already well established in simulating complex geodynamic systems. Advantages for glaciology are that it provides a full-Stokes solution for elastic–viscous–plastic materials and includes mechanical anisotropy. Underworld uses a material point method to track the fu
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 

@@ -3,7 +3,7 @@ id: UWTN 2025-003
 slug: how-many-processors-should-we-use-to-solve-problem-x
 title: "How many processors should we use to solve Problem X?"
 article_type: technical-note
-status: published
+status: migrated
 authors:
   - name: Juan Carlos Graciosa
     orcid: 0000-0003-0817-354X
@@ -15,6 +15,7 @@ publication_date: 2025-07-27
 version: 1.0.0
 legacy_doi: 10.59350/tjm5s-sfs33
 archive_doi: 10.6084/m9.figshare.33193554
+archived_at: 2026-08-09T15:16:51Z
 license: CC-BY-4.0
 canonical_path: /how-many-processors-should-we-use-to-solve-problem-x/
 legacy_paths:
@@ -33,4 +34,3 @@ figures: 2
 source: ghost-migration
 ghost_uuid: 013429d5-0c2d-4a19-88b2-75ad4e40548a
 repository_record_id: 33193554
-archived_at: 2026-08-09T15:16:51Z

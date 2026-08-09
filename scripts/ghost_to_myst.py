@@ -898,8 +898,17 @@ def frontmatter(rec, doi, article_id, banner=None):
     # whole PDF export down with it -- but this one ends up inside a quoted YAML
     # scalar, where a backslash is doubled and so stops escaping anything. The
     # numeric character reference survives quoting and renders as "@".
-    abstract = clean_excerpt(
-        rec.get("custom_excerpt") or rec.get("excerpt") or "").replace("@", "&#64;")
+    # custom_excerpt ONLY.
+    #
+    # A custom excerpt is a standfirst somebody wrote -- a lead-in to the
+    # article, in the newspaper sense. Ghost's `excerpt` is not written at all:
+    # it is the first 300-odd characters of the body, cut wherever that lands.
+    # Used as an abstract it duplicates the opening paragraph the reader is
+    # about to read, and stops mid-word -- one ended at "doi:10.10".
+    #
+    # 26 of these notes have a standfirst and 27 do not. The 27 lose nothing by
+    # having no abstract: their first paragraph follows immediately.
+    abstract = clean_excerpt(rec.get("custom_excerpt") or "").replace("@", "&#64;")
     # An archival PDF only where the content is load-bearing. An announcement is
     # dated by nature, and a citable snapshot of "version 2.10 is out" serves
     # nobody -- see article-types.yml, which is the one place that decides.

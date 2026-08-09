@@ -15,15 +15,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:15:30Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/craton-formation-and-the-onset-of-plate-tectonics/
     template: ../../templates/pdf
     output: craton-formation-and-the-onset-of-plate-tectonics.pdf
     article_id: UWTN 2018-001
     article_version: 1.0.0
-parts:
-  abstract: "(they don't make them like they used to ... ) Cratons are anomalously-strong regions of the continents that have largely resisted tectonic forces for billions of years. How such strong zones could be forged in a hot, low-viscosity, low stress, early-Earth has been a long-standing puzzle for geologists. Adam Beall, Katie Cooper and I have recently proposed that cratons were made by the catastrophic switching on of plate tectonics. An event in which the stresses were larger than they have ever b"
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
 

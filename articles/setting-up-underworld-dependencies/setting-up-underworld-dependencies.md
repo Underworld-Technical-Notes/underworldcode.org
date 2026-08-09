@@ -16,15 +16,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:56:07Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/setting-up-underworld-dependencies/
     template: ../../templates/pdf
     output: setting-up-underworld-dependencies.pdf
     article_id: UWTN 2022-001
     article_version: 1.0.0
-parts:
-  abstract: "https://doi.org/10.59350/t7ghx-8f823 The following is compatible with Ubuntu 20.04 under Windows 10/11 WSL 2 (Windows Subsystem for Linux). PETSc, the Portable, Extensible Toolkit for Scientific Computation is the main dependency required for building Underworld. In the following, I will describe my current workflow for configuring and installing PETSc on Linux. The instructions are also valid for the Windows Subsystem for Linux (WSL2) using the Ubuntu 20.04 app. Build dependencies The mi"
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@markusspiske?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Markus Spiske</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 

@@ -3,7 +3,7 @@ id: UWTN 2024-002
 slug: underworld3-come-and-get-it
 title: Underworld3
 article_type: development-note
-status: published
+status: migrated
 authors:
   - name: Louis Moresi
     orcid: 0000-0003-3685-174X
@@ -12,6 +12,7 @@ publication_date: 2024-12-08
 version: 1.0.0
 legacy_doi: 10.59350/z0c1r-rpg80
 archive_doi: 10.6084/m9.figshare.33193533
+archived_at: 2026-08-09T15:10:52Z
 license: CC-BY-4.0
 canonical_path: /underworld3-come-and-get-it/
 legacy_paths:
@@ -30,4 +31,3 @@ figures: 3
 source: ghost-migration
 ghost_uuid: 35d25601-f65e-45d2-9e33-c4086ef699b9
 repository_record_id: 33193533
-archived_at: 2026-08-09T15:10:52Z

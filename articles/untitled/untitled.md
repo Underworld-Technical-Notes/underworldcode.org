@@ -13,15 +13,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:06:33Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/untitled/
     template: ../../templates/pdf
     output: untitled.pdf
     article_id: UWTN 2017-003
     article_version: 1.0.0
-parts:
-  abstract: "Modelling the relative time-scales of the Rayleigh-Taylor Instability and delamination, using Underworld With Adam Beall, Cardiff University. Why model sub-continental gravitational instabilities? Within the plate tectonics framework, continents are generally considered to have a much lower density than the asthenosphere below and therefore avoid the kind of recycling that the oceanic crust and lithosphere undergoes. The mantle lithosphere below some continents however can become denser than t"
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 

@@ -3,7 +3,7 @@ id: UWTN 2025-001
 slug: underworld-and-singularity
 title: Underworld and Singularity
 article_type: technical-note
-status: published
+status: migrated
 authors:
   - name: Julian Giordani
     orcid: 0000-0003-4515-9296
@@ -12,6 +12,7 @@ publication_date: 2025-04-09
 version: 1.0.0
 legacy_doi: 10.59350/hfgvn-dkk05
 archive_doi: 10.6084/m9.figshare.33193545
+archived_at: 2026-08-09T15:13:50Z
 license: CC-BY-4.0
 canonical_path: /underworld-and-singularity/
 legacy_paths:
@@ -29,4 +30,3 @@ figures: 2
 source: ghost-migration
 ghost_uuid: 9d5e8d64-85f2-47f6-8b43-21d358cdfaa1
 repository_record_id: 33193545
-archived_at: 2026-08-09T15:13:50Z

@@ -13,16 +13,14 @@ keywords:
   - "#editors-pick"
 exports:
   - format: typst
-    series: "Underworld Technical Notes"
-    logo: ../../static/uwtn-logo.png
-    origin_url: https://www.underworldcode.org/viscoelasticity/
     archived: "2026-08-09T08:53:38Z"
+    logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
+    origin_url: https://www.underworldcode.org/viscoelasticity/
     template: ../../templates/pdf
     output: viscoelasticity.pdf
     article_id: UWTN 2019-001
     article_version: 1.0.0
-parts:
-  abstract: "Viscoelastic materials exhibit the properies of both solids and liquids, with deformation rates dependent on both the viscous stress and elastic stress rate. In a Maxwell viscoelastic material the strain rate D is proportional to the sum of the stress and the stress rate, with viscosity and shear modulus."
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 

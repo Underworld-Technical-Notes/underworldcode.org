@@ -14,15 +14,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T13:11:04Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/underworld-2/
     template: ../../templates/pdf
     output: underworld-2.pdf
     article_id: UWTN 2015-001
     article_version: 1.0.0
-parts:
-  abstract: "(aka the Underworld renovation project) Underworld [https://www.underworldcode.org/] is our parallel, particle-in-cell, finite element geodynamics code [1]. For the past year or so, the Underworld team [http://www.facebook.com/underworldcode] has been working on a refurbished user interface. We've known for a long time that it needed to be done but we finally bit the bullet. We settled on turning underworld into a python code for two main reasons: 1) because many of our dependencies already ha"
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 

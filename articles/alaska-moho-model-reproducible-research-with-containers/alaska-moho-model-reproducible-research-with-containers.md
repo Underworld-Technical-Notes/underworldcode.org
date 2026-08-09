@@ -15,15 +15,13 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:21:43Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/alaska-moho-model-reproducible-research-with-containers/
     template: ../../templates/pdf
     output: alaska-moho-model-reproducible-research-with-containers.pdf
     article_id: UWTN 2018-003
     article_version: 1.0.0
-parts:
-  abstract: "Making your research reproducible means that you provide the entire workflow from data, through software and post-processing freely available. Not only can somebody repeat your experiments and verify them, they can build upon them. In lab-based disciplines, there are many further challenges, but in research that is predominantly based on data processing, this ought to be an achievable goal. We are releasing all of the background for our recent paper on the Alaska Moho (Miller & Moresi, 2018) to"
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 

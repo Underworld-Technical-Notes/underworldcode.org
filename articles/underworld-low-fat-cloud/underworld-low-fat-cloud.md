@@ -17,8 +17,8 @@ keywords:
 exports:
   - format: typst
     archived: "2026-08-09T14:30:28Z"
-    series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/underworld-low-fat-cloud/
     template: ../../templates/pdf
     output: underworld-low-fat-cloud.pdf

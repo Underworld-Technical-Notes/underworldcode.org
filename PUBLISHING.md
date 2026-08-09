@@ -70,6 +70,33 @@ Publishing it as a *new article* instead would give the same guide two
 identifiers with nothing connecting them, and leave whoever cited the first one
 holding a reference to advice the project no longer gives.
 
+### Runnable examples, and why they make versioning the normal case
+
+A technical note or a how-to should come with the notebook that runs it.
+Anything in `articles/<slug>/examples/` is deposited with the note, so the
+archive holds the code and data as well as the prose -- a how-to whose notebook
+lives only on the website is a how-to that stops working when the website does.
+
+Examples age faster than the prose around them. An Underworld release changes an
+API, a notebook stops running, and the note is still correct about the method
+while being wrong about the call. **That is a new version of the same deposit,
+not a new article.** Concretely:
+
+1. update the notebook in `examples/`, and the prose if it needs it;
+2. merge to `main`;
+3. run the deposit with `--new-version`.
+
+Figshare publishes it as v2 and mints a version DOI beside the concept one. The
+**concept DOI is what to circulate** -- `10.6084/m9.figshare.<id>` with no `.vN`
+-- because it always resolves to the newest version, so a citation made in 2026
+still lands on the working notebook in 2030. Anyone who needs the exact text
+somebody read can cite `.v1`.
+
+This is the case Figshare was chosen for, more than the first deposit was. A
+provider that could only mint on first publication would force every revision to
+become a separate record, and the series would accumulate near-duplicate
+identifiers for one piece of work.
+
 ## One identifier to circulate, and what the record says about the original
 
 **Every archival note is deposited**, excepting the types that get no archival

@@ -59,6 +59,18 @@ version and may pick up corrections, better links and discussion.
 
 ## Things worth knowing before you write
 
+**Attach the notebook.** A note that describes how to do something should come
+with something that does it. Put notebooks and any small data files in
+`articles/<slug>/examples/`; they are deposited with the note, so the archive
+carries working code rather than a description of code.
+
+Examples date faster than prose — an Underworld release changes an API and a
+notebook stops running, while the note remains right about the method. When that
+happens the fix is a **new version of the same deposit**, not a new note: update
+the notebook, merge, and the DOI you have already circulated starts resolving to
+the working version. That is deliberate, and it is why the series is on a
+repository that versions.
+
 **Commit your figure sources, not just the pictures.** If a figure is drawn from
 data, the script and the data belong beside it. Sixteen figures in the older
 material on this site went dark when the server they were linked from was
