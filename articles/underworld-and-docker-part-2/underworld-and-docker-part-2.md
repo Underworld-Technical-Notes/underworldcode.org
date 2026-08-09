@@ -17,6 +17,7 @@ keywords:
   - AuScope UW Cloud
 exports:
   - format: typst
+    archived: "2026-08-09T13:33:19Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/underworld-and-docker-part-2/
