@@ -1011,3 +1011,25 @@ def test_no_article_grows_a_second_references_section():
         assert not offenders, \
             "%s: a DOI link in the reference list will become a citation: %s" % (
                 path.parent.name, offenders[:2])
+
+
+def test_the_deposit_runs_inside_the_environment():
+    """It shells out to `myst` to rebuild the PDF with the reserved DOI on it.
+
+    Invoked as bare `python3`, myst is not on PATH: the batch stopped on its
+    first article with FileNotFoundError. It stopped rather than uploading a
+    stale PDF, which is the guard working -- but the guard should not be what
+    catches a missing environment.
+    """
+    workflow = (ROOT / ".github" / "workflows" / "deposit.yml").read_text(encoding="utf-8")
+    assert "python3 scripts/deposit.py" not in workflow, \
+        "the deposit must run through pixi, or `myst` is missing"
+    assert "pixi run deposit" in workflow
+
+
+def test_identifiers_are_recorded_even_when_a_deposit_fails():
+    """A draft with a reserved DOI that the repository does not know about is
+    the worst state this design has: the duplicate guard has nothing to check."""
+    workflow = (ROOT / ".github" / "workflows" / "deposit.yml").read_text(encoding="utf-8")
+    commit = workflow.split("- name: Commit the identifiers")[1]
+    assert "always()" in commit.split("run:")[0]

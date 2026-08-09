@@ -76,44 +76,48 @@ jobs:
 
       - name: Dry run
         if: inputs.mode == 'dry-run'
-        run: python3 scripts/deposit.py --slug "${{ inputs.slug }}"
+        run: pixi run deposit -- --slug "${{ inputs.slug }}"
 
       - name: Create the draft and reserve the DOI
         if: inputs.mode == 'reserve'
         env:
           FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
-        run: python3 scripts/deposit.py --slug "${{ inputs.slug }}" --live
+        run: pixi run deposit -- --slug "${{ inputs.slug }}" --live
 
       - name: Upload the package
         if: inputs.mode == 'upload'
         env:
           FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
-        run: python3 scripts/deposit.py --slug "${{ inputs.slug }}" --live
+        run: pixi run deposit -- --slug "${{ inputs.slug }}" --live
 
       - name: Publish
         if: inputs.mode == 'publish'
         env:
           FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
-        run: python3 scripts/deposit.py --slug "${{ inputs.slug }}" --live --publish
+        run: pixi run deposit -- --slug "${{ inputs.slug }}" --live --publish
 
       - name: Deposit and publish everything outstanding
         if: inputs.mode == 'deposit-all'
         env:
           FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
-        run: python3 scripts/deposit.py --all --live --publish
+        run: pixi run deposit -- --all --live --publish
 
       - name: Delete the draft
         if: inputs.mode == 'delete-draft'
         env:
           FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
-        run: python3 scripts/deposit.py --slug "${{ inputs.slug }}" --live --delete-draft
+        run: pixi run deposit -- --slug "${{ inputs.slug }}" --live --delete-draft
 
       # The record id and the DOI are written into metadata.yml as they are
       # obtained, so a run that dies partway can resume instead of reserving a
       # second identifier. That only helps if the change gets back to the
       # repository, so it is committed here rather than left on the runner.
       - name: Commit the identifiers
-        if: inputs.mode != 'dry-run'
+        # always(): a run that dies partway has usually already created a draft
+        # and reserved a DOI. If that never reaches the repository, the guard
+        # against a second record has nothing to check -- which happened once
+        # already, when the push 403'd.
+        if: always() && inputs.mode != 'dry-run'
         run: |
           if git diff --quiet -- articles; then
             echo "no identifier changes to record"
