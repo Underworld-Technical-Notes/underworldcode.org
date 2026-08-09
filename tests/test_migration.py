@@ -1075,3 +1075,24 @@ def test_publish_checks_the_fields_figshare_requires():
     guard = source.split("if publish or new_version:")[1].split("provider.publish")[0]
     for field in ('"title"', '"authors"', '"files"', '"categories"', '"tags"'):
         assert field in guard, "publish does not check %s" % field
+
+
+def test_every_mapped_category_is_a_leaf():
+    """Figshare refuses to assign a PARENT category.
+
+    "Not allowed to set category Geophysics in article" -- and the deposit dies
+    at create, after the previous article has already been published, so the
+    batch stops halfway. The leaf/parent split is a property of Figshare's
+    vocabulary, not of ours, so it is checked against a snapshot taken from
+    /v2/categories rather than trusted.
+    """
+    leaves = {int(line) for line in
+              (ROOT / "inventory" / "figshare-leaf-categories.txt")
+              .read_text(encoding="utf-8").splitlines()
+              if line.strip() and not line.startswith("#")}
+    ids = set(deposit.CATEGORIES["default"])
+    for axis in ("subjects", "methods"):
+        for values in deposit.CATEGORIES[axis].values():
+            ids.update(values)
+    offenders = sorted(ids - leaves)
+    assert not offenders, "not assignable (parent categories): %s" % offenders

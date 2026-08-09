@@ -10,6 +10,13 @@
 # project, and "Geodynamics" is a category in its own right rather than
 # something to be approximated.
 #
+# ONLY LEAF CATEGORIES CAN BE ASSIGNED. Figshare refuses a parent category with
+# "Not allowed to set category <name> in article" -- "Geophysics" (25843) and
+# "Numerical and computational mathematics" (29806) are both parents, and both
+# were in this file until a deposit failed on them. A category is a parent if it
+# appears as another category's `parent_id` in /v2/categories; the test below
+# checks every id here against that.
+#
 # Two are applied to EVERY note, because they are true of every note:
 #
 #   25855  Geodynamics
@@ -26,7 +33,7 @@ default:
 
 subjects:
   mantle-convection:
-    - 25843   # Geophysics
+    - 25789   # Computational modelling and simulation in earth sciences
   tectonics-lithosphere:
     - 25834   # Structural geology and tectonics
   earthquakes-faults:
@@ -56,7 +63,7 @@ methods:
   parallel-hpc:
     - 28987   # High performance computing
   benchmarks-validation:
-    - 29806   # Numerical and computational mathematics
+    - 29812   # Numerical analysis
   # No category. Non-dimensionalisation is a practice rather than a field, and
   # every candidate here would be a stretch.
   units-scaling: []
