@@ -986,3 +986,28 @@ def test_every_archival_pdf_is_branded_and_says_where_it_came_from():
         for option in ("logo", "origin_url"):
             assert _re.search(r"^    %s:\s*\S" % option, head, _re.M), \
                 "%s: the archival PDF has no %s" % (path.parent.name, option)
+
+
+def test_no_article_grows_a_second_references_section():
+    """A hand-written reference list must not become a citation.
+
+    MyST turns any link whose URL contains a DOI into a citation and appends its
+    own References section, so seven articles that already had one ended up with
+    two -- the author's entries collapsed to "Author (year)" above a generated
+    list. Ghost gave these authors no citation system; a link in a reference
+    list is a reference.
+    """
+    import re as _re
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        text = path.read_text(encoding="utf-8")
+        heading = _re.search(r"^#+ *(References|Bibliography) *$", text, _re.M | _re.I)
+        if not heading:
+            continue
+        section = text[heading.end():]
+        section = _re.split(r"^#+ ", section, maxsplit=1, flags=_re.M)[0]
+        offenders = [url for _t, url in _re.findall(r"\[([^\]]*)\]\(([^)]*)\)", section)
+                     if _re.search(r"10\.\d{4,9}/", url)]
+        offenders += _re.findall(r'<a href="[^"]*10\.\d{4,9}/[^"]*"', section)
+        assert not offenders, \
+            "%s: a DOI link in the reference list will become a citation: %s" % (
+                path.parent.name, offenders[:2])

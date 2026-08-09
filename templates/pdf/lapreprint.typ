@@ -303,11 +303,9 @@
   if (article-version != none) { cells.push(field("Version", article-version)) }
   if (license != none) { cells.push(field("Licence", license)) }
   if (software-version != none) { cells.push(field("Underworld", software-version)) }
-  // The DOI is the published identifier; slugs are an implementation detail of
-  // the website and do not belong on the archival record.
-  if (doi != none) {
-    cells.push(field("DOI", doi, link-target: "https://doi.org/" + doi))
-  }
+  // The DOI is NOT repeated here. It already leads the first-page header, which
+  // is where a reader looks for it, and printing it twice on one page makes the
+  // margin strip look like a form rather than a colophon.
   // A fixed document should say when it was fixed, and against what. Without
   // the date a reader cannot tell whether the living article has moved on;
   // without the link they cannot go and see.

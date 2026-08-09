@@ -47,6 +47,64 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 SITE = "https://www.underworldcode.org"
 
+REFERENCE_HEADING = re.compile(r"^#+ *(References|Bibliography) *$", re.M | re.I)
+DOI_IN_URL = re.compile(r"10\.\d{4,9}/", re.I)
+
+
+def plain_reference_links(body):
+    """Strip the hyperlink from DOI links inside a reference list.
+
+    MyST turns any link whose URL contains a DOI into a CITATION, and then
+    appends its own References section for it. Seven of these articles already
+    had a hand-written reference list, so they came out with two: the author's,
+    with its linked entries collapsed to "Farrington et al. (2014)", and a
+    generated one underneath.
+
+    Ghost gave these authors no citation system. A link in a reference list is a
+    reference, not a citation, and the fix is to stop it looking like one.
+
+    Neither a raw `<a>` nor `settings.parser.infer_dois_from_urls: false`
+    prevents it -- both were tried. Removing the href is what works.
+
+    Done here, at build time, rather than in the converter, because the recent
+    notes do not come from the converter at all: their text is merged from the
+    authors' originals, and a rule that lived in the conversion would not reach
+    them.
+
+    The cost is the click-through. Where the link text IS the DOI the reader
+    still sees it and loses only one action; where it is the citation itself,
+    the entry still carries authors, journal, volume and pages. Notes written
+    from now on should use a real bibliography and get both.
+    """
+    heading = REFERENCE_HEADING.search(body)
+    if not heading:
+        return body, 0
+    tail = body[heading.end():]
+    following = re.search(r"^#+ ", tail, re.M)
+    section = tail[:following.start()] if following else tail
+
+    changed = 0
+
+    def unlink_markdown(match):
+        nonlocal changed
+        if not DOI_IN_URL.search(match.group(2)):
+            return match.group(0)
+        changed += 1
+        return match.group(1)
+
+    def unlink_html(match):
+        nonlocal changed
+        if not DOI_IN_URL.search(match.group(1)):
+            return match.group(0)
+        changed += 1
+        return match.group(2)
+
+    fixed = re.sub(r"\[([^\]]*)\]\(([^)]*)\)", unlink_markdown, section)
+    fixed = re.sub(r'<a href="([^"]*)"[^>]*>(.*?)</a>', unlink_html, fixed, flags=re.S)
+    if not changed:
+        return body, 0
+    return body[:heading.end()] + fixed + (tail[following.start():] if following else ""), changed
+
 
 def set_frontmatter(head, key, value):
     if re.search(r"^%s:\s*.+$" % key, head, re.M):
@@ -80,7 +138,7 @@ def main():
 
     import build_index
 
-    changed, stale = 0, []
+    changed, stale, references = 0, [], 0
     for meta_path in sorted(ARTICLES.glob("*/metadata.yml")):
         meta = build_index.read_yaml(meta_path)
         slug = meta.get("slug")
@@ -109,6 +167,11 @@ def main():
             # without a word. The PDF simply had no Archived line.
             exports["archived"] = '"%s"' % meta["archived_at"]
 
+        unlinked, count = plain_reference_links(body)
+        if count:
+            body = unlinked
+            references += count
+
         before = head
         # An option that was once written under a different name stays in the
         # file forever otherwise, and MyST reports it as unknown on every build.
@@ -117,7 +180,7 @@ def main():
             head = set_frontmatter(head, key, value)
         for key, value in exports.items():
             head = set_export_option(head, key, value)
-        if head == before:
+        if head == before and not count:
             continue
 
         stale.append("%s: %s%s" % (
@@ -136,6 +199,9 @@ def main():
             sys.exit("%d article(s) would carry the wrong DOI on their PDF" % len(stale))
         print("every article's front matter carries the right DOI")
         return
+    if references:
+        print("  %d reference link(s) left as text, so they stay references "
+              "rather than becoming citations" % references)
     print("synced archival metadata on %d article(s)" % changed)
 
 

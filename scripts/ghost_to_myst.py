@@ -351,6 +351,9 @@ def escape_at_signs(text):
     return AT_SIGN.sub(r"\\@", text)
 
 
+DOI_IN_URL = re.compile(r"10\.\d{4,9}/", re.I)
+
+
 INLINE_WRAP = {
     "strong": "**", "b": "**",
     "em": "*", "i": "*",
@@ -382,6 +385,8 @@ class GhostToMyst(HTMLParser):
         self.inline_images = 0
         self.linked_images = 0
         self.galleries = 0
+        self.raw_references = 0
+        self._in_references = False
         self.restored_captions = 0
 
     # -- helpers ---------------------------------------------------------
@@ -423,6 +428,7 @@ class GhostToMyst(HTMLParser):
             self._flush()
         elif tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
             self._flush()
+            self._in_references = False   # cleared by the next heading of any level
             self._buf.append("#" * int(tag[1]) + " ")
         elif tag == "pre":
             self._flush()
@@ -549,6 +555,11 @@ class GhostToMyst(HTMLParser):
         if tag == "p":
             self._flush()
         elif tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
+            # A hand-written reference list starts here. Ghost gave authors no
+            # citation system, so this heading plus a run of links is how every
+            # reference in this corpus was written.
+            heading = "".join(self._buf).lstrip("# ").strip().lower()
+            self._in_references = heading.rstrip(":") in ("references", "bibliography")
             self._flush()
         elif tag == "pre":
             code = "".join(self._buf).strip("\n")
@@ -565,7 +576,9 @@ class GhostToMyst(HTMLParser):
             text = "".join(self._link_text).strip()
             href = self._clean_href(self._href or "")
             self._href = None
-            if text:
+            if not text:
+                pass
+            else:
                 self._buf.append("[%s](%s)" % (text, href) if href else text)
         elif tag in ("ul", "ol"):
             self._flush()
@@ -1064,6 +1077,7 @@ def main():
     linked = 0
     galleries = 0
     restored = 0
+    raw_refs = 0
 
     for rec in selected:
         slug = rec["slug"]
@@ -1106,6 +1120,7 @@ def main():
         inline += conv.inline_images
         galleries += conv.galleries
         restored += conv.restored_captions
+        raw_refs += conv.raw_references
         linked += conv.linked_images
         all_dropped.update(conv.dropped)
 
@@ -1137,6 +1152,9 @@ def main():
     if restored:
         print("  %d caption(s) restored from the pre-Ghost site" % restored,
               file=sys.stderr)
+    if raw_refs:
+        print("  %d reference link(s) left as written rather than turned into "
+              "citations" % raw_refs, file=sys.stderr)
     if galleries:
         print("  %d gallery card(s) emitted as multi-panel figures" % galleries,
               file=sys.stderr)
