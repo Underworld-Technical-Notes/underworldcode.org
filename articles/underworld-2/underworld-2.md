@@ -13,6 +13,7 @@ keywords:
   - Underworld Code
 exports:
   - format: typst
+    archived: "2026-08-09T13:11:04Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/underworld-2/

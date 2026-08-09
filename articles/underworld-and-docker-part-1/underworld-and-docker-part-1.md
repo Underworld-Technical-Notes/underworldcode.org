@@ -6,7 +6,7 @@ authors:
     orcid: 0000-0003-4515-9296
     affiliations:
       - University of Sydney
-doi: 10.59350/y8762-pe280
+doi: 10.6084/m9.figshare.33193329
 license: CC-BY-4.0
 banner: figures/banner.png
 keywords:
