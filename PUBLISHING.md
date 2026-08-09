@@ -248,6 +248,56 @@ once.
    A repository secret rather than an organisation or environment one: nothing
    else needs it, and a narrower scope is a smaller blast radius.
 
+### The token grants everything
+
+Figshare personal tokens have exactly one scope, `all`, and the documentation is
+blunt about it: "a personal token which grants you full access to your account."
+There is no read-only or deposit-only variant to fall back on.
+
+So the token can publish, and it can delete. **None of the safety in this design
+comes from the token** -- it comes from the tooling around it: dry-run by
+default, publishing behind an explicit flag, and `repository_record_id` refusing
+a second deposit for an article that already has one. Those guards are the whole
+of the protection, which is a reason to build them before the first real run
+rather than after.
+
+Sent as `Authorization: token <TOKEN>`.
+
+The token belongs to the **project account**, not to a person -- which is the
+same succession property the account itself was chosen for.
+
+### Not connecting the GitHub integration
+
+Figshare offers to connect a GitHub account. It is the wrong tool here and
+should be left alone.
+
+It imports a **repository** and creates a new version of that item on every
+GitHub *release*, with the title and description pulled from GitHub and an MIT
+licence applied by default. That is a software-archiving workflow, and it
+mismatches this one on every axis that matters:
+
+| | the integration | what we need |
+|---|---|---|
+| what is deposited | a repository snapshot | one archival PDF per note |
+| granularity | one item per repository | one item per article |
+| metadata | GitHub's title and description | our authors, ORCIDs, abstract, licence |
+| when the DOI exists | on release | **before the PDF is built**, so it can be printed on it |
+
+The last row is decisive, and it is the same reason the Zenodo webhook was ruled
+out: an identifier minted at publication cannot appear on the document it
+identifies.
+
+There is a worse problem than mismatch. A second deposit path would create
+Figshare items that our tooling did not create and does not know about, so
+`repository_record_id` -- the guard against minting a second DOI for a note that
+already has one -- would have nothing to check. The one failure this design
+exists to prevent is exactly the one the integration would enable.
+
+Archiving the Underworld **source** is a real and separate need, and it is
+already met: Underworld has been on Zenodo since 2018 under the master DOI
+`10.5281/zenodo.1436039`, with a DOI per release. Connecting Figshare to GitHub
+would duplicate an arrangement that already works.
+
 ### Where the deposit can run, and where it cannot
 
 GitHub does not expose secrets to workflows triggered by a pull request **from a
