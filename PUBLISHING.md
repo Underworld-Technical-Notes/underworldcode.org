@@ -58,6 +58,18 @@ updates to a published article affect only the private copy until an explicit
 publish. That matches the brief: cosmetic web corrections need no deposit, and
 a substantive change is a new version.
 
+**A superseded guide becomes a new version, not a new article.** This is the
+editorial rule, and it is why the how-tos are deposited at all. The container
+instructions are the case in point: useful to know about, and going out of date.
+When they are rewritten, the deposit gets a new version related to its
+predecessor. The identifier keeps pointing at the thing it named, the reader
+gets the current text, and the superseded text stays retrievable rather than
+being quietly replaced.
+
+Publishing it as a *new article* instead would give the same guide two
+identifiers with nothing connecting them, and leave whoever cited the first one
+holding a reference to advice the project no longer gives.
+
 ## Two DOIs, two objects
 
 **Every archived note is deposited**, not only the new ones — excepting the
@@ -181,11 +193,14 @@ Figshare**: `authors` is set per record. The account owns the deposit; each
 note credits its real authors with their real ORCIDs, exactly as `authors.yml`
 already records them.
 
-**Continuity comes from the email address.** Register the account to an address
-on `underworldcode.org` — the project's own domain, held to 2035 — so the
-account follows the domain rather than a person or an employer. The domain
-currently has no MX records, so this needs mail forwarding adding at the
-registrar first.
+**Continuity comes from the email address**, and it is `help@underworldcode.org`
+— the project's own domain, held to 2035, so the account follows the domain
+rather than a person or an employer.
+
+The domain has **no MX records**, so mail forwarding has to be added at
+Netregistry *before* the account is created: Figshare sends a confirmation to
+that address, and changing the email on an existing account afterwards is more
+trouble than getting it right once. Send a test message to it first.
 
 ### The series as a community object
 
@@ -225,8 +240,24 @@ once.
 1. The account decision above.
 2. A personal API token from that account
    (Figshare → Applications → Personal tokens).
-3. The token stored as a GitHub Actions secret, `FIGSHARE_TOKEN`, so a
-   publication can run from CI. Never in the repository.
+3. The token stored as a GitHub Actions **repository** secret,
+   `FIGSHARE_TOKEN`, so a publication can run from CI. Never in the repository
+   itself. `gh secret set FIGSHARE_TOKEN --repo <org>/<repo>` prompts for the
+   value, so it never reaches the shell history.
+
+   A repository secret rather than an organisation or environment one: nothing
+   else needs it, and a narrower scope is a smaller blast radius.
+
+### Where the deposit can run, and where it cannot
+
+GitHub does not expose secrets to workflows triggered by a pull request **from a
+fork**. That is correct behaviour, and it decides the design: contributors
+submit notes by pull request, so the deposit cannot run on the PR. It runs **on
+merge to `main`**, or from an explicit `workflow_dispatch`.
+
+That suits the editorial model rather than fighting it — a deposit should follow
+acceptance, not submission — and it is what keeps a stray pull request from
+minting a DOI.
 
 ## What is still to build
 
