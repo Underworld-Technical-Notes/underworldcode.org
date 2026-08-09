@@ -451,9 +451,14 @@ def run(slug, provider, live, publish, new_version, delete_draft):
         return
 
     if not record_id:
+        adopted = provider.find_draft(meta)
         record_id = provider.create_draft(meta)
         set_field(slug, "repository_record_id", record_id)
-        steps.append("created draft %s" % record_id)
+        # Said accurately, because "created" when it in fact adopted an existing
+        # record is the sort of log line that sends somebody looking for a
+        # duplicate that is not there.
+        steps.append("%s draft %s"
+                     % ("adopted existing" if adopted else "created", record_id))
     else:
         record_id = int(record_id)
         steps.append("resuming draft %s" % record_id)
