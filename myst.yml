@@ -18,6 +18,17 @@ project:
   # BEGIN GENERATED TOC
   toc:
     - file: index.md
+    - title: "About"
+      children:
+        - file: pages/ugcomm.md
+        - file: pages/credits.md
+        - file: pages/how-to-cite-underworld.md
+    - title: "Underworld"
+      children:
+        - file: pages/intro-to-underworld.md
+        - file: pages/auscope-cloud.md
+        - file: pages/underworld-model-exchange.md
+        - file: pages/publications-using-uw.md
     - title: "Technical Notes"
       children:
         - file: notes.md
@@ -72,6 +83,7 @@ project:
         - title: "2014"
           children:
             - file: articles/the-dynamics-of-continental-accretion/the-dynamics-of-continental-accretion.md
+        - file: pages/submit.md
     - title: "News & guides"
       children:
         - title: "2025"
@@ -114,9 +126,8 @@ project:
           children:
             - file: articles/underworld-and-docker-part-2/underworld-and-docker-part-2.md
             - file: articles/underworld-and-docker-part-1/underworld-and-docker-part-1.md
-    - title: "Topics"
+    - file: topics/topics.md
       children:
-        - file: topics/topics.md
         - file: topics/topic-benchmarks-validation.md
         - file: topics/topic-finite-elements.md
         - file: topics/topic-mantle-convection.md
@@ -130,16 +141,6 @@ project:
         - file: topics/topic-tectonics-lithosphere.md
         - file: topics/topic-time-integration.md
         - file: topics/topic-units-scaling.md
-    - title: "About"
-      children:
-        - file: pages/auscope-cloud.md
-        - file: pages/credits.md
-        - file: pages/how-to-cite-underworld.md
-        - file: pages/intro-to-underworld.md
-        - file: pages/publications-using-uw.md
-        - file: pages/submit.md
-        - file: pages/ugcomm.md
-        - file: pages/underworld-model-exchange.md
   # END GENERATED TOC
 
 site:

@@ -225,19 +225,17 @@ NAV_BEGIN = "  # BEGIN GENERATED NAV"
 NAV_END = "  # END GENERATED NAV"
 
 
-def write_nav():
-    """Rewrite site.nav in myst.yml from pages.yml.
+def page_config():
+    """slug -> settings from pages.yml, in file order.
 
-    The standing pages are the site's furniture, not its content, so they
-    belong in the header rather than in the sidebar beside the notes -- MyST
-    keeps the two separate, and `nav` takes dropdowns via `children`.
+    Order is meaning here: the header and the sidebar both follow it, so the
+    one file decides both. Read in insertion order, which dicts preserve.
     """
-    config_path = ROOT / "pages.yml"
-    if not config_path.exists():
+    path = ROOT / "pages.yml"
+    if not path.exists():
         return {}
-
     pages, slug = {}, None
-    for raw in config_path.read_text(encoding="utf-8").splitlines():
+    for raw in path.read_text(encoding="utf-8").splitlines():
         if not raw.strip() or raw.lstrip().startswith("#"):
             continue
         if not raw.startswith(" ") and raw.rstrip().endswith(":"):
@@ -246,6 +244,19 @@ def write_nav():
         elif slug and ":" in raw:
             key, _, value = raw.strip().partition(":")
             pages[slug][key.strip()] = value.strip().strip('"')
+    return pages
+
+
+def write_nav():
+    """Rewrite site.nav in myst.yml from pages.yml.
+
+    The standing pages are the site's furniture, not its content, so they
+    belong in the header rather than in the sidebar beside the notes -- MyST
+    keeps the two separate, and `nav` takes dropdowns via `children`.
+    """
+    pages = page_config()
+    if not pages:
+        return {}
 
     # Order is pages.yml's, and groups appear where they first do. It is the
     # one place anybody would look to change the header, so it is the one place
@@ -306,7 +317,28 @@ def write_toc(metas):
         year = str(meta.get("publication_date") or "")[:4] or "undated"
         streams[stream_of(meta)].setdefault(year, []).append(meta)
 
+    # The standing pages, grouped and ordered as pages.yml has them -- the same
+    # order as the header, from the same file. They used to be one flat "About"
+    # group sorted by FILENAME, which put "Run in the cloud" at the top and
+    # "About" second from the bottom. Alphabetical order of a slug is not an
+    # order of relevance to anybody.
+    pages = page_config()
+    page_groups = {}
+    for slug, settings in pages.items():
+        if settings.get("url"):
+            continue                      # /notes and /topics are in the toc already
+        page_groups.setdefault(settings.get("group", "").strip() or "More",
+                               []).append(slug)
+
     lines = ["  toc:", "    - file: index.md"]
+    for group, slugs in page_groups.items():
+        if group == "Technical Notes":
+            continue                      # emitted with the notes themselves
+        lines.append('    - title: "%s"' % group)
+        lines.append("      children:")
+        for slug in slugs:
+            lines.append("        - file: pages/%s.md" % slug)
+
     for stream, title in (("notes", "Technical Notes"), ("posts", "News & guides")):
         by_year = streams[stream]
         if not by_year:
@@ -321,19 +353,18 @@ def write_toc(metas):
             for meta in by_year[year]:
                 slug = meta["slug"]
                 lines.append("            - file: articles/%s/%s.md" % (slug, slug))
+        if stream == "notes":
+            for slug in page_groups.get("Technical Notes", []):
+                lines.append("        - file: pages/%s.md" % slug)
+
     topic_files = sorted((ROOT / "topics").glob("topic-*.md"))
     if topic_files:
-        lines.append('    - title: "Topics"')
+        # The page IS the parent. Listed as a group with topics.md inside it,
+        # the sidebar read "Topics" and then "Topics" again as its first child.
+        lines.append("    - file: topics/topics.md")
         lines.append("      children:")
-        lines.append("        - file: topics/topics.md")
         for path in topic_files:
             lines.append("        - file: topics/%s" % path.name)
-    page_files = sorted((ROOT / "pages").glob("*.md"))
-    if page_files:
-        lines.append('    - title: "About"')
-        lines.append("      children:")
-        for path in page_files:
-            lines.append("        - file: pages/%s" % path.name)
     head, _, rest = text.partition(TOC_BEGIN)
     _, _, tail = rest.partition(TOC_END)
     myst.write_text("%s%s\n%s\n%s%s" % (head, TOC_BEGIN, "\n".join(lines), TOC_END, tail),
@@ -426,25 +457,26 @@ def write_topic_pages(metas):
                  token=slug[len("topic-"):], body=body)
         (directory / ("%s.md" % slug)).write_text(page, encoding="utf-8")
 
+    # This page does NOT list the topics. Every one of them is in the sidebar
+    # beside it, as a child of this page, so a list here was the same links
+    # twice on one screen. What it can say that the sidebar cannot: what the two
+    # axes mean, how to reach a facet from the search box, and which facets the
+    # series has not covered yet.
     sections = []
     for axis, heading in (("subjects", "Subject"), ("methods", "Method")):
-        terms = [(t_, e) for t_, e in topics.items() if axis_of.get(t_) == axis]
+        terms = [t_ for t_ in topics if axis_of.get(t_) == axis]
         if not terms:
             continue
-        links = "".join(
-            '<a class="uwtn-topic-link" href="/%s/">%s<span class="uwtn-topic-count">%d</span></a>'
-            % (topic_slug(term), text(label_of.get(term, term)), len(entries))
-            for term, entries in sorted(terms, key=lambda kv: (-len(kv[1]), kv[0])))
         unused = sorted(t_ for t_ in vocab.get(axis, {}) if t_ not in topics)
         note = ""
         if unused:
             # Shown rather than hidden: an empty facet is a statement about the
             # corpus -- these are subjects the series has not covered yet.
-            note = ('<div class="uwtn-unused">Not yet used: %s</div>'
+            note = ('<div class="uwtn-unused">Not yet written about: %s</div>'
                     % ", ".join(text(label_of[t_]) for t_ in unused))
         sections.append('<div class="uwtn-axis"><div class="uwtn-year">%s</div>'
-                        '<div class="uwtn-topic-list">%s</div>%s</div>'
-                        % (heading, links, note))
+                        '<div class="uwtn-standfirst">%d in use.</div>%s</div>'
+                        % (heading, len(terms), note))
 
     (directory / "topics.md").write_text(
         '---\ntitle: Topics\nsite:\n  hide_outline: true\n---\n\n'
@@ -452,8 +484,11 @@ def write_topic_pages(metas):
         '<div class="uwtn-wordmark">Topics</div>'
         '<div class="uwtn-standfirst">Notes are classified on two axes: the Earth\u2019s '
         'behaviour they are about, and the computational method they use. Many are '
-        'purely about method, and carry no subject. Each facet has a page, and can '
-        'be reached from the search box as <code>tag:name</code>.</div></div>\n\n'
+        'purely about method and carry no subject. Every facet is listed beside '
+        'this page, and each has a page of its own.</div>'
+        '<div class="uwtn-query">In the search box, <code>tag:solvers</code> '
+        'finds the notes on a facet directly \u2014 any facet name works.</div>'
+        '</div>\n\n'
         + "\n".join(sections) + "\n", encoding="utf-8")
 
     return {tag: (topic_slug(tag), len(entries)) for tag, entries in topics.items()}
