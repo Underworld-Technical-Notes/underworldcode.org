@@ -50,7 +50,7 @@ But, since the software we release is also used to interpolate the surfaces, and
   - [mybinder.org/v2](https://mybinder.org/v2/gh/lmoresi/miller-moho-binder/publication)
 :::
 
-See [pypi.org/project/miller_alaskamoho_srl2018](https://pypi.org/project/miller_alaskamoho_srl2018/) for a full list of installation / running options.
+See [pypi.org/project/miller_alaskamoho_srl2018](https://pypi.org/project/miller%5Falaskamoho%5Fsrl2018/) for a full list of installation / running options.
 
 The software is also tracked on Zenodo
 

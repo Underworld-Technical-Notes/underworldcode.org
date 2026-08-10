@@ -80,7 +80,7 @@ Unfortunately, we were only able to run these scaling models once (sometimes twi
   
 We hope our Underworld user community find these results useful for understanding what one can expect when executing Underworld on a HPC facilities.
 
-For anyone wanting to reproduce these results all scripts used to run and analyse the results are stored [here](https://github.com/underworldcode/scaling_scripts).
+For anyone wanting to reproduce these results all scripts used to run and analyse the results are stored [here](https://github.com/underworldcode/scaling%5Fscripts).
 
 Finally we thank the following supporting project/support schemes:
 

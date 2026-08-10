@@ -105,7 +105,7 @@ for (let i = 2019; i >= 1995; i--) {
 </script>
 ```
 
-For more information on how to use the zotero api consult[their documentation](https://www.zotero.org/support/dev/web_api/v3/start) and particularly, see the "[basics](https://www.zotero.org/support/dev/web_api/v3/basics)" page to see how to write different queries.
+For more information on how to use the zotero api consult[their documentation](https://www.zotero.org/support/dev/web%5Fapi/v3/start) and particularly, see the "[basics](https://www.zotero.org/support/dev/web%5Fapi/v3/basics)" page to see how to write different queries.
 
 ## Limitations
 

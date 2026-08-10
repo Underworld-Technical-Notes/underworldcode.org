@@ -47,7 +47,7 @@ Both the sticky air and free surface can be easily implemented in Underworld2. Â
 
 (1) "Stick air" method:
 
-- [Thrust Wedges](https://github.com/underworldcode/UWGeodynamics/blob/development/docs/tutorials/Tutorial_10_Thrust_Wedges.ipynb);
+- [Thrust Wedges](https://github.com/underworldcode/UWGeodynamics/blob/development/docs/tutorials/Tutorial%5F10%5FThrust%5FWedges.ipynb);
 
 (2) Body-fitting method:  
 Free surface can be turned on using the *Model.freesurface* switch.
@@ -56,13 +56,13 @@ Free surface can be turned on using the *Model.freesurface* switch.
 Model.freesurface = True
 ```
 
-- [Simple example](https://github.com/underworldcode/UWGeodynamics/blob/development/docs/examples/1_23_01_FreeSurface_Simple_Example.ipynb),
+- [Simple example](https://github.com/underworldcode/UWGeodynamics/blob/development/docs/examples/1%5F23%5F01%5FFreeSurface%5FSimple%5FExample.ipynb),
 
-- [Case 1 from Crameri et al., (2012)](https://github.com/underworldcode/UWGeodynamics/blob/development/docs/examples/1_23_03_FreeSurface_Crameri2012Case1_Relaxation.ipynb),
+- [Case 1 from Crameri et al., (2012)](https://github.com/underworldcode/UWGeodynamics/blob/development/docs/examples/1%5F23%5F03%5FFreeSurface%5FCrameri2012Case1%5FRelaxation.ipynb),
 
-- [Case 2 from Crameri et al., (2012)](https://github.com/underworldcode/UWGeodynamics/blob/development/docs/examples/1_23_04_FreeSurface_Crameri2012Case2_Rising_Plume.ipynb),
+- [Case 2 from Crameri et al., (2012)](https://github.com/underworldcode/UWGeodynamics/blob/development/docs/examples/1%5F23%5F04%5FFreeSurface%5FCrameri2012Case2%5FRising%5FPlume.ipynb),
 
-- [Rayleigh-Taylor Instability model from Kaus et al. (2010)](https://github.com/underworldcode/UWGeodynamics/blob/development/docs/examples/1_23_02_FreeSurface_Kaus2010_Rayleigh-Taylor_Instability.ipynb),
+- [Rayleigh-Taylor Instability model from Kaus et al. (2010)](https://github.com/underworldcode/UWGeodynamics/blob/development/docs/examples/1%5F23%5F02%5FFreeSurface%5FKaus2010%5FRayleigh-Taylor%5FInstability.ipynb),
 
 ```{figure} figures/kaus2010RTI.gif
 ```

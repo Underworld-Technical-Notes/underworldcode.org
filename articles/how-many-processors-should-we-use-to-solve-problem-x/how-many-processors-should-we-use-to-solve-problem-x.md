@@ -51,9 +51,9 @@ Enter the strong scaling test! In doing strong scaling tests, the size of the pr
 \textrm{speed up} = \frac{t(N_{ref})}{t(N)}  
 \end{equation}
 
-where $t(N_{ref})$** is the run-time for a reference number of processors, $N_{ref}$, and $t(N)$ is the run-time when $N$ processors are used. In the ideal case, $N$ additional processors should contribute all of its resources in solving the problem and *reduce* the compute time by a factor of $N$ relative to the reference run time. For example, using $2 N_{ref}$* *processors will ideally halve the run-time resulting to a *speed-up = 2.*
+where $t(N_{ref})$ is the run-time for a reference number of processors, $N_{ref}$, and $t(N)$ is the run-time when $N$ processors are used. In the ideal case, $N$ additional processors should contribute all of its resources in solving the problem and *reduce* the compute time by a factor of $N$ relative to the reference run time. For example, using $2 N_{ref}$ processors will ideally halve the run-time resulting to a *speed-up = 2.*
 
-### Underworld3 test problems* *
+### Underworld3 test problems
 
 We employ 3D Poisson and Stokes problems to demonstrate strong scaling with Underworld3. The non-linear 3D Cartesian Poisson problem follows:
 
@@ -61,7 +61,7 @@ We employ 3D Poisson and Stokes problems to demonstrate strong scaling with Unde
 \nabla . ((1 + u^2(x,y,z)) \nabla u(x,y,z)) = f(x,y,z)  
 \end{equation}
 
-with analytical solution $u(x,y,z)=sin(\pi x)sin(\pi y) sin (\pi z)$ and Dirichlet ($u=0$) boundary conditions. On the other hand, the 3D spherical Stokes problem follows:
+with analytical solution $u(x,y,z)=\sin(\pi x)\sin(\pi y)\sin(\pi z)$ and Dirichlet ($u=0$) boundary conditions. On the other hand, the 3D spherical Stokes problem follows:
 
 \begin{equation}  
 -\nabla . \left[ \frac{\eta}{2} \left( \nabla \mathbf{u} (r, \theta, \phi) + \nabla \mathbf{u^T} (r, \theta, \phi) \right) - p(r, \theta, \phi) \right] = -g \rho' (r, \theta, \phi) \mathbf{\hat{r}}  

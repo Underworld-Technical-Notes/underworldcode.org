@@ -46,7 +46,7 @@ In this short how-to, we're going to lay out a 60-second scheme to get you up an
 
 You will need:
 
-- A computer. Although Underworld is proudly [Turing Complete](https://en.wikipedia.org/wiki/Turing_completeness), hand iteration is not recommended.
+- A computer. Although Underworld is proudly [Turing Complete](https://en.wikipedia.org/wiki/Turing%5Fcompleteness), hand iteration is not recommended.
 
 - A terminal. On Windows this might be [PowerShell](https://www.infoworld.com/article/3126427/go-pro-the-power-users-guide-to-powershell.html) or [Command Prompt](https://www.computerhope.com/issues/chusedos.htm); on Mac and Linux it's just called the [Terminal](https://macpaw.com/how-to/use-terminal-on-mac). In any case what you'll get is a blank background with a blinking cursor beckoning you to type your bidding into the computer.
 
@@ -123,7 +123,7 @@ You could be using this for science right now: what are you waiting for?
 
 ## Podium finish
 
-If everything goes right, this guide should have taken you from [Spider Solitaire](https://en.wikipedia.org/wiki/Spider_(solitaire)) to geodynamic modeller *par excellence* in 60 seconds. But if it didn't, you can always [get in touch with us](https://github.com/underworldcode/underworld2/issues) for help. **Underworld** is more than just a bit of software: it's a vibrant, passionate, and diverse research community dedicated to helping you answer your question - and have fun doing it.
+If everything goes right, this guide should have taken you from [Spider Solitaire](https://en.wikipedia.org/wiki/Spider%5F(solitaire)) to geodynamic modeller *par excellence* in 60 seconds. But if it didn't, you can always [get in touch with us](https://github.com/underworldcode/underworld2/issues) for help. **Underworld** is more than just a bit of software: it's a vibrant, passionate, and diverse research community dedicated to helping you answer your question - and have fun doing it.
 
 Now you've taken the first step, try getting started on our interactive [user guide](https://underworld2.readthedocs.io/en/latest/UserGuide.html), which can be found online as well as in the container itself, in the root directory. And follow our channels on [Ghost](https://underworldcode.ghost.io/), [Medium](https://medium.com/geophysics-down-under), [Facebook](https://www.facebook.com/underworldcode/), [Twitter](https://twitter.com/underworldcode), and [GitHub](https://github.com/underworldcode/underworld2)for more how-tos, tutorials, meet-ups, updates, and general research chatter.
 

@@ -69,7 +69,7 @@ Here is an example: in this optimisation problem, we need to compute derivatives
 
 ### How do I get started ?
 
-You can also check the [Underworld3 Quickstart](https://underworldcode.github.io/underworld3/development/_quickstart/index.html) guide to browse example notebooks and see how to install the code. Before you install anything, though, you might like to try running the example notebooks on [mybinder.org](https://mybinder.org/v2/gh/underworld-community/uw3-demo-launcher/HEAD?labpath=underworld3%2Fdocs%2Fuser%2FNotebooks%2F1-Meshes.ipynb).
+You can also check the [Underworld3 Quickstart](https://underworldcode.github.io/underworld3/development/%5Fquickstart/index.html) guide to browse example notebooks and see how to install the code. Before you install anything, though, you might like to try running the example notebooks on [mybinder.org](https://mybinder.org/v2/gh/underworld-community/uw3-demo-launcher/HEAD?labpath=underworld3%2Fdocs%2Fuser%2FNotebooks%2F1-Meshes.ipynb).
 
 ### Go Git the Code !
 

@@ -37,25 +37,25 @@ We recently wrote an [article in The Conversation](https://theconversation.com/a
 The figures in the article show the signal from Christmas 2019 through to July 2020 and, like any publication of record, they are static. But the data continue to flow into the school seismometers, so every night we update those graphs automatically and you can see the version from last night here:
 
 ![AuDAR](figures/latest.png)  
-[Canberra, ACT](https://github.com/ANU-RSES-Education/SeismicNoise_AuSIS_DAR)
+[Canberra, ACT](https://github.com/ANU-RSES-Education/SeismicNoise%5FAuSIS%5FDAR)
 
 ![AuUHS](figures/latest.png)  
-[Rockhampton, QLD](https://github.com/ANU-RSES-Education/SeismicNoise_AuSIS_NRC)
+[Rockhampton, QLD](https://github.com/ANU-RSES-Education/SeismicNoise%5FAuSIS%5FNRC)
 
 ![AuUHS](figures/latest.png)  
-[Ulladulla, NSW](https://github.com/ANU-RSES-Education/SeismicNoise_AuSIS_UHS)
+[Ulladulla, NSW](https://github.com/ANU-RSES-Education/SeismicNoise%5FAuSIS%5FUHS)
 
 ![AuKSC](figures/latest.png)  
-[Keysborough, VIC](https://github.com/ANU-RSES-Education/SeismicNoise_AuSIS_KSC)
+[Keysborough, VIC](https://github.com/ANU-RSES-Education/SeismicNoise%5FAuSIS%5FKSC)
 
 ![AuMAR](figures/latest.png)  
-[Adelaide, SA](https://github.com/ANU-RSES-Education/SeismicNoise_AuSIS_MAR)
+[Adelaide, SA](https://github.com/ANU-RSES-Education/SeismicNoise%5FAuSIS%5FMAR)
 
 *These images are raw versions of the plots used to make [this figure](https://images.theconversation.com/files/347848/original/file-20200716-17-1xkxswe.png?ixlib=rb-1.1.0&q=45&auto=format&w=1000&fit=clip) from The Conversation article and the links point to the Github repositories that generate the images each day.Because we link to the image and not a copy of the image, it will always be the latest version.*
 
 ### How it works
 
-We built a [template repository on GitHub](https://github.com/ANU-RSES-Education/SeismicNoise_AuSIS) where we keep a copy of the python notebooks and scripts that generate the plots we need. The next thing we did was to add some [Github actions](https://github.com/features/actions) to the repository which are small scripts that run if the code changes or, otherwise, every evening. These fetch new data, build the latest figures and send a warning email if anything goes wrong. Then the same scripts upload the day's processed signals (to save time the next day) and update the images in the original repository.
+We built a [template repository on GitHub](https://github.com/ANU-RSES-Education/SeismicNoise%5FAuSIS) where we keep a copy of the python notebooks and scripts that generate the plots we need. The next thing we did was to add some [Github actions](https://github.com/features/actions) to the repository which are small scripts that run if the code changes or, otherwise, every evening. These fetch new data, build the latest figures and send a warning email if anything goes wrong. Then the same scripts upload the day's processed signals (to save time the next day) and update the images in the original repository.
 
 For any station that we want to monitor, we make a copy of the template repository and change a few settings that describe how to find the data on the [Auspass](https://auspass.edu.au/) servers. Then we just need to wait for the scripts to grab all the data and build the images. It takes a while the first time but just takes a few seconds next time around.
 

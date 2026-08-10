@@ -26,7 +26,7 @@ being bold.
 | compressible-convection-in-cartesian-coordinates-in-underworld3 | h3 | Important implementation details |
 | compressible-convection-in-cartesian-coordinates-in-underworld3 | h3 | Setting-up the Stokes' equations |
 | compressible-convection-in-cartesian-coordinates-in-underworld3 | h3 | References: |
-| how-many-processors-should-we-use-to-solve-problem-x | h3 | Underworld3 test problems* * |
+| how-many-processors-should-we-use-to-solve-problem-x | h3 | Underworld3 test problems |
 | new-features-of-the-surface-coupling-framework-in-underworld-2 | h3 | Coupling in Underworld 2 |
 | new-features-of-the-surface-coupling-framework-in-underworld-2 | h3 | L model test |
 | new-features-of-the-surface-coupling-framework-in-underworld-2 | h3 | References |

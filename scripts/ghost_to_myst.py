@@ -441,6 +441,7 @@ class GhostToMyst(HTMLParser):
         self._in_list_item = False
         self._after_marker = False
         self._last_heading = 2
+        self._emphasis = []
         self.bold_headings = []
         self.restored_captions = 0
         self.has_reference_list = False
@@ -511,6 +512,13 @@ class GhostToMyst(HTMLParser):
             else:
                 self._write("`")
         elif tag in INLINE_WRAP and not self._pre:
+            # Not tracked inside a caption: there the text goes into a string
+            # on self._fig, not into a list, so an index into _buf would point
+            # at unrelated content -- and did, swallowing the closing marker of
+            # every bold run in a caption.
+            if not (self._in_caption and self._fig is not None):
+                buf = self._link_text if self._href is not None else self._buf
+                self._emphasis.append((tag, len(buf)))
             # Just the marker. Moving padding out belongs on the CLOSING tag --
             # done here it takes the space BEFORE the emphasis and re-emits it
             # inside, turning "To date <em>weak scaling </em>tests" into
@@ -731,6 +739,25 @@ class GhostToMyst(HTMLParser):
             # close in markdown -- the asterisks render literally. That is how a
             # standfirst came out reading "***How we built ... ***".
             buf = self._link_text if self._href is not None else self._buf
+
+            # Emphasis around nothing but a space is not emphasis. Ghost writes
+            # `$t(N)$<em> </em>is the run-time` and `<em>&nbsp;</em>`, and the
+            # markers come out with no content between them -- `* *` and `**`,
+            # which render as literal asterisks in the middle of a sentence.
+            # Emit the whitespace and drop the markers.
+            in_caption = self._in_caption and self._fig is not None
+            while (not in_caption and self._emphasis
+                   and self._emphasis[-1][0] != tag):
+                self._emphasis.pop()
+            if self._emphasis and not in_caption:
+                _tag, start = self._emphasis.pop()
+                inner = "".join(buf[start + 1:])
+                if not inner.strip():
+                    del buf[start:]
+                    if inner:
+                        self._write(" ")
+                    return
+
             trailing = ""
             while buf and buf[-1] and buf[-1][-1] in " \t":
                 trailing = buf[-1][-1] + trailing
@@ -868,8 +895,17 @@ class GhostToMyst(HTMLParser):
         query = [(k, v) for k, v in urllib.parse.parse_qsl(parts.query) if k != "ref"]
         if parts.netloc in ("www.underworldcode.org", "underworldcode.org"):
             parts = parts._replace(scheme="", netloc="")
+        # Underscores percent-encoded in the PATH.
+        #
+        # MyST's Typst writer escapes `_` as `\_` INSIDE the link target, so
+        # `.../1_14_ScalingExample.ipynb` reached the PDF as
+        # `.../1%5C_14%5C_ScalingExample.ipynb` -- a backslash percent-encoded
+        # into the URL, and a link that 404s. %5F is the same character to any
+        # server (RFC 3986 treats percent-encoded unreserved characters as
+        # equivalent) and gives the writer nothing to escape.
+        path = parts.path.replace("_", "%5F")
         return urllib.parse.urlunsplit(
-            (parts.scheme, parts.netloc, parts.path, urllib.parse.urlencode(query), parts.fragment)
+            (parts.scheme, parts.netloc, path, urllib.parse.urlencode(query), parts.fragment)
         )
 
     def markdown(self):
@@ -1149,6 +1185,10 @@ def cached_asset(src):
 
 BOOKMARK = re.compile(r'<figure[^>]*kg-bookmark-card.*?</figure>', re.S)
 EMBEDLY = re.compile(r'<blockquote class="embedly-card">.*?</blockquote>', re.S)
+# A hand-written HTML card styled as a dark terminal: `<div style="background:
+# #1e1e1e; ... font-family: 'SF Mono' ... monospace ...">`. Ghost's editor let
+# the author paste one in place of the fenced code block they had written.
+CONSOLE = re.compile(r'<div style="[^"]*monospace[^"]*">.*?</div>', re.S)
 
 
 def simplify_bookmark_cards(source):
@@ -1194,7 +1234,34 @@ def simplify_bookmark_cards(source):
             label = link_label(html.unescape(href.group(1)))
         return '<p><a href="%s">%s</a></p>' % (href.group(1), label)
 
-    return EMBEDLY.sub(replace_embedly, source)
+    source = EMBEDLY.sub(replace_embedly, source)
+
+    def replace_console(match):
+        """A paragraph of colour-styled spans is a pasted terminal transcript.
+
+        The author wrote these as fenced code blocks -- a REPL session where
+        SymPy prints an expression. Ghost's editor replaced the fence with
+        syntax-colouring spans, so the conversion saw ordinary prose and the
+        printed LaTeX landed in the page as literal backslashes where an
+        equation should be.
+
+        It is not an equation and never was: it is what the terminal showed.
+        Restored as a code block, which is what the original had.
+        """
+        block = match.group(0)
+        text = re.sub(r"<br\s*/?>", "\n", block)
+        text = re.sub(r"<[^>]+>", "", text)
+        text = html.unescape(text)
+        lines = [line.rstrip() for line in text.split("\n")]
+        while lines and not lines[0].strip():
+            lines.pop(0)
+        while lines and not lines[-1].strip():
+            lines.pop()
+        indent = min((len(l) - len(l.lstrip()) for l in lines if l.strip()), default=0)
+        body = "\n".join(l[indent:] for l in lines)
+        return "<pre><code>%s</code></pre>" % html.escape(body)
+
+    return CONSOLE.sub(replace_console, source)
 
 
 SVG_MASK = re.compile(r'\s*mask="url\(#[^)]*\)"')

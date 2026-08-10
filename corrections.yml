@@ -81,3 +81,10 @@ craton-formation-and-the-onset-of-plate-tectonics:
   - find: <figcaption><a href="https://cloudstor.aarnet.edu.au/plus/s/xaNlPXMAYoLv3O5/download?ref=underworldcode.org">download</a></figcaption>
     replace: ""
     why: As above.
+
+how-many-processors-should-we-use-to-solve-problem-x:
+  - find: $u(x,y,z)=sin(\pi x)sin(\pi y) sin (\pi z)$
+    replace: $u(x,y,z)=\sin(\pi x)\sin(\pi y)\sin(\pi z)$
+    why: >-
+      sin set as three italic variables multiplied together, which is what LaTeX
+      does with a bare "sin". \sin sets it upright as the operator it is.

@@ -57,7 +57,7 @@ The Badlands conda recipe is relatively simple and contains only a `meta.yaml` f
 
 ### The meta.yaml file
 
-conda recipes use a `meta.yaml` file. The YAML (a [recursive acronym](https://en.wikipedia.org/wiki/Recursive_acronym) for "YAML Ain't Markup Language") format is a text format that is meant to be easily readable. A cheat sheet and full specification are available at the [official site](https://en.wikipedia.org/wiki/YAML#cite_note-13). The format is organised around to main structures:
+conda recipes use a `meta.yaml` file. The YAML (a [recursive acronym](https://en.wikipedia.org/wiki/Recursive%5Facronym) for "YAML Ain't Markup Language") format is a text format that is meant to be easily readable. A cheat sheet and full specification are available at the [official site](https://en.wikipedia.org/wiki/YAML#cite_note-13). The format is organised around to main structures:
 
 - Dictionaries:
 
@@ -109,7 +109,7 @@ Note: Version constrains can be easily set within the lists of dependencies. Con
 
 - The **test** section which contains the test that conda build should run once the package has been built. This section is optional but highly recommended. For a Python package, it includes a list of imports. It can also run unit tests etc.
 
-- The **about** section contains a list of metadata that describe the package. It usually includes a link to the **home**page**** of the project, the **license**, a link to the full **license_file**, a **summary** and a link to the documentation, **doc_url**.
+- The **about** section contains a list of metadata that describe the package. It usually includes a link to the **home**page of the project, the **license**, a link to the full **license_file**, a **summary** and a link to the documentation, **doc_url**.
 
 - The **extra** section contains some extra metadata that might be useful such as a list of the maintainers names.
 

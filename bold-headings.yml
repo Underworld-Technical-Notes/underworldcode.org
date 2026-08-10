@@ -18,5 +18,6 @@ exclude:
   - "*How we built a simple dashboard using Github actions with [open source software](https://github.com/ThomasLecocq/SeismoRMS) and [openly available (FAIR) data](https://auspass.edu.au/).*"
   # An aside in the middle of a paragraph's argument.
   - "*But they are not for everyone.*"
-  # Emphasis, and malformed besides -- it carries stray asterisks.
-  - "Underworld3 test problems* *"
+  # (Was excluded while it carried stray asterisks from an empty <em>. With
+  # that fixed the text is clean and it is plainly a section heading, so it is
+  # promoted like the rest.)

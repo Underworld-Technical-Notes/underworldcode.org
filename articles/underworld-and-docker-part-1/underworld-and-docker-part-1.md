@@ -71,7 +71,7 @@ This command will create a new *container* using the underworldcode/underworld2 
 
 It is important to understand the difference between these two docker objects.
 
-**Containers**: [Containers](https://en.wikipedia.org/wiki/Operating-system-level_virtualization) are a form of virtualisation. Unlike traditional virtual machines, containers do not encapsulate the entire operating system, only a smaller layer on top of the base operating system. A [Docker container](https://en.wikipedia.org/wiki/Docker_(software)) is simply a particular implementation of this concept.
+**Containers**: [Containers](https://en.wikipedia.org/wiki/Operating-system-level%5Fvirtualization) are a form of virtualisation. Unlike traditional virtual machines, containers do not encapsulate the entire operating system, only a smaller layer on top of the base operating system. A [Docker container](https://en.wikipedia.org/wiki/Docker%5F(software)) is simply a particular implementation of this concept.
 
 **Images**: Images are essential snapshots of containers at a particular instance. By taking a snapshot of a container, developers are able to completely encapsulate the environment necessary to run an application. Images are the objects published to the Docker Hub. They are read-only.
 
@@ -193,6 +193,6 @@ While not currently applicable to large scale parallel simulation, early researc
 
 - [https://www.docker.com/what-docker](https://www.docker.com/what-docker)
 
-- [https://en.wikipedia.org/wiki/Docker](https://en.wikipedia.org/wiki/Docker_(software))
+- [https://en.wikipedia.org/wiki/Docker](https://en.wikipedia.org/wiki/Docker%5F(software))
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld-and-docker-part-1">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld-and-docker-part-1">Start one</a></div></div>
