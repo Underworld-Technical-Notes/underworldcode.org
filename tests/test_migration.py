@@ -1309,3 +1309,30 @@ def test_the_build_actually_generates_the_feed():
     pixi = (ROOT / "pixi.toml").read_text(encoding="utf-8")
     build_html = [l for l in pixi.splitlines() if l.startswith("build-html")][0]
     assert "scripts/build_feed.py" in build_html
+
+
+def test_no_standing_page_turns_its_dois_into_citations():
+    """MyST reads a DOI link as a CITATION and invents an attribution for it.
+
+    The how-to-cite page said "Romain Beucher et al. (2025) (Underworld 2.x)"
+    where a Zenodo DOI had been -- a wrong attribution, generated, on the one
+    page whose entire job is telling people how to cite. Articles are protected
+    by sync_archival.plain_reference_links; pages were not, because that only
+    ever walked articles/.
+
+    A DOI in a standing page belongs in backticks. It stays copyable and it
+    stops being mistaken for a citation.
+
+    Raw HTML blocks are exempt: MyST does not parse markdown inside them, so
+    the DOIs in the publications list stay as plain text and are untouched.
+    """
+    import re as _re
+    offenders = []
+    for path in sorted((ROOT / "pages").glob("*.md")):
+        lines = [line for line in path.read_text(encoding="utf-8").splitlines()
+                 if not line.lstrip().startswith("<")]      # raw HTML block
+        text = _re.sub(r"`[^`\n]*`", "", "\n".join(lines))  # inline code is fine
+        for match in _re.finditer(r"(?:\]\(\s*)?https?://(?:dx\.)?doi\.org/\S+", text):
+            offenders.append("%s: %s" % (path.name, match.group()[:60]))
+    assert not offenders, \
+        "DOI link(s) in a standing page will become citations: %s" % offenders

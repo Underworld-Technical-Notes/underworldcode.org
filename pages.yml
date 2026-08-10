@@ -60,7 +60,9 @@ underworld-model-exchange:
   source: pages-src/underworld-model-exchange.md
 
 auscope-cloud:
-  title: AuScope Cloud
+  # The slug stays: the AuScope cloud is retired, but links to this page are
+  # not, and the page is now the answer to the question they were asking.
+  title: Run in the cloud
   group: Underworld
 
 publications-using-uw:
