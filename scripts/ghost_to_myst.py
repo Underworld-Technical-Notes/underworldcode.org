@@ -948,7 +948,8 @@ def yaml_str(value):
     return text
 
 
-DEPOSIT_FIELDS = ("archive_doi", "repository_record_id", "archived_at")
+DEPOSIT_FIELDS = ("archive_doi", "repository_record_id", "archived_at",
+                  "archive_published_at")
 
 
 def preserved_deposit_fields(path):

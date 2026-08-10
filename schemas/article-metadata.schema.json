@@ -251,7 +251,14 @@
         "string",
         "null"
       ],
-      "description": "When the archival PDF was made, ISO-8601 UTC. Stamped once by the deposit and never changed: it is what tells a reader of the fixed copy how far the living article may have moved on."
+      "description": "When the archival PDF was made, ISO-8601 UTC. Stamped by the deposit at the moment the copy is taken, and again for each new version, so it always names the snapshot the record actually holds."
+    },
+    "archive_published_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "When the deposited record was published, ISO-8601 UTC. The deposit's OWN state, kept apart from the editorial `status`: a legacy note stays 'migrated' forever and its record is published all the same, and keying the duplicate guard on the editorial field made forty deposited notes look outstanding."
     }
   },
   "allOf": [

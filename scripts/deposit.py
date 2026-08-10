@@ -496,11 +496,35 @@ def pending():
     ready = []
     for path in sorted(ARTICLES.glob("*/metadata.yml")):
         meta = build_index.read_yaml(path)
-        # Not "has no record" -- "is not published". A note whose deposit died
-        # after the draft was created has a record id and no publication, and
-        # keying on the id alone silently skipped exactly the articles that
+        # Not "has no record" -- "has no PUBLISHED record". A note whose deposit
+        # died after the draft was created has a record id and no publication,
+        # and keying on the id alone silently skipped exactly the articles that
         # needed finishing.
-        if build_index.is_archival(meta) and meta.get("status") != "published":
+        #
+        # Nor `status`, which is EDITORIAL. A migrated legacy note is 'migrated'
+        # for good, and reading that as undeposited left all forty published
+        # records looking outstanding while nine notes that were merely marked
+        # published looked done. The deposit keeps its own field.
+        if build_index.is_archival(meta) and not meta.get("archive_published_at"):
+            ready.append((str(meta.get("publication_date") or ""), meta["slug"]))
+    return [slug for _date, slug in sorted(ready)]
+
+
+def published():
+    """Archival articles that already hold a published record, oldest first.
+
+    The counterpart to pending(), and the set a re-version acts on. Corrections
+    accumulate on the site -- a repaired reference, a heading that was a bold
+    paragraph, an acknowledgement -- and at some point the fixed copy should be
+    the one the DOI resolves to. That is what versioning is for; the concept DOI
+    keeps resolving to the newest, so nothing already cited breaks.
+    """
+    import build_index
+    build_index.TYPES.update(build_index.article_types())
+    ready = []
+    for path in sorted(ARTICLES.glob("*/metadata.yml")):
+        meta = build_index.read_yaml(path)
+        if build_index.is_archival(meta) and meta.get("archive_published_at"):
             ready.append((str(meta.get("publication_date") or ""), meta["slug"]))
     return [slug for _date, slug in sorted(ready)]
 
@@ -562,6 +586,24 @@ def run(slug, provider, live, publish, new_version, delete_draft,
                   "then run this again to upload.")
             return
 
+    # BEFORE the rebuild, because the PDF prints this date and the README states
+    # it, and the two have to agree. Stamped after, as it was, the document said
+    # nothing while the package around it named a date -- the one number a reader
+    # of a fixed copy uses to judge how far the living article may have moved.
+    #
+    # A new version is a new snapshot and gets a new date. The zip stays
+    # reproducible either way: its entry timestamps come from the publication
+    # date, not from this.
+    # Only when this run is also the one that rebuilds the document that prints
+    # it. A batch re-version stamps every article first and builds once, and
+    # re-stamping here would put a date in the package that the PDF beside it
+    # does not carry.
+    if (new_version and rebuild) or not meta.get("archived_at"):
+        stamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+        set_field(slug, "archived_at", stamp.isoformat().replace("+00:00", "Z"))
+        meta = load(slug)
+        steps.append("stamped archived_at %s" % stamp.isoformat())
+
     # The reserved DOI has to be on the title page of the document it
     # identifies, so the PDF is rebuilt between reserving and uploading. In the
     # step-at-a-time flow a person does this; end to end, the command does it.
@@ -570,14 +612,6 @@ def run(slug, provider, live, publish, new_version, delete_draft,
         if subprocess.call([sys.executable, "scripts/build_pdf.py"], cwd=ROOT) != 0:
             raise DepositError("the PDF failed to build; nothing uploaded")
         steps.append("rebuilt the PDF with the reserved DOI on it")
-
-    # Stamped once, at the moment the archival copy is first made, and never
-    # again: the package is byte-reproducible, and it stays that way only if
-    # nothing in it comes from the clock at build time.
-    if not meta.get("archived_at"):
-        stamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
-        set_field(slug, "archived_at", stamp.isoformat().replace("+00:00", "Z"))
-        steps.append("stamped archived_at %s" % stamp.isoformat())
 
     provider.update_metadata(record_id, load(slug))
     steps.append("updated metadata")
@@ -631,7 +665,14 @@ def run(slug, provider, live, publish, new_version, delete_draft,
                   % json.dumps(record, indent=2)[:3000], file=sys.stderr)
             raise
         steps.append("PUBLISHED: %s" % (result.get("location") or record_id))
-        set_field(slug, "status", "published")
+        # The deposit's own field, not the editorial `status`. Writing `status:
+        # published` here was silently undone: metadata.yml is regenerated from
+        # the Ghost export, which preserves only the deposit fields and restores
+        # a legacy note to 'migrated'. Forty published records went back to
+        # looking undeposited, and the guard against a second DOI with them.
+        set_field(slug, "archive_published_at",
+                  datetime.datetime.now(datetime.timezone.utc)
+                  .replace(microsecond=0).isoformat().replace("+00:00", "Z"))
     else:
         steps.append("stopped before publish -- everything so far is reversible")
 
@@ -658,10 +699,30 @@ def main():
 
     provider = Figshare(os.environ.get("FIGSHARE_TOKEN")) if args.live else None
 
-    slugs = [args.slug] if args.slug else pending()
+    if args.slug:
+        slugs = [args.slug]
+    elif args.new_version:
+        slugs = published()
+    else:
+        slugs = pending()
     if not slugs:
         print("nothing to deposit -- every archival note already has a record")
         return
+
+    # A batch re-version: stamp the whole set, build ONCE, then upload. Left to
+    # run() each article would trigger a full corpus build of its own -- forty
+    # builds to produce forty documents, thirty-nine of them thrown away each
+    # time round.
+    batch_rebuild = args.new_version and args.live and not args.slug
+    if batch_rebuild:
+        import subprocess
+        stamp = (datetime.datetime.now(datetime.timezone.utc)
+                 .replace(microsecond=0).isoformat().replace("+00:00", "Z"))
+        for slug in slugs:
+            set_field(slug, "archived_at", stamp)
+        print("stamped %d article(s) archived_at %s" % (len(slugs), stamp))
+        if subprocess.call([sys.executable, "scripts/build_pdf.py"], cwd=ROOT) != 0:
+            sys.exit("the PDFs failed to build; nothing uploaded")
 
     # One at a time, and a failure stops the run rather than being counted and
     # skipped. Each of these mints an identifier; a loop that shrugs off errors
@@ -673,7 +734,9 @@ def main():
             print("\n--- %d/%d  %s" % (index, len(slugs), slug))
         try:
             run(slug, provider, args.live, args.publish, args.new_version,
-                args.delete_draft, rebuild=args.live and not args.delete_draft)
+                args.delete_draft,
+                rebuild=(args.live and not args.delete_draft
+                         and not batch_rebuild))
         except DepositError as exc:
             failed.append((slug, str(exc)))
             print("REFUSED: %s" % exc, file=sys.stderr)
