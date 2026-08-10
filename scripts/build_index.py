@@ -27,6 +27,7 @@ Usage:
 
 import datetime
 import html
+import os
 import pathlib
 import re
 import sys
@@ -581,10 +582,20 @@ def main():
         for term, (label, _scope) in terms.items():
             FACET_LABELS[term] = label
 
+    # What the PRODUCTION site shows. A note is public once an editor has moved
+    # it past review; before that it belongs on the preview site, which sets
+    # UWTN_PREVIEW and sees everything.
+    #
+    # `review` used to be published here, which is how a half-finished note
+    # ended up on the live site the day it was drafted -- visible, indexable,
+    # and with no way for a reader to tell it was not finished.
+    preview = bool(os.environ.get("UWTN_PREVIEW"))
+    unpublished = {"draft", "review", "withdrawn"}
+
     metas = []
     for meta_path in sorted(ARTICLES.glob("*/metadata.yml")):
         meta = read_yaml(meta_path)
-        if meta.get("status") == "draft":
+        if not preview and meta.get("status") in unpublished:
             continue          # unpublished notes do not appear on the front page
         directory = meta_path.parent
         metas.append((meta,

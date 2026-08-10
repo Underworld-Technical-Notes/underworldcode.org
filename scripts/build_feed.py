@@ -33,6 +33,7 @@ Usage:
 
 import argparse
 import datetime
+import os
 import pathlib
 import re
 import sys
@@ -75,10 +76,15 @@ def entries(host):
     """Every published article, newest first."""
     import build_index
     build_index.TYPES.update(build_index.article_types())
+    # The same rule as the site, not a second copy of it. This had its own
+    # `status == "draft"` test and so put a note that the site was correctly
+    # withholding into every subscriber's reader -- the one place a mistake
+    # cannot be taken back.
+    preview = bool(os.environ.get("UWTN_PREVIEW"))
     found = []
     for path in sorted(ARTICLES.glob("*/metadata.yml")):
         meta = build_index.read_yaml(path)
-        if meta.get("status") == "draft":
+        if not preview and meta.get("status") in ("draft", "review", "withdrawn"):
             continue
         slug = meta["slug"]
         summary = (build_index.description_of(path.parent, slug)

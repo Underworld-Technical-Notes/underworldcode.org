@@ -1417,3 +1417,43 @@ def test_a_new_note_validates_the_moment_it_is_created():
     assert not unknown, "the template emits field(s) the schema rejects: %s" % unknown
     assert set(schema["required"]) <= fields | {"id", "slug", "title", "canonical_path"}, \
         "the template omits a required field"
+
+
+def test_review_notes_stay_off_the_production_site():
+    """Production shows published work; the preview site shows everything.
+
+    A note at `review` was published to the live site the day it was drafted --
+    visible, indexable, and with nothing to tell a reader it was unfinished.
+    The distinction is what the preview exists for.
+    """
+    source = (ROOT / "scripts" / "build_index.py").read_text(encoding="utf-8")
+    assert 'os.environ.get("UWTN_PREVIEW")' in source
+    assert '"draft", "review", "withdrawn"' in source, \
+        "production must exclude every unpublished status, not just draft"
+
+
+def test_a_preview_cannot_be_indexed_or_mistaken_for_the_real_thing():
+    """Two failure modes, both quiet.
+
+    An indexed draft competes with the canonical article for its own title, and
+    this series has fifty registered DOIs whose targets must be the only copy
+    that ranks. And a link sent three weeks ago is indistinguishable from the
+    published note unless the page says so.
+    """
+    preview_mark = load("preview_mark")
+    assert "noindex" in preview_mark.NOINDEX and "nofollow" in preview_mark.NOINDEX
+    assert "PREVIEW" in preview_mark.BANNER
+    source = (ROOT / "scripts" / "preview_mark.py").read_text(encoding="utf-8")
+    for gone in ("sitemap.xml", "feed.xml", "rss.xml"):
+        assert gone in source, "a preview must not publish %s" % gone
+    assert 'Disallow: /' in source
+
+
+def test_the_preview_path_is_stable_and_says_nothing():
+    """A link must keep working as the branch is updated, and the set of drafts
+    in flight must not be enumerable from the site."""
+    preview_mark = load("preview_mark")
+    first = preview_mark.preview_path("feature/some-note")
+    assert first == preview_mark.preview_path("feature/some-note"), "not stable"
+    assert first != preview_mark.preview_path("feature/other-note")
+    assert "some-note" not in first and len(first) == 10
