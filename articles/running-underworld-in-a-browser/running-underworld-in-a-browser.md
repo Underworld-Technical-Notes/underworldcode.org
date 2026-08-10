@@ -39,6 +39,45 @@ Dockerfile, no `.binder/` directory, no configuration at all.
 This note is about how that works, because the interesting parts are not
 obvious and one of them is specific to a code that compiles itself at runtime.
 
+## Where this came from: the classroom
+
+The forty-minute reader is the general case, but the case that drove the work
+was teaching, and it is a harder problem than it looks.
+
+A two-hour practical with thirty students has, historically, been spent as
+follows: forty minutes installing, forty minutes on the six laptops where the
+install went wrong, and the remainder on the geodynamics. Departmental lab
+machines fix this until you need a version they do not have, or a student wants
+to continue at home. Underworld's own cloud was built to escape that loop and
+it did, at the cost of somebody running a Kubernetes cluster.
+
+What a class actually needs turns out to be modest:
+
+- **Nothing installed.** A browser, on whatever the student owns.
+- **Everyone on the same version**, all semester. If the practicals were
+  written against `v3.1.0`, then `v3.1.0` is what they run in week nine, no
+  matter what happened on `development` in the meantime. This is the
+  requirement that a plain "latest" link cannot meet, and it is why release
+  branches are frozen.
+- **One link per practical**, each opening the folder for that week, so nobody
+  is navigating a file tree to find where they are supposed to be.
+- **Corrections that take effect immediately.** Fix the notebook, push, and the
+  next student to click gets the fixed one — no reissued handout.
+
+The last two fall out of the URL described below; the second falls out of the
+release machinery. That is the whole design brief, and it is why the pieces are
+arranged the way they are.
+
+**Below university level, the calculation changes.** A school has no
+departmental cluster and no expectation of one, and often no ability to install
+anything on a managed device. But a link is not software — it is a link, and it
+opens the same way a video does. Some of what Underworld produces is legible
+well before undergraduate level: a fault slipping and the ground deforming
+around it, a slab sinking, plates pulling apart. A class that could never be
+asked to install a finite element code can be asked to click something and
+change a number. We have not built materials pitched that way; the obstacle was
+never the delivery, and now the delivery is free.
+
 ## The shape of it
 
 Four pieces, each doing one job:
@@ -199,6 +238,41 @@ That emits the encoded URL and a ready-to-paste badge in Markdown, HTML or
 reStructuredText — which is how a **Launch** button gets onto a course or paper
 repository.
 
+## Setting up a course
+
+Put the practicals in one public repository, a folder per week:
+
+```
+geodynamics-2026/
+    week-01-convection/
+    week-02-rheology/
+    week-03-subduction/
+```
+
+Then issue one link per week, identical apart from the folder, and all naming
+the same release:
+
+```
+.../uw3-binder-launcher/v3.1.0?...&urlpath=lab/tree/geodynamics-2026/week-01-convection
+.../uw3-binder-launcher/v3.1.0?...&urlpath=lab/tree/geodynamics-2026/week-02-rheology
+```
+
+Nothing else is needed: no accounts, no lab image, no install instructions, and
+no version drift over the semester. A fix pushed on Tuesday is what the
+Wednesday group gets.
+
+**One practical caution.** mybinder.org is free and shared, and thirty
+simultaneous launches is a real load on it. The cache works in your favour —
+the first launch pulls the image and the rest are quick — so it is worth
+clicking the link yourself an hour before the class to make sure the image is
+warm. And if the service is busy or down, the practical is down. For an
+assessed session, have the notebooks runnable locally as a fallback, or use a
+JupyterHub you control; the same launcher image works there.
+
+For a class whose work must persist between sessions, remember that these
+sessions do not. Have students push to their own repository, or download at the
+end — which is a reasonable thing to teach anyway.
+
 ## What this does and does not guarantee
 
 It guarantees the **environment**. Pinning to `v3.1.0` fixes Underworld, its
@@ -225,13 +299,16 @@ For anything past that, install Underworld or run it on a cluster.
 
 Underworld used to run its own cloud — Kubernetes for large classes, single
 droplets for small ones, under an [AuScope](https://www.auscope.org.au/)
-project. It worked, and it did one thing this does not: it gave every user a
-persistent home directory.
+project. It was built for exactly the classroom problem above, it solved it,
+and it did one thing this does not: it gave every user a persistent home
+directory, which for a semester-long course is a genuine loss.
 
-What it also did was require somebody to run it. The arrangement described here
-does the same job with no servers, no cost, and no operator — and adds the
-version pinning the old one never had. That is a fair trade for the home
-directory, and it is the reason the cloud has been retired.
+What it also did was require somebody to run it, and pay for it, and be
+available when it broke on a Tuesday morning. The arrangement described here
+does the same job with no servers, no cost and no operator, and adds the
+version pinning the old one never had — which for teaching matters more than
+the home directory did. That is the trade, and it is why the cloud has been
+retired.
 
 <!-- uwtn-acknowledgement -->
 
