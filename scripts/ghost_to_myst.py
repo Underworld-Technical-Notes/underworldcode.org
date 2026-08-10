@@ -235,6 +235,24 @@ def load_restored_captions():
 RESTORED_CAPTIONS = load_restored_captions()
 
 
+def load_bold_exclusions():
+    """Bold lines that are emphasis, not headings, from bold-headings.yml."""
+    path = ROOT / "bold-headings.yml"
+    if not path.exists():
+        return set()
+    excluded, seen_key = set(), False
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.rstrip()
+        if line.startswith("exclude:"):
+            seen_key = True
+        elif seen_key and line.lstrip().startswith("- "):
+            excluded.add(_scalar(line.lstrip()[2:].strip()))
+    return excluded
+
+
+BOLD_EXCLUSIONS = load_bold_exclusions()
+
+
 def load_attribution():
     """slug -> [author key] from attribution.yml.
 
@@ -422,6 +440,8 @@ class GhostToMyst(HTMLParser):
         self._in_references = False
         self._in_list_item = False
         self._after_marker = False
+        self._last_heading = 2
+        self.bold_headings = []
         self.restored_captions = 0
         self.has_reference_list = False
 
@@ -669,8 +689,29 @@ class GhostToMyst(HTMLParser):
 
         if tag == "p":
             if not self._in_list_item:
+                # A paragraph that is ENTIRELY bold is a heading. Ghost gave
+                # these authors headings, but bold was the habit, and the
+                # consequence is not only cosmetic: Typst keeps a heading with
+                # the block that follows, and cannot do that for something that
+                # is merely bold -- so every one of these stranded itself at the
+                # foot of a page with its figure overleaf.
+                #
+                # The level is one deeper than the last real heading, so a bold
+                # line inside a section becomes a subsection of it rather than a
+                # sibling. Recorded in bold-headings.txt for review: some of
+                # these will be emphasis rather than a section, and that is a
+                # judgement only a reader can make.
+                text = "".join(self._buf).strip()
+                if (len(self._list) == 0 and len(text) > 4
+                        and text.startswith("**") and text.endswith("**")
+                        and "**" not in text[2:-2]
+                        and text[2:-2].strip() not in BOLD_EXCLUSIONS):
+                    level = min(self._last_heading + 1, 6)
+                    self.bold_headings.append((level, text[2:-2].strip()))
+                    self._buf = ["#" * level + " " + text[2:-2].strip()]
                 self._flush()
         elif tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
+            self._last_heading = int(tag[1])
             # A hand-written reference list starts here. Ghost gave authors no
             # citation system, so this heading plus a run of links is how every
             # reference in this corpus was written.
@@ -1282,6 +1323,7 @@ def main():
     galleries = 0
     restored = 0
     raw_refs = 0
+    promoted = []
 
     for rec in selected:
         slug = rec["slug"]
@@ -1330,6 +1372,7 @@ def main():
         galleries += conv.galleries
         restored += conv.restored_captions
         raw_refs += conv.raw_references
+        promoted += [(slug, lvl, txt) for lvl, txt in conv.bold_headings]
         linked += conv.linked_images
         all_dropped.update(conv.dropped)
 
@@ -1361,6 +1404,22 @@ def main():
     if restored:
         print("  %d caption(s) restored from the pre-Ghost site" % restored,
               file=sys.stderr)
+    if promoted:
+        listing = ROOT / "inventory" / "bold-headings.md"
+        lines = ["# Bold paragraphs promoted to headings", "",
+                 "Ghost gave these authors headings; bold was the habit. A bold",
+                 "line is not a heading to Typst, so it could not be kept with the",
+                 "block below it and stranded itself at the foot of a page.",
+                 "",
+                 "**Some of these will be emphasis rather than a section.** That is",
+                 "a judgement only a reader can make; list them and they go back to",
+                 "being bold.", "",
+                 "| article | level | text |", "|---|---|---|"]
+        for slug, level, text in promoted:
+            lines.append("| %s | h%d | %s |" % (slug, level, text.replace("|", "\\|")))
+        listing.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        print("  %d bold paragraph(s) promoted to headings -- listed in "
+              "inventory/bold-headings.md" % len(promoted), file=sys.stderr)
     if raw_refs:
         print("  %d reference link(s) left as written rather than turned into "
               "citations" % raw_refs, file=sys.stderr)

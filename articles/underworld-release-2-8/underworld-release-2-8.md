@@ -93,7 +93,7 @@ For further information on the differences between Python2 & Python3, you may li
 The Semi-Lagrangian Crank-Nicholson (SLCN) algorithm, a numerical method for solving the advection diffusion equation, is now available in the 2.8 release.   
 SLCN is an alternative to the Streamline Upwind/Petrov-Galerkin (SUPG) algorithm that Underworld currently provides for the finite element method modelling of a scalar field evolving under the processes of advection and diffusion (traditionally  used for the heat equation in Underworld).
 
-**The advantages of SLCN over SUPG:**
+#### The advantages of SLCN over SUPG:
 
 - Less numerical diffusion.
 

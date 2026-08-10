@@ -22,7 +22,7 @@ exports:
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
 
-**Free surface in geodynamics simulations**
+### Free surface in geodynamics simulations
 
 Geodynamic simulations increasingly rely on models with a true free surface to investigate questions of tectonic deformation, mantle convection, and coupling of surface processes and lithosphere dynamics. Historically, most mantle convection simulations have been performed with free-slip boundary conditions at the surface. However, the Earth's surface is a free surface, which implies that both normal and shear stress should be zero at this interface. Moreover, it has been shown that treating the Earth's surface as a free surface can have a significant effect on lithospheric and mantle dynamics (Schmeling et al., 2008; Kaus et al., 2010).
 
@@ -31,7 +31,7 @@ Geodynamic simulations increasingly rely on models with a true free surface to i
 
 Free subduction experiment in which a linear viscous slab sinks into a linear viscous mantle (Kaus et al., 2010).
 
-**Approaches for treating the free surface**
+### Approaches for treating the free surface
 
 There have been several approaches to simulate real free surfaces in geodynamic models:
 
@@ -41,7 +41,7 @@ There have been several approaches to simulate real free surfaces in geodynamic 
 
 (3) "Sticky air" method (for a comprehensive review see Crameri et al. (2012)). In this approximation, there is a low-viscosity, low-density layer in the fluid (termed  'air' or 'water') above the free surface. Typically a free-slip boundary condition or the open boundary condition is used above the sticky air layer.
 
-**Examples in underworld2**
+### Examples in underworld2
 
 Both the sticky air and free surface can be easily implemented in Underworld2.  The examples are available by using [UWGeodynamics](https://github.com/underworldcode/UWGeodynamics) module:
 
@@ -67,7 +67,7 @@ Model.freesurface = True
 ```{figure} figures/kaus2010RTI.gif
 ```
 
-**Limitations and stabllization methods**
+### Limitations and stabllization methods
 
 All of the approaches to free surface simulations have been subject to instability which has been variously termed a "sloshing instability" or the "drunken sailor effect" (Kaus et al., 2010). This instability, arising from the large density contrast typical at a free surface (the rock-air interface in the "sticky air" method), severely limits the maximum stable timestep for computations. Frequently, the maximum stable timestep is several orders of magnitude smaller than that for an equivalent model with free-slip boundary conditions. Stabilization methods (like FSSA from Kaus et al, (2010)) would be needed to solve that, while that's another story.
 
@@ -75,7 +75,7 @@ All of the approaches to free surface simulations have been subject to instabili
 :width: 200px
 ```
 
-**References**
+### References
 
 - Crameri, F., Schmeling, H., Golabek, G. J., Duretz, T., Orendt, R., Buiter, S. J. H., ... & Tackley, P. J. (2012). A comparison of numerical surface topography calculations in geodynamic modelling: an evaluation of the ‘sticky air’method. Geophysical Journal International, 189(1), 38-54.
 

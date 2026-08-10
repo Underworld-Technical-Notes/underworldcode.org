@@ -189,7 +189,7 @@ Now sourcing the activate script sets `PETSC_DIR` `PATH` and `PYTHONPATH` to the
 
 Underworld requires some building dependencies.
 
-**Ubuntu:**
+#### Ubuntu:
 
 ```bash
 apt-get update -qq 

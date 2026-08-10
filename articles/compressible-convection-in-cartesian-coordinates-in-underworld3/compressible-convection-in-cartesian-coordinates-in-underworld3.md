@@ -24,7 +24,7 @@ exports:
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@v2osk?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">v2osk</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplas</a></div></div>
 
-**Introduction and benchmarking**
+### Introduction and benchmarking
 
 The convection of the Earth’s mantle is usually modelled as an incompressible process, referred to as the Boussinesq approximation. However, in the Earth’s mantle, the pressure increase associated with depth also increases the density due to self-compression (King et al. 2010). In some applications, this compressibility may be non-negligible and modelling it may be desirable. Over the years, several mantle convection formulations have been devised to take this compressibility into account. One such formulation is the Truncated Anelastic Liquid Approximation (TALA) (Ita and King, 1994; Jarvis and Mckenzie, 1980). In this approximation, a depth-depended reference profile is defined which dictates how the density varies with depth. This is subsequently used to calculate the volumetric changes as a result of pressurization and heating (Gassmöller et al., 2020). In addition, the buoyancy term in the momentum equation precludes the contributions of the density changes due to pressure variations (van Zelst et al., 2022). Taking compressibility into account adds temperature gradients and adiabatic density which increases the complexity of mantle dynamics (Tan and Gurnis, 2007). Here, we easily implement an isoviscous compressible convection model with the Truncated Anelastic Liquid Approximation (TALA) formulation in cartesian coordinates using Underworld3.
 
@@ -39,7 +39,7 @@ The implementation codes together with the steady-state temperature, pressure, a
 
 After this, we aim to benchmark the TALA implementation against other test cases and to implement the slightly more complicated Anelastic Liquid Approximation (ALA) formulation. We're also targeting to implement compressible convection in an annulus configuration. Stay tuned!
 
-**Important implementation details**
+### Important implementation details
 
 If I still have your attention at this point, why not continue and check out how we did this? For the important implementation details, read ahead! =)
 
@@ -54,7 +54,7 @@ $$ \bar \rho = \rho_{o} \exp \left( \frac{\textrm{Di}} {\gamma_R} \left( 1 - z \
 
 Where $ \rho_o$ is a non-dimensionalised surface density, Di is the dissipation number, $\gamma_R$ is the Grüneisen parameter, $T_s$ is the non-dimensionalised surface temperature, and $z$ is the non-dimensionalised depth.
 
-**Setting-up the Stokes' equations**
+### Setting-up the Stokes' equations
 
 Underworld, a particle-in-cell finite element modelling code, is now in its third major iteration. With the upcoming version, implementing compressible convection has never been easier. To do so, we only need to modify the Stokes’ and Advection-Diffusion equations accordingly.
 
@@ -109,7 +109,7 @@ In the code snippet above, the first three lines are for symbolically defining t
 
 The changes result to a model of isoviscous convection under the Truncated Anelastic Liquid Approximation (TALA). The rest of the code is very similar to how convection under the Boussinesq approximation is done. Have a look at the entire code and try it out yourself! Have fun learning!
 
-**References:**
+### References:
 
 Birch, F., 1952. Elasticity and constitution of the Earth’s interior. Journal of Geophysical Research (1896-1977) 57, 227–286. [https://doi.org/10.1029/JZ057i002p00227](https://doi.org/10.1029/JZ057i002p00227)
 

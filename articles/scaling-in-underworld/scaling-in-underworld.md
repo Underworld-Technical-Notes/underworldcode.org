@@ -39,7 +39,7 @@ parts:
 To date *weak scaling* tests have been run on two of the largest computers in Australia: **Gadi** (NCI) and **Magnus** (Pawsey).  
 Here we present the results of those tests and discuss:
 
-**Gadi: Weak scaling - SolDB3D Q1**
+### Gadi: Weak scaling - SolDB3D Q1
 
 ```{figure} figures/Weak-Scaling-Timing-SolDB3d-Q1--base-16--MaxIts-100.png
 :width: 430px
@@ -47,7 +47,7 @@ Here we present the results of those tests and discuss:
 Gadi - v2.11-prerelease: Weak scaling of SolDB3D (linear elements) to ~10k procs
 ```
 
-**Gadi: Weak scaling - SolDB3D Q2**
+### Gadi: Weak scaling - SolDB3D Q2
 
 ```{figure} figures/image-1.png
 :width: 430px
@@ -55,7 +55,7 @@ Gadi - v2.11-prerelease: Weak scaling of SolDB3D (linear elements) to ~10k procs
 Gadi - v2.11-prerelease: Weak scaling of SolDB3D (quadractic elements) to 10k procs
 ```
 
-**Magnus: Weak scaling - SolDB3D Q2 - v2.10 vs v2.9**
+### Magnus: Weak scaling - SolDB3D Q2 - v2.10 vs v2.9
 
 ```{figure} figures/f4efe6bc-57da-456a-97c3-cc4def294ae9.png
 :width: 430px

@@ -113,7 +113,7 @@ sudo apt-get install \
     libopenblas-dev
 ```
 
-**Arch Linux**
+##### Arch Linux
 
 ```
 sudo pacman -S openblas

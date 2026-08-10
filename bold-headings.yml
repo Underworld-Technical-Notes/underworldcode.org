@@ -1,0 +1,22 @@
+# Bold paragraphs that are NOT headings.
+#
+# The converter promotes a paragraph that is entirely bold into a heading,
+# because that is how these authors marked their sections and because Typst
+# cannot keep a merely-bold line with the block below it -- which is what
+# stranded headings at the foot of a page with their figures overleaf.
+#
+# Some bold lines are emphasis, or a standfirst, and listing the text here
+# leaves them as bold. Match is on the text between the asterisks, exactly.
+#
+# The four below are my reading, not yours: a subtitle, two standfirsts and an
+# aside. Add or remove as you see fit -- that is what this file is for.
+
+exclude:
+  # A subtitle under the title, not a section.
+  - "(they don't make them like they used to ... )"
+  # The standfirst, which the article opens with.
+  - "*How we built a simple dashboard using Github actions with [open source software](https://github.com/ThomasLecocq/SeismoRMS) and [openly available (FAIR) data](https://auspass.edu.au/).*"
+  # An aside in the middle of a paragraph's argument.
+  - "*But they are not for everyone.*"
+  # Emphasis, and malformed besides -- it carries stray asterisks.
+  - "Underworld3 test problems* *"
