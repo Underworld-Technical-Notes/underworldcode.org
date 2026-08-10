@@ -18,7 +18,7 @@ parts:
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 
-[Meghan S. Miller](https://theconversation.com/profiles/meghan-s-miller-1105475), *[Australian National University](https://theconversation.com/institutions/australian-national-university-877)* and [Louis Moresi](https://theconversation.com/profiles/louis-moresi-1133314), *[Australian National University](https://theconversation.com/institutions/australian-national-university-877)*
+[Meghan S. Miller](https://theconversation.com/profiles/meghan-s-miller-1105475),* [Australian National University](https://theconversation.com/institutions/australian-national-university-877)* and [Louis Moresi](https://theconversation.com/profiles/louis-moresi-1133314),* [Australian National University](https://theconversation.com/institutions/australian-national-university-877)*
 
 Our responses to the COVID-19 pandemic have dramatically changed human activity all over the world. People are working from home, schools are closed in many places, travel is restricted, and in some cases only essential shops and businesses are open.
 
@@ -28,12 +28,12 @@ The drop in activity has also been a surprising boon for earthquake scientists l
 
 ---
 
-*
-    **
+*  
+**    
       Read more:
       [Underground sounds: why we should listen to earthquakes](https://theconversation.com/underground-sounds-why-we-should-listen-to-earthquakes-5798)
-    **
-  *
+**    
+*
 
 ---
 
@@ -73,12 +73,12 @@ In the seismic noise signal from Keysborough Secondary College, we can see the s
 
 ---
 
-*
-    **
+*  
+**    
       Read more:
       [The Victorian earthquake didn't do much damage ... but the next one might](https://theconversation.com/the-victorian-earthquake-didnt-do-much-damage-but-the-next-one-might-7787)
-    **
-  *
+**    
+*
 
 ---
 
@@ -90,7 +90,7 @@ Small events are typically identified by looking at changes in amplitudes of sig
 
 This time of quiescence in seismic noise due to the COVID-19 emergency provides a unique opportunity to learn more about small earthquakes occurring in previously unidentified locations.![The Conversation](figures/count.gif)
 
-[Meghan S. Miller](https://theconversation.com/profiles/meghan-s-miller-1105475), Associate Professor; Program Director AuScope Earth Imaging, *[Australian National University](https://theconversation.com/institutions/australian-national-university-877)* and [Louis Moresi](https://theconversation.com/profiles/louis-moresi-1133314), Professor of Geophysics, *[Australian National University](https://theconversation.com/institutions/australian-national-university-877)*
+[Meghan S. Miller](https://theconversation.com/profiles/meghan-s-miller-1105475), Associate Professor; Program Director AuScope Earth Imaging,* [Australian National University](https://theconversation.com/institutions/australian-national-university-877)* and [Louis Moresi](https://theconversation.com/profiles/louis-moresi-1133314), Professor of Geophysics,* [Australian National University](https://theconversation.com/institutions/australian-national-university-877)*
 
 This article is republished from [The Conversation](https://theconversation.com/) under a Creative Commons license. Read the [original article](https://theconversation.com/australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it-142717).
 

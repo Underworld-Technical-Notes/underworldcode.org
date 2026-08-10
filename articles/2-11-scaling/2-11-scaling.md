@@ -35,13 +35,13 @@ How does Underworld scale on a HPC? In this post we showcase how Underworld 2.11
 
 - Magnus - [https://pawsey.org.au/systems/magnus/](https://pawsey.org.au/systems/magnus/)
 
-The reference model chosen for this scaling showcase is a extended 3D stokes flow: Analytic Solution [SolDB3D](https://underworld2.readthedocs.io/en/latest/build/underworld.function.analytic.html?highlight=solDB#underworld.function.analytic.SolDB3d) . Q1P0 elements were used and a fixed solver iteration count for solving the saddle point problem. We extended this model adding extra routines (*swarm advection* and the *advection-diffusion* equation solver) to capture all the main algorithms used in a typical thermo-mechanical model by Underworld.
+The reference model chosen for this scaling showcase is a extended 3D stokes flow: Analytic Solution [SolDB3D](https://underworld2.readthedocs.io/en/latest/build/underworld.function.analytic.html?highlight=solDB#underworld.function.analytic.SolDB3d) . Q1P0 elements were used and a fixed solver iteration count for solving the saddle point problem. We extended this model adding extra routines (*swarm advection* and the* advection-diffusion* equation solver) to capture all the main algorithms used in a typical thermo-mechanical model by Underworld.
 
-The results are split into **Strong** and **Weak** scaling results.
+The results are split into** Strong** and** Weak** scaling results.
 
-- **Strong scaling** varying the number of CPUs for a given model resolution.
+-** Strong scaling** varying the number of CPUs for a given model resolution.
 
-- **Weak scaling** varying both the number of CPUs and model resolution to keep the amount of work per core constant - investigating the parallel efficiency of the algorithms.
+-** Weak scaling** varying both the number of CPUs and model resolution to keep the amount of work per core constant - investigating the parallel efficiency of the algorithms.
 
 ---
 

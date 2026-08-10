@@ -18,25 +18,25 @@ Version 2.8 of Underworld has been released recently. As with all major releases
 
 In this post we’ll consider the following:
 
-1. **The move to Python3**
+1.** The move to Python3**
 
-2. **The Semi-Lagrangian Advection Diffusion Scheme**
+2.** The Semi-Lagrangian Advection Diffusion Scheme**
 
-3. **Improved Particle Data Querying**
+3.** Improved Particle Data Querying**
 
-4. **Collective HDF5 IO**
+4.** Collective HDF5 IO**
 
-5. **API Changes**
+5.** API Changes**
 
-6. **How To Update**
+6.** How To Update**
 
-Note that all example notebooks in this post include links to live instances so you can test out the new functionality yourself. Just click the **LIVE DEMO **link under each example. Thanks to the folks at  [Binder](https://mybinder.org/) for providing the cloud compute!
+Note that all example notebooks in this post include links to live instances so you can test out the new functionality yourself. Just click the** LIVE DEMO** link under each example. Thanks to the folks at  [Binder](https://mybinder.org/) for providing the cloud compute!
 
 ### The move to Python3
 
-The switch to Python3 has been motivated by a number of factors. Most pressing is the scheduled *end of life* for Python2 [set for the end of this year](https://pythonclock.org/). While Python2 will no doubt still be in use for the foreseeable future, it will no longer be officially maintained, and there will be no Python version 2.8. As an actively developed Python project, it is necessary that we move with the community in adopting Python3 as the new de facto standard for Python. This will ensure our future viability as third party libraries we utilise also switch to Python3. Perhaps more importantly, we reduce the risk of exposing our users to security vulnerabilities that may arise when using outdated software.
+The switch to Python3 has been motivated by a number of factors. Most pressing is the scheduled* end of life* for Python2 [set for the end of this year](https://pythonclock.org/). While Python2 will no doubt still be in use for the foreseeable future, it will no longer be officially maintained, and there will be no Python version 2.8. As an actively developed Python project, it is necessary that we move with the community in adopting Python3 as the new de facto standard for Python. This will ensure our future viability as third party libraries we utilise also switch to Python3. Perhaps more importantly, we reduce the risk of exposing our users to security vulnerabilities that may arise when using outdated software.
 
-Further to this, the limitations of Python2 resulted in some difficulties with usage of the Underworld API. Specifically, our usage of *metaclasses *broke autocomplete and tooltip suggestions within the Jupyter environment, functionality that is critical to frictionless development of Underworld models (or usage of any Python API for that matter). Python3 introduces the `signature()` function to the `inspect` module, [allowing us to restore the required class constructor signatures](https://github.com/underworldcode/underworld2/blob/v2.8.0b/underworld/__init__.py#L120). Python3 also includes many other improvements (type hinting, better maths handling, etc) that we will eventually utilise within the UW API.
+Further to this, the limitations of Python2 resulted in some difficulties with usage of the Underworld API. Specifically, our usage of* metaclasses* broke autocomplete and tooltip suggestions within the Jupyter environment, functionality that is critical to frictionless development of Underworld models (or usage of any Python API for that matter). Python3 introduces the `signature()` function to the `inspect` module, [allowing us to restore the required class constructor signatures](https://github.com/underworldcode/underworld2/blob/v2.8.0b/underworld/__init__.py#L120). Python3 also includes many other improvements (type hinting, better maths handling, etc) that we will eventually utilise within the UW API.
 
 While it is possible to simultaneously support both Python2 and Python3, we have decided for simplicity to discontinue Python2 support. This minimises the complexity of maintaining  our API, allowing us to instead focus on improving core functionality. Any changes which breaks backwards compatibility are not taken lightly, though in this instance it is felt that for most users updating Python3 should be relatively trivial. There are two steps required for the switch to Python3:
 
@@ -84,7 +84,7 @@ For Python3, all division using the `/` operator is floating point division:
 1.5
 ```
 
-It is unlikely that you rely on the Python2 behaviour, but we wish to flag this in particular as it may lead to changes in your models that go unnoticed (unlike the `print` changes which will immediately raise an error). If you wish to use integer division, both Py2 and Py3 support the `//` integer division operator, and also satisfies the Python ethos of *explicit is better than implicit*.
+It is unlikely that you rely on the Python2 behaviour, but we wish to flag this in particular as it may lead to changes in your models that go unnoticed (unlike the `print` changes which will immediately raise an error). If you wish to use integer division, both Py2 and Py3 support the `//` integer division operator, and also satisfies the Python ethos of* explicit is better than implicit*.
 
 For further information on the differences between Python2 & Python3, you may like to review [this page](https://sebastianraschka.com/Articles/2014_python_2_3_key_diff.html).
 
@@ -99,7 +99,7 @@ SLCN is an alternative to the Streamline Upwind/Petrov-Galerkin (SUPG) algorithm
 
 - Unconditionally stable, allowing larger time-steps.
 
-The method, proposed by Spiegelman and Katz², performs well over a large range of Péclet numbers, including the end members: zero diffusion or pure diffusion. In addition, the method is not constrained by a CFL *stability *condition, and therefore the user is free to use arbitrarily large step sizes. Naturally, the length scales you wish to resolve accurately will still place a limit on the step size. For benchmarking purposes, the venerable, well-characterised SUPG solver will still be available in future releases.
+The method, proposed by Spiegelman and Katz², performs well over a large range of Péclet numbers, including the end members: zero diffusion or pure diffusion. In addition, the method is not constrained by a CFL* stability* condition, and therefore the user is free to use arbitrarily large step sizes. Naturally, the length scales you wish to resolve accurately will still place a limit on the step size. For benchmarking purposes, the venerable, well-characterised SUPG solver will still be available in future releases.
 
 To switch to the new SLCN method, set the `method` attribute when defining the `AdvectionDiffusion` class, i.e.
 
@@ -115,19 +115,19 @@ Looks great, right ?  Here’s the notebook for the above simulations:
 
 *You can run a [live demo](https://mybinder.org/v2/gist/jmansour/03eb2508c63342ac02dca68884f0c212/master?filepath=demo3%2Fslcn_supg.ipynb) of this notebook on mybinder.org*
 
-That said the current implementation is not perfect. For models with non orthogonal meshes or periodic boundary conditions the implementation is slow or *broken *respectively. Development to fix these usage restrictions will be released in future Underworld versions.
+That said the current implementation is not perfect. For models with non orthogonal meshes or periodic boundary conditions the implementation is slow or* broken* respectively. Development to fix these usage restrictions will be released in future Underworld versions.
 
 To summarise, SLCN is generally a superior method for modelling advection-diffusion processes, yielding less numerical diffusion for high Péclet number models, and enabling larger time-step sizes than the SUPG counterpart.
 
 ### Improved Particle Data Querying
 
-For a long time now, particle swarms within Underworld lacked all the functionality of their Eulerian brethren. Specifically, it was not possible to query particle swarms at arbitrary locations in space. This severely limited the application of the `evaluate()` method, which could only evaluate particle based data *en masse *across the entire swarm, at each and every particle’s location. This is generally heavy operation, but also wasn’t useful if the user wanted to obtain values a certain locations of interest (along a line or interface perhaps). It was also inconsistent with the behaviour of mesh data objects, which could indeed be interrogated at arbitrary coordinates.  In the case of mesh data objects, a natural path for this is provided via the finite element interpolation functions which are used to form a weighted average result. In our usage however, particle data is purely discrete, which therefore begs the question: what value do we return at an arbitrary coordinate? In the first instance, the answer to this will be to simply return the value of the nearest corresponding particle. For efficient nearest neighbour (NN) searching a k-d tree algorithm is utilised, with the implementation provided via the excellent [nanoflann library](https://github.com/jlblancoc/nanoflann).
+For a long time now, particle swarms within Underworld lacked all the functionality of their Eulerian brethren. Specifically, it was not possible to query particle swarms at arbitrary locations in space. This severely limited the application of the `evaluate()` method, which could only evaluate particle based data* en masse* across the entire swarm, at each and every particle’s location. This is generally heavy operation, but also wasn’t useful if the user wanted to obtain values a certain locations of interest (along a line or interface perhaps). It was also inconsistent with the behaviour of mesh data objects, which could indeed be interrogated at arbitrary coordinates.  In the case of mesh data objects, a natural path for this is provided via the finite element interpolation functions which are used to form a weighted average result. In our usage however, particle data is purely discrete, which therefore begs the question: what value do we return at an arbitrary coordinate? In the first instance, the answer to this will be to simply return the value of the nearest corresponding particle. For efficient nearest neighbour (NN) searching a k-d tree algorithm is utilised, with the implementation provided via the excellent [nanoflann library](https://github.com/jlblancoc/nanoflann).
 
 Let’s take a look at simple example:
 
 *You can run a [live demo](https://mybinder.org/v2/gist/jmansour/03eb2508c63342ac02dca68884f0c212/master?filepath=demo1%2Fdemo.ipynb) of this notebook on mybinder.org*
 
-In the above demo, we simply add particles along with a swarm variable which records their local index. We then query this *index variable *at a coordinate for which we know which particle is expected to be closest, and confirm the result.
+In the above demo, we simply add particles along with a swarm variable which records their local index. We then query this* index variable* at a coordinate for which we know which particle is expected to be closest, and confirm the result.
 
 Since swarm variable objects can now be queried at arbitrary coordinates, we are also able to use them for visualisation using the `Surface` drawing object, or anywhere else where a `Function` object is expected to respond to a global coordinate:
 
@@ -170,7 +170,7 @@ The `GlobalSpaceFillerLayout` was effectively serial in operation, and therefore
 
 ### How To Update
 
-We have published new release images to [our DockerHub page](https://hub.docker.com/r/underworldcode/underworld2/tags). Note that the docker `latest` tag is always aliased to the most recent* stable *build image (so currently `2.8.1b`). Kitematic users will need to create a new container which should then pull  down latest image (remember to check your volume mapping settings are correct). Those comfortable at the command line can run `docker pull underworldcode/underworld2` to pull down the new image. As mentioned earlier, Python3 is already included in the release image
+We have published new release images to [our DockerHub page](https://hub.docker.com/r/underworldcode/underworld2/tags). Note that the docker `latest` tag is always aliased to the most recent* stable* build image (so currently `2.8.1b`). Kitematic users will need to create a new container which should then pull  down latest image (remember to check your volume mapping settings are correct). Those comfortable at the command line can run `docker pull underworldcode/underworld2` to pull down the new image. As mentioned earlier, Python3 is already included in the release image
 
 For users creating native builds, you should obtain the latest repository via `git clone` or `git pull`, and then follow the [usual compilation process](https://github.com/underworldcode/underworld2/blob/master/COMPILE.md). Remember that you will need to have a Python3 interpreter installed. You may like to consider using `virtualenv` if you wish to concurrently have access to Python2 and Python3 environments.
 
@@ -178,8 +178,8 @@ For HPC, users will either need to create a new native build of Underworld 2.8, 
 
 ---
 
-1. A Voronoi algorithm is also available, though is not used by default (See Velić, M., D. May, and L. Moresi. “A Fast Robust Algorithm for Computing Discrete Voronoi Diagrams.” *Journal of Mathematical Modelling and Algorithms* 8, no. 3 (2009): 343–55. [https://doi.org/10.1007/s10852-008-9097-6](https://doi.org/10.1007/s10852-008-9097-6).)
+1. A Voronoi algorithm is also available, though is not used by default (See Velić, M., D. May, and L. Moresi. “A Fast Robust Algorithm for Computing Discrete Voronoi Diagrams.”* Journal of Mathematical Modelling and Algorithms* 8, no. 3 (2009): 343–55. [https://doi.org/10.1007/s10852-008-9097-6](https://doi.org/10.1007/s10852-008-9097-6).)
 
-2. Spiegelman, Marc, and Richard F. Katz. “A Semi-Lagrangian Crank-Nicolson Algorithm for the Numerical Solution of Advection-Diffusion Problems.” *Geochemistry, Geophysics, Geosystems* 7, no. 4 (2006). [https://doi.org/10.1029/2005GC001073](https://doi.org/10.1029/2005GC001073).
+2. Spiegelman, Marc, and Richard F. Katz. “A Semi-Lagrangian Crank-Nicolson Algorithm for the Numerical Solution of Advection-Diffusion Problems.”* Geochemistry, Geophysics, Geosystems* 7, no. 4 (2006). [https://doi.org/10.1029/2005GC001073](https://doi.org/10.1029/2005GC001073).
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld-release-2-8">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld-release-2-8">Start one</a></div></div>

@@ -14,14 +14,12 @@ keywords:
   - Underworld Workshops
   - Getting Started
   - Geodynamics
-parts:
-  abstract: "You are invited to a full-day workshop on Underworld — a computational Geodynamics / Tectonics modelling framework. This is an excellent opportunity for researchers, students, and professionals interested in computational geodynamics and Earth science modelling to learn about Underworld."
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@marvelous?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Marvin Meyer</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 
 📍 Location: Curtin University - 402.323:FF, 9am, May 7, 2025
 
-You are invited to a full-day workshop on ***Underworld*** — a computational Geodynamics / Tectonics modelling framework. This is an excellent opportunity for researchers, students, and professionals interested in computational geodynamics and Earth science modelling to learn about Underworld.
+You are invited to a full-day workshop on*** Underworld*** — a computational Geodynamics / Tectonics modelling framework. This is an excellent opportunity for researchers, students, and professionals interested in computational geodynamics and Earth science modelling to learn about Underworld.
 
 ```{figure} figures/Screenshot-2025-04-29-at-10.27.20-am.png
 

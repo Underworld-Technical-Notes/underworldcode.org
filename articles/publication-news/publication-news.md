@@ -13,7 +13,7 @@ keywords:
 ---
 The Underworld team would like to congratulate Bénédicte Cenki-Tok and co-authors at the University of Sydney and the University of Montpellier on their recent publication,
 
-B. Cenki-Tok, P.F. Rey, D. Arcay; *Strain and retrogression partitioning explain long-term stability of crustal roots in stable continents.* **Geology** doi: [https://doi.org/10.1130/G47301.1](https://doi.org/10.1130/G47301.1).
+B. Cenki-Tok, P.F. Rey, D. Arcay;* Strain and retrogression partitioning explain long-term stability of crustal roots in stable continents.*** Geology** doi: [https://doi.org/10.1130/G47301.1](https://doi.org/10.1130/G47301.1).
 
 Using Underworld the authors demonstrated a hypothesised mechanism that allows anomalous crustal roots, in stable intracontinental settings, to be preserved over hundreds of millions of years. Specifically they looked at the interplay between partial melting, the formation of garnet-pyroxene-bearing rocks, and strain rate–dependent retrogression of those rocks; resulting in the preservation of thick and strong crustal roots.
 
@@ -21,13 +21,15 @@ At the heart of their work were a series of Underworld numerical models using me
 
 The published model input files are available at the Underworld-Community [GitHub](https://github.com/underworld-community/cenki-tok-et-al-crustal-roots-in-stable-continents) and can be run directly on Binder, hit the button below.
 
-```{image} figures/badge_logo.svg
-:alt: Binder
-:target: https://mybinder.org/v2/gh/underworld-community/cenki-tok-et-al-crustal-roots-in-stable-continents/master
-:width: 109px
-```
+:::{list-table}
+:header-rows: 0
 
-[mybinder.org/v2](https://mybinder.org/v2/gh/underworld-community/cenki-tok-et-al-crustal-roots-in-stable-continents/master)
+* - ```{image} figures/badge_logo.svg
+      :alt: Binder
+      :width: 109px
+      ```
+  - [mybinder.org/v2](https://mybinder.org/v2/gh/underworld-community/cenki-tok-et-al-crustal-roots-in-stable-continents/master)
+:::
 
 Reproducible science at the click of a button - Bang!!!
 

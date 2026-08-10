@@ -36,7 +36,7 @@ with $\eta$ viscosity and $\mu$ shear modulus. In Underworld this rheology can b
 (2\eta_{eff}D_{ij})_{,j} - p_{,i}  = f_i + \frac{\eta_{eff}}{\mu\Delta t_e}\hat\tau_{ij,j}  
 \end{equation}
 
-with $p$ pressure, $\eta_{eff} = (\eta\Delta t_e)/(\alpha + \Delta t_e)$ the effective viscosity, $\alpha$ the Maxwell relaxation time, $\Delta t_e$ the elastic time step and $\hat\tau$ the stress history term. See *Farrington et al (2014)* for full details.
+with $p$ pressure, $\eta_{eff} = (\eta\Delta t_e)/(\alpha + \Delta t_e)$ the effective viscosity, $\alpha$ the Maxwell relaxation time, $\Delta t_e$ the elastic time step and $\hat\tau$ the stress history term. See* Farrington et al (2014)* for full details.
 
 ### Viscoelasticity in simple shear
 
@@ -53,7 +53,7 @@ The graph above shows the shear component of the stress history term from equati
 
 The stress history term (stress rate tensor) is carried on particles that can be advected and rotated through time by the velocity field.  To maintain objectivity it must be both advected and rotated for the current reference frame.  This can be acheived using the Jaumann stress rate, defined by $\hat\tau_{ij} = \dot\tau_{ij} + \tau_{ik}w_{kj}+\tau_{jk}w_{ki}$ with $w$ the vorticity tensor. If significant rotation occurs the use of the Jaumann stress rate is encouranged. There are other terms which may be added to this definition accounting for other changes in reference frame including stretching. However, including these additional terms couples stress and pressure, adding a considerable complication that is not required for mathematical consistency.
 
-For full details regarding the background, numerics and use in geodynamic modelling please see *Farrington et al (2014)* and the references within.
+For full details regarding the background, numerics and use in geodynamic modelling please see* Farrington et al (2014)* and the references within.
 
 ### References
 

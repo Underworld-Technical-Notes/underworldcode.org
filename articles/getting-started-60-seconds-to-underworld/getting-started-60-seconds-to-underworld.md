@@ -26,9 +26,9 @@ parts:
 
 As the old truism states, the best way to learn is by doing.
 
-This is terribly unhelpful since, really, you can't 'do' anything *until* you learn. This is a [Catch-22](https://en.wiktionary.org/wiki/Catch-22) that every grad student encounters; doubly so when it comes to anything involving code, where daily life provides very little in the way of intuition.
+This is terribly unhelpful since, really, you can't 'do' anything* until* you learn. This is a [Catch-22](https://en.wiktionary.org/wiki/Catch-22) that every grad student encounters; doubly so when it comes to anything involving code, where daily life provides very little in the way of intuition.
 
-Unlike other geodynamic modelling software, **Underworld** is designed to be approached with code. The downside is that the learning curve starts with a bump. The enormous upside is that, once you have a little fluency under your belt, you will find your science moves at the speed of thought.
+Unlike other geodynamic modelling software,** Underworld** is designed to be approached with code. The downside is that the learning curve starts with a bump. The enormous upside is that, once you have a little fluency under your belt, you will find your science moves at the speed of thought.
 
 But how do you surmount that bump?
 
@@ -42,7 +42,7 @@ If all goes well, this is where you'll be five minutes from now!
 
 ## Preparing your workspace
 
-In this short how-to, we're going to lay out a 60-second scheme to get you up and running in **Underworld**. But before we start, we'll need to make sure you've got the right tools.
+In this short how-to, we're going to lay out a 60-second scheme to get you up and running in** Underworld**. But before we start, we'll need to make sure you've got the right tools.
 
 You will need:
 
@@ -117,17 +117,17 @@ Being able to imagine a job is 9/10ths of being able to perform it (but the rema
 
 Believe it or not, you now have a fully functional geodynamic numerical modelling environment at your very fingertips!
 
-Still time on the clock? Let's see if we can get an actual model up and running. At the bottom of this article you will find a long code snippet. This is a complete, working, research-ready Underworld model which demonstrates the consequences of exponentially temperature-dependent rheology. Just **cut, paste, and hit enter**.
+Still time on the clock? Let's see if we can get an actual model up and running. At the bottom of this article you will find a long code snippet. This is a complete, working, research-ready Underworld model which demonstrates the consequences of exponentially temperature-dependent rheology. Just** cut, paste, and hit enter**.
 
 You could be using this for science right now: what are you waiting for?
 
 ## Podium finish
 
-If everything goes right, this guide should have taken you from [Spider Solitaire](https://en.wikipedia.org/wiki/Spider_(solitaire)) to geodynamic modeller *par excellence* in 60 seconds. But if it didn't, you can always [get in touch with us](https://github.com/underworldcode/underworld2/issues) for help. **Underworld** is more than just a bit of software: it's a vibrant, passionate, and diverse research community dedicated to helping you answer your question - and have fun doing it.
+If everything goes right, this guide should have taken you from [Spider Solitaire](https://en.wikipedia.org/wiki/Spider_(solitaire)) to geodynamic modeller* par excellence* in 60 seconds. But if it didn't, you can always [get in touch with us](https://github.com/underworldcode/underworld2/issues) for help.** Underworld** is more than just a bit of software: it's a vibrant, passionate, and diverse research community dedicated to helping you answer your question - and have fun doing it.
 
 Now you've taken the first step, try getting started on our interactive [user guide](https://underworld2.readthedocs.io/en/latest/UserGuide.html), which can be found online as well as in the container itself, in the root directory. And follow our channels on [Ghost](https://underworldcode.ghost.io/), [Medium](https://medium.com/geophysics-down-under), [Facebook](https://www.facebook.com/underworldcode/), [Twitter](https://twitter.com/underworldcode), and [GitHub](https://github.com/underworldcode/underworld2)for more how-tos, tutorials, meet-ups, updates, and general research chatter.
 
-Turns out the best way to learn really is by *doing*. But that doesn't mean you have to do it alone.
+Turns out the best way to learn really is by* doing*. But that doesn't mean you have to do it alone.
 
 -Rohan
 

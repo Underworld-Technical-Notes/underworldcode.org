@@ -310,6 +310,16 @@ def asset_name(src):
 AT_SIGN = re.compile(r"@(?=[A-Za-z0-9])")
 
 
+def opens_with(body, abstract):
+    """Does the article's first paragraph say what the abstract says?"""
+    plain = re.sub(r"<[^>]+>", " ", body)
+    plain = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", plain)
+    plain = re.sub(r"[*_`#>]", "", plain)
+    plain = " ".join(plain.split()).lower()
+    head = " ".join(abstract.split()).lower()[:70]
+    return bool(head) and head in plain[:600]
+
+
 def clean_excerpt(text):
     """Ghost's excerpt, fit to be an abstract.
 
@@ -458,7 +468,20 @@ class GhostToMyst(HTMLParser):
             else:
                 self._write("`")
         elif tag in INLINE_WRAP and not self._pre:
+            # Move a trailing space OUTSIDE the closing marker. Ghost writes
+            # `<em><strong>text </strong></em>`, and `***text ***` does not
+            # close in markdown -- the asterisks render literally. That is how a
+            # standfirst came out as "***How we built ... ***" on the page.
+            buf = self._link_text if self._href is not None else self._buf
+            trailing = ""
+            while buf and buf[-1] and buf[-1][-1] in " \t":
+                trailing = buf[-1][-1] + trailing
+                buf[-1] = buf[-1][:-1]
+                if not buf[-1]:
+                    buf.pop()
             self._write(INLINE_WRAP[tag])
+            if trailing:
+                self._write(trailing)
         elif tag == "span":
             if "italic" in attrs.get("class", ""):
                 self._write("*")
@@ -542,25 +565,10 @@ class GhostToMyst(HTMLParser):
                     block.append(":target: %s" % href)
                     if small:
                         block.append(":width: %dpx" % width)
-                    block.append("```")
-                    # `:target:` is silently ignored by BOTH renderers, so the
-                    # badge became decoration with no destination -- a "launch
-                    # binder" button that does nothing, in a PDF where nobody
-                    # can guess the URL.
-                    #
-                    # A markdown linked image is clickable but cannot be sized
-                    # (a {width=} attribute leaks through as literal text), and
-                    # for a doi.org target MyST destroys the image and turns it
-                    # into a citation. So the destination goes UNDERNEATH, where
-                    # it can be read whether or not it can be clicked.
-                    #
-                    # A DOI is written as code rather than a link: any link to
-                    # doi.org becomes a citation, which would pull a second
-                    # References section onto articles that already have one.
                     if DOI_IN_URL.search(href) and not self.has_reference_list:
                         # A DOI badge IS a citation, so let it be one: MyST
                         # gives a live link and a proper reference entry, which
-                        # is what a badge was standing in for.
+                        # is what the badge was standing in for.
                         #
                         # Only where the article has no reference list of its
                         # own. Two of the three DOI badges in this corpus sit in
@@ -573,12 +581,35 @@ class GhostToMyst(HTMLParser):
                         self._href, self._link_text = None, []
                         self.linked_images += 1
                         return
-                    if DOI_IN_URL.search(href):
-                        block.append("")
-                        block.append("`%s`" % href)
-                    else:
-                        block.append("")
-                        block.append("[%s](%s)" % (link_label(href), href))
+
+                    # Badge and destination side by side.
+                    #
+                    # `:target:` on an {image} is silently ignored by both
+                    # renderers, so a badge on its own was decoration pointing
+                    # nowhere -- a "launch binder" button that does nothing. A
+                    # markdown linked image IS clickable but cannot be sized: a
+                    # {width=} attribute leaks through as literal text and the
+                    # badge fills the measure.
+                    #
+                    # A two-cell list-table takes a directive in a cell, so the
+                    # badge keeps its own size and the destination sits beside
+                    # it, which is what gives the badge a point.
+                    #
+                    # A DOI is written as code, not a link: any link to a DOI --
+                    # or, it turns out, to a Zenodo record -- becomes a citation,
+                    # which would add a second References section to an article
+                    # that already has one.
+                    destination = ("`%s`" % href if DOI_IN_URL.search(href)
+                                   else "[%s](%s)" % (link_label(href), href))
+                    table = [":::{list-table}", ":header-rows: 0", ""]
+                    table.append("* - ```{image} figures/%s" % name)
+                    if alt:
+                        table.append("      :alt: %s" % alt)
+                    table.append("      :width: %dpx" % (width if small else 183))
+                    table.append("      ```")
+                    table.append("  - %s" % destination)
+                    table.append(":::")
+                    block = table
                     self._emit("\n".join(block))
                     self._href, self._link_text = None, []
                     self.linked_images += 1
@@ -624,7 +655,20 @@ class GhostToMyst(HTMLParser):
         elif tag == "code" and not self._pre:
             self._write("`")
         elif tag in INLINE_WRAP and not self._pre:
+            # Move a trailing space OUTSIDE the closing marker. Ghost writes
+            # `<strong><em>text </em></strong>`, and `***text ***` does not
+            # close in markdown -- the asterisks render literally. That is how a
+            # standfirst came out reading "***How we built ... ***".
+            buf = self._link_text if self._href is not None else self._buf
+            trailing = ""
+            while buf and buf[-1] and buf[-1][-1] in " \t":
+                trailing = buf[-1][-1] + trailing
+                buf[-1] = buf[-1][:-1]
+                if not buf[-1]:
+                    buf.pop()
             self._write(INLINE_WRAP[tag])
+            if trailing:
+                self._write(trailing)
         elif tag == "span":
             pass  # closing handled loosely; italic spans are well formed here
         elif tag == "a":
@@ -919,7 +963,7 @@ def banner_block(banner, credit):
     return "".join(parts)
 
 
-def frontmatter(rec, doi, article_id, banner=None):
+def frontmatter(rec, doi, article_id, banner=None, body=""):
     authors = article_authors(rec)
     lines = ["---", "title: %s" % yaml_str(rec.get("title") or "")]
     subtitle = (rec.get("custom_excerpt") or "").strip()
@@ -977,7 +1021,13 @@ def frontmatter(rec, doi, article_id, banner=None):
             "    article_id: %s" % yaml_str(article_id),
             "    article_version: 1.0.0",
         ]
-    if abstract:
+    # Not when the article already opens with it.
+    #
+    # Ghost's convention was to write the standfirst into the top of the post AND
+    # set it as the excerpt, so the two are the same words. Printed as an
+    # abstract and then again as the first line, it reads as a stutter -- and it
+    # is the standfirst, whose whole job is to be read once, first.
+    if abstract and not opens_with(body, abstract):
         lines += ["parts:", "  abstract: %s" % yaml_str(abstract)]
     lines += ["---", ""]
     return "\n".join(lines)
@@ -1214,7 +1264,8 @@ def main():
         if banner:
             body = (banner_block("figures/" + banner, credit) + "\n\n") + body
         (dest / ("%s.md" % slug)).write_text(
-            frontmatter(rec, doi, ids.get(slug, ""), banner) + body, encoding="utf-8")
+            frontmatter(rec, doi, ids.get(slug, ""), banner, body) + body,
+            encoding="utf-8")
         write_metadata(dest / "metadata.yml", rec, doi, conv.figures, ids.get(slug, ""),
                        banner, credit)
 

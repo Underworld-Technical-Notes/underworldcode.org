@@ -18,7 +18,7 @@ A new paper by [John Mansour](/author/john) and others has just been published i
 
 - Mansour, J., Giordani, J., Moresi, L., Beucher, R., Kaluza, O.,  Velic,  M., Farrington, R., Quenette, S., Beall, A., 2020, Underworld2:  Python  Geodynamics Modelling for Desktop, HPC and Cloud, Journal of Open   Source Software, 5(47), 1797, [https://doi.org/10.21105/joss.01797](https://doi.org/10.21105/joss.01797)
 
-The JOSS paper is intended as a reference citation for recent iterations of the code and is specifically tied to the recent *v2.9* release.
+The JOSS paper is intended as a reference citation for recent iterations of the code and is specifically tied to the recent* v2.9* release.
 
 JOSS is an online, completely-open journal that uses GitHub for the review process, zenodo to store reference releases, and takes a very collaborative approach between editor, reviewers and authors in order to steer a paper to publication. The review for our paper is[available to read](https://github.com/openjournals/joss-reviews/issues/1797) for all time !
 

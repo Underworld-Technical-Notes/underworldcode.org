@@ -24,8 +24,6 @@ exports:
     output: 30-years-of-citcom-ellipsis-and-underworld.pdf
     article_id: UWTN 2024-001
     article_version: 1.0.0
-parts:
-  abstract: CITCOM is a geodynamics modelling code based on the finite element method that is designed for planetary evolution modelling where large spatial variations and strong non-linearities occur in the material properties.
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@henleydesign?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Henley Design Studio</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 
@@ -39,16 +37,16 @@ When Shijie Zhong and his team developed CITCOM-S (Zhong et al, 2000), the paral
 
 The other branch of this family tree took a different path: the Ellipsis code was developed to study history-dependent fluid-dynamics problems (e.g. materials with damage, anisotropic flow, viscoelastic convection) using Lagrangian particles embedded in the finite element mesh (Moresi et al, 2003). Ellipsis became Underworld when we adopted the [PETSc](www.petsc.org) parallel computing framework and received funding from [AuScope](www.auscope.org.au) to develop a community of users and support their research needs.
 
-As the CITCOM codes celebrate 30 years, and active development of Underworld passes the 20 year mark, we will be unveiling our next generation of software, **Underworld3**.
+As the CITCOM codes celebrate 30 years, and active development of Underworld passes the 20 year mark, we will be unveiling our next generation of software,** Underworld3**.
 
 ```{figure} figures/Screenshot-2024-01-16-at-9.27.44-pm.png
 
 Underworld3 is integrated with Jupyter and with sympy. The development environment is easy to use, close to the original mathematical formulation and highly interactive. Once ready for deployment, parallel execution is efficient and scalable - no modification of the notebooks is needed.
 ```
 
-**Underworld3** continues the long collaboration with the ***PETSc*** team. We have completely re-engineered the internal structure of the code to leverage the ***PETSc*** computational infrastructure while focusing on ease of use for geophysical fluid dynamics problems. We introduce a pure symbolic interface to the conservations equations that builds the python ***sympy*** system — this provides automatic differentiation of PDEs (required for non-linear problems and optimisation for example) but also simplification, code-compilation, and mathematical verification. This system puts Lagrangian and Eulerian formulations on a completely equal footing and makes the two representations inter-operable. Parallel scaling is robust and reliable thanks to ***PETSc*** and, at the same time, the code is very straightforward to follow because the built-in documentation is perfectly integrated with ***Jupyter***.
+**Underworld3** continues the long collaboration with the*** PETSc*** team. We have completely re-engineered the internal structure of the code to leverage the*** PETSc*** computational infrastructure while focusing on ease of use for geophysical fluid dynamics problems. We introduce a pure symbolic interface to the conservations equations that builds the python*** sympy*** system — this provides automatic differentiation of PDEs (required for non-linear problems and optimisation for example) but also simplification, code-compilation, and mathematical verification. This system puts Lagrangian and Eulerian formulations on a completely equal footing and makes the two representations inter-operable. Parallel scaling is robust and reliable thanks to*** PETSc*** and, at the same time, the code is very straightforward to follow because the built-in documentation is perfectly integrated with*** Jupyter***.
 
-Stay tuned for a series of posts introducing **Underworld3** and, this time (fingers crossed) no natural disasters to accompany the release.
+Stay tuned for a series of posts introducing** Underworld3** and, this time (fingers crossed) no natural disasters to accompany the release.
 
 ### References
 

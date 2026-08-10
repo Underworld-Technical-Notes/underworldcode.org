@@ -50,7 +50,7 @@ Both the sticky air and free surface can be easily implemented in Underworld2. Â
 - [Thrust Wedges](https://github.com/underworldcode/UWGeodynamics/blob/development/docs/tutorials/Tutorial_10_Thrust_Wedges.ipynb);
 
 (2) Body-fitting method:  
-Free surface can be turned on using the *Model.freesurface* switch.
+Free surface can be turned on using the* Model.freesurface* switch.
 
 ```python
 Model.freesurface = True

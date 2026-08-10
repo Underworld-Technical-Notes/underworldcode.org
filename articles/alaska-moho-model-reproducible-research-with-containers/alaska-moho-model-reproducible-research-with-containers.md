@@ -40,25 +40,29 @@ but to manage versions and operating system changes, we have also packaged every
 
 But, since the software we release is also used to interpolate the surfaces, and not everyone wants to install docker, we also make all our notebooks available in the cloud with everything pre-configured. You can launch it [on mybinder.org](https://mybinder.org/v2/gh/lmoresi/miller-moho-binder/publication) to try it out.
 
-```{image} figures/badge.svg
-:alt: Binder
-:target: https://mybinder.org/v2/gh/lmoresi/miller-moho-binder/publication
-:width: 92px
-```
+:::{list-table}
+:header-rows: 0
 
-[mybinder.org/v2](https://mybinder.org/v2/gh/lmoresi/miller-moho-binder/publication)
+* - ```{image} figures/badge.svg
+      :alt: Binder
+      :width: 92px
+      ```
+  - [mybinder.org/v2](https://mybinder.org/v2/gh/lmoresi/miller-moho-binder/publication)
+:::
 
 See [pypi.org/project/miller_alaskamoho_srl2018](https://pypi.org/project/miller_alaskamoho_srl2018/) for a full list of installation / running options.
 
 The software is also tracked on Zenodo
 
-```{image} figures/zenodo.1459110.svg
-:alt: DOI
-:target: https://doi.org/10.5281/zenodo.1459110
-:width: 183px
-```
+:::{list-table}
+:header-rows: 0
 
-`https://doi.org/10.5281/zenodo.1459110`
+* - ```{image} figures/zenodo.1459110.svg
+      :alt: DOI
+      :width: 183px
+      ```
+  - `https://doi.org/10.5281/zenodo.1459110`
+:::
 
 #### References
 

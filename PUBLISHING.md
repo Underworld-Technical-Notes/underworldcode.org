@@ -70,6 +70,26 @@ Publishing it as a *new article* instead would give the same guide two
 identifiers with nothing connecting them, and leave whoever cited the first one
 holding a reference to advice the project no longer gives.
 
+### Acknowledging the funding
+
+A note about Underworld3 must carry the funding acknowledgement:
+
+> The Underworld project is supported by AuScope and the Australian Government
+> through the National Collaborative Research Infrastructure Strategy (NCRIS).
+> Source code: github.com/underworldcode/underworld3
+
+Add the slug to `acknowledgements.yml` and the build writes it in, before the
+discussion block and into the archival PDF as well as the page. The wording
+lives in one place, so it can be corrected once for every note.
+
+It is a list rather than a rule inferred from the text, deliberately: a note
+that mentions Underworld3 is not necessarily work the project funded, and
+claiming funding that did not happen is worse than omitting one that did.
+
+Three of the eleven Underworld3 notes carried this and eight did not, which is
+what an acknowledgement looks like when it depends on an author remembering
+rather than on the build.
+
 ### Runnable examples, and why they make versioning the normal case
 
 A technical note or a how-to should come with the notebook that runs it.

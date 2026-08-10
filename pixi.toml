@@ -42,7 +42,7 @@ build-html = { cmd = "myst build --html && python3 scripts/fix_slugs.py && pytho
 # The banner belongs on the web, not on page one of an archival PDF. It is
 # derived from the `banner:` front matter, so it can be taken out for the Typst
 # build and put back after; both directions are idempotent.
-build-pdf = { cmd = "python3 scripts/build_pdf.py", depends-on = ["index"] }
+build-pdf = { cmd = "python3 scripts/acknowledgement.py && python3 scripts/build_pdf.py", depends-on = ["index"] }
 build = { depends-on = ["build-pdf", "build-html"] }
 
 validate = "python3 scripts/validate_metadata.py"

@@ -25,14 +25,12 @@ exports:
     output: self-updating-repositories.pdf
     article_id: UWTN 2020-006
     article_version: 1.0.0
-parts:
-  abstract: How we built a simple dashboard using Github actions with open source software and openly available (FAIR) data.
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 
-[Meghan S. Miller](https://theconversation.com/profiles/meghan-s-miller-1105475), *[Australian National University](https://theconversation.com/institutions/australian-national-university-877)* and [Louis Moresi](https://theconversation.com/profiles/louis-moresi-1133314), *[Australian National University](https://theconversation.com/institutions/australian-national-university-877)*
+[Meghan S. Miller](https://theconversation.com/profiles/meghan-s-miller-1105475),* [Australian National University](https://theconversation.com/institutions/australian-national-university-877)* and [Louis Moresi](https://theconversation.com/profiles/louis-moresi-1133314),* [Australian National University](https://theconversation.com/institutions/australian-national-university-877)*
 
-***How we built a simple dashboard using Github actions with [open source software](https://github.com/ThomasLecocq/SeismoRMS) and [openly available (FAIR) data](https://auspass.edu.au/). ***
+***How we built a simple dashboard using Github actions with [open source software](https://github.com/ThomasLecocq/SeismoRMS) and [openly available (FAIR) data](https://auspass.edu.au/).***
 
 We recently wrote an [article in The Conversation](https://theconversation.com/australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it-142717) that shows how the Australian Seismometers in schools network registers the pulse of Australian life through changes in the seismic noise  spectrum measured in local schools.
 

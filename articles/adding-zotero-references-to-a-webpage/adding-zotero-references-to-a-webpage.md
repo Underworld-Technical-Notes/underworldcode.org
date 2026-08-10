@@ -24,7 +24,7 @@ exports:
 ---
 <div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
 
-*How we added an auto-updating set of citations to underworld in our [publications](/publications-using-uw/) webpage. *
+*How we added an auto-updating set of citations to underworld in our [publications](/publications-using-uw/) webpage.*
 
 We need to curate all the publications that we can find that use the [underworld](/intro-to-underworld/) geodynamics code and provide this information on our website. To avoid needless repetition, we take advantage of the fact that nearly all the information we require is online and automatically construct the bibliography from an [online public zotero library](https://www.zotero.org/groups/2386948/underworld-geodynamics-community/items/collectionKey/QNARWBUC).
 
@@ -51,7 +51,7 @@ fetch(`https://api.zotero.org/groups/${groupID}/collections/${collectionKey}/ite
 </script>
 ```
 
-This works by sending a structured query to zotero asking for information for a specific library (here the  library for the underworld-community group which has an ID of *2386948* and a specific collection of data with the Key of *QNARWBUC*). The result of the query is then loaded into the content of the `<div id="pubs-2019">` tag when the query has completed.
+This works by sending a structured query to zotero asking for information for a specific library (here the  library for the underworld-community group which has an ID of* 2386948* and a specific collection of data with the Key of* QNARWBUC*). The result of the query is then loaded into the content of the `<div id="pubs-2019">` tag when the query has completed.
 
 It produces the following output
 

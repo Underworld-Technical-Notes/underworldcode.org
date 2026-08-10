@@ -20,7 +20,7 @@ parts:
 
 *[Meghan S Miller](http://rses.anu.edu.au/people/academics/associate-professor-meghan-s-miller#acton-tabs-link--tabs-person_tabs-middle-2), Louis Moresi, Research School of Earth Sciences, Australian National University*
 
-**A [new study by an international team of scientists](https://science.sciencemag.org/content/early/2020/07/22/science.abd2438) has found lockdown measures to stop the spread of COVID-19 led to a 50 per cent reduction in seismic noise observed around the world. **It is the largest reduction in human-generated noise ever observed globally.
+**A [new study by an international team of scientists](https://science.sciencemag.org/content/early/2020/07/22/science.abd2438) has found lockdown measures to stop the spread of COVID-19 led to a 50 per cent reduction in seismic noise observed around the world.** It is the largest reduction in human-generated noise ever observed globally.
 
 The researchers, including Associate Professor Meghan Miller and Professor Louis Moresi from The Australian National University (ANU), analysed datasets from over 300 seismic stations around the world.
 

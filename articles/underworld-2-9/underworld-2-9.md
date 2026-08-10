@@ -24,8 +24,6 @@ license: CC-BY-4.0
 banner: figures/banner.jpg
 keywords:
   - Underworld Code
-parts:
-  abstract: "The Underworld 2.9 release is available from Github, as a docker container and via zenodo (doi:10.5281/zenodo.3964957) it is also available through pip install for the first time"
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
 
@@ -57,11 +55,11 @@ Note that the installation of `underworld` via `pip` is still experimental, and 
 
 #### Requirements
 
-**PETSc: **PETSc can be installed via `pip` these days, or is usually available via platform package managers (such as `apt` on Ubuntu as `petsc-dev`). If you have PETSc installed in a non-standard location, please set the `PETSC_DIR` environment variable to specify the required location.
+**PETSc:** PETSc can be installed via `pip` these days, or is usually available via platform package managers (such as `apt` on Ubuntu as `petsc-dev`). If you have PETSc installed in a non-standard location, please set the `PETSC_DIR` environment variable to specify the required location.
 
-**MPI & mpi4py: **You will need an implementation of MPI installed on your system. Underworld is commonly used with [MPICH](https://www.mpich.org/) and [OpenMPI](https://www.open-mpi.org/). You will also need to install the `mpi4py` package (via `pip`) which provides Python bindings to the MPI library. If non-standard, you can specify the wrapped compilers by setting the `MPICC` and `MPICXX` environment variables.
+**MPI & mpi4py:** You will need an implementation of MPI installed on your system. Underworld is commonly used with [MPICH](https://www.mpich.org/) and [OpenMPI](https://www.open-mpi.org/). You will also need to install the `mpi4py` package (via `pip`) which provides Python bindings to the MPI library. If non-standard, you can specify the wrapped compilers by setting the `MPICC` and `MPICXX` environment variables.
 
-**h5py: **The standard `h5py` (installed via `pip`) is the recommended version for desktop usage. However, note that it will be the non-parallel enabled version, and for large parallel simulations saving/reading data may become a bottleneck, and collective IO via MPI-enabled `h5py` is recommended. The following command may be useful for installed MPI-enabled `h5py` where necessary:
+**h5py:** The standard `h5py` (installed via `pip`) is the recommended version for desktop usage. However, note that it will be the non-parallel enabled version, and for large parallel simulations saving/reading data may become a bottleneck, and collective IO via MPI-enabled `h5py` is recommended. The following command may be useful for installed MPI-enabled `h5py` where necessary:
 
 ```SH
 CC=mpicc HDF5_MPI="ON" HDF5_DIR=/path/to/your/hdf5/install/ pip install --no-binary=h5py h5py
@@ -69,7 +67,7 @@ CC=mpicc HDF5_MPI="ON" HDF5_DIR=/path/to/your/hdf5/install/ pip install --no-bin
 
 Note that, for the above, you will also need to have a parallel enabled version of the  `HDF5` library available for `h5py` to link against.
 
-**Lavavu: **For rendering of visualisations, you will also need to install `lavavu` (via `pip`). Please check the [lavavu page](https://github.com/lavavu/LavaVu) for further installation instructions.
+**Lavavu:** For rendering of visualisations, you will also need to install `lavavu` (via `pip`). Please check the [lavavu page](https://github.com/lavavu/LavaVu) for further installation instructions.
 
 **Other**: The following should also be installed via a system package manager (such as apt on Ubuntu):`swig`, `git` and  `libxml2-dev` (or equivalent). The following should be installed via pip:`scons` and `numpy`.
 

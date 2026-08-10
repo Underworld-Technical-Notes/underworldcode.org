@@ -33,7 +33,7 @@ One of the most popular cloud services for python / jupyter - based codes is bin
 
 In recent weeks lectures at schools and universities around the world have moved to on-line classrooms and one shortcoming of binder has become apparent — the lack of persistence for work that spans an extended work session. The fact that students (and lecturers) working at home may be forced to work in a fragmented fashion means that they often time-out access in binder and have to restart a new, pristine session each time they return.
 
-We built a cheap-and-cheerful solution with persistent storage and a binder-like access to notebooks in a repository that is aimed at serving a single classroom. We provide a template github repository that can be used to configure, manage and monitor a single [digital-ocean](/articles/underworld/www.digitalocean.com) droplet (any server, really) that serves up content via* [the-littlest-jupyter-hub](http://tljh.jupyter.org/en/latest/). *The zero-to-server time is just a few minutes and there is minimal manual configuration.
+We built a cheap-and-cheerful solution with persistent storage and a binder-like access to notebooks in a repository that is aimed at serving a single classroom. We provide a template github repository that can be used to configure, manage and monitor a single [digital-ocean](/articles/underworld/www.digitalocean.com) droplet (any server, really) that serves up content via* [the-littlest-jupyter-hub](http://tljh.jupyter.org/en/latest/).* The zero-to-server time is just a few minutes and there is minimal manual configuration.
 
 It goes something like this:
 
@@ -49,33 +49,37 @@ It goes something like this:
 
 6. Log in !
 
-7. *Optional: add default content and personalise the README for your repository.*
+7.* Optional: add default content and personalise the README for your repository.*
 
 We use github actions in the repository to initialize, update and monitor the server. The workflow files have some optional configuration information in them that, if updated, will also trigger the server to rebuild / re-initialise.
 
-The template repository itself runs a demonstration server at [https://demon.underworldcloud.org](https://demon.underworldcloud.org/). (If you want to use https you also need to configure a hostname for your server. Information can be found at *[the-littlest-jupyter-hub](http://tljh.jupyter.org/en/latest/) *documentation pages.)
+The template repository itself runs a demonstration server at [https://demon.underworldcloud.org](https://demon.underworldcloud.org/). (If you want to use https you also need to configure a hostname for your server. Information can be found at* [the-littlest-jupyter-hub](http://tljh.jupyter.org/en/latest/)* documentation pages.)
 
 ### What do the users see ?
 
 Why not try it out and see for yourself ? Users first need to sign up to use the server. In our demo version, they can just request an account via a signup page:
 
-```{image} figures/Cloud_User-Signup-blue
-:alt: Signup
-:target: https://demon.underworldcloud.org/hub/signup
-:width: 120px
-```
+:::{list-table}
+:header-rows: 0
 
-[demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/signup)
+* - ```{image} figures/Cloud_User-Signup-blue
+      :alt: Signup
+      :width: 120px
+      ```
+  - [demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/signup)
+:::
 
 The server is then accessed either via the hub url itself or via a link that also populates the notebooks etc in the style of a binder link.
 
-```{image} figures/Cloud_User-Launch_Demo_Notebooks-blue
-:alt: https://img.shields.io/badge/--
-:target: https://demon.underworldcloud.org/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Funderworld-geodynamics-cloud%2Funderworld-cloud-droplet&urlpath=lab%2Ftree%2Funderworld-cloud-droplet%2FStartHere.ipynb
-:width: 218px
-```
+:::{list-table}
+:header-rows: 0
 
-[demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Funderworld-geodynamics-cloud%2Funderworld-cloud-droplet&urlpath=lab%2Ftree%2Funderworld-cloud-droplet%2FStartHere.ipynb)
+* - ```{image} figures/Cloud_User-Launch_Demo_Notebooks-blue
+      :alt: https://img.shields.io/badge/--
+      :width: 218px
+      ```
+  - [demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Funderworld-geodynamics-cloud%2Funderworld-cloud-droplet&urlpath=lab%2Ftree%2Funderworld-cloud-droplet%2FStartHere.ipynb)
+:::
 
 We use [nbgitpuller](https://jupyterhub.github.io/nbgitpuller/) to draw in content for each user on the fly. nbgitpuller is designed to distribute content in a repository to students and to manage (gracefully) the issues associated with merging updated content and existing work. There is a link generator that can be used to make the badges for users to launch the server for a given repository.
 
@@ -85,23 +89,27 @@ For more information check out the template repository: [https://github.com/unde
 
 The class server can be administered by an instructor who does not have to have access to the digital ocean console. Most everyday tasks can be managed via the jupyterhub console.
 
-```{image} figures/Cloud_Admin-Hub_Control_Panel-Red
-:alt: ControlPanel
-:target: https://demon.underworldcloud.org/hub/admin
-:width: 190px
-```
+:::{list-table}
+:header-rows: 0
 
-[demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/admin)
+* - ```{image} figures/Cloud_Admin-Hub_Control_Panel-Red
+      :alt: ControlPanel
+      :width: 190px
+      ```
+  - [demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/admin)
+:::
 
 There is a page that can be used to authorize or un-authorize users' access to the service.
 
-```{image} figures/Cloud_Admin-Authorize_Users-Red
-:alt: Authorize
-:target: https://demon.underworldcloud.org/hub/authorize
-:width: 178px
-```
+:::{list-table}
+:header-rows: 0
 
-[demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/authorize)
+* - ```{image} figures/Cloud_Admin-Authorize_Users-Red
+      :alt: Authorize
+      :width: 178px
+      ```
+  - [demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/authorize)
+:::
 
 The admin users of the hub are also able to configure the server itself via the jupyter terminal.
 

@@ -976,7 +976,7 @@ def test_the_archival_stamp_stays_a_string_in_the_export_block():
 def test_a_broken_pdf_build_cannot_report_success():
     """It did. The task swallowed the failure and CI deposited no article."""
     task = (ROOT / "pixi.toml").read_text(encoding="utf-8")
-    assert "build-pdf = { cmd = \"python3 scripts/build_pdf.py\"" in task, \
+    assert "scripts/build_pdf.py" in task, \
         "the PDF build must go through the wrapper that propagates its status"
 
 
@@ -1120,3 +1120,15 @@ def test_the_two_halves_of_the_build_cannot_race():
     line = [l for l in task.splitlines() if l.startswith("build-html")][0]
     assert 'depends-on = ["build-pdf"]' in line, \
         "build-html must depend on build-pdf, or the two race over the sources"
+
+
+def test_every_underworld3_note_acknowledges_its_funding():
+    """Three of eleven carried this by hand; eight did not."""
+    listed = [l.strip()[2:].strip() for l in
+              (ROOT / "acknowledgements.yml").read_text(encoding="utf-8").splitlines()
+              if l.strip().startswith("- ")]
+    assert listed, "acknowledgements.yml names no articles"
+    for slug in listed:
+        text = (ROOT / "articles" / slug / ("%s.md" % slug)).read_text(encoding="utf-8")
+        assert "NCRIS" in text, "%s does not acknowledge its funding" % slug
+        assert text.count("NCRIS") == 1, "%s acknowledges it twice" % slug

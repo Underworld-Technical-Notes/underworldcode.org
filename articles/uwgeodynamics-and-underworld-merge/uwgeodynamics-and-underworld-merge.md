@@ -18,7 +18,7 @@ In an effort to simplify maintenance and compatibility between Underworld and UW
 
 Starting with version 2.13, UWGeodynamics will now live under [Underworld](https://github.com/underworldcode/underworld2).
 
-All UWGeodynamics functionalities and workflows will remain available to the users. **From version 2.13** users will be able to import `UWGeodynamics` after installing `Underworld` (see documentation for install options), using `from underworld import UWGeodynamics`.
+All UWGeodynamics functionalities and workflows will remain available to the users.** From version 2.13** users will be able to import `UWGeodynamics` after installing `Underworld` (see documentation for install options), using `from underworld import UWGeodynamics`.
 
 Issues, functionality requests and pull requests will have to be submitted to the Underworld repository.
 

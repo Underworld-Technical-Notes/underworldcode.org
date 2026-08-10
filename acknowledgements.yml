@@ -1,0 +1,21 @@
+# Notes that carry the AuScope / NCRIS funding acknowledgement.
+#
+# Named explicitly rather than inferred from the text. A note that mentions
+# Underworld3 is not necessarily work the project funded, and claiming funding
+# that did not happen is worse than omitting one that did.
+#
+# The wording lives in scripts/acknowledgement.py, so changing it once updates
+# every note here. New notes about Underworld3 should be added to this list --
+# see PUBLISHING.md.
+
+- ai-and-scientific-software-what-we-learned-rebuilding-underworld3
+- our-journey-from-underworld2-to-underworld3
+- how-underworld3-turns-sympy-into-c
+- mesh-variables-and-petsc-vectors-keeping-arrays-in-sync
+- physical-units-in-computational-geodynamics
+- constitutive-models-in-symbolic-form
+- symbolic-time-derivatives-in-underworld3
+- particles-in-underworld3
+- finding-particles-in-a-distributed-unstructured-mesh
+- underworld3-published-in-journal-of-open-source-software
+- underworld3-come-and-get-it

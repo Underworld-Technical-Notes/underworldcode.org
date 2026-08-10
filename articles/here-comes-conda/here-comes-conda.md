@@ -19,7 +19,7 @@ parts:
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
 
-*Conda packages are now available for most of the underworldcode suite of software* *([Underworld](https://github.com/underworldcode/underworld2.git), [UWGeodynamics](https://github.com/underworldcode/UWGeodynamics.git), [Lavavu](https://github.com/lavavu/LavaVu.git), [Stripy](https://github.com/underworldcode/stripy.git)) from the [geo-down-under](https://anaconda.org/geo-down-under) conda channel.*
+*Conda packages are now available for most of the underworldcode suite of software** ([Underworld](https://github.com/underworldcode/underworld2.git), [UWGeodynamics](https://github.com/underworldcode/UWGeodynamics.git), [Lavavu](https://github.com/lavavu/LavaVu.git), [Stripy](https://github.com/underworldcode/stripy.git)) from the [geo-down-under](https://anaconda.org/geo-down-under) conda channel.*
 
 ```{figure} figures/conda_logo.svg
 ```
@@ -28,7 +28,7 @@ Let’s face it. Users don’t want to spend time compiling code on their machin
   
 The Underworld team has been using [Docker](https://www.docker.com/) Containers for a while. Containers are convenient: users can pull a new Docker image after each release of the software, start a new container and use the code on any machine that can run Docker. We love docker containers, they are great for deploying services with dedicated functions on large systems such as Amazon cloud, Azure or Google cloud etc. Containers provide a complete environment with all the dependencies needed to run your software. They also provide some degree of isolation: you can discard a container and restart from a fresh and clean system whenever you like.
 
-***But they are not for everyone. ***
+***But they are not for everyone.***
 
 Docker images/containers are often quite big and pulling a new image often means transferring gigabytes of data. This can quickly become a waste of resources. A normal user should be able to install and run code in a few minutes. The very nature of scientific work is to explore and test things. We may do so by testing different libraries or even different version of a code. This requires multiple environment that need to be managed efficiently. Sharing a workflow environment is also paramount if we want to make sure that reproducibility can be effectively tested. An environment management system such as [conda](https://docs.conda.io/en/latest/) allows us to do so.
 

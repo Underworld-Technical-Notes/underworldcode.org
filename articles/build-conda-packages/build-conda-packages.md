@@ -94,24 +94,24 @@ Jinja2 is a very powerful templating language for Python. It is definitely worth
 
 The `meta.yaml` recipe is organised into a list of structures that must be provided to `conda build`. They are:
 
-- The **package** dictionary which must contain the **name** and the **version** number of the package.
+- The** package** dictionary which must contain the** name** and the** version** number of the package.
 
-- The **source** dictionary which contains the **url** (which can be a local path or an http address). Note that providing a  checksum such as sha256 is considered good practice. It can easily be generated on a MacOs or Linux system using the following command: `openssl sha256 my_tarball.tar.gz`
+- The** source** dictionary which contains the** url** (which can be a local path or an http address). Note that providing a  checksum such as sha256 is considered good practice. It can easily be generated on a MacOs or Linux system using the following command: `openssl sha256 my_tarball.tar.gz`
 
-- The **build** dictionary that contains the build **number** that you as a maintener are responsible to increment and the **build** instructions on how to build the package. In the case of *Badlands*, the instructions are fairly simple and rely on a `pip install` method. You could provide a `build.sh` file with more complex instructions. I recommend you check the *Lavavu* recipe for an example of a more complex set of build instructions. Note that in its current form the *Badlands* conda recipe skips Windows system as we chose to rely on the Windows Subsystem for Linux (WSL) available on Windows 10.
+- The** build** dictionary that contains the build** number** that you as a maintener are responsible to increment and the** build** instructions on how to build the package. In the case of* Badlands*, the instructions are fairly simple and rely on a `pip install` method. You could provide a `build.sh` file with more complex instructions. I recommend you check the* Lavavu* recipe for an example of a more complex set of build instructions. Note that in its current form the* Badlands* conda recipe skips Windows system as we chose to rely on the Windows Subsystem for Linux (WSL) available on Windows 10.
 
-- The requirement dictionary that contains 3 lists of dependencies for the **build**, **host** and **run** systems.   
-The **build** section should only contains the tools that are required to build the package. This generally include the compilers and some configuration tools such as *make* or *cmake* etc.  
-The **host** section contains a list of packages that need to be specific to the target platform, when the target platform is not necessarily the same as the build platform. Shared libraries should be listed here. The Python interpreter must also be listed here.  
-The **run** section contains the dependencies that are needed when running a program. Typically all the packages that are imported by the package we are building will need to be listed here.
+- The requirement dictionary that contains 3 lists of dependencies for the** build**,** host** and** run** systems.   
+The** build** section should only contains the tools that are required to build the package. This generally include the compilers and some configuration tools such as* make* or* cmake* etc.  
+The** host** section contains a list of packages that need to be specific to the target platform, when the target platform is not necessarily the same as the build platform. Shared libraries should be listed here. The Python interpreter must also be listed here.  
+The** run** section contains the dependencies that are needed when running a program. Typically all the packages that are imported by the package we are building will need to be listed here.
 
 Note: Version constrains can be easily set within the lists of dependencies. Conda will use those constrain to resolve the dependencies when creating a new environment.
 
-- The **test** section which contains the test that conda build should run once the package has been built. This section is optional but highly recommended. For a Python package, it includes a list of imports. It can also run unit tests etc.
+- The** test** section which contains the test that conda build should run once the package has been built. This section is optional but highly recommended. For a Python package, it includes a list of imports. It can also run unit tests etc.
 
-- The **about** section contains a list of metadata that describe the package. It usually includes a link to the **home**page** **of the project, the **license**, a link to the full **license_file**, a **summary** and a link to the documentation, **doc_url**.
+- The** about** section contains a list of metadata that describe the package. It usually includes a link to the** home**page**** of the project, the** license**, a link to the full** license_file**, a** summary** and a link to the documentation,** doc_url**.
 
-- The **extra** section contains some extra metadata that might be useful such as a list of the maintainers names.
+- The** extra** section contains some extra metadata that might be useful such as a list of the maintainers names.
 
 ### The complete recipe
 

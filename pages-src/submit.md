@@ -59,6 +59,10 @@ version and may pick up corrections, better links and discussion.
 
 ## Things worth knowing before you write
 
+**If the work was funded, say so.** Notes about Underworld3 carry the AuScope
+and NCRIS acknowledgement; add your slug to `acknowledgements.yml` and the build
+puts it in, on the page and in the PDF.
+
 **Attach the notebook.** A note that describes how to do something should come
 with something that does it. Put notebooks and any small data files in
 `articles/<slug>/examples/`; they are deposited with the note, so the archive
