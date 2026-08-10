@@ -62,6 +62,16 @@ jobs:
           BASE_URL: ${{ steps.base.outputs.base_url }}
         run: pixi run test-assets --base-url "$BASE_URL"
 
+      # The artifact IS the site. The CNAME at the repo root decides the base
+      # URL above, but it is not part of _build/html, so without this it never
+      # reaches the server -- and a Pages deployment whose artifact carries no
+      # CNAME can drop the custom domain that was set in the settings. The one
+      # file the whole cutover turns on, left out of the only directory that
+      # gets published.
+      - name: Carry the custom domain into the artifact
+        if: hashFiles('CNAME') != ''
+        run: cp CNAME _build/html/CNAME
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3

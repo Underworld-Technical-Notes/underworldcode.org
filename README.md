@@ -9,7 +9,7 @@ Implementation plan: `~/.claude/plans/the-job-i-have-peppy-origami.md`
 **Status: Stage 2 complete — the whole corpus is migrated.**
 All 53 articles converted from Ghost, building as a MyST site and as 53 archival
 PDFs, with every one of the 50 registered DOIs resolving in the build. Published
-at <https://underworld-technical-notes.github.io/underworldcode.org/>. What
+at <https://www.underworldcode.org/>. What
 remains before the droplet can be switched off is in *Blocked on Louis* below.
 
 ```bash

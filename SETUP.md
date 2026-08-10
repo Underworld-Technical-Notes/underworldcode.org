@@ -49,7 +49,7 @@ the site and the archival PDFs, and asserts that no registered DOI is broken.
 Settings → Pages → Source: **GitHub Actions**.
 
 The site will publish at
-`https://underworld-technical-notes.github.io/underworldcode.org/`.
+`https://www.underworldcode.org/`.
 
 **Leave the custom domain unset for now.** Two reasons:
 

@@ -34,7 +34,7 @@ category_id: DIC_kwDOTvdKWs4DC1FQ
 # The page each thread belongs to. Giscus needs this to send a reader back
 # after signing in with GitHub; without it the widget loads but offers no way
 # to comment. It changes at cutover, alongside the CNAME.
-site_url: https://underworld-technical-notes.github.io/underworldcode.org
+site_url: https://www.underworldcode.org
 
 mapping: specific
 reactions_enabled: true

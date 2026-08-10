@@ -1247,3 +1247,18 @@ def test_the_base_url_is_derived_from_the_cname_not_set_by_hand():
     deploy = (ROOT / ".github" / "workflows" / "deploy.yml").read_text(encoding="utf-8")
     assert "if [ -f CNAME ]" in deploy, \
         "the base URL must follow the CNAME, so it cannot be left wrong"
+
+
+def test_the_custom_domain_reaches_the_published_artifact():
+    """The artifact IS the site, and CNAME lives at the repo root.
+
+    deploy.yml reads it to choose the base URL, which made it look handled --
+    but _build/html is what gets uploaded, and a Pages deployment whose
+    artifact carries no CNAME can drop the custom domain set in the settings.
+    The one file the whole cutover turns on, left out of the only directory
+    that gets published.
+    """
+    deploy = (ROOT / ".github" / "workflows" / "deploy.yml").read_text(encoding="utf-8")
+    upload = deploy.index("upload-pages-artifact")
+    assert "cp CNAME _build/html" in deploy[:upload], \
+        "CNAME must be copied into _build/html BEFORE the artifact is uploaded"
