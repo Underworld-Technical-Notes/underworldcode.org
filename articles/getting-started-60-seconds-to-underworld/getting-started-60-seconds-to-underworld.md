@@ -93,13 +93,13 @@ Hardly seems fair...
 1. Open your terminal
 
 2. Do you have your target directory from before? You'll need it. Type in the following docker command, where 'YOUR_DIRECTORY' is your nominated folder:  
-`docker run -v YOUR_DIRECTORY:/home/jovyan/workspace/ -p 127.0.0.1:8888:8888 underworldcode/underworld2:latest`
+  `docker run -v YOUR_DIRECTORY:/home/jovyan/workspace/ -p 127.0.0.1:8888:8888 underworldcode/underworld2:latest`
 
 3. Stop the clock! This may take some time depending on your internet connection and whether you've tried it before. When it's ready, you should get a message with a URL in it.
 
 4. Go to your browser and type the following into the address bar:  
-`127.0.0.1:8888`  
-You may need to provide a 'token' to access: you can copy-paste this from the command prompt where you ran Docker just before. Consider following the prompts to set up a password, which will save you time in the future.
+  `127.0.0.1:8888`  
+  You may need to provide a 'token' to access: you can copy-paste this from the command prompt where you ran Docker just before. Consider following the prompts to set up a password, which will save you time in the future.
 
 5. You are now in 'Jupyter Notebooks', which is a browser-based environment for writing and running code. Navigate to the 'workspace' directory. This directory is actually the very same as YOUR_DIRECTORY - it has been 'mounted' into the container. Make a new file in Jupyter and you should see it pop up in the appropriate place on your desktop, and vice versa.
 

@@ -64,14 +64,14 @@ The related study has been published in the journal [Geoscientific Model Develop
 
 ## References
 
-Sachau, T., Yang, H., Lang, J., Bons, P. D., and Moresi, L.: ISMIP-HOM benchmark experiments using Underworld, Geosci. Model Dev., 15, 8749–8764, https://doi.org/10.5194/gmd-15-8749-2022, 2022.
+Sachau, T., Yang, H., Lang, J., Bons, P. D., and Moresi, L.: ISMIP-HOM benchmark experiments using Underworld, Geosci. Model Dev., 15, 8749–8764, `https://doi.org/10.5194/gmd-15-8749-2022,` 2022.
 
-Moresi, L., Dufour, F., and Mühlhaus, H.-B.: A Lagrangian integration point finite element method for large deformation modeling of viscoelastic geomaterials, J. Comput. Phys., 184, 476–497, https://doi.org/10.1016/S0021-9991(02)00031-100031-1), 2003.
+Moresi, L., Dufour, F., and Mühlhaus, H.-B.: A Lagrangian integration point finite element method for large deformation modeling of viscoelastic geomaterials, J. Comput. Phys., 184, 476–497, `https://doi.org/10.1016/S0021-9991(02`)00031-100031-1), 2003.
 
-Mühlhaus, H.-B., Moresi, L., and Cada, M.: Emergent Anisotropy and Flow Alignment in Viscous Rock, Pure Appl. Geophys., 161, 2451–2463, https://doi.org/10.1007/s00024-004-2575-5, 2004.
+Mühlhaus, H.-B., Moresi, L., and Cada, M.: Emergent Anisotropy and Flow Alignment in Viscous Rock, Pure Appl. Geophys., 161, 2451–2463, `https://doi.org/10.1007/s00024-004-2575-5,` 2004.
 
 Pattyn, F. and Payne, T.: Benchmark experiments for numerical Higher-Order ice-sheet Models, [https://frank.pattyn.web.ulb.be/ismip/welcome.html](https://frank.pattyn.web.ulb.be/ismip/welcome.html) (last access: 30 May 2022), 2006.
 
-Yang, H., Moresi, L. N., and Mansour, J.: Stress recovery for the particle-in-cell finite element method, Phys. Earth Planet. Int., 311, 106637, https://doi.org/10.1016/j.pepi.2020.106637, 2021.
+Yang, H., Moresi, L. N., and Mansour, J.: Stress recovery for the particle-in-cell finite element method, Phys. Earth Planet. Int., 311, 106637, `https://doi.org/10.1016/j.pepi.2020.106637,` 2021.
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=ismip-hom-benchmark-experiments-using-underworld">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=ismip-hom-benchmark-experiments-using-underworld">Start one</a></div></div>

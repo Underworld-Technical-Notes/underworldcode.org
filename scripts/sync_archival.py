@@ -47,7 +47,12 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 SITE = "https://www.underworldcode.org"
 
-REFERENCE_HEADING = re.compile(r"^#+ *(References|Bibliography) *$", re.M | re.I)
+# "References", "Bibliography", "Background Reading", "Further reading" -- a
+# list of works is a list of works whatever the author called the heading, and
+# a link in one is a reference rather than a citation. Missing "Background
+# Reading" left an orphaned "Beall et al. (2018), 2017" where an entry had been.
+REFERENCE_HEADING = re.compile(
+    r"^#+ *(References|Bibliography|[A-Za-z ]*Reading) *$", re.M | re.I)
 DOI_IN_URL = re.compile(r"10\.\d{4,9}/", re.I)
 
 
@@ -101,6 +106,21 @@ def plain_reference_links(body):
 
     fixed = re.sub(r"\[([^\]]*)\]\(([^)]*)\)", unlink_markdown, section)
     fixed = re.sub(r'<a href="([^"]*)"[^>]*>(.*?)</a>', unlink_html, fixed, flags=re.S)
+
+    # Removing the href is not enough. What is left is a BARE URL, and MyST
+    # autolinks that and then turns it into a citation just the same -- which is
+    # how "Bostock, M.G., 1998, ... 21183-21200, Bostock (1998)." ended up in a
+    # reading list, the entry followed by a citation of itself.
+    #
+    # Inline code is never autolinked, so the DOI stays visible and copyable and
+    # stops being mistaken for a citation.
+    def as_code(match):
+        nonlocal changed
+        changed += 1
+        return "`%s`" % match.group(0)
+
+    fixed = re.sub(r"(?<![`\(])https?://(?:dx\.)?doi\.org/10\.\d{4,9}/[^\s`<>\])]+",
+                   as_code, fixed)
     if not changed:
         return body, 0
     return body[:heading.end()] + fixed + (tail[following.start():] if following else ""), changed

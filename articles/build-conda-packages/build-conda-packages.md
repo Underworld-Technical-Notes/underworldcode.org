@@ -101,9 +101,9 @@ The `meta.yaml` recipe is organised into a list of structures that must be provi
 - The** build** dictionary that contains the build** number** that you as a maintener are responsible to increment and the** build** instructions on how to build the package. In the case of* Badlands*, the instructions are fairly simple and rely on a `pip install` method. You could provide a `build.sh` file with more complex instructions. I recommend you check the* Lavavu* recipe for an example of a more complex set of build instructions. Note that in its current form the* Badlands* conda recipe skips Windows system as we chose to rely on the Windows Subsystem for Linux (WSL) available on Windows 10.
 
 - The requirement dictionary that contains 3 lists of dependencies for the** build**,** host** and** run** systems.   
-The** build** section should only contains the tools that are required to build the package. This generally include the compilers and some configuration tools such as* make* or* cmake* etc.  
-The** host** section contains a list of packages that need to be specific to the target platform, when the target platform is not necessarily the same as the build platform. Shared libraries should be listed here. The Python interpreter must also be listed here.  
-The** run** section contains the dependencies that are needed when running a program. Typically all the packages that are imported by the package we are building will need to be listed here.
+  The** build** section should only contains the tools that are required to build the package. This generally include the compilers and some configuration tools such as* make* or* cmake* etc.  
+  The** host** section contains a list of packages that need to be specific to the target platform, when the target platform is not necessarily the same as the build platform. Shared libraries should be listed here. The Python interpreter must also be listed here.  
+  The** run** section contains the dependencies that are needed when running a program. Typically all the packages that are imported by the package we are building will need to be listed here.
 
 Note: Version constrains can be easily set within the lists of dependencies. Conda will use those constrain to resolve the dependencies when creating a new environment.
 

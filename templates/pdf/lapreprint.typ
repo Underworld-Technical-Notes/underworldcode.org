@@ -161,11 +161,23 @@
 
   // Figure captions read as apparatus, not body text: sans-serif for contrast
   // against the serif body, smaller and lighter.
-  show figure.caption: it => text(
-    font: ("Helvetica Neue", "Helvetica", "Arial"),
-    size: 8pt,
-    fill: luma(90),
-    it,
+  //
+  // Justified and inset 5mm each side. A centred caption under justified body
+  // text reads as a different document; the inset keeps the caption
+  // distinguishable without changing its alignment to do it.
+  show figure.caption: it => block(
+    inset: (left: 5mm, right: 5mm),
+    width: 100%,
+    {
+      set par(justify: true)
+      set align(left)
+      text(
+        font: ("Helvetica Neue", "Helvetica", "Arial"),
+        size: 8pt,
+        fill: luma(90),
+        it,
+      )
+    },
   )
 
   // Configure equation numbering and spacing.
@@ -385,6 +397,11 @@ if (abstracts != none and abstracts.len() > 0) {
   }
   v(10pt)
 
+  // Justified body, as a journal sets it. Hyphenation with it, because
+  // justified text without hyphenation opens rivers of white space in a
+  // single-column measure this narrow.
+  set par(justify: true)
+  set text(hyphenate: true)
   show par: set par(spacing: 1.5em)
 
   // Typst 0.13 does honour a `set page` after the first page, so a title page

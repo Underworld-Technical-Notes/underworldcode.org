@@ -493,7 +493,12 @@ class GhostToMyst(HTMLParser):
             # real newline after it, and letting that through turns one block
             # into two -- which splits `<p>$$<br>...<br>$$</p>` into three,
             # so the equation stops being an equation.
-            self._write("  \n" if not self._pre else "\n")
+            # Inside a list item the continuation must be INDENTED to the
+            # item's content column, or markdown ends the item and the rest
+            # becomes a paragraph of its own -- which is how a reference split
+            # from its own bullet, the citation left dangling underneath.
+            indent = "  " * len(self._list) if self._in_list_item else ""
+            self._write(("  \n" + indent) if not self._pre else "\n")
             self._after_break = True
         elif tag == "hr":
             self._flush()

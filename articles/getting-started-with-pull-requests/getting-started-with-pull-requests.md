@@ -76,10 +76,10 @@ First you need to clone the repository on your local computer:
 Once this is done, you should do 2 things:
 
 1. Create a new branch to which you will commit your changes:  
-`git checkout -b new_branch`
+  `git checkout -b new_branch`
 
 2. Create a new remote for the upstream repository:  
-`git remote add upstream https://github.com/underworldcode/UWGeodynamics`
+  `git remote add upstream https://github.com/underworldcode/UWGeodynamics`
 
 The latter is important because this will allow you to pull any changes that might happen on the original repository while you are doing your work.
 

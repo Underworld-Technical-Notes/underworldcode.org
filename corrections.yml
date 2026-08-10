@@ -51,3 +51,12 @@ viscoelasticity:
       see underworldcode.github.io.retired,
       _posts/2016-06-24-ViscoelasticityInUnderworld2.md -- so this restores what
       was published rather than guessing at it.
+
+craton-formation-and-the-onset-of-plate-tectonics:
+  - find: <figure class="kg-card kg-image-card kg-width-wide"><img src="https://underworldcode.ghost.io/content/images/2019/09/CratonsLithosphere.png" class="kg-image" alt loading="lazy"></figure>
+    replace: ""
+    why: >-
+      The same picture appears twice: once as a captioned figure from the
+      2020 upload, and again, uncaptioned, from the 2019 one on the old Ghost
+      CDN. Both resolve to the same image, so the article showed Figure 1 and
+      then repeated it with no caption. The captioned copy is the one kept.

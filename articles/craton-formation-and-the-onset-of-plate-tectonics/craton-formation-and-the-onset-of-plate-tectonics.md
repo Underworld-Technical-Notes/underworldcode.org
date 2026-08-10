@@ -36,9 +36,6 @@ Cratons are anomalously-strong regions of the continents that have largely resis
 (A) Map of the Archean Cratonic crust (dark blue) identified from the Crust 1.0 model and paleoproterozoic crust in pale blue. (B) A map of the relative thickness of crust to lithosphere (also from Crust 1.0) which tends to pick stable zones in blue shades from deforming zones in red. dataset.
 ```
 
-```{figure} figures/CratonsLithosphere.png
-```
-
 The theory of plate tectonics describes how rigid plates move on the Earth's surface but this really only applies to the oceanic plates. The continental crust is generally a great deal weaker and can crumple or stretch in response to movements of the oceanic plates forming mountain belts, rifts and low-lying basins.
 
 Some of the oldest parts of the continental crust are an exception to this generalisation. These are regions that have experienced very little tectonic deformation in several billion years of existence. These cratons are thought to represent regions of greater strength and this contributes to their longevity. There is evidence that the deep lithosphere is as ancient as the crust and is anomalously thick and buoyant (e.g. Jordan,1975,  O'Reilly et al, 2001, Cooper et al, 2013, 2016). We also think that the cratons formed from cool, thin lithosphere in the time before plate tectonics began and then thickened and strengthened to the point where they became effectively indestructible.
@@ -65,7 +62,7 @@ The model cratons form cold and from material that was originally crystallised a
 *The details behind the work described in this post:*
 
 - Beall, A., Moresi, L. Cooper, C. M. Formation of cratonic lithosphere during the initiation of plate tectonics, Geology,  
-[https://doi.org/10.1130/G39943.1](https://doi.org/10.1130/G39943.1), 2017
+  `https://doi.org/10.1130/G39943.1,` 2017
 
 *Papers on the longevity of the deep cratonic lithosphere:*
 
@@ -87,8 +84,8 @@ The model cratons form cold and from material that was originally crystallised a
 
 *The observations of structure in the ancient cratons:*
 
-- Bostock, M.G., 1998, Mantle stratigraphy and evolution of the Slave province: Journal of Geophysical Research. Solid Earth, v. 103, p. 21183–21200, [https://doi.org/10.1029/98JB01069](https://doi.org/10.1029/98JB01069).
+- Bostock, M.G., 1998, Mantle stratigraphy and evolution of the Slave province: Journal of Geophysical Research. Solid Earth, v. 103, p. 21183–21200, `https://doi.org/10.1029/98JB01069.`
 
-- Calò, M., Bodin, T., and Romanowicz, B., 2016, Layered structure in the upper mantle across North America from joint inversion of long and short period seismic data: Earth and Planetary Science Letters, v. 449, p. 164–175, [https://doi.org/10.1016/j.epsl.2016.05.054](https://doi.org/10.1016/j.epsl.2016.05.054)
+- Calò, M., Bodin, T., and Romanowicz, B., 2016, Layered structure in the upper mantle across North America from joint inversion of long and short period seismic data: Earth and Planetary Science Letters, v. 449, p. 164–175, `https://doi.org/10.1016/j.epsl.2016.05.054`
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=craton-formation-and-the-onset-of-plate-tectonics">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=craton-formation-and-the-onset-of-plate-tectonics">Start one</a></div></div>
