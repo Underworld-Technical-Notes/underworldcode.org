@@ -72,18 +72,18 @@ The discrete weak form and its Jacobian derivative would then be expressed throu
 \begin{equation}\label{eq:petsc-jacobian}  
 \mathcal{F}_w'(u) \sim \sum _e \epsilon _{e^T}  
 \left[ \begin{array}{cc}  
-B^T  & D^T \  
+B^T  & D^T \\
 \end{array} \right]  
 W  
 \left[ \begin{array}{cc}  
 \partial {f}/{\partial {u}} &  
-\partial {f}/{\partial \nabla {u}} \  
+\partial {f}/{\partial \nabla {u}} \\
 \partial {F}/{\partial {u}} &  
-\partial {F}/{\partial \nabla {u}} \  
+\partial {F}/{\partial \nabla {u}} \\
 \end{array}\right]  
 \left[  
 \begin{array}{c}  
-B^T  \  
+B^T  \\
 D^T  
 \end{array} \right]  
 \epsilon _{e}  

@@ -1194,3 +1194,27 @@ def test_every_underworld3_note_acknowledges_its_funding():
         text = (ROOT / "articles" / slug / ("%s.md" % slug)).read_text(encoding="utf-8")
         assert "NCRIS" in text, "%s does not acknowledge its funding" % slug
         assert text.count("NCRIS") == 1, "%s acknowledges it twice" % slug
+
+
+def test_no_matrix_row_break_is_a_single_backslash():
+    """"\\" ends a row; "\\\\" is an escaped space that silently merges two.
+
+    The JOSS note's Jacobian went through Ghost and came out with single
+    backslashes, so a 2x2 block became one row: Typst warned "Too few columns
+    specified in the {array} column argument" and rendered the matrix wrong.
+    A warning in a build that produces a PDF anyway is one nobody reads.
+    """
+    import re as _re
+    env = _re.compile(r"\\begin\{(array|pmatrix|bmatrix|matrix|cases|aligned|align|split)\}"
+                      r".*?\\end\{\1\}", _re.S)
+    lone = _re.compile(r"(?<!\\)\\[ \t]*\n")
+    offenders = []
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        text = path.read_text(encoding="utf-8")
+        for match in env.finditer(text):
+            if lone.search(match.group()):
+                offenders.append("%s:%d (%s)" % (path.parent.name,
+                                                 text[:match.start()].count("\n") + 1,
+                                                 match.group(1)))
+    assert not offenders, \
+        "a row break is a single backslash, so the rows merge: %s" % offenders
