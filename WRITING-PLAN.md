@@ -195,6 +195,44 @@ make it more than a recipe:
 Relates to M1: preserving multigrid topology is the mover's selling point, and
 this is the note that says what that topology is worth.
 
+## Running Underworld without installing it
+
+### C1. Any repository, any folder, any version
+
+Status: not started. **A note, with a DOI and an archival PDF** — not just the
+page. The page tells a reader what to click; the note explains how it works and
+why the guarantee holds, and it is the thing a course or a paper can cite when
+it says "run this here".
+
+The capability, stated as three independent choices: **any public repository ×
+any folder or notebook inside it × any released version of Underworld.**
+nbgitpuller clones the repository into a running session, so nothing has to be
+added to it — no Dockerfile, no `.binder/`, no configuration.
+
+The technical content, which is the part that does not fit on a page:
+
+- **How the version guarantee is made.** A release tag builds a container image
+  and, in the same workflow, dispatches to the launcher repository to pin a
+  branch to that image. Launcher and release are made together, so they cannot
+  drift. That is why "v0.99 means v0.99" is a claim and not a hope.
+- **Why the launcher is a separate, nearly-empty repository.** mybinder caches
+  on the launcher's commit hash. A repository that rarely changes is a cache
+  that rarely misses, and the Underworld code arrives from the pre-built image
+  rather than being built on demand. Explain the cache and the slow first
+  launch stops being a mystery.
+- **The URL, honestly.** The repository URL is encoded twice and it is
+  miserable by hand. Show the shape, then the wizard.
+- **What it is not.** Ephemeral, shared, public-only. And the reproducibility
+  claim is about the *environment*: pinning the version fixes Underworld, not
+  the data your notebook downloads.
+
+Worth an `examples/` directory that is itself launchable — a note about
+launching notebooks whose own example you cannot launch would be a poor
+advertisement.
+
+Supersedes the retired AuScope cloud, which was an AuScope/NCRIS project and
+should be acknowledged as such.
+
 ## Free surface
 
 Its own development, and it needs discussion before it is written. Two notes,
@@ -326,6 +364,7 @@ Listed as candidates, not commitments.
 | 5 | F2, F3, F4 | One approach each; F2 leans on M1 |
 | 6 | F5 The comparison | Last, with Thyagarajulu's benchmarks as its evidence |
 | 7 | S1, S2 free surface | After the discussion about how to split it |
+| — | C1 Launching from any repository | Standalone; the capability is live and undocumented |
 | — | R1 Rotated BCs | Standalone; write whenever it suits |
 | — | G1 Setting up FMG | Standalone; pairs with M1 if a solvers paper forms |
 | 8 | #1 Release announcement | Written last; links to everything |
