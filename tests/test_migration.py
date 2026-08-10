@@ -249,6 +249,26 @@ def index_source():
     return (ROOT / "index.md").read_text(encoding="utf-8")
 
 
+UNPUBLISHED = ("draft", "review", "withdrawn")
+
+
+def published_slugs():
+    """Slugs a PRODUCTION build is expected to show.
+
+    Not every article directory: a note at draft or review is deliberately
+    withheld until an editor moves it on, and belongs on the preview site.
+    Tests that assert over "every article" have to know that, or they fail the
+    moment somebody starts writing.
+    """
+    import build_index
+    out = set()
+    for path in sorted((ROOT / "articles").glob("*/metadata.yml")):
+        meta = build_index.read_yaml(path)
+        if meta.get("status") not in UNPUBLISHED:
+            out.add(meta["slug"])
+    return out
+
+
 def test_every_article_is_listed_in_exactly_one_stream():
     """The split must partition the corpus, not sample it.
 
@@ -266,7 +286,7 @@ def test_every_article_is_listed_in_exactly_one_stream():
                     block.split("</div>\n\n")[0] for block in
                     text.split('<div class="uwtn-feed">')[1:])}
 
-    slugs = {p.parent.name for p in (ROOT / "articles").glob("*/*.md")}
+    slugs = published_slugs()
     front = listed(index_source())
     notes = listed((ROOT / "notes.md").read_text(encoding="utf-8"))
     assert not (front & notes), "in both feeds: %s" % ", ".join(sorted(front & notes))
@@ -336,9 +356,16 @@ def test_toc_is_generated_and_grouped_by_year():
     import re
     for title in re.findall(r"^\s+- title: (.+)$", myst, re.M):
         assert title.startswith('"'), "toc title %s must be quoted" % title
-    slugs = {p.parent.name for p in (ROOT / "articles").glob("*/*.md")}
-    for slug in slugs:
+    for slug in published_slugs():
         assert "articles/%s/%s.md" % (slug, slug) in myst, "%s missing from the toc" % slug
+    # And the converse: an unpublished note must NOT be in the production toc.
+    import build_index
+    for path in sorted((ROOT / "articles").glob("*/metadata.yml")):
+        meta = build_index.read_yaml(path)
+        if meta.get("status") in UNPUBLISHED:
+            assert "articles/%s/" % meta["slug"] not in myst, \
+                "%s is at %s and must not be on the production site" % (
+                    meta["slug"], meta.get("status"))
 
 
 # --------------------------------------------------------------------------
