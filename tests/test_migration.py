@@ -1022,6 +1022,46 @@ def test_no_article_grows_a_second_references_section():
                 path.parent.name, offenders[:2])
 
 
+def test_unlinking_a_reference_is_idempotent():
+    """It runs on EVERY build, over sources it rewrote on the last one.
+
+    Without a guard against its own output each build wrapped the previous
+    build's `url` in another backtick pair. Fourteen articles were sitting on a
+    ``doubled`` set before anyone looked at a diff, the count only ever grew, and
+    every build reported reference work it had not needed to do.
+    """
+    import sync_archival
+    body = ("## References\n\nSmith, A. (2020). A paper. *Journal*, 1, 2-3. "
+            "[https://doi.org/10.1234/abc](https://doi.org/10.1234/abc)\n")
+    once, count = sync_archival.plain_reference_links(body)
+    assert count, "nothing was unlinked, so this proves nothing"
+    twice, again = sync_archival.plain_reference_links(once)
+    assert twice == once, "a second pass changed the text: %r" % twice
+    assert again == 0, "a second pass claimed %d more change(s)" % again
+    assert "``" not in twice
+
+
+def test_a_doi_that_contains_parentheses_survives_unlinking():
+    """Elsevier's older DOIs embed the year: 10.1016/S0021-9991(02)00031-1.
+
+    A link target that ended at the FIRST ")" cut three references in half and
+    kept the offcut, leaving "...(02)00031-100031-1)" in two articles' reference
+    lists -- one of them the CitCom history, where the reference is Louis's own.
+    """
+    import sync_archival
+    doi = "https://doi.org/10.1016/S0021-9991(02)00031-1"
+    for reference in ("Moresi, L. (2003). A paper. [%s](%s)" % (doi, doi),
+                      "Moresi, L. (2003). A paper. %s, 2003." % doi,
+                      "Moresi, L. (2003). A paper. (%s)" % doi):
+        fixed, count = sync_archival.plain_reference_links(
+            "## References\n\n%s\n" % reference)
+        assert count, "%r was left to become a citation" % reference
+        assert "`%s`" % doi in fixed, \
+            "the DOI did not survive intact: %r" % fixed.strip()
+        # The offcut was the giveaway: the tail duplicated outside the code span.
+        assert "00031-100031-1" not in fixed
+
+
 def test_the_deposit_runs_inside_the_environment():
     """It shells out to `myst` to rebuild the PDF with the reserved DOI on it.
 

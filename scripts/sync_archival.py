@@ -104,7 +104,13 @@ def plain_reference_links(body):
         changed += 1
         return match.group(2)
 
-    fixed = re.sub(r"\[([^\]]*)\]\(([^)]*)\)", unlink_markdown, section)
+    # The target may itself contain a balanced pair of parentheses, and three
+    # references were mangled because this once assumed it could not. Elsevier's
+    # older DOIs embed the year that way -- 10.1016/S0021-9991(02)00031-1 -- so a
+    # target ending at the FIRST ")" cut the DOI in half, kept the offcut, and
+    # left "...S0021-9991(02)00031-100031-1)" in two articles' reference lists.
+    fixed = re.sub(r"\[([^\]]*)\]\(((?:[^()\s]|\([^()]*\))*)\)",
+                   unlink_markdown, section)
     fixed = re.sub(r'<a href="([^"]*)"[^>]*>(.*?)</a>', unlink_html, fixed, flags=re.S)
 
     # Removing the href is not enough. What is left is a BARE URL, and MyST
@@ -117,15 +123,31 @@ def plain_reference_links(body):
     def as_code(match):
         nonlocal changed
         changed += 1
-        return "`%s`" % match.group(0)
+        # The sentence's own punctuation is not part of the DOI. Left inside the
+        # span it is set in monospace and reads as though it were, and a reader
+        # copying the DOI out of the PDF copies the comma with it.
+        url = match.group(0)
+        trailing = ""
+        while url and url[-1] in ".,;:":
+            url, trailing = url[:-1], url[-1] + trailing
+        return "`%s`%s" % (url, trailing)
 
     # Not preceded by "](" -- that is markdown link syntax, already handled
     # above. An earlier version excluded a preceding "(" as well, which threw
     # away every reference that writes its DOI in parentheses: "..., p.106637.
     # (https://doi.org/10.1016/...)". Those stayed bare, became citations, and
     # gave four articles a second References section.
-    fixed = re.sub(r"(?<!\]\()https?://(?:dx\.)?doi\.org/10\.\d{4,9}/[^\s`<>\])]+",
-                   as_code, fixed)
+    #
+    # Nor preceded by a backtick, or this is not IDEMPOTENT: it runs on every
+    # build, over sources it has already rewritten, and without that guard each
+    # build wrapped the previous build's `url` in another pair. Fourteen articles
+    # were sitting on a ``doubled`` set when this was noticed; the count only
+    # ever grows, and every build reports work it did not need to do.
+    # A bare DOI runs to whitespace, and takes a balanced "(02)" along the way
+    # without taking the ")" that CLOSES a DOI written in parentheses -- the
+    # alternation only accepts a "(" that has its own ")" close behind it.
+    fixed = re.sub(r"(?<!\]\()(?<!`)https?://(?:dx\.)?doi\.org/10\.\d{4,9}/"
+                   r"(?:[^\s`<>\]()]|\([^()\s]*\))+", as_code, fixed)
     if not changed:
         return body, 0
     return body[:heading.end()] + fixed + (tail[following.start():] if following else ""), changed

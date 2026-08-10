@@ -50,13 +50,13 @@ Stay tuned for a series of posts introducing **Underworld3** and, this time (fin
 
 ### References
 
-Moresi, L., Dufour, F., & Mühlhaus, H.-B. (2003). A Lagrangian integration point finite element method for large deformation modeling of viscoelastic geomaterials. *Journal of Computational Physics*, *184*(2), 476–497. `https://doi.org/10.1016/S0021-9991(02`)00031-100031-1)
+Moresi, L., Dufour, F., & Mühlhaus, H.-B. (2003). A Lagrangian integration point finite element method for large deformation modeling of viscoelastic geomaterials. *Journal of Computational Physics*, *184*(2), 476–497. `https://doi.org/10.1016/S0021-9991(02)00031-1`
 
 Moresi, L., Quenette, S., Lemiale, V., Mériaux, C., Appelbe, B., & Mühlhaus, H.-B. (2007). Computational approaches to studying non-linear dynamics of the crust and mantle. *Physics of the Earth and Planetary Interiors*, *163*(1), 69–82. `https://doi.org/10.1016/j.pepi.2007.06.009`
 
 Moresi, L.-N., & Solomatov, V. S. (1995). Numerical investigation of 2D convection with extremely large viscosity variations. *Physics of Fluids*, *7*(9), 2154–2162. `https://doi.org/10.1063/1.868465`
 
-Moresi, L., Zhong, S., & Gurnis, M. (1996). The accuracy of finite element solutions of Stokes’ flow with strongly varying viscosity. *Physics of the Earth and Planetary Interiors*, *97*(1–4), 83–94. `https://doi.org/10.1016/0031-9201(96`)03163-903163-9)
+Moresi, L., Zhong, S., & Gurnis, M. (1996). The accuracy of finite element solutions of Stokes’ flow with strongly varying viscosity. *Physics of the Earth and Planetary Interiors*, *97*(1–4), 83–94. `https://doi.org/10.1016/0031-9201(96)03163-9`
 
 Zhong, S., Zuber, M. T., Moresi, L., & Gurnis, M. (2000). Role of temperature-dependent viscosity and surface plates in spherical shell models of mantle convection. *Journal of Geophysical Research B: Solid Earth*, *105*(B5), 11063–11082. `https://doi.org/10.1029/2000JB900003`
 

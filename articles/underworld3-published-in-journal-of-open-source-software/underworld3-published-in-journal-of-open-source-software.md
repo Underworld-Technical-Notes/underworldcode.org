@@ -110,13 +110,17 @@ The main benefits of combining `sympy` with the `PETSc` weak form template is a 
 
 ## References
 
-Dalcin, L. D., Paz, R. R., Kler, P. A., & Cosimo, A. (2011). Parallel distributed computing using Python. Advances in Water Resources, 34(9), 1124–1139. ```https://doi.org/10.1016/j.advwatres.2011.04.013```
+Dalcin, L. D., Paz, R. R., Kler, P. A., & Cosimo, A. (2011). Parallel distributed computing using Python. Advances in Water Resources, 34(9), 1124–1139. `https://doi.org/10.1016/j.advwatres.2011.04.013`
 
 Knepley, M. G., Brown, J., Rupp, K., & Smith, B. F. (2013). Achieving High Performance with Unified Residual Evaluation. arXiv:1309.1204 [Cs]. [https://arxiv.org/abs/1309.1204](https://arxiv.org/abs/1309.1204)
 
-Meurer, A., Smith, C. P., Paprocki, M., Čertík, O., Kirpichev, S. B., Rocklin, M., Kumar, A., Ivanov, S., Moore, J. K., Singh, S., Rathnayake, T., Vig, S., Granger, B. E., Muller, R. P., Bonazzi, F., Gupta, H., Vats, S., Johansson, F., Pedregosa, F., … Scopatz, A. (2017). SymPy: Symbolic computing in Python. PeerJ Computer Science, 3, e103. ```https://doi.org/10.7717/peerj-cs.103```
+Meurer, A., Smith, C. P., Paprocki, M., Čertík, O., Kirpichev, S. B., Rocklin, M., Kumar, A., Ivanov, S., Moore, J. K., Singh, S., Rathnayake, T., Vig, S., Granger, B. E., Muller, R. P., Bonazzi, F., Gupta, H., Vats, S., Johansson, F., Pedregosa, F., … Scopatz, A. (2017). SymPy: Symbolic computing in Python. PeerJ Computer Science, 3, e103. `https://doi.org/10.7717/peerj-cs.103`
 
-**Moresi et al. (2025). Underworld3: Mathematically Self-Describing Modelling in Python for Desktop, HPC and Cloud. Journal of Open Source Software, 10(112), 7831. ****```https://doi.org/10.21105/joss.07831**```
+**Moresi et al. (2025). Underworld3: Mathematically Self-Describing Modelling in Python for Desktop, HPC and Cloud. Journal of Open Source Software, 10(112), 7831.** `https://doi.org/10.21105/joss.07831`
+
+
+
+
 
 
 

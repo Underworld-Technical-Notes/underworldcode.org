@@ -109,6 +109,10 @@ In upcoming posts, we go deeper into the machinery: how SymPy expressions become
 
 
 
+
+
+
+
 <!-- uwtn-acknowledgement -->
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)

@@ -77,6 +77,10 @@ It's all available on through GitHub at [https://github.com/underworldcode/under
 
 **Feature image**: *Underworld3 uses unstructured meshes supplied by gmsh or any other tool supported by PETSc. In this image we see flow driven from the left boundary around a series of obstacles visualised by streamlines. The intense colours appear where the flow is strongest which is also where the gaps between obstacles line up. There is an emergent pressure gradient displayed in the background shading.*
 
+
+
+
+
 <!-- uwtn-acknowledgement -->
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
