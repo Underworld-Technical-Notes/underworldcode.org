@@ -185,20 +185,6 @@ We didn't try (for long) to bolt AI tools onto an existing workflow. The code ch
 
 The lesson we'd offer other scientific software teams is simple: if your AI tools are struggling with your code, listen to what that is telling you. The problem is probably real, and fixing it will pay off in ways that go well beyond AI.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- uwtn-acknowledgement -->
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)

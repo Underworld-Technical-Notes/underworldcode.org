@@ -254,32 +254,6 @@ The boundary between the two is a SymPy Matrix. Everything on one side of that b
 
 In UW2, the physics and numerics were entangled in C. Changing one required understanding both. In UW3, you can write a new rheology in an afternoon, in a notebook, without compiling anything. That is the practical consequence of making constitutive models symbolic objects.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- uwtn-acknowledgement -->
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)

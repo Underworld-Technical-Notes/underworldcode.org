@@ -147,8 +147,6 @@ site:
   title: Underworld Technical Notes
   # BEGIN GENERATED NAV
   nav:
-    - title: "Technical Notes"
-      url: /notes
     - title: "About"
       children:
         - title: "About"
@@ -161,16 +159,20 @@ site:
       children:
         - title: "Introduction to Underworld"
           url: /intro-to-underworld
+        - title: "Run in the cloud"
+          url: /auscope-cloud
         - title: "Model exchange"
           url: /underworld-model-exchange
-        - title: "AuScope Cloud"
-          url: /auscope-cloud
         - title: "Publications using Underworld"
           url: /publications-using-uw
-    - title: "Submit a note"
-      url: /submit
-    - title: "Topics"
-      url: /topics
+    - title: "Technical Notes"
+      children:
+        - title: "All notes"
+          url: /notes
+        - title: "Browse by topic"
+          url: /topics
+        - title: "Submit a note"
+          url: /submit
   # END GENERATED NAV
   options:
     logo_text: Underworld Technical Notes

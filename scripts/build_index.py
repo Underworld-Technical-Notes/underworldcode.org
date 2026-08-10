@@ -247,31 +247,32 @@ def write_nav():
             key, _, value = raw.strip().partition(":")
             pages[slug][key.strip()] = value.strip().strip('"')
 
+    # Order is pages.yml's, and groups appear where they first do. It is the
+    # one place anybody would look to change the header, so it is the one place
+    # that decides it -- /notes and /topics used to be spliced in here by hand,
+    # first and last, where their position could not be changed from the config
+    # at all.
     groups, standalone = {}, []
     for slug, settings in pages.items():
         group = settings.get("group", "").strip()
+        # A page this script does not generate declares its own url.
+        target = settings.get("url", "/%s" % slug)
         if group:
-            groups.setdefault(group, []).append((settings.get("title", slug), slug))
+            groups.setdefault(group, []).append((settings.get("title", slug), target))
         else:
             # No group: a plain nav item. A one-page dropdown is just a worse link.
-            standalone.append((settings.get("title", slug), slug))
+            standalone.append((settings.get("title", slug), target))
 
     lines = ["  nav:"]
     for group, items in groups.items():
         lines.append('    - title: "%s"' % group)
         lines.append("      children:")
-        for title, slug in items:
+        for title, url in items:
             lines.append('        - title: "%s"' % title)
-            lines.append("          url: /%s" % slug)
-    for title, slug in standalone:
+            lines.append("          url: %s" % url)
+    for title, url in standalone:
         lines.append('    - title: "%s"' % title)
-        lines.append("      url: /%s" % slug)
-    # First in the header, because it is the thing this site publishes that
-    # exists nowhere else. The front page deliberately does not lead with it.
-    lines.insert(1, '    - title: "Technical Notes"')
-    lines.insert(2, "      url: /notes")
-    lines.append('    - title: "Topics"')
-    lines.append("      url: /topics")
+        lines.append("      url: %s" % url)
 
     myst = ROOT / "myst.yml"
     text = myst.read_text(encoding="utf-8")

@@ -34,13 +34,21 @@
 #   group-publications            Superseded by publications-using-uw, which is
 #                                 the same idea done better.
 
-submit:
-  title: Submit a note
-  source: pages-src/submit.md
+# ORDER MATTERS. The header follows the order of the groups below, and the
+# groups follow the order in which they first appear. About comes first
+# because a visitor who does not know what this is needs that before anything
+# else; Underworld is next because it is what the site is about; the notes and
+# their submission route follow.
+#
+# `url` declares a nav entry for a page this script does not generate --
+# /notes and /topics are built by build_index.py. Without it they had to be
+# hard-coded into write_nav(), where their position could not be changed from
+# here, which is the one place anybody would look.
 
 ugcomm:
   title: About
   group: About
+  source: pages-src/ugcomm.md
 
 credits:
   title: Credits
@@ -49,23 +57,46 @@ credits:
 how-to-cite-underworld:
   title: How to cite
   group: About
+  source: pages-src/how-to-cite-underworld.md
 
 intro-to-underworld:
   title: Introduction to Underworld
   group: Underworld
-
-underworld-model-exchange:
-  title: Model exchange
-  group: Underworld
-  source: pages-src/underworld-model-exchange.md
+  source: pages-src/intro-to-underworld.md
 
 auscope-cloud:
   # The slug stays: the AuScope cloud is retired, but links to this page are
   # not, and the page is now the answer to the question they were asking.
   title: Run in the cloud
   group: Underworld
+  source: pages-src/auscope-cloud.md
+
+underworld-model-exchange:
+  title: Model exchange
+  group: Underworld
+  source: pages-src/underworld-model-exchange.md
 
 publications-using-uw:
   title: Publications using Underworld
   group: Underworld
+  # Hand-written: the Ghost page told readers to email an address at
+  # agora.geophysics-down-under.geoscience.education, which has not resolved in
+  # DNS for years, through a malformed "http://mailto:" link with a stray "n"
+  # after it. The bibliography below is still baked in from Zotero.
+  source: pages-src/publications-using-uw.md
   zotero: 2386948/QNARWBUC
+
+notes:
+  title: All notes
+  group: Technical Notes
+  url: /notes
+
+topics:
+  title: Browse by topic
+  group: Technical Notes
+  url: /topics
+
+submit:
+  title: Submit a note
+  group: Technical Notes
+  source: pages-src/submit.md

@@ -141,32 +141,6 @@ The callback approach eliminates an entire class of bugs. You cannot forget to s
 
 The cost is one `id()` comparison per `.data` access and one callback dispatch per write. For user-level operations — setting initial conditions, post-processing solution fields, checkpointing — this is negligible. For solver-level operations — millions of quadrature evaluations — the direct `.vec` path bypasses it entirely.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- uwtn-acknowledgement -->
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)

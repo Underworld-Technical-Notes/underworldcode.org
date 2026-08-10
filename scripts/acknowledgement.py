@@ -39,7 +39,11 @@ TEXT = (
     "(https://github.com/underworldcode/underworld3)"
 )
 
-BLOCK = re.compile(re.escape(MARKER) + r".*?" + re.escape(MARKER), re.S)
+# The surrounding blank lines are part of what gets removed. Without them the
+# rewrite is not idempotent: it strips the block, leaves the whitespace that
+# framed it, and adds its own on the way back in, so eight articles grew two
+# blank lines on EVERY build. Nothing breaks and the diff never stops.
+BLOCK = re.compile(r"\n*" + re.escape(MARKER) + r".*?" + re.escape(MARKER) + r"\n*", re.S)
 
 # Three notes already say this, in the author's own words. Those are LEFT
 # ALONE: the first version of this script tried to replace them with a regex
@@ -76,12 +80,13 @@ def main():
 
         if MARKER not in text and "NCRIS" in text:
             continue          # already acknowledged, in the author's own words
-        stripped = BLOCK.sub("", text).rstrip() + "\n"
+        stripped = BLOCK.sub("\n\n", text).rstrip() + "\n"
 
         # Before the discussion block, which is web-only and belongs last.
         discuss = stripped.find('<div class="uwtn-discuss"')
         if discuss >= 0:
-            new = stripped[:discuss] + block + "\n\n" + stripped[discuss:]
+            new = "%s\n\n%s\n\n%s" % (stripped[:discuss].rstrip(), block,
+                                      stripped[discuss:])
         else:
             new = stripped.rstrip() + "\n\n" + block + "\n"
 

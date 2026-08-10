@@ -457,8 +457,35 @@ def test_a_subject_may_be_empty():
 def test_declared_pages_all_exist():
     ensure_generated()
     build_pages = load("build_pages")
-    for slug in build_pages.load_pages_config():
+    for slug, settings in build_pages.load_pages_config().items():
+        if settings.get("url"):
+            continue          # a nav entry for a page build_index.py generates
         assert (ROOT / "pages" / ("%s.md" % slug)).exists(), "%s not built" % slug
+
+
+def test_hand_written_pages_are_committed_not_generated():
+    """`pages/` is GENERATED and gitignored. Editing a file there is a no-op.
+
+    Two pages were rewritten straight into pages/, committed with a message
+    describing the rewrite, and silently discarded: build_pages.py deletes every
+    pages/*.md and regenerates them from the Ghost export, so the deploy served
+    the old text. The rewrite has to live in pages-src/ with a `source:` entry.
+
+    This checks the declaration is honest -- every `source:` names a file that
+    is actually there, so a page cannot claim a hand-written replacement that
+    does not exist.
+    """
+    build_pages = load("build_pages")
+    missing = []
+    for slug, settings in build_pages.load_pages_config().items():
+        source = settings.get("source")
+        if source and not (ROOT / source).exists():
+            missing.append("%s -> %s" % (slug, source))
+    assert not missing, "pages.yml names a source that is not there: %s" % missing
+    assert ".gitignore" in [p.name for p in ROOT.iterdir()], "sanity"
+    ignored = (ROOT / ".gitignore").read_text(encoding="utf-8")
+    assert "/pages/*.md" in ignored, \
+        "if pages/ stops being generated, this test's premise is wrong"
 
 
 def test_nav_is_generated_and_covers_every_page():
@@ -1336,3 +1363,34 @@ def test_no_standing_page_turns_its_dois_into_citations():
             offenders.append("%s: %s" % (path.name, match.group()[:60]))
     assert not offenders, \
         "DOI link(s) in a standing page will become citations: %s" % offenders
+
+
+def test_the_acknowledgement_is_idempotent():
+    """It runs on every build, over sources it wrote on the last one.
+
+    Stripping the block left the blank lines that framed it and the rewrite
+    added its own, so eight articles grew two blank lines per build. Nothing
+    broke and the diff never stopped -- 184 of them had accumulated before
+    anyone read a build's own output.
+
+    The second of two such bugs found by looking at what a build changed. That
+    is the check worth keeping: a build-time rewrite must be a fixed point.
+    """
+    acknowledgement = load("acknowledgement")
+    body = ("Some prose.\n\n"
+            '<div class="uwtn-discuss">talk</div>\n')
+    marker, text = acknowledgement.MARKER, acknowledgement.TEXT
+    block = "%s\n\n%s\n\n%s" % (marker, text, marker)
+
+    def apply(source):
+        stripped = acknowledgement.BLOCK.sub("\n\n", source).rstrip() + "\n"
+        discuss = stripped.find('<div class="uwtn-discuss"')
+        if discuss >= 0:
+            return "%s\n\n%s\n\n%s" % (stripped[:discuss].rstrip(), block,
+                                       stripped[discuss:])
+        return stripped.rstrip() + "\n\n" + block + "\n"
+
+    once = apply(body)
+    assert once == apply(once) == apply(apply(once)), \
+        "the acknowledgement rewrite is not a fixed point"
+    assert once.count(marker) == 2, "the marker pair must not multiply"

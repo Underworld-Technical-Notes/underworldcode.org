@@ -116,6 +116,13 @@ def main():
 
     written = []
     for slug, settings in config.items():
+        # A nav-only entry: `url` points at a page build_index.py generates
+        # (/notes, /topics). It is declared in pages.yml so its position in the
+        # header comes from the same place as everything else, but there is
+        # nothing here to write -- and looking for it in the Ghost export
+        # reported it as missing on every build.
+        if settings.get("url"):
+            continue
         written_source = settings.get("source")
         if written_source:
             # A hand-written replacement: the Ghost page was not worth
