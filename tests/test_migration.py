@@ -1262,3 +1262,50 @@ def test_the_custom_domain_reaches_the_published_artifact():
     upload = deploy.index("upload-pages-artifact")
     assert "cp CNAME _build/html" in deploy[:upload], \
         "CNAME must be copied into _build/html BEFORE the artifact is uploaded"
+
+
+def test_the_feed_covers_every_published_article():
+    """Ghost served /rss/; the cutover must not quietly drop its subscribers.
+
+    Nothing fails when a feed disappears -- no test goes red, no page 404s that
+    anyone looks at. People just stop reading, and you find out years later.
+    """
+    build_feed = load("build_feed")
+    found = build_feed.entries("example.org")
+    published = [p for p in sorted((ROOT / "articles").glob("*/metadata.yml"))]
+    assert len(found) >= len(published) - 2, \
+        "the feed has %d entries for %d articles" % (len(found), len(published))
+    for entry in found:
+        assert entry["url"].startswith("https://example.org/"), entry["url"]
+        assert entry["title"] and entry["date"], entry
+
+
+def test_the_feed_is_well_formed_and_escapes_what_goes_into_it():
+    """XML assembled from strings, so the escaping is the whole safety story."""
+    import xml.dom.minidom
+    build_feed = load("build_feed")
+    hostile = [{
+        "title": 'Ampersands & <angle brackets> and "quotes"',
+        "url": "https://example.org/x/", "date": "2020-01-01",
+        "authors": ["A & B"], "tags": ["<tag>"],
+        "summary": "5 < 6 & 7 > 2", "licence": "CC-BY-4.0", "doi": "10.1234/x",
+    }]
+    stamp = "2026-01-01T00:00:00Z"
+    for text in (build_feed.atom(hostile, "example.org", stamp),
+                 build_feed.rss(hostile, "example.org", stamp)):
+        xml.dom.minidom.parseString(text)          # raises if not well-formed
+        assert "<angle brackets>" not in text, "raw markup reached the feed"
+
+
+def test_the_feed_host_follows_the_cname():
+    """A staging build must not emit a feed full of production links."""
+    feed = (ROOT / "scripts" / "build_feed.py").read_text(encoding="utf-8")
+    assert 'cname = ROOT / "CNAME"' in feed and "cname.exists()" in feed, \
+        "the feed host must be derived from the CNAME, not hard-coded"
+
+
+def test_the_build_actually_generates_the_feed():
+    """A feed generator nobody runs is a file in scripts/."""
+    pixi = (ROOT / "pixi.toml").read_text(encoding="utf-8")
+    build_html = [l for l in pixi.splitlines() if l.startswith("build-html")][0]
+    assert "scripts/build_feed.py" in build_html
