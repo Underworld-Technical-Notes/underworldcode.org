@@ -157,6 +157,44 @@ This is the note that most likely becomes the paper.
 
 ---
 
+## Solvers and boundary conditions
+
+Two standalone notes. Each stands on its own; if a third arrives they are the
+beginning of a solvers paper, but neither is being written to fit one.
+
+### R1. Rotated boundary conditions
+
+Status: not started. **One post**, not a series.
+
+Imposing `v·n̂ = 0` by rotating the degrees of freedom at each node rather than
+penalising the constraint. Enforced to machine precision where Nitsche and
+penalty leak; correct on curved, tilted and deformed boundaries because the
+normal is taken per node; transparent to the tangent, so it works inside the
+nonlinear SNES and with geometric multigrid. The constraint reaction is the
+boundary normal traction, which is where dynamic topography comes from — that
+is the payoff and it should not be buried at the end.
+
+Also worth saying plainly when *not* to use it: a hard constraint cannot morph,
+so a boundary condition that has to evolve in time still wants Nitsche.
+
+### G1. Setting up full multigrid
+
+Status: not started. **One post.**
+
+How to actually set FMG up, which is the part nobody writes down. Two things
+make it more than a recipe:
+
+- **Stitching together meshes that are not nested.** The usual account assumes
+  a hierarchy built by refinement. The interesting case is a hierarchy whose
+  levels were not built from each other, and how the transfers are constructed
+  when that is true.
+- **Efficiency comparisons.** Numbers, against the alternatives, on problems
+  where the answer is not obvious. A note claiming a method is faster without
+  showing the comparison is an advertisement.
+
+Relates to M1: preserving multigrid topology is the mover's selling point, and
+this is the note that says what that topology is worth.
+
 ## Free surface
 
 Its own development, and it needs discussion before it is written. Two notes,
@@ -268,9 +306,8 @@ Not in the original plan, because the work did not exist when it was written.
 Listed as candidates, not commitments.
 
 - **Multigrid on meshes that were cut.** Why a cut is not a multigrid level,
-  and what the coarse levels have to carry.
-- **Rotated free-slip, and getting the normal traction out.** Machine-precision
-  wall-normal flow on curved boundaries, and the reaction as dynamic topography.
+  and what the coarse levels have to carry. Possibly a section of G1 rather
+  than a note.
 - **The analytic solution suite.** `uw.analytic`, and testing a solver against
   something that cannot be argued with.
 - **Nonlinear solvers that start well.** Warm starts, yield homotopy, and what
@@ -289,4 +326,6 @@ Listed as candidates, not commitments.
 | 5 | F2, F3, F4 | One approach each; F2 leans on M1 |
 | 6 | F5 The comparison | Last, with Thyagarajulu's benchmarks as its evidence |
 | 7 | S1, S2 free surface | After the discussion about how to split it |
+| — | R1 Rotated BCs | Standalone; write whenever it suits |
+| — | G1 Setting up FMG | Standalone; pairs with M1 if a solvers paper forms |
 | 8 | #1 Release announcement | Written last; links to everything |
