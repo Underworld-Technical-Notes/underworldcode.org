@@ -1148,6 +1148,7 @@ def cached_asset(src):
 
 
 BOOKMARK = re.compile(r'<figure[^>]*kg-bookmark-card.*?</figure>', re.S)
+EMBEDLY = re.compile(r'<blockquote class="embedly-card">.*?</blockquote>', re.S)
 
 
 def simplify_bookmark_cards(source):
@@ -1175,7 +1176,25 @@ def simplify_bookmark_cards(source):
         if desc:
             text += " &mdash; %s" % desc.group(1).strip()
         return text + "</p>"
-    return BOOKMARK.sub(replace, source)
+    source = BOOKMARK.sub(replace, source)
+
+    def replace_embedly(match):
+        # An Embedly card whose title and description Embedly never fetched: it
+        # stored the string "null" for both, and the article rendered a heading
+        # reading NULL above a paragraph reading null. The link itself is real --
+        # an xkcd comic -- so it becomes an ordinary link labelled by where it
+        # goes.
+        card = match.group(0)
+        href = re.search(r'href="([^"]+)"', card)
+        if not href:
+            return card
+        title = re.search(r"<h4>.*?>([^<]*)</a>", card, re.S)
+        label = (title.group(1).strip() if title else "")
+        if label.lower() in ("", "null", "none"):
+            label = link_label(html.unescape(href.group(1)))
+        return '<p><a href="%s">%s</a></p>' % (href.group(1), label)
+
+    return EMBEDLY.sub(replace_embedly, source)
 
 
 SVG_MASK = re.compile(r'\s*mask="url\(#[^)]*\)"')

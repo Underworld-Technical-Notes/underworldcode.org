@@ -52,7 +52,7 @@ SITE = "https://www.underworldcode.org"
 # a link in one is a reference rather than a citation. Missing "Background
 # Reading" left an orphaned "Beall et al. (2018), 2017" where an entry had been.
 REFERENCE_HEADING = re.compile(
-    r"^#+ *(References|Bibliography|[A-Za-z ]*Reading) *$", re.M | re.I)
+    r"^#+ *(References|Bibliography|[A-Za-z ]*Reading) *:? *$", re.M | re.I)
 DOI_IN_URL = re.compile(r"10\.\d{4,9}/", re.I)
 
 
@@ -119,7 +119,12 @@ def plain_reference_links(body):
         changed += 1
         return "`%s`" % match.group(0)
 
-    fixed = re.sub(r"(?<![`\(])https?://(?:dx\.)?doi\.org/10\.\d{4,9}/[^\s`<>\])]+",
+    # Not preceded by "](" -- that is markdown link syntax, already handled
+    # above. An earlier version excluded a preceding "(" as well, which threw
+    # away every reference that writes its DOI in parentheses: "..., p.106637.
+    # (https://doi.org/10.1016/...)". Those stayed bare, became citations, and
+    # gave four articles a second References section.
+    fixed = re.sub(r"(?<!\]\()https?://(?:dx\.)?doi\.org/10\.\d{4,9}/[^\s`<>\])]+",
                    as_code, fixed)
     if not changed:
         return body, 0

@@ -111,15 +111,15 @@ The changes result to a model of isoviscous convection under the Truncated Anela
 
 ### References:
 
-Birch, F., 1952. Elasticity and constitution of the Earth’s interior. Journal of Geophysical Research (1896-1977) 57, 227–286. [https://doi.org/10.1029/JZ057i002p00227](https://doi.org/10.1029/JZ057i002p00227)
+Birch, F., 1952. Elasticity and constitution of the Earth’s interior. Journal of Geophysical Research (1896-1977) 57, 227–286. `https://doi.org/10.1029/JZ057i002p00227`
 
 Davies, D.R., Kramer, S.C., Wilson, C.R., Tosi, N., Besserer, J., Huttig, C., n.d. A community benchmark for compressible mantle convection in a two–dimensional cylindrical domain.
 
-Gassmöller, R., Dannberg, J., Bangerth, W., Heister, T., Myhill, R., 2020. On formulations of compressible mantle convection. Geophysical Journal International 221, 1264–1280. [https://doi.org/10.1093/gji/ggaa078](https://doi.org/10.1093/gji/ggaa078)  
-Ita, J., King, S.D., 1994. Sensitivity of convection with an endothermic phase change to the form of governing equations, initial conditions, boundary conditions, and equation of state. Journal of Geophysical Research: Solid Earth 99, 15919–15938. [https://doi.org/10.1029/94JB00852](https://doi.org/10.1029/94JB00852)  
-Jarvis, G.T., Mckenzie, D.P., 1980. Convection in a compressible fluid with infinite Prandtl number. Journal of Fluid Mechanics 96, 515–583. [https://doi.org/10.1017/S002211208000225X](https://doi.org/10.1017/S002211208000225X)  
-King, S.D., Lee, C., van Keken, P.E., Leng, W., Zhong, S., Tan, E., Tosi, N., Kameyama, M.C., 2010. A community benchmark for 2-D Cartesian compressible convection in the Earth’s mantle. Geophysical Journal International 180, 73–87. [https://doi.org/10.1111/j.1365-246X.2009.04413.x](https://doi.org/10.1111/j.1365-246X.2009.04413.x)  
-Tan, E., Gurnis, M., 2007. Compressible thermochemical convection and application to lower mantle structures. Journal of Geophysical Research: Solid Earth 112. [https://doi.org/10.1029/2006JB004505](https://doi.org/10.1029/2006JB004505)  
-van Zelst, I., Crameri, F., Pusok, A.E., Glerum, A., Dannberg, J., Thieulot, C., 2022. 101 geodynamic modelling: how to design, interpret, and communicate numerical studies of the solid Earth. Solid Earth 13, 583–637. [https://doi.org/10.5194/se-13-583-2022](https://doi.org/10.5194/se-13-583-2022)
+Gassmöller, R., Dannberg, J., Bangerth, W., Heister, T., Myhill, R., 2020. On formulations of compressible mantle convection. Geophysical Journal International 221, 1264–1280. `https://doi.org/10.1093/gji/ggaa078`  
+Ita, J., King, S.D., 1994. Sensitivity of convection with an endothermic phase change to the form of governing equations, initial conditions, boundary conditions, and equation of state. Journal of Geophysical Research: Solid Earth 99, 15919–15938. `https://doi.org/10.1029/94JB00852`  
+Jarvis, G.T., Mckenzie, D.P., 1980. Convection in a compressible fluid with infinite Prandtl number. Journal of Fluid Mechanics 96, 515–583. `https://doi.org/10.1017/S002211208000225X`  
+King, S.D., Lee, C., van Keken, P.E., Leng, W., Zhong, S., Tan, E., Tosi, N., Kameyama, M.C., 2010. A community benchmark for 2-D Cartesian compressible convection in the Earth’s mantle. Geophysical Journal International 180, 73–87. `https://doi.org/10.1111/j.1365-246X.2009.04413.x`  
+Tan, E., Gurnis, M., 2007. Compressible thermochemical convection and application to lower mantle structures. Journal of Geophysical Research: Solid Earth 112. `https://doi.org/10.1029/2006JB004505`  
+van Zelst, I., Crameri, F., Pusok, A.E., Glerum, A., Dannberg, J., Thieulot, C., 2022. 101 geodynamic modelling: how to design, interpret, and communicate numerical studies of the solid Earth. Solid Earth 13, 583–637. `https://doi.org/10.5194/se-13-583-2022`
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=compressible-convection-in-cartesian-coordinates-in-underworld3">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=compressible-convection-in-cartesian-coordinates-in-underworld3">Start one</a></div></div>

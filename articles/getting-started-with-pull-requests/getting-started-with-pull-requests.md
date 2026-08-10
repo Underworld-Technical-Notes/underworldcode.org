@@ -27,7 +27,8 @@ exports:
 
 *Version control systems and online-communities such as Github have made contributing to the development of opensource software incredibly easy. That is assuming that people get over their initial fear of sharing their code!  In this short blog post I go through how to submit a pull request to one of our repository. Do not fear and join us for some fun! You may actually learn some interesting things along the way and we will acknowledge your contribution.*
 
-```{figure} figures/github-mark.png
+```{image} figures/github-mark.png
+:width: 60px
 ```
 
 The open source community is by definition "open" to suggestions, new code submissions etc. The Underworld group adheres entirely to its philosophy and we aim at developing a broad community of not only users but contributors.  We have, however, been quite frustrated to see that very few people do submit pull requests to our code base.. and we would like you to help us fixing this!  

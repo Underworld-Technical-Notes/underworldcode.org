@@ -27,9 +27,7 @@ exports:
 
 Using physical units and how to appropriately scale a model is a top question users ask when beginning with Underworld. The equations Underworld solves are stated in a physically correct form, they remain valid as long as every material constant, geometry, time, etc., are expressed in the same system.  There is no explicit concept of units no scaling in Underworld, the choice is entirely left to the user. One can thus decide to use the Meter Kilometer Second system or a dimensionless system, defining the model such that length, density and viscosity of the material are one, etc. Both approaches are correct and allow for more flexibility, but with great power comes great responsibility. The user must ensure the units are consistent.
 
-#### [null](https://imgs.xkcd.com/comics/dimensional_analysis.png)
-
-null
+[imgs.xkcd.com/comics](https://imgs.xkcd.com/comics/dimensional_analysis.png)
 
 The scaling of the problem, although related to the choice of system units, is a much broader subject. Computers generally have trouble accurately solving for a wide range of numbers. In numerical methods, this issue can result in a matrix with a large Condition number and is difficult to invert(solve) accurately. By using an appropriate scaling, the wide range of numbers can be reduced, thus minimising numerical errors.
 

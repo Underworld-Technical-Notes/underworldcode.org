@@ -41,10 +41,10 @@ Additionally, we further compare them with the classical stress recovery techniq
 
 #### References
 
-Yang, H., Moresi, L.N. and Mansour, J., 2020. Stress recovery for the particle-in-cell finite element method. *Physics of the Earth and Planetary Interiors*, p.106637. (https://doi.org/10.1016/j.pepi.2020.106637)
+Yang, H., Moresi, L.N. and Mansour, J., 2020. Stress recovery for the particle-in-cell finite element method. *Physics of the Earth and Planetary Interiors*, p.106637. (`https://doi.org/10.1016/j.pepi.2020.106637`)
 
-Zienkiewicz, O.C. and Zhu, J.Z., 1992. The superconvergent patch recovery and a posteriori error estimates. Part 1: The recovery technique. *International Journal for Numerical Methods in Engineering*, *33*(7), pp.1331-1364. (https://doi.org/10.1002/nme.1620330702)
+Zienkiewicz, O.C. and Zhu, J.Z., 1992. The superconvergent patch recovery and a posteriori error estimates. Part 1: The recovery technique. *International Journal for Numerical Methods in Engineering*, *33*(7), pp.1331-1364. (`https://doi.org/10.1002/nme.1620330702`)
 
-Zienkiewicz, O.C. and Zhu, J.Z., 1992. The superconvergent patch recovery and a posteriori error estimates. Part 2: Error estimates and adaptivity. *International Journal for Numerical Methods in Engineering*, *33*(7), pp.1365-1382. (https://doi.org/10.1002/nme.1620330703)
+Zienkiewicz, O.C. and Zhu, J.Z., 1992. The superconvergent patch recovery and a posteriori error estimates. Part 2: Error estimates and adaptivity. *International Journal for Numerical Methods in Engineering*, *33*(7), pp.1365-1382. (`https://doi.org/10.1002/nme.1620330703`)
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=stress-recovery-in-underworld">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=stress-recovery-in-underworld">Start one</a></div></div>

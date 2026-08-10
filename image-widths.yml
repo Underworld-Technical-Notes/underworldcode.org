@@ -35,3 +35,8 @@ scaling-in-underworld:
   Strong-Scaling-Gadi-solid--vs-Magnus-dashed--256-3-Resolution-1-1.png: 430
   Weak-Scaling-Gadi-solid--vs-Magnus-dashed--1-1.png: 430
   Weak-Scaling-Gadi-solid--vs-Magnus-dashed--32-3-PerProc-1.png: 430
+
+getting-started-with-pull-requests:
+  # The GitHub logo rendering as a full page. It is an icon, not an exhibit;
+  # about a tenth of the measure is right for it.
+  github-mark.png: 60
