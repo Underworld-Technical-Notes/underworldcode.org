@@ -41,15 +41,24 @@ push is live for the next person who clicks.
 That is what the old cloud was built to do, and this does it without anybody
 running a server.
 
-The URL takes your repository, your branch, and where to open:
+The URL says which Underworld to use, which repository to fetch, and where to
+open. In plain form:
 
 ```
-https://mybinder.org/v2/gh/underworldcode/uw3-binder-launcher/<version>
-  ?urlpath=git-pull%3Frepo%3D<your-repo>%26branch%3D<your-branch>
-  %26urlpath%3Dlab%252Ftree%252F<repo-name>%252F<where>
+https://mybinder.org/v2/gh/underworldcode/uw3-binder-launcher/VERSION
+    ?urlpath=git-pull
+     &repo=https://github.com/USER/REPO
+     &branch=BRANCH
+     &urlpath=lab/tree/REPO/WHERE
 ```
 
-`<where>` is what makes it land somewhere useful:
+That is the shape to think in. The real URL is the same thing with the
+characters escaped — it is a URL nested inside a URL, so every `?`, `&` and
+`/` after `git-pull` has to be encoded, and the repository address, being one
+level deeper again, is encoded twice. Nobody should do that by hand, and the
+[wizard](#generating-the-link) below does it for you.
+
+`WHERE` is what makes it land somewhere useful:
 
 | To open | `<where>` |
 |---------|-----------|
@@ -60,8 +69,9 @@ https://mybinder.org/v2/gh/underworldcode/uw3-binder-launcher/<version>
 So a course can hand out one link per practical, each opening its own folder,
 all against the same pinned release.
 
-The encoding is fiddly and easy to get wrong — the repository URL is encoded
-twice — so there is a script in the Underworld repository that writes it for
+### Generating the link
+
+There is a script in the Underworld repository that writes the encoded URL for
 you:
 
 ```bash

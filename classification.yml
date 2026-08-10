@@ -302,3 +302,8 @@ how-many-processors-should-we-use-to-solve-problem-x:
   article_type: technical-note
   subjects: []
   methods: [parallel-hpc, benchmarks-validation]
+
+running-underworld-in-a-browser:
+  article_type: technical-note
+  subjects: []
+  methods: [parallel-hpc]

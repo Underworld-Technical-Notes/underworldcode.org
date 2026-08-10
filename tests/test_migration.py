@@ -1394,3 +1394,26 @@ def test_the_acknowledgement_is_idempotent():
     assert once == apply(once) == apply(apply(once)), \
         "the acknowledgement rewrite is not a fixed point"
     assert once.count(marker) == 2, "the marker pair must not multiply"
+
+
+def test_a_new_note_validates_the_moment_it_is_created():
+    """`pixi run new` must not produce a note that fails `pixi run validate`.
+
+    The template carried `doi`, `doi_registrant` and `tags` -- none of them
+    fields the schema knows. Every note started from it failed validation on
+    all three, which is a poor welcome for a contributor following the
+    documented first two commands.
+    """
+    import json as _json
+    schema = _json.loads((ROOT / "schemas" / "article-metadata.schema.json")
+                         .read_text(encoding="utf-8"))
+    allowed = set(schema["properties"])
+    template = (ROOT / "templates" / "article-template" / "metadata.yml")
+    fields = set()
+    for line in template.read_text(encoding="utf-8").splitlines():
+        if line and not line.startswith((" ", "-", "#")) and ":" in line:
+            fields.add(line.split(":", 1)[0].strip())
+    unknown = sorted(fields - allowed)
+    assert not unknown, "the template emits field(s) the schema rejects: %s" % unknown
+    assert set(schema["required"]) <= fields | {"id", "slug", "title", "canonical_path"}, \
+        "the template omits a required field"
