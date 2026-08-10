@@ -61,7 +61,7 @@ The model cratons form cold and from material that was originally crystallised a
 
 *The details behind the work described in this post:*
 
-- Beall, A., Moresi, L. Cooper, C. M. Formation of cratonic lithosphere during the initiation of plate tectonics, Geology,  
+- Beall, A., Moresi, L. Cooper, C. M. Formation of cratonic lithosphere during the initiation of plate tectonics, Geology,
   `https://doi.org/10.1130/G39943.1,` 2017
 
 *Papers on the longevity of the deep cratonic lithosphere:*

@@ -31,10 +31,10 @@ For a* quick* taste of Underworld try our binder cloud resource, a temporary "vi
 :::{list-table}
 :header-rows: 0
 
-* - ```{image} figures/badge_logo.svg
-      :alt: Binder
-      :width: 109px
-      ```
+* - :::{image} figures/badge_logo.svg
+    :alt: Binder
+    :width: 109px
+    :::
   - [mybinder.org/v2](https://mybinder.org/v2/gh/underworldcode/underworld2/v2.10.1b)
 :::
 

@@ -62,10 +62,10 @@ Why not try it out and see for yourself ? Users first need to sign up to use the
 :::{list-table}
 :header-rows: 0
 
-* - ```{image} figures/Cloud_User-Signup-blue
-      :alt: Signup
-      :width: 120px
-      ```
+* - :::{image} figures/Cloud_User-Signup-blue
+    :alt: Signup
+    :width: 120px
+    :::
   - [demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/signup)
 :::
 
@@ -74,10 +74,10 @@ The server is then accessed either via the hub url itself or via a link that als
 :::{list-table}
 :header-rows: 0
 
-* - ```{image} figures/Cloud_User-Launch_Demo_Notebooks-blue
-      :alt: https://img.shields.io/badge/--
-      :width: 218px
-      ```
+* - :::{image} figures/Cloud_User-Launch_Demo_Notebooks-blue
+    :alt: https://img.shields.io/badge/--
+    :width: 218px
+    :::
   - [demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Funderworld-geodynamics-cloud%2Funderworld-cloud-droplet&urlpath=lab%2Ftree%2Funderworld-cloud-droplet%2FStartHere.ipynb)
 :::
 
@@ -92,10 +92,10 @@ The class server can be administered by an instructor who does not have to have 
 :::{list-table}
 :header-rows: 0
 
-* - ```{image} figures/Cloud_Admin-Hub_Control_Panel-Red
-      :alt: ControlPanel
-      :width: 190px
-      ```
+* - :::{image} figures/Cloud_Admin-Hub_Control_Panel-Red
+    :alt: ControlPanel
+    :width: 190px
+    :::
   - [demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/admin)
 :::
 
@@ -104,10 +104,10 @@ There is a page that can be used to authorize or un-authorize users' access to t
 :::{list-table}
 :header-rows: 0
 
-* - ```{image} figures/Cloud_Admin-Authorize_Users-Red
-      :alt: Authorize
-      :width: 178px
-      ```
+* - :::{image} figures/Cloud_Admin-Authorize_Users-Red
+    :alt: Authorize
+    :width: 178px
+    :::
   - [demon.underworldcloud.org/hub](https://demon.underworldcloud.org/hub/authorize)
 :::
 

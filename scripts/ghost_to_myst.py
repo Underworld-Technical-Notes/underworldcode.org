@@ -497,8 +497,15 @@ class GhostToMyst(HTMLParser):
             # item's content column, or markdown ends the item and the rest
             # becomes a paragraph of its own -- which is how a reference split
             # from its own bullet, the citation left dangling underneath.
-            indent = "  " * len(self._list) if self._in_list_item else ""
-            self._write(("  \n" + indent) if not self._pre else "\n")
+            # Inside a list item, a SOFT break -- a plain newline and an
+            # indent to the item's content column. A hard break (two trailing
+            # spaces) ends the item in the Typst renderer, which is how a
+            # reference's DOI escaped its own bullet and set flush left
+            # underneath. Verified by rendering both.
+            if self._in_list_item:
+                self._write("\n" + "  " * len(self._list))
+            else:
+                self._write("  \n" if not self._pre else "\n")
             self._after_break = True
         elif tag == "hr":
             self._flush()
@@ -607,11 +614,15 @@ class GhostToMyst(HTMLParser):
                     destination = ("`%s`" % href if DOI_IN_URL.search(href)
                                    else "[%s](%s)" % (link_label(href), href))
                     table = [":::{list-table}", ":header-rows: 0", ""]
-                    table.append("* - ```{image} figures/%s" % name)
+                    # Colon fences, not backticks. A backtick-fenced directive
+                    # inside a table cell has its option lines read as a
+                    # directive BODY -- "unexpected body provided for directive:
+                    # image" -- however they are indented. Colon fences nest.
+                    table.append("* - :::{image} figures/%s" % name)
                     if alt:
-                        table.append("      :alt: %s" % alt)
-                    table.append("      :width: %dpx" % (width if small else 183))
-                    table.append("      ```")
+                        table.append("    :alt: %s" % alt)
+                    table.append("    :width: %dpx" % (width if small else 183))
+                    table.append("    :::")
                     table.append("  - %s" % destination)
                     table.append(":::")
                     block = table

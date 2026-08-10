@@ -24,10 +24,10 @@ The published model input files are available at the Underworld-Community [GitHu
 :::{list-table}
 :header-rows: 0
 
-* - ```{image} figures/badge_logo.svg
-      :alt: Binder
-      :width: 109px
-      ```
+* - :::{image} figures/badge_logo.svg
+    :alt: Binder
+    :width: 109px
+    :::
   - [mybinder.org/v2](https://mybinder.org/v2/gh/underworld-community/cenki-tok-et-al-crustal-roots-in-stable-continents/master)
 :::
 

@@ -43,10 +43,10 @@ But, since the software we release is also used to interpolate the surfaces, and
 :::{list-table}
 :header-rows: 0
 
-* - ```{image} figures/badge.svg
-      :alt: Binder
-      :width: 92px
-      ```
+* - :::{image} figures/badge.svg
+    :alt: Binder
+    :width: 92px
+    :::
   - [mybinder.org/v2](https://mybinder.org/v2/gh/lmoresi/miller-moho-binder/publication)
 :::
 
@@ -57,10 +57,10 @@ The software is also tracked on Zenodo
 :::{list-table}
 :header-rows: 0
 
-* - ```{image} figures/zenodo.1459110.svg
-      :alt: DOI
-      :width: 183px
-      ```
+* - :::{image} figures/zenodo.1459110.svg
+    :alt: DOI
+    :width: 183px
+    :::
   - `https://doi.org/10.5281/zenodo.1459110`
 :::
 
