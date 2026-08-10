@@ -1,0 +1,110 @@
+name: preview
+
+# Build a branch and publish it where it can be read but not found.
+#
+# The published site is built from `main` by deploy.yml. This is for the state
+# between "drafted" and "published": a note at draft or review, which production
+# withholds, needs somewhere a co-author can read it. Without this it either
+# goes onto the live site unfinished -- which happened -- or it is reviewed by
+# people running the build themselves, which means it is reviewed by nobody.
+#
+# ONLY BRANCHES IN THIS REPOSITORY. Not fork pull requests, and this is not an
+# oversight: GitHub does not expose secrets to a workflow triggered from a fork,
+# so publishing needs a token a fork run cannot have. The ways around that --
+# pull_request_target, chiefly -- run this repository's build scripts over
+# untrusted content with that token in scope, in a repository that also holds
+# the Figshare deposit token. A contributor from a fork gets the artifact from
+# test.yml instead, and a maintainer who has read the diff can push the branch
+# here to get a link.
+
+on:
+  push:
+    branches-ignore: [main]
+  workflow_dispatch:
+
+concurrency:
+  # One build per branch, and cancel a superseded one: a preview is only ever
+  # wanted for the tip of the branch.
+  group: preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: prefix-dev/setup-pixi@v0.8.1
+        with:
+          cache: true
+
+      - name: Where this branch publishes
+        id: target
+        run: |
+          HASH=$(python3 scripts/preview_mark.py --path-only --branch "${GITHUB_REF_NAME}")
+          echo "hash=${HASH}" >> "$GITHUB_OUTPUT"
+          echo "url=https://underworld-technical-notes.github.io/underworldcode.org-preview/${HASH}/" >> "$GITHUB_OUTPUT"
+
+      # UWTN_PREVIEW is what makes this worth having: the production build
+      # withholds draft and review, and this one does not.
+      #
+      # BASE_URL is the full path the site will be served from. A preview lives
+      # two directories deep, so a root-relative asset would 404 on every page
+      # without it -- the same trap the project-subpath build has, one level
+      # further down.
+      - name: Build, showing unpublished notes
+        env:
+          UWTN_PREVIEW: "1"
+          BASE_URL: /underworldcode.org-preview/${{ steps.target.outputs.hash }}
+        run: pixi run build
+
+      - name: Mark it as a preview
+        run: |
+          python3 scripts/preview_mark.py \
+            --branch "${GITHUB_REF_NAME}" --commit "${GITHUB_SHA}"
+
+      # Into a directory of its own, keeping every other branch's preview.
+      # This is why the previews are not on the main site: an Actions-based
+      # Pages deployment replaces the whole thing, so hashed directories could
+      # never accumulate there.
+      - name: Publish
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.PREVIEW_TOKEN }}
+          external_repository: Underworld-Technical-Notes/underworldcode.org-preview
+          publish_branch: gh-pages
+          publish_dir: _build/html
+          destination_dir: ${{ steps.target.outputs.hash }}
+          keep_files: true
+          user_name: underworld-technical-notes
+          user_email: help@underworldcode.org
+          commit_message: "preview: ${{ github.ref_name }} at ${{ github.sha }}"
+
+      - name: Say where it went
+        run: |
+          echo "### Preview built" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "${{ steps.target.outputs.url }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Shows notes at draft and review, which the published site withholds." >> "$GITHUB_STEP_SUMMARY"
+          echo "Not indexed, and not the citable version." >> "$GITHUB_STEP_SUMMARY"
+
+      # On the pull request, because that is where the reviewer is looking.
+      # Edited in place rather than added to, so a branch pushed twenty times
+      # leaves one comment rather than twenty.
+      - name: Comment the link on the pull request
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          URL: ${{ steps.target.outputs.url }}
+        run: |
+          PR=$(gh pr list --head "${GITHUB_REF_NAME}" --json number -q '.[0].number' || true)
+          [ -z "$PR" ] && { echo "no open pull request for this branch"; exit 0; }
+          BODY=$(printf '**Preview:** %s\n\nBuilt from `%s`. Shows notes at draft and review, which the published site withholds. Not indexed, and not the citable version.' "$URL" "${GITHUB_SHA::7}")
+          EXISTING=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" \
+            --jq '.[] | select(.body | startswith("**Preview:**")) | .id' | head -1)
+          if [ -n "$EXISTING" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING}" -f body="$BODY"
+          else
+            gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" -f body="$BODY"
+          fi

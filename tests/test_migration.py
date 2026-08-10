@@ -1484,3 +1484,44 @@ def test_the_preview_path_is_stable_and_says_nothing():
     assert first == preview_mark.preview_path("feature/some-note"), "not stable"
     assert first != preview_mark.preview_path("feature/other-note")
     assert "some-note" not in first and len(first) == 10
+
+
+def test_the_preview_never_runs_on_a_fork_pull_request():
+    """It publishes with a token, and a fork run cannot have one.
+
+    GitHub withholds secrets from workflows triggered by a pull request from a
+    fork. The ways around that -- pull_request_target above all -- would run
+    this repository's build scripts over untrusted content with that token in
+    scope, in a repository that also holds the Figshare deposit token. A
+    contributor from a fork gets the artifact instead.
+    """
+    text = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    # Comments stripped: the file EXPLAINS why pull_request_target is not used,
+    # and a test that cannot tell the reasoning from the configuration fails on
+    # the presence of its own justification.
+    config = "\n".join(line for line in text.splitlines()
+                       if not line.lstrip().startswith("#"))
+    assert "pull_request_target" not in config, \
+        "pull_request_target would run untrusted content with a token in scope"
+    assert "branches-ignore: [main]" in config, \
+        "the preview must never publish main -- that is the live site's job"
+
+
+def test_the_preview_build_shows_unpublished_notes_and_the_real_one_does_not():
+    """The whole reason the preview exists."""
+    preview = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    deploy = (ROOT / ".github" / "workflows" / "deploy.yml").read_text(encoding="utf-8")
+    assert 'UWTN_PREVIEW: "1"' in preview
+    assert "UWTN_PREVIEW" not in deploy, "the published site must not show drafts"
+
+
+def test_the_preview_keeps_other_branches_previews():
+    """Each branch owns a directory; publishing one must not remove the rest.
+
+    This is the reason previews are not on the main site at all: an
+    Actions-based Pages deployment replaces the whole site, so hashed
+    directories could never accumulate there.
+    """
+    preview = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    assert "keep_files: true" in preview
+    assert "destination_dir:" in preview
