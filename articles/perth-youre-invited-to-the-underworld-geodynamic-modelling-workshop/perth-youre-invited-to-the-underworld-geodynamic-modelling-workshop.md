@@ -19,7 +19,7 @@ keywords:
 
 📍 Location: Curtin University - 402.323:FF, 9am, May 7, 2025
 
-You are invited to a full-day workshop on*** Underworld*** — a computational Geodynamics / Tectonics modelling framework. This is an excellent opportunity for researchers, students, and professionals interested in computational geodynamics and Earth science modelling to learn about Underworld.
+You are invited to a full-day workshop on ***Underworld*** — a computational Geodynamics / Tectonics modelling framework. This is an excellent opportunity for researchers, students, and professionals interested in computational geodynamics and Earth science modelling to learn about Underworld.
 
 ```{figure} figures/Screenshot-2025-04-29-at-10.27.20-am.png
 

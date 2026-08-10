@@ -33,9 +33,9 @@ parts:
 Fig 1. Total Runtime of timed_model.py with Underworld 2.16. Container (Singularity) is quicker than default (traditional) Baremetal.
 ```
 
-##** Benefits of Containers**
+## **Benefits of Containers**
 
-###** Pros:**
+### **Pros:**
 
 - Simpler to install Underworld and run with Singularity containers.
 
@@ -45,7 +45,7 @@ Fig 1. Total Runtime of timed_model.py with Underworld 2.16. Container (Singular
 
 - Increased reproducibility and portability.
 
-###** Cons:**
+### **Cons:**
 
 - Non-performant compilation for HPC hardware configurations.
 
@@ -87,6 +87,6 @@ For container creation, Dockerfile considerations.
 
 For singularity execution.  
 Bind Mounts:   
-The --bind argument when running* singularity* forces directories on the host machine to map into the running container filesystem. For Underworld, we map the HPC's MPI implementation directories into our running container on Gadi to access the high performance network of the HPC.
+The --bind argument when running *singularity* forces directories on the host machine to map into the running container filesystem. For Underworld, we map the HPC's MPI implementation directories into our running container on Gadi to access the high performance network of the HPC.
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld-and-singularity">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld-and-singularity">Start one</a></div></div>

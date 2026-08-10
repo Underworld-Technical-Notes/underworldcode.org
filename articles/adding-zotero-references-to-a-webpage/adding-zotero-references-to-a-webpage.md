@@ -51,7 +51,7 @@ fetch(`https://api.zotero.org/groups/${groupID}/collections/${collectionKey}/ite
 </script>
 ```
 
-This works by sending a structured query to zotero asking for information for a specific library (here the  library for the underworld-community group which has an ID of* 2386948* and a specific collection of data with the Key of* QNARWBUC*). The result of the query is then loaded into the content of the `<div id="pubs-2019">` tag when the query has completed.
+This works by sending a structured query to zotero asking for information for a specific library (here the  library for the underworld-community group which has an ID of *2386948* and a specific collection of data with the Key of *QNARWBUC*). The result of the query is then loaded into the content of the `<div id="pubs-2019">` tag when the query has completed.
 
 It produces the following output
 

@@ -28,7 +28,7 @@ exports:
 
 [https://doi.org/10.59350/t7ghx-8f823](https://doi.org/10.59350/t7ghx-8f823)
 
-The following is compatible with Ubuntu 20.04 under*** Windows*** 10/11 WSL 2 (***Windows*** Subsystem for Linux).  
+The following is compatible with Ubuntu 20.04 under ***Windows*** 10/11 WSL 2 (***Windows*** Subsystem for Linux).  
   
 PETSc, the Portable, Extensible Toolkit for Scientific Computation is the main dependency required for building Underworld. In the following, I will describe my current workflow for configuring and installing PETSc on Linux. The instructions are also valid for the Windows Subsystem for Linux (WSL2) using the Ubuntu 20.04 app.
 
@@ -150,7 +150,7 @@ A typical toolkit for Underworld includes some general utilities:
 
 - MPI (see above)
 
-- MUMPS (**MU**ltifrontal** M**assively** P**arallel sparse direct** S**olver)
+- MUMPS (**MU**ltifrontal **M**assively **P**arallel sparse direct **S**olver)
 
 - METIS and ParMETIS (Parallel Graph Partitioning and Fill-reducing Matrix Ordering**)**
 

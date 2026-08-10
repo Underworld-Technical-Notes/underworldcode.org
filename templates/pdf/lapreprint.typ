@@ -180,6 +180,11 @@
     },
   )
 
+  // A heading is never the last thing on a page. Typst keeps a sticky block
+  // with the one that follows, so a section title moves to the next page with
+  // its content instead of sitting alone above a break.
+  show heading: set block(sticky: true)
+
   // Configure equation numbering and spacing.
   set math.equation(numbering: "(1)")
   show math.equation: set block(spacing: 1em)

@@ -50,7 +50,7 @@ Both the sticky air and free surface can be easily implemented in Underworld2. Â
 - [Thrust Wedges](https://github.com/underworldcode/UWGeodynamics/blob/development/docs/tutorials/Tutorial_10_Thrust_Wedges.ipynb);
 
 (2) Body-fitting method:  
-Free surface can be turned on using the* Model.freesurface* switch.
+Free surface can be turned on using the *Model.freesurface* switch.
 
 ```python
 Model.freesurface = True
@@ -71,7 +71,8 @@ Model.freesurface = True
 
 All of the approaches to free surface simulations have been subject to instability which has been variously termed a "sloshing instability" or the "drunken sailor effect" (Kaus et al., 2010). This instability, arising from the large density contrast typical at a free surface (the rock-air interface in the "sticky air" method), severely limits the maximum stable timestep for computations. Frequently, the maximum stable timestep is several orders of magnitude smaller than that for an equivalent model with free-slip boundary conditions. Stabilization methods (like FSSA from Kaus et al, (2010)) would be needed to solve that, while that's another story.
 
-```{figure} figures/F_ToBeContinued.png
+```{image} figures/F_ToBeContinued.png
+:width: 200px
 ```
 
 **References**

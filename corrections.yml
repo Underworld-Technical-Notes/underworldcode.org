@@ -60,3 +60,24 @@ craton-formation-and-the-onset-of-plate-tectonics:
       2020 upload, and again, uncaptioned, from the 2019 one on the old Ghost
       CDN. Both resolve to the same image, so the article showed Figure 1 and
       then repeated it with no caption. The captioned copy is the one kept.
+
+2-11-scaling:
+  # Four figures whose caption is the word "download", linking to CloudStor --
+  # a service AARNet retired in 2023. The link resolves to nothing and the
+  # author no longer holds the data, so the caption says nothing and points
+  # nowhere. Removed rather than left reading "Figure 1: download".
+  #
+  # Nothing is recoverable here: this is a record that the tests were run and
+  # what they showed, not a dataset. The plots remain.
+  - find: <figcaption><a href="https://cloudstor.aarnet.edu.au/plus/s/yQ9MWqVknacxQnc/download?ref=underworldcode.org">download</a></figcaption>
+    replace: ""
+    why: Dead CloudStor link used as a caption; the data no longer exists.
+  - find: <figcaption><a href="https://cloudstor.aarnet.edu.au/plus/s/zLCYMcHEIEetrLg/download?ref=underworldcode.org">download</a></figcaption>
+    replace: ""
+    why: As above.
+  - find: <figcaption><a href="https://cloudstor.aarnet.edu.au/plus/s/11Fearv7XUQ9SZ1/download?ref=underworldcode.org">download</a></figcaption>
+    replace: ""
+    why: As above.
+  - find: <figcaption><a href="https://cloudstor.aarnet.edu.au/plus/s/xaNlPXMAYoLv3O5/download?ref=underworldcode.org">download</a></figcaption>
+    replace: ""
+    why: As above.

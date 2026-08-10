@@ -154,6 +154,29 @@ def load_classification():
 CLASSIFICATION = load_classification()
 
 
+def load_image_widths():
+    """slug -> {filename: width} from image-widths.yml."""
+    path = ROOT / "image-widths.yml"
+    widths, slug = {}, None
+    if not path.exists():
+        return widths
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.split("#")[0].rstrip()
+        if not line.strip():
+            continue
+        if not line.startswith(" ") and line.rstrip().endswith(":"):
+            slug = line.rstrip()[:-1]
+            widths[slug] = {}
+        elif slug and ":" in line:
+            name, _, value = line.strip().partition(":")
+            if value.strip().isdigit():
+                widths[slug][name.strip()] = int(value.strip())
+    return widths
+
+
+IMAGE_WIDTHS = load_image_widths()
+
+
 def load_article_types():
     """type -> {stream, archival} from article-types.yml."""
     path = ROOT / "article-types.yml"
@@ -468,20 +491,11 @@ class GhostToMyst(HTMLParser):
             else:
                 self._write("`")
         elif tag in INLINE_WRAP and not self._pre:
-            # Move a trailing space OUTSIDE the closing marker. Ghost writes
-            # `<em><strong>text </strong></em>`, and `***text ***` does not
-            # close in markdown -- the asterisks render literally. That is how a
-            # standfirst came out as "***How we built ... ***" on the page.
-            buf = self._link_text if self._href is not None else self._buf
-            trailing = ""
-            while buf and buf[-1] and buf[-1][-1] in " \t":
-                trailing = buf[-1][-1] + trailing
-                buf[-1] = buf[-1][:-1]
-                if not buf[-1]:
-                    buf.pop()
+            # Just the marker. Moving padding out belongs on the CLOSING tag --
+            # done here it takes the space BEFORE the emphasis and re-emits it
+            # inside, turning "To date <em>weak scaling </em>tests" into
+            # "To date* weak scaling* tests": the same defect, one word left.
             self._write(INLINE_WRAP[tag])
-            if trailing:
-                self._write(trailing)
         elif tag == "span":
             if "italic" in attrs.get("class", ""):
                 self._write("*")
@@ -749,7 +763,25 @@ class GhostToMyst(HTMLParser):
 
         src, alt = panels[0]
         name = self._asset_name(src)
+
+        # A stated width means "this is decoration, not an exhibit": emit it as
+        # a sized image rather than a numbered figure. An end-plate is not
+        # Figure 4, and at full measure it also shoves the next heading onto the
+        # following page.
+        stated = IMAGE_WIDTHS.get(self.slug, {}).get(name)
+        if stated and not caption:
+            block = ["```{image} figures/%s" % name]
+            if alt:
+                block.append(":alt: %s" % alt)
+            block.append(":width: %dpx" % stated)
+            block.append("```")
+            self._emit("\n".join(block))
+            self._fig = None
+            return
+
         block = ["```{figure} figures/%s" % name]
+        if stated:
+            block.append(":width: %dpx" % stated)
         if alt:
             block.append(":alt: %s" % alt)
         if caption:

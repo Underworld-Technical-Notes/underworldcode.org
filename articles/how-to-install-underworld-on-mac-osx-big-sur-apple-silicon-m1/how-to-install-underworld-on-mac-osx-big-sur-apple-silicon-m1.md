@@ -41,7 +41,7 @@ brew install python3
 
 ### Install PETSc
 
-I also installed PETSc (3.15.4) using Homebrew. The default comes with** hdf5**,** open-mpi.**
+I also installed PETSc (3.15.4) using Homebrew. The default comes with **hdf5**, **open-mpi.**
 
 ```
 brew install petsc
@@ -70,17 +70,17 @@ HDF5_DIR=/opt/homebrew/Cellar/hdf/1.12.1 pip3 install h5py --no-build-isolation 
 ```
 
 At the time I am writing this post, the version of HDF5 that comes with PETSc is 1.12.1. This will change in the future so you will have to update that line.   
-The** no-build-isolation** option forces pip to skip creating a build environment and to rely on the dependencies being already available (Numpy, pkgconfig, cython, mpi4py).
+The **no-build-isolation** option forces pip to skip creating a build environment and to rely on the dependencies being already available (Numpy, pkgconfig, cython, mpi4py).
 
 ### Install Underworld 2
 
-First you will probably need to have  **CMake** and** Swig** if you don't have them already.
+First you will probably need to have  **CMake** and **Swig** if you don't have them already.
 
 ```brew
 brew install cmake swig
 ```
 
-Now get** Underworld** from** GitHub** and switch to the* cmake* branch
+Now get **Underworld** from **GitHub** and switch to the *cmake* branch
 
 ```git
 git clone https://github.com/underworldcode/underworld2.git
@@ -89,7 +89,7 @@ git checkout cmake
 cd ..
 ```
 
-Finally install** Underworld**
+Finally install **Underworld**
 
 ```
 pip3 install underworld2/

@@ -1,0 +1,37 @@
+# Figures that need a size stated rather than filling the measure.
+#
+# Most figures should be as wide as the text: they carry the argument. A few
+# are decoration, or are wide and short, or are simply too big for what they
+# say -- and a full-measure figure pushes the following heading onto the next
+# page, which is why sections drift.
+#
+# slug:
+#   filename.png: 220        # width in px
+#
+# A width here also stops the image being numbered as a figure when it has no
+# caption, because a decorative end-plate is not Figure 4.
+
+free-surface-in-underworld:
+  # The "to be continued" arrow. Its transparency checkerboard is baked into
+  # the pixels -- the alpha channel is fully opaque, so somebody screenshotted
+  # an editor showing the transparency. Nothing to repair in the file; at a
+  # quarter of the measure it reads as an end-mark rather than a figure.
+  F_ToBeContinued.png: 200
+
+scaling-in-underworld:
+  # Three tall plots, each too big to share a page with the bold line that
+  # introduces it -- so every one of them left its heading stranded at the foot
+  # of the previous page. At roughly half the measure the heading, the plot and
+  # the next heading all fit together. They are log-log scaling plots; the
+  # shape is the message and it survives the reduction.
+  Weak-Scaling-Timing-SolDB3d-Q1--base-16--MaxIts-100.png: 430
+  image-1.png: 430
+  f4efe6bc-57da-456a-97c3-cc4def294ae9.png: 430
+
+2-11-scaling:
+  # Same problem as scaling-in-underworld: tall plots that push the bold line
+  # introducing them onto the previous page by itself.
+  Strong-Scaling-Gadi-solid--vs-Magnus-dashed--2.jpg: 430
+  Strong-Scaling-Gadi-solid--vs-Magnus-dashed--256-3-Resolution-1-1.png: 430
+  Weak-Scaling-Gadi-solid--vs-Magnus-dashed--1-1.png: 430
+  Weak-Scaling-Gadi-solid--vs-Magnus-dashed--32-3-PerProc-1.png: 430

@@ -19,7 +19,7 @@ parts:
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
 
-*Conda packages are now available for most of the underworldcode suite of software** ([Underworld](https://github.com/underworldcode/underworld2.git), [UWGeodynamics](https://github.com/underworldcode/UWGeodynamics.git), [Lavavu](https://github.com/lavavu/LavaVu.git), [Stripy](https://github.com/underworldcode/stripy.git)) from the [geo-down-under](https://anaconda.org/geo-down-under) conda channel.*
+*Conda packages are now available for most of the underworldcode suite of software* *([Underworld](https://github.com/underworldcode/underworld2.git), [UWGeodynamics](https://github.com/underworldcode/UWGeodynamics.git), [Lavavu](https://github.com/lavavu/LavaVu.git), [Stripy](https://github.com/underworldcode/stripy.git)) from the [geo-down-under](https://anaconda.org/geo-down-under) conda channel.*
 
 ```{figure} figures/conda_logo.svg
 ```

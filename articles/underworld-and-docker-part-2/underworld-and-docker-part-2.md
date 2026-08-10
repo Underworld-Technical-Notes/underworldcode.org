@@ -46,7 +46,7 @@ Launching `Kitematic` for the first time brings up an app-store-like list of ava
 Run Kitematic and search for Underworld2
 ```
 
-Clicking `Create` on the* Underworld2* container will automatically download it and launch into the default configuration. This container is tested code from the release branch. If you want a specific version, check out the tags (at the moment we don't have a history of past releases though !). The* Underworld2-dev* container is a rolling build which is updated from the development branch whenever there are changes. You can rename your container from the General / Settings tab which is not such a bad idea if you are using the latest build of a development branch because the container, once created, is an immutable snapshot of that version of the code.
+Clicking `Create` on the *Underworld2* container will automatically download it and launch into the default configuration. This container is tested code from the release branch. If you want a specific version, check out the tags (at the moment we don't have a history of past releases though !). The *Underworld2-dev* container is a rolling build which is updated from the development branch whenever there are changes. You can rename your container from the General / Settings tab which is not such a bad idea if you are using the latest build of a development branch because the container, once created, is an immutable snapshot of that version of the code.
 
 ```{figure} figures/Kitematic3.png
 :alt: Kitematic3

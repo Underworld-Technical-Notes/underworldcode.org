@@ -37,7 +37,7 @@ Running geodynamic models on a single CPU/processor (i.e. serial) is time-consum
 
 Parallel computation can reduce time we need to wait for the our results to be computed but it does happen at the expense of some overhead   The overhead does depend on the nature of the computer we are using but typically we need to think about:
 
-- Code complexity: any time we manage computations across different processors, we have additional coding to reassemble the calculations* correctly* and we need to think about many  special cases. For example,  integrating a quantity of the surface of a mesh: many processes contribute, some do not, the results have to be computed independently then combined.
+- Code complexity: any time we manage computations across different processors, we have additional coding to reassemble the calculations *correctly* and we need to think about many  special cases. For example,  integrating a quantity of the surface of a mesh: many processes contribute, some do not, the results have to be computed independently then combined.
 
 - Additional memory is often required: to manage copies of information that lives on / near boundaries, to store the topology of the decomposed domain and to help navigate the passing of information between processes.
 
@@ -45,13 +45,13 @@ Parallel computation can reduce time we need to wait for the our results to be c
 
 You will want to know in advance whether there is any speed benefit to running in parallel, and, if you are being billed on a cycle-by-cycle rate, you want to be able to estimate the time saved balanced against the additional computational cost.
 
-Enter the strong scaling test! In doing strong scaling tests, the size of the problem is kept constant, while the number of processors is increased. The reduction in run-time due to the addition of more processors is commonly expressed in terms of the* speed-up*:
+Enter the strong scaling test! In doing strong scaling tests, the size of the problem is kept constant, while the number of processors is increased. The reduction in run-time due to the addition of more processors is commonly expressed in terms of the *speed-up*:
 
 \begin{equation}  
 \textrm{speed up} = \frac{t(N_{ref})}{t(N)}  
 \end{equation}
 
-where $t(N_{ref})$** is the run-time for a reference number of processors, $N_{ref}$, and $t(N)$ is the run-time when $N$ processors are used. In the ideal case, $N$ additional processors should contribute all of its resources in solving the problem and* reduce* the compute time by a factor of $N$ relative to the reference run time. For example, using $2 N_{ref}$* *processors will ideally halve the run-time resulting to a* speed-up = 2.*
+where $t(N_{ref})$** is the run-time for a reference number of processors, $N_{ref}$, and $t(N)$ is the run-time when $N$ processors are used. In the ideal case, $N$ additional processors should contribute all of its resources in solving the problem and *reduce* the compute time by a factor of $N$ relative to the reference run time. For example, using $2 N_{ref}$* *processors will ideally halve the run-time resulting to a *speed-up = 2.*
 
 **Underworld3 test problems* ***
 
@@ -71,7 +71,7 @@ with analytical solution $u(x,y,z)=sin(\pi x)sin(\pi y) sin (\pi z)$ and Dirichl
 \left[\nabla . \mathbf{u} (r, \theta, \phi)\right] = 0  
 \end{equation}
 
-with no slip boundary conditions and a smooth density distribution. For more information on the Stokes problem, see** case**** X** of Kramer et al., (2021). Solutions of the Poisson and Stokes problems are presented in Figures 1a and 1b, respectively.
+with no slip boundary conditions and a smooth density distribution. For more information on the Stokes problem, see **case** **X** of Kramer et al., (2021). Solutions of the Poisson and Stokes problems are presented in Figures 1a and 1b, respectively.
 
 ```{figure} figures/models_fig.png
 
@@ -82,7 +82,7 @@ Figure 1. Solutions of the a.) Poisson and b.) Stokes models.
 
 [HPC Systems | NCI](https://nci.org.au/our-systems/hpc-systems) —
 
-Shown in Figures 2a and 2b are the speed-up obtained in NCI* Gadi* versus the number of processors used for the Poisson and Stokes solves, respectively. Three different resolutions were tested for the Poisson (~148k, ~1.17M, and ~9.27M elements) and Stokes (~93k, ~720k, ~2.4M) problems. Both problems have $N_{ref} = 8$*.* Additionally, the ideal speed-up with unit slope is given by the red dashed lines. In all cases, the observed speed-up deviates slightly from the ideal, likely due to the fraction of the procedure that is serial as discussed in Amdahl’s law. This is particularly evident for smaller problems (i.e., ~148k elements for Poisson and ~93k elements for Stokes). Eventually, using more processors (and compute nodes) does not increase the speed-up and can even result to worse performance. At this point, the communication overhead resulting from the data traffic between more compute nodes is significant enough. We also note that although the Poisson problems generally have more elements, they have fewer degrees of freedom so the speed-up plateaus earlier relative to the Stokes problems.
+Shown in Figures 2a and 2b are the speed-up obtained in NCI *Gadi* versus the number of processors used for the Poisson and Stokes solves, respectively. Three different resolutions were tested for the Poisson (~148k, ~1.17M, and ~9.27M elements) and Stokes (~93k, ~720k, ~2.4M) problems. Both problems have $N_{ref} = 8$*.* Additionally, the ideal speed-up with unit slope is given by the red dashed lines. In all cases, the observed speed-up deviates slightly from the ideal, likely due to the fraction of the procedure that is serial as discussed in Amdahl’s law. This is particularly evident for smaller problems (i.e., ~148k elements for Poisson and ~93k elements for Stokes). Eventually, using more processors (and compute nodes) does not increase the speed-up and can even result to worse performance. At this point, the communication overhead resulting from the data traffic between more compute nodes is significant enough. We also note that although the Poisson problems generally have more elements, they have fewer degrees of freedom so the speed-up plateaus earlier relative to the Stokes problems.
 
 ```{figure} figures/strong_scaling.png
 ```

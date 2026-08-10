@@ -36,7 +36,7 @@ Submitting fixes, new functionalities etc. is the best way to improve the code b
 
 ## What are Pull Requests and how do I create one?
 
-Pull requests are a feature specific to GitHub. They provide a simple web-based way to submit changes to a code repository. It is called a** Pull request** because you are asking the owner of a code to pull your changes from your fork...
+Pull requests are a feature specific to GitHub. They provide a simple web-based way to submit changes to a code repository. It is called a **Pull request** because you are asking the owner of a code to pull your changes from your fork...
 
 ### WTH is a Fork?
 
@@ -46,7 +46,7 @@ When you do development with Git, the best way to work on a new feature is to cr
 git checkout -b new_feature
 ```
 
-When the feature is completed, tested, etc. You can then merge the content of the** new_feature** branch into the main branch (Note that you will have to commit your changes to your branch first):
+When the feature is completed, tested, etc. You can then merge the content of the **new_feature** branch into the main branch (Note that you will have to commit your changes to your branch first):
 
 ```bash
 git checkout development
@@ -54,11 +54,11 @@ git merge new_feature
 ```
 
 That is a perfectly valid way of doing things inside a development team.  
-However, you need to be officially part of the team... That's where** forks** and** pull requests** come to the rescue.
+However, you need to be officially part of the team... That's where **forks** and **pull requests** come to the rescue.
 
 Forks are basically copies of a repository at some point in time. It is called a fork because the changes you make are now dissociated from the main branch of development.  
   
-You create a fork from the GitHub Web User Interface by clicking on the** fork** button:
+You create a fork from the GitHub Web User Interface by clicking on the **fork** button:
 
 ```{figure} figures/Screenshot-from-2020-11-17-09-58-44.png
 ```
@@ -83,7 +83,7 @@ Once this is done, you should do 2 things:
 
 The latter is important because this will allow you to pull any changes that might happen on the original repository while you are doing your work.
 
-Now you can make changes to the code. The following code creates a new branch, add a test file, and pushes it to**** new_branch****:
+Now you can make changes to the code. The following code creates a new branch, add a test file, and pushes it to ****new_branch****:
 
 ```bash
 >> git checkout -b new_branch
@@ -123,7 +123,7 @@ To github.com:rbeucher/UWGeodynamics.git
 Branch 'new_branch' set up to track remote branch 'new_branch' from 'origin'.
 ```
 
-Once you push the changes to your repository, the**** Compare & pull request**** button will appear in GitHub.
+Once you push the changes to your repository, the ****Compare & pull request**** button will appear in GitHub.
 
 ```{figure} figures/Screenshot-from-2020-11-17-10-40-16.png
 ```
@@ -135,7 +135,7 @@ Click the button which will lead you to the following page:
 
 From here, make sure that the title of your pull request is meaningfull and that you clearly explain the changes you have made and why you think they were needed.   
   
-Once this is done you can** Open the Pull Request** by clicking the**** Create pull request**** button. This allows the maintainers to review your contribution. From here, we can merge it if it is good, or we may ask you to make some changes.
+Once this is done you can **Open the Pull Request** by clicking the ****Create pull request**** button. This allows the maintainers to review your contribution. From here, we can merge it if it is good, or we may ask you to make some changes.
 
 ## Take home message
 
@@ -151,9 +151,9 @@ if you want to contribute to one of our project, the simplest way is to:
 
 5. Push it back to your repo
 
-6. Click the**** Compare & pull request**** button
+6. Click the ****Compare & pull request**** button
 
-7. Click**** Create pull request**** to open a new pull request
+7. Click ****Create pull request**** to open a new pull request
 
 If we ask for changes, repeat steps 5 and 6 to add more commits to your pull request.
 

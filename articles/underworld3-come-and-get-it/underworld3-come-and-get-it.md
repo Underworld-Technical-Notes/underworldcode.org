@@ -49,7 +49,7 @@ The solver classes are self-describing. We can `view()` the class description be
 A Jupyter notebook in which we ask the Stokes solver class to describe itself before we decide if this is what we want to use, and it also tells us what variables we need (or will be given) when we set it up.
 ```
 
-In a notebook, the Stokes problem is set up with some simple python code, most of which is to provide suitable expressions for the constitutive parameters, boundary conditions and the right-hand-side. When we view the solver** object** (rather than the class), it shows the mathematical description of how it has been set up. This is the superficial description, if you want to find out what the Jacobians look like, you can dig a bit deeper and find out !
+In a notebook, the Stokes problem is set up with some simple python code, most of which is to provide suitable expressions for the constitutive parameters, boundary conditions and the right-hand-side. When we view the solver **object** (rather than the class), it shows the mathematical description of how it has been set up. This is the superficial description, if you want to find out what the Jacobians look like, you can dig a bit deeper and find out !
 
 ```{figure} figures/Screenshot-2024-12-07-at-4.14.37-PM.png
 
@@ -75,7 +75,7 @@ You can also check the [Underworld3 Quickstart](https://underworldcode.github.io
 
 It's all available on through GitHub at [https://github.com/underworldcode/underworld3](https://github.com/underworldcode/underworld3)
 
-**Feature image**:* Underworld3 uses unstructured meshes supplied by gmsh or any other tool supported by PETSc. In this image we see flow driven from the left boundary around a series of obstacles visualised by streamlines. The intense colours appear where the flow is strongest which is also where the gaps between obstacles line up. There is an emergent pressure gradient displayed in the background shading.*
+**Feature image**: *Underworld3 uses unstructured meshes supplied by gmsh or any other tool supported by PETSc. In this image we see flow driven from the left boundary around a series of obstacles visualised by streamlines. The intense colours appear where the flow is strongest which is also where the gaps between obstacles line up. There is an emergent pressure gradient displayed in the background shading.*
 
 <!-- uwtn-acknowledgement -->
 

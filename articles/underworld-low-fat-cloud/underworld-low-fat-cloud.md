@@ -49,11 +49,11 @@ It goes something like this:
 
 6. Log in !
 
-7.* Optional: add default content and personalise the README for your repository.*
+7. *Optional: add default content and personalise the README for your repository.*
 
 We use github actions in the repository to initialize, update and monitor the server. The workflow files have some optional configuration information in them that, if updated, will also trigger the server to rebuild / re-initialise.
 
-The template repository itself runs a demonstration server at [https://demon.underworldcloud.org](https://demon.underworldcloud.org/). (If you want to use https you also need to configure a hostname for your server. Information can be found at* [the-littlest-jupyter-hub](http://tljh.jupyter.org/en/latest/)* documentation pages.)
+The template repository itself runs a demonstration server at [https://demon.underworldcloud.org](https://demon.underworldcloud.org/). (If you want to use https you also need to configure a hostname for your server. Information can be found at *[the-littlest-jupyter-hub](http://tljh.jupyter.org/en/latest/)* documentation pages.)
 
 ### What do the users see ?
 

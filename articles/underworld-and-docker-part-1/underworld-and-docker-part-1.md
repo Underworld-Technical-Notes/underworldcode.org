@@ -31,7 +31,7 @@ Enter docker.
 
 ## What are docker containers ?
 
-Essentially, docker containers allow developers to create completely self contained, ready to use, portable applications. They are similar to virtual machines, but there are a number of key differences that make the docker system* lighter* than traditional VMs. In particular, if you are using Linux, a docker container (i.e. a running docker instance) will directly leverage the existing operating system (live in memory), so there is no need for a secondary virtual OS (and the overhead it brings). For users on Mac OS X or Windows, some form of VM is required to run in the background for the docker instance to utilise, though this is setup and launched automatically.
+Essentially, docker containers allow developers to create completely self contained, ready to use, portable applications. They are similar to virtual machines, but there are a number of key differences that make the docker system *lighter* than traditional VMs. In particular, if you are using Linux, a docker container (i.e. a running docker instance) will directly leverage the existing operating system (live in memory), so there is no need for a secondary virtual OS (and the overhead it brings). For users on Mac OS X or Windows, some form of VM is required to run in the background for the docker instance to utilise, though this is setup and launched automatically.
 
 The other key benefit is the [Docker Hub](https://hub.docker.com/) ecosystem. This service provides two key functions:
 
@@ -49,7 +49,7 @@ Installation instructions for various platforms is provided at Docker Hub: [http
 
 We are ready to use our Underworld docker.
 
-*Windows & OS X*: Make sure your* docker-machine* VM is up and running! The easiest way to start the* docker-machine* is to use the* Docker Quickstart Terminal*. This will launch the docker-machine VM (creating it first if necessary), and also setup various environment variables within the terminal. For Windows the* Docker Quickstart Terminal* requires that virtualization be enabled, which can be done in the BIOS settings when you boot your machine.
+*Windows & OS X*: Make sure your *docker-machine* VM is up and running! The easiest way to start the *docker-machine* is to use the *Docker Quickstart Terminal*. This will launch the docker-machine VM (creating it first if necessary), and also setup various environment variables within the terminal. For Windows the *Docker Quickstart Terminal* requires that virtualization be enabled, which can be done in the BIOS settings when you boot your machine.
 
 Now let's run Underworld. We will launch a new docker container using the `docker run` command:
 
@@ -57,7 +57,7 @@ Now let's run Underworld. We will launch a new docker container using the `docke
 $ docker run -p 8888:8888 underworldcode/underworld2
 ```
 
-This command will create a new* container* using the underworldcode/underworld2 image. Note that it will first check to see if the image exists locally, and otherwise will download a copy from the Docker Hub. This will only happen the first time you run the command; subsequent execution will use the downloaded image. Once the new instance is created, Jupyter notebooks is launched within the container. Note that we also pass an option of the form `-p host_port:docker_port` which tells docker to perform a port mapping from the docker instance to the host. This allows us to use our native web browser to access the active docker notebook instance at [http://localhost:8888/](http://localhost:8888/) (Windows & OS X users see below).
+This command will create a new *container* using the underworldcode/underworld2 image. Note that it will first check to see if the image exists locally, and otherwise will download a copy from the Docker Hub. This will only happen the first time you run the command; subsequent execution will use the downloaded image. Once the new instance is created, Jupyter notebooks is launched within the container. Note that we also pass an option of the form `-p host_port:docker_port` which tells docker to perform a port mapping from the docker instance to the host. This allows us to use our native web browser to access the active docker notebook instance at [http://localhost:8888/](http://localhost:8888/) (Windows & OS X users see below).
 
 ```{figure} figures/dockeredNotebook.png
 :alt: dockeredNotebook
@@ -65,7 +65,7 @@ This command will create a new* container* using the underworldcode/underworld2 
 *Jupyter notebook running inside a docker container on OS X*
 ```
 
-*Windows & OS X*: Note that you are actually running your dockers within the* docker-machine* VM, so you need to browse to the address of the VM** not** localhost. In the example above you would open [http://192.168.99.100:8888/](http://192.168.99.100:8888/) in your browser where the ip address is 192.168.99.100. To find out the address of your* docker-machine*, you should run `docker-machine ip default` from within your Docker Quickstart Terminal. Here we've assumed that your* docker-machine* is named 'default' (which in most cases it should be), but if that does not seem to be working, you can determine the name of your* docker-machine* by running `docker-machine active`.
+*Windows & OS X*: Note that you are actually running your dockers within the *docker-machine* VM, so you need to browse to the address of the VM **not** localhost. In the example above you would open [http://192.168.99.100:8888/](http://192.168.99.100:8888/) in your browser where the ip address is 192.168.99.100. To find out the address of your *docker-machine*, you should run `docker-machine ip default` from within your Docker Quickstart Terminal. Here we've assumed that your *docker-machine* is named 'default' (which in most cases it should be), but if that does not seem to be working, you can determine the name of your *docker-machine* by running `docker-machine active`.
 
 ## Containers and Images
 
@@ -75,7 +75,7 @@ It is important to understand the difference between these two docker objects.
 
 **Images**: Images are essential snapshots of containers at a particular instance. By taking a snapshot of a container, developers are able to completely encapsulate the environment necessary to run an application. Images are the objects published to the Docker Hub. They are read-only.
 
-When a user executes `docker run`, effectively they are creating a** new** container, the starting point of which is the docker image originally obtained from the Docker Hub. This container may be used ephemerally (with execution effectively restarting from the image each time), or may be retained and modified (as is more typical for traditional VM use). For Underworld dockers, ephemeral usage is usually the most natural choice.
+When a user executes `docker run`, effectively they are creating a **new** container, the starting point of which is the docker image originally obtained from the Docker Hub. This container may be used ephemerally (with execution effectively restarting from the image each time), or may be retained and modified (as is more typical for traditional VM use). For Underworld dockers, ephemeral usage is usually the most natural choice.
 
 You may convince yourself of these details using the `docker images` and `docker ps` commands. The former command will list the docker images you have available locally, while the latter will list all your containers. If you have already ran an Underworld2 docker (as we did earlier using the `docker run` command), you should have a local copy of the underworldcode/underworld2 image:
 
@@ -97,7 +97,7 @@ CONTAINER ID        IMAGE                        COMMAND                  CREATE
 916f8761c9ee        underworldcode/underworld2   "/usr/local/bin/tini "   31 minutes ago      Exited (0) 31 minutes ago                            small_colden
 ```
 
-Note that we used the `-a` option which lists** all** containers, including those which are no longer running. From the `STATUS` column, we can see that only a single container is currently running. The `IMAGE` column shows which image the container was derived from. Exited containers may be restarted using the `docker start` command, while you may remove containers you no longer require using `docker rm`. Similarly, redundant images may be deleted using `docker rmi`.
+Note that we used the `-a` option which lists **all** containers, including those which are no longer running. From the `STATUS` column, we can see that only a single container is currently running. The `IMAGE` column shows which image the container was derived from. Exited containers may be restarted using the `docker start` command, while you may remove containers you no longer require using `docker rm`. Similarly, redundant images may be deleted using `docker rmi`.
 
 ## Launching Underworld docker containers
 
@@ -153,7 +153,7 @@ As a final usage example, we will run an interactive docker container by simply 
 $ docker run -v $PWD:/workspace/my_data -p 8888:8888 -i -t underworldcode/underworld2 /bin/bash
 ```
 
-For interactive usage, it is necessary to include the `-i` and `-t` options. You should find yourself at the prompt of a bash shell inside the Underworld docker container. We have still include both the directory mapping (to access files on the host), and the port mapping (should you wish to launch a notebook). The Underworld installation may be found at `/root/underworld2`, while as per your volume mapping, your host files should be accessible at `/workspace/my_data`. Note that you are the* root* user, so have full privileges, but don't have to worry about breaking things as you can simply discard the current container and start again! The Underworld docker image is based off a Debian distribution, so `apt-get` may be used to install any further packages (remember to first run `apt-get update`).
+For interactive usage, it is necessary to include the `-i` and `-t` options. You should find yourself at the prompt of a bash shell inside the Underworld docker container. We have still include both the directory mapping (to access files on the host), and the port mapping (should you wish to launch a notebook). The Underworld installation may be found at `/root/underworld2`, while as per your volume mapping, your host files should be accessible at `/workspace/my_data`. Note that you are the *root* user, so have full privileges, but don't have to worry about breaking things as you can simply discard the current container and start again! The Underworld docker image is based off a Debian distribution, so `apt-get` may be used to install any further packages (remember to first run `apt-get update`).
 
 ## Obtaining different versions of Underworld
 
@@ -163,7 +163,7 @@ Developers publishing dockers may tag particular images to correspond to a parti
 $ docker run ubuntu:14.04
 ```
 
-Note that if no tag is specified, the* latest* tag will be accessed which corresponds to the latest image build. Underworld2 does not have any tagged stable releases yet, so all docker usage will correspond to the latest development version of the code. Once available, stable tagged images will be recommended for most usage, though the ability to trivially switch to different tagged images allows users to easily experiment with newer releases or development versions.
+Note that if no tag is specified, the *latest* tag will be accessed which corresponds to the latest image build. Underworld2 does not have any tagged stable releases yet, so all docker usage will correspond to the latest development version of the code. Once available, stable tagged images will be recommended for most usage, though the ability to trivially switch to different tagged images allows users to easily experiment with newer releases or development versions.
 
 Remember that `docker run` will first check locally for the requested image. Users may need to occasionally update their local image to incorporate recent bug fixes (if using a tagged release image), or to obtain the very latest Underworld developments (for bleeding edge users). Updates are affected using the `docker pull` command:
 
@@ -173,21 +173,21 @@ $ docker pull underworldcode/underworld2
 
 ## MPI and docker
 
-Your Underworld simulations may be executed in parallel by simply invoking `mpirun` as usual, though the MPI execution must occur* within* the container:
+Your Underworld simulations may be executed in parallel by simply invoking `mpirun` as usual, though the MPI execution must occur *within* the container:
 
 ```bash
 $ docker run -v $PWD:/workspace/my_data underworldcode/underworld2 mpirun -np 2 python YourLocalScript.py
 ```
 
-*Windows & OS X*: You may need to ensure your* docker-machine* is configured to allow access to multiple CPU cores. Note that the standard Docker setup leverages VirtualBox for virtualisation, so you will need to access the VirtualBox configuration panel.
+*Windows & OS X*: You may need to ensure your *docker-machine* is configured to allow access to multiple CPU cores. Note that the standard Docker setup leverages VirtualBox for virtualisation, so you will need to access the VirtualBox configuration panel.
 
 While not currently applicable to large scale parallel simulation, early research into using dockers across HPC facilities shows promise.
 
 ## Other hints
 
-*Windows & OS X*: If you are encountering difficulties running docker commands, restarting your* docker-machine* (using `docker-machine restart default`) may be necessary.
+*Windows & OS X*: If you are encountering difficulties running docker commands, restarting your *docker-machine* (using `docker-machine restart default`) may be necessary.
 
-*Windows*: You may need to turn the firewall off when installing the* Docker Quickstart Terminal*. Note that some issues have been encountered with using the alpha version of* Kitematic* for Windows 7, hopefully they will fix these in the full release. In the meantime the* Docker Quickstart Terminal* does work in Windows 7 using the instructions above.
+*Windows*: You may need to turn the firewall off when installing the *Docker Quickstart Terminal*. Note that some issues have been encountered with using the alpha version of *Kitematic* for Windows 7, hopefully they will fix these in the full release. In the meantime the *Docker Quickstart Terminal* does work in Windows 7 using the instructions above.
 
 ## Further reading
 

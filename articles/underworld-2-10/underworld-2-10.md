@@ -23,10 +23,10 @@ parts:
 
 Underworld 2.10 has been released!
 
-Available via* docker* (recommended),* pip* and* source code*.  
+Available via *docker* (recommended), *pip* and *source code*.  
 See [here](https://github.com/underworldcode/underworld2/blob/v2.10.1b/Installation.rst) for more information on each install process.
 
-For a* quick* taste of Underworld try our binder cloud resource, a temporary "virtual sandbox" to explore the release and example models. Click the button below.
+For a *quick* taste of Underworld try our binder cloud resource, a temporary "virtual sandbox" to explore the release and example models. Click the button below.
 
 :::{list-table}
 :header-rows: 0

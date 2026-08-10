@@ -13,7 +13,7 @@ keywords:
 ---
 The Underworld team would like to congratulate Bénédicte Cenki-Tok and co-authors at the University of Sydney and the University of Montpellier on their recent publication,
 
-B. Cenki-Tok, P.F. Rey, D. Arcay;* Strain and retrogression partitioning explain long-term stability of crustal roots in stable continents.*** Geology** doi: [https://doi.org/10.1130/G47301.1](https://doi.org/10.1130/G47301.1).
+B. Cenki-Tok, P.F. Rey, D. Arcay; *Strain and retrogression partitioning explain long-term stability of crustal roots in stable continents.* **Geology** doi: [https://doi.org/10.1130/G47301.1](https://doi.org/10.1130/G47301.1).
 
 Using Underworld the authors demonstrated a hypothesised mechanism that allows anomalous crustal roots, in stable intracontinental settings, to be preserved over hundreds of millions of years. Specifically they looked at the interplay between partial melting, the formation of garnet-pyroxene-bearing rocks, and strain rate–dependent retrogression of those rocks; resulting in the preservation of thick and strong crustal roots.
 
