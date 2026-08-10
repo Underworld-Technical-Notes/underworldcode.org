@@ -12,7 +12,7 @@ publication_date: 2023-10-04
 version: 1.0.0
 legacy_doi: 10.59350/g4ysn-pv176
 archive_doi: 10.6084/m9.figshare.33193527
-archived_at: 2026-08-09T15:05:05Z
+archived_at: 2026-08-10T04:19:43Z
 license: CC-BY-4.0
 canonical_path: /compressible-convection-in-cartesian-coordinates-in-underworld3/
 legacy_paths:
@@ -30,4 +30,4 @@ figures: 6
 source: ghost-migration
 ghost_uuid: d5fc00aa-1490-4b42-98b0-c51bfdac1df2
 repository_record_id: 33193527
-archive_published_at: 2026-08-09T15:05:15Z
+archive_published_at: 2026-08-10T04:26:11Z

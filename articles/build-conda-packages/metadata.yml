@@ -12,7 +12,7 @@ publication_date: 2020-11-23
 version: 1.0.0
 legacy_doi: 10.59350/7x9h6-y1x53
 archive_doi: 10.6084/m9.figshare.33193440
-archived_at: 2026-08-09T14:38:40Z
+archived_at: 2026-08-10T04:19:43Z
 license: CC-BY-4.0
 canonical_path: /build-conda-packages/
 legacy_paths:
@@ -29,4 +29,4 @@ figures: 1
 source: ghost-migration
 ghost_uuid: 1ffc2f11-2df0-418f-9f03-c9e74c7e4fad
 repository_record_id: 33193440
-archive_published_at: 2026-08-09T14:38:51Z
+archive_published_at: 2026-08-10T04:24:29Z

@@ -24,7 +24,7 @@ keywords:
   - development
 exports:
   - format: typst
-    archived: "2026-08-09T15:29:05Z"
+    archived: "2026-08-10T04:19:43Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/how-underworld3-turns-sympy-into-c/

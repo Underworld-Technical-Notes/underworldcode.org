@@ -16,7 +16,7 @@ keywords:
   - development
 exports:
   - format: typst
-    archived: "2026-08-09T15:41:10Z"
+    archived: "2026-08-10T04:19:43Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/symbolic-time-derivatives-in-underworld3/
@@ -200,6 +200,8 @@ In UW2, if you wanted to change from explicit particle advection to a semi-Lagra
 In UW3, the time derivative is an object you can create, configure, inspect, and swap. The BDF coefficients are visible as symbolic expressions. The history terms are mesh variables you can plot. The AM flux weighting is a symbolic combination you can display in a notebook.
 
 This is the same design principle we described in the [constitutive models post](/constitutive-models-in-symbolic-form/): separate the physics from the numerics, connect them through symbolic expressions, and make both sides inspectable. For constitutive models, the boundary is the stress tensor. For time derivatives, it is the BDF/AM expression. In both cases, the solver sees a SymPy expression and does not need to know how it was constructed.
+
+
 
 
 

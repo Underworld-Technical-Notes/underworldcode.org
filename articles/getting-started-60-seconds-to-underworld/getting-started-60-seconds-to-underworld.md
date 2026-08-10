@@ -11,7 +11,7 @@ keywords:
   - Documentation
 exports:
   - format: typst
-    archived: "2026-08-09T14:27:51Z"
+    archived: "2026-08-10T04:19:43Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/getting-started-60-seconds-to-underworld/

@@ -12,7 +12,7 @@ publication_date: 2018-10-12
 version: 1.0.0
 legacy_doi: 10.59350/pn8gh-98592
 archive_doi: 10.6084/m9.figshare.33193410
-archived_at: 2026-08-09T14:21:43Z
+archived_at: 2026-08-10T04:19:43Z
 license: CC-BY-4.0
 canonical_path: /alaska-moho-model-reproducible-research-with-containers/
 legacy_paths:
@@ -29,4 +29,4 @@ figures: 3
 source: ghost-migration
 ghost_uuid: 22808363-6009-485d-a9bf-47a166f4d568
 repository_record_id: 33193410
-archive_published_at: 2026-08-09T14:21:55Z
+archive_published_at: 2026-08-10T04:23:13Z

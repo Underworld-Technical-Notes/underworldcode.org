@@ -15,7 +15,7 @@ keywords:
   - development
 exports:
   - format: typst
-    archived: "2026-08-09T15:32:16Z"
+    archived: "2026-08-10T04:19:43Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/mesh-variables-and-petsc-vectors-keeping-arrays-in-sync/
@@ -140,6 +140,8 @@ The context-manager approach in UW2 was safe but required discipline. Every data
 The callback approach eliminates an entire class of bugs. You cannot forget to synchronise because synchronisation is automatic. The self-validating cache eliminates another class — stale views after DM rebuilds. And batch updates via `synchronised_array_update()` give you the performance of explicit synchronisation when you need it.
 
 The cost is one `id()` comparison per `.data` access and one callback dispatch per write. For user-level operations — setting initial conditions, post-processing solution fields, checkpointing — this is negligible. For solver-level operations — millions of quadrature evaluations — the direct `.vec` path bypasses it entirely.
+
+
 
 
 

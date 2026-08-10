@@ -12,7 +12,7 @@ publication_date: 2020-07-17
 version: 1.0.0
 legacy_doi: 10.59350/wftyb-vgs67
 archive_doi: 10.6084/m9.figshare.33193428
-archived_at: 2026-08-09T14:33:08Z
+archived_at: 2026-08-10T04:19:43Z
 license: CC-BY-4.0
 canonical_path: /self-updating-repositories/
 legacy_paths:
@@ -30,4 +30,4 @@ figures: 6
 source: ghost-migration
 ghost_uuid: 43b48c49-0960-4997-ad50-ee915ea59f41
 repository_record_id: 33193428
-archive_published_at: 2026-08-09T14:33:19Z
+archive_published_at: 2026-08-10T04:24:05Z

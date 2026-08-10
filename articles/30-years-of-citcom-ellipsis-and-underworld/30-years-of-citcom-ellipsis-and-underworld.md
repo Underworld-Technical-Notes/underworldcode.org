@@ -16,7 +16,7 @@ keywords:
   - Auscope
 exports:
   - format: typst
-    archived: "2026-08-09T15:08:01Z"
+    archived: "2026-08-10T04:19:43Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/30-years-of-citcom-ellipsis-and-underworld/

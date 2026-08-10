@@ -16,7 +16,7 @@ keywords:
   - development
 exports:
   - format: typst
-    archived: "2026-08-09T15:38:16Z"
+    archived: "2026-08-10T04:19:43Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/constitutive-models-in-symbolic-form/
@@ -253,6 +253,8 @@ The numerical part lives in the solver. This knows about weak forms, Jacobians, 
 The boundary between the two is a SymPy Matrix. Everything on one side of that boundary is human-readable physics. On the other side is machine-generated numerics. You can change the physics without touching the solver. You can change the solver without touching the physics. And because the boundary is symbolic, both sides are inspectable at every stage.
 
 In UW2, the physics and numerics were entangled in C. Changing one required understanding both. In UW3, you can write a new rheology in an afternoon, in a notebook, without compiling anything. That is the practical consequence of making constitutive models symbolic objects.
+
+
 
 
 

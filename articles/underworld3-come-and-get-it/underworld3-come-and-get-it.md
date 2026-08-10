@@ -15,7 +15,7 @@ keywords:
   - petsc
 exports:
   - format: typst
-    archived: "2026-08-09T15:10:52Z"
+    archived: "2026-08-10T04:19:43Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/underworld3-come-and-get-it/
@@ -76,6 +76,8 @@ You can also check the [Underworld3 Quickstart](https://underworldcode.github.io
 It's all available on through GitHub at [https://github.com/underworldcode/underworld3](https://github.com/underworldcode/underworld3)
 
 **Feature image**: *Underworld3 uses unstructured meshes supplied by gmsh or any other tool supported by PETSc. In this image we see flow driven from the left boundary around a series of obstacles visualised by streamlines. The intense colours appear where the flow is strongest which is also where the gaps between obstacles line up. There is an emergent pressure gradient displayed in the background shading.*
+
+
 
 
 

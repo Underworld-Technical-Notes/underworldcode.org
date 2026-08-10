@@ -16,7 +16,7 @@ keywords:
   - Auscope
 exports:
   - format: typst
-    archived: "2026-08-09T15:22:57Z"
+    archived: "2026-08-10T04:19:43Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/ai-and-scientific-software-what-we-learned-rebuilding-underworld3/
@@ -184,6 +184,8 @@ Looking back over eight months, the central insight is this: making the code AI-
 We didn't try (for long) to bolt AI tools onto an existing workflow. The code changed to suit the tools, and the tools became more useful as the code improved. The result is a codebase that is better for everyone — AI and human alike.
 
 The lesson we'd offer other scientific software teams is simple: if your AI tools are struggling with your code, listen to what that is telling you. The problem is probably real, and fixing it will pay off in ways that go well beyond AI.
+
+
 
 
 

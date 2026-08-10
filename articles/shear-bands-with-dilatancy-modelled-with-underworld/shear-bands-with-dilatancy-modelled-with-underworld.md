@@ -14,7 +14,7 @@ keywords:
   - Underworld Code
 exports:
   - format: typst
-    archived: "2026-08-09T13:57:03Z"
+    archived: "2026-08-10T04:19:43Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/shear-bands-with-dilatancy-modelled-with-underworld/

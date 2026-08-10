@@ -15,7 +15,7 @@ publication_date: 2015-09-15
 version: 1.0.0
 legacy_doi: 10.59350/4cqwc-rth67
 archive_doi: 10.6084/m9.figshare.33193341
-archived_at: 2026-08-09T13:33:19Z
+archived_at: 2026-08-10T04:19:43Z
 license: CC-BY-4.0
 canonical_path: /underworld-and-docker-part-2/
 legacy_paths:
@@ -30,4 +30,4 @@ figures: 6
 source: ghost-migration
 ghost_uuid: 1270171b-5c1b-413a-afd8-5bd018b09dc3
 repository_record_id: 33193341
-archive_published_at: 2026-08-09T13:54:18Z
+archive_published_at: 2026-08-10T04:22:05Z

@@ -12,7 +12,7 @@ publication_date: 2022-01-20
 version: 1.0.0
 legacy_doi: 10.59350/t7ghx-8f823
 archive_doi: 10.6084/m9.figshare.33193509
-archived_at: 2026-08-09T14:56:07Z
+archived_at: 2026-08-10T04:19:43Z
 license: CC-BY-4.0
 canonical_path: /setting-up-underworld-dependencies/
 legacy_paths:
@@ -29,4 +29,4 @@ figures: 0
 source: ghost-migration
 ghost_uuid: 9af84caf-571e-4fa7-893d-93143feced3e
 repository_record_id: 33193509
-archive_published_at: 2026-08-09T14:56:17Z
+archive_published_at: 2026-08-10T04:25:37Z

@@ -11,7 +11,7 @@ publication_date: 2023-02-20
 version: 1.0.0
 legacy_doi: 10.59350/8196m-xmj49
 archive_doi: 10.6084/m9.figshare.33193518
-archived_at: 2026-08-09T15:02:11Z
+archived_at: 2026-08-10T04:19:43Z
 license: CC-BY-4.0
 canonical_path: /ismip-hom-benchmark-experiments-using-underworld/
 legacy_paths:
@@ -28,4 +28,4 @@ figures: 3
 source: ghost-migration
 ghost_uuid: b8c4092a-9f52-4746-a47e-660f92c4d595
 repository_record_id: 33193518
-archive_published_at: 2026-08-09T15:02:22Z
+archive_published_at: 2026-08-10T04:25:59Z
