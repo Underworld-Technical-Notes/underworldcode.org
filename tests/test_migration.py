@@ -789,6 +789,9 @@ def test_deposit_refuses_to_redeposit_a_published_record():
         assert "second record" in str(exc)
     else:
         raise AssertionError("re-depositing a published record must be refused")
+    # And --new-version is the sanctioned way through, so that a correction can
+    # reach a record that is already out there. It must be the only way.
+    deposit.check_resumable("x", published, new_version=True)
 
 
 def test_deposit_resumes_an_unpublished_draft():
@@ -1074,6 +1077,25 @@ def test_the_deposit_runs_inside_the_environment():
     assert "python3 scripts/deposit.py" not in workflow, \
         "the deposit must run through pixi, or `myst` is missing"
     assert "pixi run deposit" in workflow
+
+
+def test_every_deposit_mode_has_a_step_that_runs_it():
+    """A mode in the dropdown with no step behind it does nothing, silently.
+
+    Every step is guarded by `if: inputs.mode == '...'`, so an unmatched choice
+    is not an error -- the job runs, every step skips, and the run goes green.
+    Somebody selects it, sees a tick, and believes a deposit happened.
+    """
+    import re as _re
+    workflow = (ROOT / ".github" / "workflows" / "deposit.yml").read_text(encoding="utf-8")
+    options = workflow.split("options:")[1].split("jobs:")[0]
+    modes = _re.findall(r"^ *- ([a-z-]+) *$", options, _re.M)
+    assert len(modes) >= 6, "the mode list did not parse: %s" % modes
+    guarded = set(_re.findall(r"inputs\.mode == '([a-z-]+)'", workflow))
+    assert set(modes) <= guarded, \
+        "mode(s) with no step: %s" % sorted(set(modes) - guarded)
+    assert guarded <= set(modes), \
+        "step(s) for a mode nobody can select: %s" % sorted(guarded - set(modes))
 
 
 def test_identifiers_are_recorded_even_when_a_deposit_fails():

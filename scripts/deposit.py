@@ -546,8 +546,23 @@ def run(slug, provider, live, publish, new_version, delete_draft,
         target, count, digest = archive_package.build(slug, ROOT / "dist")
         print("\npackage: %s  (%d files, %.1f KB, sha256 %s)"
               % (target.name, count, target.stat().st_size / 1024, digest[:16]))
-        print("\nwould then: create draft -> reserve DOI -> write it into "
-              "metadata.yml -> rebuild the PDF -> upload -> stop.")
+        # Said for the state this article is actually in. A dry run that
+        # describes a first deposit for a record that has been published for a
+        # week is not a rehearsal of anything.
+        if meta.get("archive_published_at"):
+            print("\nrecord %s is PUBLISHED as %s since %s."
+                  % (record_id, meta.get("archive_doi"),
+                     meta["archive_published_at"][:10]))
+            print("would then: re-stamp archived_at -> rebuild the PDF -> "
+                  "replace both files -> publish a NEW VERSION."
+                  if new_version else
+                  "a further deposit would be REFUSED. Use --new-version.")
+        elif record_id:
+            print("\nwould then: resume draft %s -> update metadata -> "
+                  "replace files -> upload -> stop." % record_id)
+        else:
+            print("\nwould then: create draft -> reserve DOI -> write it into "
+                  "metadata.yml -> rebuild the PDF -> upload -> stop.")
         return
 
     if delete_draft:

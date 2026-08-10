@@ -36,6 +36,12 @@ on:
           - publish
           # Throws the draft away and clears it from metadata.yml.
           - delete-draft
+          # A new version of records that are already published, carrying
+          # whatever the notes have picked up since. Also irreversible, but far
+          # less consequential than the first publish: the concept DOI keeps
+          # resolving, now to the newer copy, so nothing already cited breaks.
+          # With a slug, that one note; without, every published record.
+          - new-version
           # Every archival note without a record yet, oldest first: reserve,
           # rebuild the PDF so the DOI is on it, upload, publish. One article at
           # a time, and a failure STOPS the run -- each of these mints an
@@ -101,6 +107,20 @@ jobs:
         env:
           FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
         run: pixi run deposit -- --all --live --publish
+
+      # No --slug is deliberate when the input is empty: the batch path stamps
+      # every published note, builds once, and uploads. Passing an empty --slug
+      # would look like one article and find none.
+      - name: Publish a new version
+        if: inputs.mode == 'new-version'
+        env:
+          FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
+        run: |
+          if [ -n "${{ inputs.slug }}" ]; then
+            pixi run deposit -- --slug "${{ inputs.slug }}" --live --new-version
+          else
+            pixi run deposit -- --live --new-version
+          fi
 
       - name: Delete the draft
         if: inputs.mode == 'delete-draft'
