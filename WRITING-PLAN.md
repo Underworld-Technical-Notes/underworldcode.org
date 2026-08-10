@@ -98,31 +98,62 @@ means it can serve either without being rewritten.
 ## Representing faults in Underworld
 
 Ripe: the capability exists in every case, and the comparison between the
-approaches is the contribution. Four ways to represent a fault, and the honest
-account of what each is good for is worth more than any one of them.
+approaches is the contribution.
 
-### F1. Weak zones
+The split is by **note**, not by mechanism. F1 lays out the problem and names
+the ways of attacking it; F2–F4 each take one and go deep; F5 puts them side by
+side.
 
-Status: not started. Almost certainly includes **transverse isotropy** — a weak
-zone with a direction is a different object from a weak zone without one, and
-that distinction is most of the physics.
+### F1. Faults: the problem, and the ways to attack it
 
-### F2. Shear-banding plasticity
+Status: not started. **Write first** — it is the frame the others hang on.
 
-Status: not started. The band emerges rather than being placed. Localisation,
-what sets the width, and what the mesh has to do with it.
+What is actually being asked for when someone says they want a fault in a
+model, and what the options are: weak zones with and without a direction,
+plasticity that localises a band on its own, a resolved thin volume, and a
+genuine slipping surface. This is where **shear-banding plasticity** lives — a
+band that emerges rather than being placed is one of the answers, and it does
+not need a note of its own to be treated seriously here.
 
-### F3. Embedded weak / thin volumes
+### F2. Transverse isotropy: adapt the mesh, don't follow the fault
 
-Status: not started. A fault as a resolved volume of finite thickness.
+Status: not started.
 
-### F4. Embedded slipping surfaces
+The weak zone has a direction, and that direction is most of the physics. The
+argument is in the subtitle: rather than building a mesh that follows the
+fault, adapt the mesh and let an anisotropic constitutive model carry the
+orientation. Leans on the mover work in M1.
 
-Status: not started. Zero-thickness contact; split nodes.
+### F3. Meshing tricks: slicing, in serial and in parallel
 
-A fifth note comparing the four — same problem, four representations, what each
-costs and what each can and cannot express — is probably the one that makes the
-paper. Write it last.
+Status: not started.
+
+Mesh slicing and how to use the result as an **add-on mesh**. The parallel case
+is the hard half and is the reason this is its own note.
+
+> **Open question.** This overlaps M3 (stack-on-top for faults), which was
+> carved out on the grounds that it might serve either paper. They may be one
+> note seen from two directions — F3 from the meshing side, M3 from the fault
+> side — or F3 may be the general technique and M3 its application. Worth
+> deciding before either is drafted rather than writing both and finding out.
+
+### F4. Cutting the mesh: surfaces as faults
+
+Status: not started.
+
+Mesh cutting, surfaces standing in as faults, what happens where faults
+**cross**, and the **damage glue** at the junction. The crossing case is the
+one that makes this hard and it should not be relegated to a final section.
+
+### F5. Four ways to represent a fault, compared
+
+Status: not started. Write last. **Joint with Thyagarajulu Gollapalli.**
+
+Same problem, four representations, what each costs and what each can and
+cannot express. Thyagarajulu has benchmarks he wants to write up and they
+belong here — a comparison note whose evidence is somebody else's independent
+benchmark is worth considerably more than one that grades its own homework.
+This is the note that most likely becomes the paper.
 
 ---
 
@@ -253,7 +284,9 @@ Listed as candidates, not commitments.
 |-------|------|-----|
 | 1 | M1 MMPDE mover | Louis's next; anchors the meshing paper |
 | 2 | M2 Stacking resolution | Reads as the answer to M1's limitation |
-| 3 | M3 Stack-on-top for faults | Bridges the two papers |
-| 4 | F1–F4 faults, then the comparison | Ripe; the comparison is the contribution |
-| 5 | S1, S2 free surface | After the discussion about how to split it |
-| 6 | #1 Release announcement | Written last; links to everything |
+| 3 | M3 Stack-on-top for faults | Bridges the two papers — settle the F3 overlap first |
+| 4 | F1 The problem and the options | The frame the rest of the fault cluster hangs on |
+| 5 | F2, F3, F4 | One approach each; F2 leans on M1 |
+| 6 | F5 The comparison | Last, with Thyagarajulu's benchmarks as its evidence |
+| 7 | S1, S2 free surface | After the discussion about how to split it |
+| 8 | #1 Release announcement | Written last; links to everything |
