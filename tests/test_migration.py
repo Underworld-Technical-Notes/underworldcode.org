@@ -1218,3 +1218,32 @@ def test_no_matrix_row_break_is_a_single_backslash():
                                                  match.group(1)))
     assert not offenders, \
         "a row break is a single backslash, so the rows merge: %s" % offenders
+
+
+def test_the_cutover_touches_every_place_the_host_is_named():
+    """Half a cutover is worse than none.
+
+    The CNAME switches the build to the site root; giscus.yml's site_url is
+    where a reader is sent back to after signing in with GitHub. Move one and
+    not the other and the comment widget loads on the new domain offering no
+    way to comment -- which looks like a broken feature, not a missed edit.
+    """
+    cutover = load("cutover")
+    named = {path for path in (ROOT / "giscus.yml", ROOT / "README.md",
+                               ROOT / "SETUP.md")
+             if cutover.STAGING in path.read_text(encoding="utf-8")}
+    covered = {path for path, _old, _new in cutover.edits("example.org")}
+    assert named <= covered, \
+        "the cutover would leave the staging host in: %s" % sorted(
+            p.name for p in named - covered)
+
+
+def test_the_base_url_is_derived_from_the_cname_not_set_by_hand():
+    """A project site is served under /<repo>/ and a custom domain is not.
+
+    Set by hand, that prefix is left wrong at cutover and every root-relative
+    asset 404s on the new domain.
+    """
+    deploy = (ROOT / ".github" / "workflows" / "deploy.yml").read_text(encoding="utf-8")
+    assert "if [ -f CNAME ]" in deploy, \
+        "the base URL must follow the CNAME, so it cannot be left wrong"
