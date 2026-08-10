@@ -70,7 +70,7 @@ The discrete weak form and its Jacobian derivative would then be expressed throu
 \end{equation}
 
 \begin{equation}\label{eq:petsc-jacobian}  
-\mathcal{F}_w'(u) \sim \sum _e \epsilon _{e^T}  
+\mathcal{F}_w'(u) \sim \sum_e \epsilon_e^T  
 \left[ \begin{array}{cc}  
 B^T  & D^T \\
 \end{array} \right]  
@@ -102,7 +102,7 @@ The symbolic representation of the strong-form that is encoded in `underworld3` 
 
 Here $\mathrm{H}$ represents sources and sinks of $u$, and ${D u}/{D t}$ is the material time derivative of $u$. The time derivatives of the unknowns are not present in the `PETSc` template but, after time-discretisation, they produce terms that are combinations of fluxes and flux history terms (which combine with $\boldsymbol{\sigma}$ to contribute to $F$) and forces (which combine with $\mathbf{h}$ to contribute to $f$). The explicit time / position dependence in $\sigma$ is to highlight potential changes to boundary conditions or constitutive properties.
 
-In `underworld3`, the user interacts with the time derivatives explicitly, and provides strong-form expressions for the template \ref{eq:sympy-strong-form}. `Sympy` automatically gathers all the flux-like terms and all the force-like terms into the form required by the `PETSc` template. All evaluations, derivatives and simplifications of functions in the `underworld3` symbolic layer are deferred until final assembly of the `PETSc` template and the compilation of the `C` functions.
+In `underworld3`, the user interacts with the time derivatives explicitly, and provides strong-form expressions for the template in {eq}`eq:sympy-strong-form`. `Sympy` automatically gathers all the flux-like terms and all the force-like terms into the form required by the `PETSc` template. All evaluations, derivatives and simplifications of functions in the `underworld3` symbolic layer are deferred until final assembly of the `PETSc` template and the compilation of the `C` functions.
 
 The main benefits of combining `sympy` with the `PETSc` weak form template is a user environment that 1) provides symbolic, mathematical introspection, particularly in the context of Jupyter notebooks; 2) eliminates much of the `python` or `C` coding required for complex constitutive models; 3) eliminates any need for users to compute derivatives for the Newton solvers in `PETSc`.
 
@@ -117,6 +117,10 @@ Knepley, M. G., Brown, J., Rupp, K., & Smith, B. F. (2013). Achieving High Perfo
 Meurer, A., Smith, C. P., Paprocki, M., Čertík, O., Kirpichev, S. B., Rocklin, M., Kumar, A., Ivanov, S., Moore, J. K., Singh, S., Rathnayake, T., Vig, S., Granger, B. E., Muller, R. P., Bonazzi, F., Gupta, H., Vats, S., Johansson, F., Pedregosa, F., … Scopatz, A. (2017). SymPy: Symbolic computing in Python. PeerJ Computer Science, 3, e103. `https://doi.org/10.7717/peerj-cs.103`
 
 **Moresi et al. (2025). Underworld3: Mathematically Self-Describing Modelling in Python for Desktop, HPC and Cloud. Journal of Open Source Software, 10(112), 7831.** `https://doi.org/10.21105/joss.07831`
+
+
+
+
 
 
 
