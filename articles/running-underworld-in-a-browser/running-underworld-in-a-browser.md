@@ -28,23 +28,23 @@ exports:
 ---
 Somebody reads a paper, wants to run the model, and has forty minutes. They
 will not have time to install PETSc. They may not have a compiler. If the answer is "clone
-this, then build these dependencies", the answer is really "no thanks".
+this, then build these dependencies", the answer is really: "no thanks".
 
-The answer we have now is a link. It opens JupyterLab in a browser, with
+Our solution to this is *one link*. It opens JupyterLab in a browser, with
 Underworld already built, **any public repository** pulled in beside it, and
 **any released version** of Underworld underneath. Those three choices are
 independent, and the repository being launched needs nothing added to it — no
 Dockerfile, no `.binder/` directory, no configuration at all.
 
-This note is about how that works, because the interesting parts are not
-entirely obvious and one of them is specific to a code that 
+This articles explains how it all works, because the interesting parts are not
+entirely obvious and one of them is specific to our code that 
 needs access to compilation at runtime.
 
 ## Where this came from: the classroom
 
 The forty-minute time limit is based on a realistic attention-span for a busy researcher, 
-but the case that drove the work was classroom teaching, and it is a more fraught
-problem.
+but the case that initially drove the work was classroom teaching, and this is a more fraught
+environment.
 
 A two-hour practical with thirty students runs the risk of ...
 forty minutes installing, forty minutes on the six laptops where the
@@ -68,18 +68,18 @@ What a class actually needs turns out to be modest:
 
 Modest, yes, but it needs some thought to get right.
 
-**Below university level, the calculation changes.** A school can't repurpose a
+**Below university level, the calculation changes.** A high-school can't just repurpose a
 departmental cluster, and often teachers have no ability to install
 *anything* on a managed device. But a link is not software — it is a link, and it
-opens the same way a video does. Some of what Underworld produces is legible
+opens the same way a video does. Some of what Underworld produces is useful
 well before undergraduate level: a fault slipping and the ground deforming
 around it, a slab sinking, plates pulling apart. A class that could never be
 asked to install a finite element code can be asked to click something and
-change a number. 
+change a number to see what happens.
 
 ## The shape of it
 
-Four pieces, each doing one job:
+Four pieces, each doing a single job:
 
 1. A **container image** with Underworld already built, published to the GitHub
    Container Registry.
@@ -89,12 +89,13 @@ Four pieces, each doing one job:
 4. **nbgitpuller**, which clones the reader's repository into the running
    session.
 
-The version guarantee comes from (3): the release and its launcher are made
+The consistency guarantee comes from (3): the release and its launcher are made
 together, so they cannot drift apart.
 
 ## The container: just what we need and no less !
 
-The container image is built in stages and then stripped, because binder start-up time is
+The container image is built in stages and then stripped, because binder start-up time
+(and reliability) is
 dominated by pulling it. When the code is built, we remove anything that the
 run-time does not need. In our case that means things like this:
 
@@ -155,9 +156,9 @@ and the Underworld code arrives as a pre-built image rather than being built on
 demand. This is why a first launch after a release is slow and launches after that
 are quicker.
 
-## The workflows that keep versions honest
+## The workflows that keep versions on track
 
-In the Underworld repository, `binder-image.yml` triggers on a push to `main`
+In the Underworld repository, `binder-image.yml` is a workflow that triggers on a push to `main`
 or `development`, on any `v*` tag, and on changes to the Dockerfile, the pixi
 lock file, or any Cython source — the things that actually require a rebuild.
 It builds the image, pushes it to GHCR tagged for the branch or release, and
