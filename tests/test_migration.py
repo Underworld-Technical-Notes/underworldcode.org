@@ -1542,3 +1542,20 @@ def test_the_preview_comments_on_manual_runs_too():
     guard = comment.split("run:")[0]
     assert "github.event_name" not in guard, \
         "the comment step must run on manual dispatch as well as on push"
+
+
+def test_the_preview_asks_for_no_more_than_it_needs():
+    """Declared, and minimal.
+
+    Undeclared, the job got the restricted default and posting the link 403'd
+    with "Resource not accessible by integration" -- which reads like a bad
+    token and is a missing permissions block. Only the comment needs write:
+    publishing uses PREVIEW_TOKEN, and nothing in this job should be able to
+    write to this repository's contents.
+    """
+    text = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    config = "\n".join(line for line in text.splitlines()
+                       if not line.lstrip().startswith("#"))
+    assert "pull-requests: write" in config, "the comment step needs this"
+    assert "contents: read" in config, \
+        "a preview build must not be able to write this repository's contents"
