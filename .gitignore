@@ -43,3 +43,14 @@ articles/*/*.pdf
 # `pixi run package`, and uploaded rather than kept -- the copy that matters is
 # the one attached to the DOI.
 /dist/
+
+# Tool directories. Both currently self-ignore -- pixi and pytest each write a
+# .gitignore containing "*" inside their own directory -- so this changes
+# nothing today. Stated anyway: an implicit rule that lives inside the thing it
+# ignores is one deleted directory away from a very noisy `git status`.
+.pixi/
+.pytest_cache/
+
+# macOS
+.DS_Store
+

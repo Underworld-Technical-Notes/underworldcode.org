@@ -10,6 +10,11 @@ mystmd = ">=1.6,<2"
 typst = ">=0.13,<0.14"
 nodejs = ">=20"
 pytest = ">=8"
+# MyST shells out to ImageMagick to turn a GIF into something Typst can place.
+# Without it the PDF build reports "you must install imagemagick" and carries on
+# WITHOUT the figure -- the free-surface note lost one that way, and a missing
+# figure in an archival PDF is not something a reader can recover from.
+imagemagick = ">=7"
 
 [tasks]
 # One documented entry point. CI runs exactly these.
@@ -44,6 +49,17 @@ build-html = { cmd = "myst build --html && python3 scripts/fix_slugs.py && pytho
 # build and put back after; both directions are idempotent.
 build-pdf = { cmd = "python3 scripts/acknowledgement.py && python3 scripts/build_pdf.py", depends-on = ["index"] }
 build = { depends-on = ["build-pdf", "build-html"] }
+
+# The EDITING cycle: a local server with hot reload, showing notes at draft
+# and review the way the preview site does. The preview site is the REVIEW
+# cycle -- a link for other people, costing about three minutes a push, most of
+# which is GitHub's own deployment. Use this one to write.
+#
+# index.md, notes.md and the topic pages are generated, and myst refuses to
+# start without index.md, so the index has to be built first -- with the same
+# flag, or the note you are writing is the one thing missing from the site.
+index-preview = { cmd = "python3 scripts/build_index.py", depends-on = ["pages"], env = { UWTN_PREVIEW = "1" } }
+start = { cmd = "myst start", depends-on = ["index-preview"], env = { UWTN_PREVIEW = "1" } }
 
 validate = "python3 scripts/validate_metadata.py"
 

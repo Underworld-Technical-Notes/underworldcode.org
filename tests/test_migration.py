@@ -1624,3 +1624,38 @@ def test_the_preview_link_is_posted_only_once_it_serves():
     assert wait < comment, "the link must not be posted before it works"
     assert 'grep -q "$SHORT"' in config, \
         "it must check the SERVED page carries this commit, not merely that it responds"
+
+
+def test_no_image_carries_an_option_myst_ignores():
+    """`:target:` on an `{image}` is dropped, silently as far as the page goes.
+
+    The JOSS note's DOI badge rendered and did nothing -- a badge that looks
+    like a link and is not is worse than no badge. MyST warned on every build,
+    forty-three times, which is the number at which warnings stop being read.
+    A linked image says the same thing in a form MyST implements.
+    """
+    import re as _re
+    offenders = []
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        for block in _re.finditer(r"```\{image\}[^\n]*\n((?::[a-z]+:.*\n)+)```",
+                                  path.read_text(encoding="utf-8")):
+            for option in _re.findall(r"^:([a-z]+):", block.group(1), _re.M):
+                if option in ("target",):
+                    offenders.append("%s: :%s:" % (path.parent.name, option))
+    assert not offenders, \
+        "MyST drops these, so the image is not a link: %s" % offenders
+
+
+def test_the_toolchain_can_convert_every_figure_format_in_use():
+    """A GIF needs ImageMagick before Typst can place it.
+
+    Without it the PDF build says so and carries on WITHOUT the figure. A
+    warning in a build that still produces a PDF is one nobody reads, and a
+    missing figure in an archival PDF is not recoverable by the reader.
+    """
+    gifs = sorted((ROOT / "articles").glob("*/figures/*.gif"))
+    if not gifs:
+        return                      # nothing needs it; the dependency can go
+    pixi = (ROOT / "pixi.toml").read_text(encoding="utf-8")
+    assert "imagemagick" in pixi, \
+        "%d GIF(s) in the corpus and no converter in the environment" % len(gifs)

@@ -69,6 +69,7 @@ level deeper again, is encoded twice. Nobody should do that by hand, and the
 So a course can hand out one link per practical, each opening its own folder,
 all against the same pinned release.
 
+(generating-the-link)=
 ### Generating the link
 
 There is a script in the Underworld repository that writes the encoded URL for
