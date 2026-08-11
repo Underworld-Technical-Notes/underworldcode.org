@@ -92,14 +92,42 @@ jobs:
           user_email: help@underworldcode.org
           commit_message: "preview: ${{ github.ref_name }} at ${{ github.sha }}"
 
+      # Pages serves through a CDN, so the deploy step going green means the
+      # commit landed on gh-pages -- not that anybody can read it. It took
+      # longer to propagate than the whole build, which looks exactly like a
+      # broken deployment if you click straight away.
+      #
+      # The banner carries the commit, so the page itself says which build it
+      # is. Poll until the one we just made is being served, and only then
+      # comment: the link is posted when it works, not before.
+      - name: Wait until it is actually being served
+        id: live
+        env:
+          URL: ${{ steps.target.outputs.url }}
+        run: |
+          SHORT="${GITHUB_SHA::7}"
+          START=$SECONDS
+          for i in $(seq 1 60); do
+            if curl -fsS --max-time 20 -H 'Cache-Control: no-cache' \
+                 "${URL}?cb=${GITHUB_RUN_ID}-${i}" 2>/dev/null | grep -q "$SHORT"; then
+              echo "waited=$((SECONDS - START))" >> "$GITHUB_OUTPUT"
+              echo "serving ${SHORT} after $((SECONDS - START))s"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::${URL} is still not serving ${SHORT} after 10 minutes."
+          exit 1
+
       - name: Say where it went
         run: |
           echo "### Preview built" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "${{ steps.target.outputs.url }}" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Live and serving this commit after ${{ steps.live.outputs.waited }}s." >> "$GITHUB_STEP_SUMMARY"
           echo "Shows notes at draft and review, which the published site withholds." >> "$GITHUB_STEP_SUMMARY"
-          echo "Not indexed, and not the citable version." >> "$GITHUB_STEP_SUMMARY"
+          echo "Not indexed, no comments, and not the citable version." >> "$GITHUB_STEP_SUMMARY"
 
       # On the pull request, because that is where the reviewer is looking.
       # Edited in place rather than added to, so a branch pushed twenty times
@@ -130,7 +158,7 @@ jobs:
             LINKS="${LINKS}- [${TITLE:-$SLUG}](${URL}${SLUG}/)"$'\n'
           done
           if [ -n "$LINKS" ]; then
-            BODY=$(printf '**Preview**\n\n%s\nOr the [whole site](%s).\n\nBuilt from `%s`. Shows notes at draft and review, which the published site withholds. Not indexed, no comments, and not the citable version.' "$LINKS" "$URL" "${GITHUB_SHA::7}")
+            BODY=$(printf '**Preview**\n\n%s\nOr the [whole site](%s).\n\nBuilt from `%s`. Shows notes at draft and review, which the published site withholds. Not indexed, no comments, and not the citable version. Confirmed serving this commit before this was posted.' "$LINKS" "$URL" "${GITHUB_SHA::7}")
           else
             BODY=$(printf '**Preview:** %s\n\nNo article changed on this branch. Built from `%s`. Shows notes at draft and review, which the published site withholds. Not indexed, no comments, and not the citable version.' "$URL" "${GITHUB_SHA::7}")
           fi

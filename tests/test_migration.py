@@ -1604,3 +1604,23 @@ def test_the_preview_comment_links_the_notes_that_changed():
     assert "git diff --name-only" in config and "origin/main...HEAD" in config
     assert "fetch-depth: 0" in config, \
         "diffing against main needs the history a shallow clone does not have"
+
+
+def test_the_preview_link_is_posted_only_once_it_serves():
+    """Pages goes through a CDN: the deploy step going green means the commit
+    landed on gh-pages, not that anybody can read it.
+
+    Propagation took longer than the whole build, which looks exactly like a
+    broken deployment if you click straight away. The banner carries the
+    commit, so the page says which build it is; the workflow polls for that and
+    comments afterwards.
+    """
+    text = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    config = "\n".join(line for line in text.splitlines()
+                       if not line.lstrip().startswith("#"))
+    assert "Wait until it is actually being served" in config
+    wait = config.index("Wait until it is actually being served")
+    comment = config.index("Comment the link on the pull request")
+    assert wait < comment, "the link must not be posted before it works"
+    assert 'grep -q "$SHORT"' in config, \
+        "it must check the SERVED page carries this commit, not merely that it responds"
