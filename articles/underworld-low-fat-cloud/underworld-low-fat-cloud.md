@@ -62,7 +62,7 @@ Why not try it out and see for yourself ? Users first need to sign up to use the
 :::{list-table}
 :header-rows: 0
 
-* - :::{image} figures/Cloud_User-Signup-blue
+* - :::{image} figures/Cloud_User-Signup-blue.svg
     :alt: Signup
     :width: 120px
     :::
@@ -74,7 +74,7 @@ The server is then accessed either via the hub url itself or via a link that als
 :::{list-table}
 :header-rows: 0
 
-* - :::{image} figures/Cloud_User-Launch_Demo_Notebooks-blue
+* - :::{image} figures/Cloud_User-Launch_Demo_Notebooks-blue.svg
     :alt: https://img.shields.io/badge/--
     :width: 218px
     :::
@@ -92,7 +92,7 @@ The class server can be administered by an instructor who does not have to have 
 :::{list-table}
 :header-rows: 0
 
-* - :::{image} figures/Cloud_Admin-Hub_Control_Panel-Red
+* - :::{image} figures/Cloud_Admin-Hub_Control_Panel-Red.svg
     :alt: ControlPanel
     :width: 190px
     :::
@@ -104,7 +104,7 @@ There is a page that can be used to authorize or un-authorize users' access to t
 :::{list-table}
 :header-rows: 0
 
-* - :::{image} figures/Cloud_Admin-Authorize_Users-Red
+* - :::{image} figures/Cloud_Admin-Authorize_Users-Red.svg
     :alt: Authorize
     :width: 178px
     :::

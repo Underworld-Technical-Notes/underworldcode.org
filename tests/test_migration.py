@@ -7,6 +7,7 @@ and without a build.
 
 import importlib.util
 import json
+import os
 import pathlib
 import sys
 
@@ -231,17 +232,24 @@ def ensure_generated():
     fresh checkout -- which is exactly what CI has -- none of them exists until
     something builds them. The Zotero bibliography is cached in the repository,
     so this needs no network.
+
+    These tests describe the PRODUCTION site, so they generate it in production
+    mode rather than reading whatever mode last wrote myst.yml. A local
+    `pixi run start` leaves the toc in preview mode -- drafts included -- and a
+    test that read that file as it found it passed or failed depending on which
+    command somebody had run last, which is not a test.
     """
     # These scripts parse sys.argv, which under pytest is pytest's own.
-    original = sys.argv
+    original, preview = sys.argv, os.environ.pop("UWTN_PREVIEW", None)
     try:
         sys.argv = ["generate"]
         if not list((ROOT / "pages").glob("*.md")):
             load("build_pages").main()
-        if not (ROOT / "index.md").exists() or not (ROOT / "notes.md").exists():
-            load("build_index").main()
+        load("build_index").main()
     finally:
         sys.argv = original
+        if preview is not None:
+            os.environ["UWTN_PREVIEW"] = preview
 
 
 def index_source():
@@ -1469,8 +1477,10 @@ def test_a_preview_cannot_be_indexed_or_mistaken_for_the_real_thing():
     """
     preview_mark = load("preview_mark")
     assert "noindex" in preview_mark.NOINDEX and "nofollow" in preview_mark.NOINDEX
-    assert "PREVIEW" in preview_mark.BANNER
     source = (ROOT / "scripts" / "preview_mark.py").read_text(encoding="utf-8")
+    # The label is built at run time from the branch and commit, so the word
+    # lives in main() rather than in the template the script is made from.
+    assert "PREVIEW — %s at %s" in source, "the banner must say what it is"
     for gone in ("sitemap.xml", "feed.xml", "rss.xml"):
         assert gone in source, "a preview must not publish %s" % gone
     assert 'Disallow: /' in source
@@ -1484,3 +1494,191 @@ def test_the_preview_path_is_stable_and_says_nothing():
     assert first == preview_mark.preview_path("feature/some-note"), "not stable"
     assert first != preview_mark.preview_path("feature/other-note")
     assert "some-note" not in first and len(first) == 10
+
+
+def test_the_preview_never_runs_on_a_fork_pull_request():
+    """It publishes with a token, and a fork run cannot have one.
+
+    GitHub withholds secrets from workflows triggered by a pull request from a
+    fork. The ways around that -- pull_request_target above all -- would run
+    this repository's build scripts over untrusted content with that token in
+    scope, in a repository that also holds the Figshare deposit token. A
+    contributor from a fork gets the artifact instead.
+    """
+    text = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    # Comments stripped: the file EXPLAINS why pull_request_target is not used,
+    # and a test that cannot tell the reasoning from the configuration fails on
+    # the presence of its own justification.
+    config = "\n".join(line for line in text.splitlines()
+                       if not line.lstrip().startswith("#"))
+    assert "pull_request_target" not in config, \
+        "pull_request_target would run untrusted content with a token in scope"
+    assert "branches-ignore: [main]" in config, \
+        "the preview must never publish main -- that is the live site's job"
+
+
+def test_the_preview_build_shows_unpublished_notes_and_the_real_one_does_not():
+    """The whole reason the preview exists."""
+    preview = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    deploy = (ROOT / ".github" / "workflows" / "deploy.yml").read_text(encoding="utf-8")
+    assert 'UWTN_PREVIEW: "1"' in preview
+    assert "UWTN_PREVIEW" not in deploy, "the published site must not show drafts"
+
+
+def test_the_preview_keeps_other_branches_previews():
+    """Each branch owns a directory; publishing one must not remove the rest.
+
+    This is the reason previews are not on the main site at all: an
+    Actions-based Pages deployment replaces the whole site, so hashed
+    directories could never accumulate there.
+    """
+    preview = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    assert "keep_files: true" in preview
+    assert "destination_dir:" in preview
+
+
+def test_the_preview_comments_on_manual_runs_too():
+    """The comment step must not be guarded to push events.
+
+    It was, and so it skipped every manual run -- which is exactly what you do
+    when the pull request was opened after the branch was pushed, the ordinary
+    order of events. The first push has no pull request to comment on; the
+    manual re-run does, and that was the run being skipped.
+    """
+    text = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    config = "\n".join(line for line in text.splitlines()
+                       if not line.lstrip().startswith("#"))
+    comment = config.split("Comment the link on the pull request")[1]
+    guard = comment.split("run:")[0]
+    assert "github.event_name" not in guard, \
+        "the comment step must run on manual dispatch as well as on push"
+
+
+def test_the_preview_asks_for_no_more_than_it_needs():
+    """Declared, and minimal.
+
+    Undeclared, the job got the restricted default and posting the link 403'd
+    with "Resource not accessible by integration" -- which reads like a bad
+    token and is a missing permissions block. Only the comment needs write:
+    publishing uses PREVIEW_TOKEN, and nothing in this job should be able to
+    write to this repository's contents.
+    """
+    text = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    config = "\n".join(line for line in text.splitlines()
+                       if not line.lstrip().startswith("#"))
+    assert "pull-requests: write" in config, "the comment step needs this"
+    assert "contents: read" in config, \
+        "a preview build must not be able to write this repository's contents"
+
+
+def test_the_preview_marks_the_page_after_hydration_not_before():
+    """The theme hydrates the whole document; static markup is reconciled away.
+
+    The banner was written into the HTML and appeared for a fraction of a
+    second before React removed it. The discussion block is worse: it is in the
+    page TWICE, once as HTML and once as JSON in the hydration payload, so a
+    string replacement in the built file is undone the moment the page becomes
+    interactive. Both are now done by script, after load, and re-applied when
+    the theme routes client-side.
+
+    inject_comments.py learned this first and its docstring says so.
+    """
+    preview_mark = load("preview_mark")
+    banner = preview_mark.BANNER
+    assert 'addEventListener("load"' in banner, "must wait for hydration"
+    assert "MutationObserver" in banner, "must survive client-side routing"
+    assert ".uwtn-discuss-body" in banner and ".uwtn-discuss-links" in banner, \
+        "the discussion block must be rewritten in the DOM, not in the markup"
+
+
+def test_a_preview_never_opens_a_real_discussion_thread():
+    """Giscus keys a thread on the article slug.
+
+    Loaded on a preview, it would open discussions on the repository for notes
+    that are not published -- and a thread somebody has replied to cannot be
+    tidily withdrawn.
+    """
+    source = (ROOT / "scripts" / "preview_mark.py").read_text(encoding="utf-8")
+    assert "uwtn-giscus-bootstrap" in source, "the bootstrap must be removed"
+    assert "Discussion will be available after publication" in source
+
+
+def test_the_preview_comment_links_the_notes_that_changed():
+    """A reviewer sent the site root has to go and find what they were asked
+    to read, on a site with fifty-odd notes."""
+    text = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    config = "\n".join(line for line in text.splitlines()
+                       if not line.lstrip().startswith("#"))
+    assert "git diff --name-only" in config and "origin/main...HEAD" in config
+    assert "fetch-depth: 0" in config, \
+        "diffing against main needs the history a shallow clone does not have"
+
+
+def test_the_preview_link_is_posted_only_once_it_serves():
+    """Pages goes through a CDN: the deploy step going green means the commit
+    landed on gh-pages, not that anybody can read it.
+
+    Propagation took longer than the whole build, which looks exactly like a
+    broken deployment if you click straight away. The banner carries the
+    commit, so the page says which build it is; the workflow polls for that and
+    comments afterwards.
+    """
+    text = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    config = "\n".join(line for line in text.splitlines()
+                       if not line.lstrip().startswith("#"))
+    assert "Wait until it is actually being served" in config
+    wait = config.index("Wait until it is actually being served")
+    comment = config.index("Comment the link on the pull request")
+    assert wait < comment, "the link must not be posted before it works"
+    assert 'grep -q "$SHORT"' in config, \
+        "it must check the SERVED page carries this commit, not merely that it responds"
+
+
+def test_no_image_carries_an_option_myst_ignores():
+    """`:target:` on an `{image}` is dropped, silently as far as the page goes.
+
+    The JOSS note's DOI badge rendered and did nothing -- a badge that looks
+    like a link and is not is worse than no badge. MyST warned on every build,
+    forty-three times, which is the number at which warnings stop being read.
+    A linked image says the same thing in a form MyST implements.
+    """
+    import re as _re
+    offenders = []
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        for block in _re.finditer(r"```\{image\}[^\n]*\n((?::[a-z]+:.*\n)+)```",
+                                  path.read_text(encoding="utf-8")):
+            for option in _re.findall(r"^:([a-z]+):", block.group(1), _re.M):
+                if option in ("target",):
+                    offenders.append("%s: :%s:" % (path.parent.name, option))
+    assert not offenders, \
+        "MyST drops these, so the image is not a link: %s" % offenders
+
+
+def test_the_toolchain_can_convert_every_figure_format_in_use():
+    """A GIF needs ImageMagick before Typst can place it.
+
+    Without it the PDF build says so and carries on WITHOUT the figure. A
+    warning in a build that still produces a PDF is one nobody reads, and a
+    missing figure in an archival PDF is not recoverable by the reader.
+    """
+    gifs = sorted((ROOT / "articles").glob("*/figures/*.gif"))
+    if not gifs:
+        return                      # nothing needs it; the dependency can go
+    pixi = (ROOT / "pixi.toml").read_text(encoding="utf-8")
+    assert "imagemagick" in pixi, \
+        "%d GIF(s) in the corpus and no converter in the environment" % len(gifs)
+
+
+def test_the_pdf_guard_does_not_fire_on_a_note_that_is_not_published():
+    """It exists to catch a template that has stopped producing PDFs at all.
+
+    A note at draft or review is left out of the toc in production, so MyST
+    never sees it and no PDF appears -- and the guard reported that as a
+    failure. The correct alarm wired to the wrong sensor: nothing was wrong,
+    the note was simply not being published yet. It broke CI on a green local
+    run, because locally the toc still had the note in it.
+    """
+    source = (ROOT / "scripts" / "build_pdf.py").read_text(encoding="utf-8")
+    assert "UWTN_PREVIEW" in source, \
+        "the guard must know which mode the build is in"
+    assert "unpublished" in source and "p.parent.name not in unpublished" in source

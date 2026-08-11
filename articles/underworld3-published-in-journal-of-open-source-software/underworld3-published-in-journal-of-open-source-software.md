@@ -35,11 +35,7 @@ parts:
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@jessbaileydesigns?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Jess Bailey</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 
-```{image} figures/status.svg
-:alt: DOI
-:target: https://doi.org/10.21105/joss.07831
-:width: 168px
-```
+[![DOI](figures/status.svg){width=168px}](https://doi.org/10.21105/joss.07831)
 
 A recent paper in the Journal of Open Source Software describes the implementation details of Underworld3 and a brief motivation for the rewritten codebase (Moresi et al, 2025).
 

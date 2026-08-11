@@ -5,6 +5,35 @@ The reader-facing version of this is `/submit/` on the site, generated from
 happens after a pull request; this file is the mechanics for someone already
 in the repository. Keep them consistent — if the process changes, both move.
 
+## Writing a note
+
+Give it its own working tree. Writing and building are the same repository
+doing two things at once, and they collide over generated files — `myst.yml`
+holds the toc, and a production build run in another terminal takes notes at
+draft and review out of the toc that `myst start` is watching. The dev server
+then reports *File is not in project* for the file you have open. Nothing is
+lost; it just stops updating, which is worse, because it looks like your
+editor.
+
+```bash
+pixi run worktree create particle-level-sets     # branch note/particle-level-sets
+cd ../underworld-technical-notes-worktrees/particle-level-sets
+pixi install                                     # its own environment, once
+pixi run new --slug particle-level-sets --title "…" --author louis
+pixi run start                                   # localhost:3000, hot reload
+```
+
+Three cycles, three tools, and they do not interfere:
+
+| | | |
+|---|---|---|
+| **Writing** | `pixi run start` | instant, shows drafts |
+| **Review** | push the branch → link on the pull request | ~3 minutes |
+| **Publishing** | merge to `main` | the live site |
+
+`pixi run worktree list` shows what is in flight; `remove` takes the working
+copy away and leaves the branch, since those are different decisions.
+
 **Looking for something to write?** `WRITING-PLAN.md` holds the planned notes,
 what each is meant to explain, and which of them are grouped into a candidate
 paper. Notes are written as micro-preprints: two or three related ones become

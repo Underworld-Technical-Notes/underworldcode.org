@@ -1,0 +1,171 @@
+name: preview
+
+# Build a branch and publish it where it can be read but not found.
+#
+# The published site is built from `main` by deploy.yml. This is for the state
+# between "drafted" and "published": a note at draft or review, which production
+# withholds, needs somewhere a co-author can read it. Without this it either
+# goes onto the live site unfinished -- which happened -- or it is reviewed by
+# people running the build themselves, which means it is reviewed by nobody.
+#
+# ONLY BRANCHES IN THIS REPOSITORY. Not fork pull requests, and this is not an
+# oversight: GitHub does not expose secrets to a workflow triggered from a fork,
+# so publishing needs a token a fork run cannot have. The ways around that --
+# pull_request_target, chiefly -- run this repository's build scripts over
+# untrusted content with that token in scope, in a repository that also holds
+# the Figshare deposit token. A contributor from a fork gets the artifact from
+# test.yml instead, and a maintainer who has read the diff can push the branch
+# here to get a link.
+
+on:
+  push:
+    branches-ignore: [main]
+  workflow_dispatch:
+
+concurrency:
+  # One build per branch, and cancel a superseded one: a preview is only ever
+  # wanted for the tip of the branch.
+  group: preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    # The default token is read-only here, so posting the link 403'd with
+    # "Resource not accessible by integration" -- which reads like a token
+    # problem and is a permissions declaration. Only the comment needs writing:
+    # publishing to the preview repository uses PREVIEW_TOKEN, not this one, and
+    # nothing in this job should be able to write to THIS repository's contents.
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      # Full history: the comment links the notes this branch CHANGES, which
+      # means diffing against main, and a shallow clone has no main to diff on.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: prefix-dev/setup-pixi@v0.8.1
+        with:
+          cache: true
+
+      - name: Where this branch publishes
+        id: target
+        run: |
+          HASH=$(python3 scripts/preview_mark.py --path-only --branch "${GITHUB_REF_NAME}")
+          echo "hash=${HASH}" >> "$GITHUB_OUTPUT"
+          echo "url=https://underworld-technical-notes.github.io/underworldcode.org-preview/${HASH}/" >> "$GITHUB_OUTPUT"
+
+      # UWTN_PREVIEW is what makes this worth having: the production build
+      # withholds draft and review, and this one does not.
+      #
+      # BASE_URL is the full path the site will be served from. A preview lives
+      # two directories deep, so a root-relative asset would 404 on every page
+      # without it -- the same trap the project-subpath build has, one level
+      # further down.
+      - name: Build, showing unpublished notes
+        env:
+          UWTN_PREVIEW: "1"
+          BASE_URL: /underworldcode.org-preview/${{ steps.target.outputs.hash }}
+        run: pixi run build
+
+      - name: Mark it as a preview
+        run: |
+          python3 scripts/preview_mark.py \
+            --branch "${GITHUB_REF_NAME}" --commit "${GITHUB_SHA}"
+
+      # Into a directory of its own, keeping every other branch's preview.
+      # This is why the previews are not on the main site: an Actions-based
+      # Pages deployment replaces the whole thing, so hashed directories could
+      # never accumulate there.
+      - name: Publish
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.PREVIEW_TOKEN }}
+          external_repository: Underworld-Technical-Notes/underworldcode.org-preview
+          publish_branch: gh-pages
+          publish_dir: _build/html
+          destination_dir: ${{ steps.target.outputs.hash }}
+          keep_files: true
+          user_name: underworld-technical-notes
+          user_email: help@underworldcode.org
+          commit_message: "preview: ${{ github.ref_name }} at ${{ github.sha }}"
+
+      # Pages serves through a CDN, so the deploy step going green means the
+      # commit landed on gh-pages -- not that anybody can read it. It took
+      # longer to propagate than the whole build, which looks exactly like a
+      # broken deployment if you click straight away.
+      #
+      # The banner carries the commit, so the page itself says which build it
+      # is. Poll until the one we just made is being served, and only then
+      # comment: the link is posted when it works, not before.
+      - name: Wait until it is actually being served
+        id: live
+        env:
+          URL: ${{ steps.target.outputs.url }}
+        run: |
+          SHORT="${GITHUB_SHA::7}"
+          START=$SECONDS
+          for i in $(seq 1 60); do
+            if curl -fsS --max-time 20 -H 'Cache-Control: no-cache' \
+                 "${URL}?cb=${GITHUB_RUN_ID}-${i}" 2>/dev/null | grep -q "$SHORT"; then
+              echo "waited=$((SECONDS - START))" >> "$GITHUB_OUTPUT"
+              echo "serving ${SHORT} after $((SECONDS - START))s"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::${URL} is still not serving ${SHORT} after 10 minutes."
+          exit 1
+
+      - name: Say where it went
+        run: |
+          echo "### Preview built" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "${{ steps.target.outputs.url }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Live and serving this commit after ${{ steps.live.outputs.waited }}s." >> "$GITHUB_STEP_SUMMARY"
+          echo "Shows notes at draft and review, which the published site withholds." >> "$GITHUB_STEP_SUMMARY"
+          echo "Not indexed, no comments, and not the citable version." >> "$GITHUB_STEP_SUMMARY"
+
+      # On the pull request, because that is where the reviewer is looking.
+      # Edited in place rather than added to, so a branch pushed twenty times
+      # leaves one comment rather than twenty.
+      # No event guard. It was `github.event_name == 'push'`, which silently
+      # skipped every manual run -- and a manual run is exactly what you do
+      # when you opened the pull request after pushing the branch, which is the
+      # ordinary order of events. The step already exits quietly when the
+      # branch has no pull request, so the guard protected nothing.
+      - name: Comment the link on the pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          URL: ${{ steps.target.outputs.url }}
+        run: |
+          PR=$(gh pr list --head "${GITHUB_REF_NAME}" --json number -q '.[0].number' || true)
+          [ -z "$PR" ] && { echo "no open pull request for this branch"; exit 0; }
+
+          # Link the notes this branch touches, not just the front door. A
+          # reviewer sent the site root has to go and find the thing they were
+          # asked to read, and on a site with fifty-odd notes that is a real
+          # ask. A branch that changes no article -- tooling, templates -- gets
+          # the root, which is then the right answer rather than a shrug.
+          CHANGED=$(git diff --name-only "origin/main...HEAD" -- 'articles/*/*.md' \
+                    | sed -E 's|articles/([^/]+)/.*|\1|' | sort -u)
+          LINKS=""
+          for SLUG in $CHANGED; do
+            TITLE=$(sed -n 's/^title: *//p' "articles/${SLUG}/metadata.yml" | head -1)
+            LINKS="${LINKS}- [${TITLE:-$SLUG}](${URL}${SLUG}/)"$'\n'
+          done
+          if [ -n "$LINKS" ]; then
+            BODY=$(printf '**Preview**\n\n%s\nOr the [whole site](%s).\n\nBuilt from `%s`. Shows notes at draft and review, which the published site withholds. Not indexed, no comments, and not the citable version. Confirmed serving this commit before this was posted.' "$LINKS" "$URL" "${GITHUB_SHA::7}")
+          else
+            BODY=$(printf '**Preview:** %s\n\nNo article changed on this branch. Built from `%s`. Shows notes at draft and review, which the published site withholds. Not indexed, no comments, and not the citable version.' "$URL" "${GITHUB_SHA::7}")
+          fi
+          EXISTING=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" \
+            --jq '.[] | select(.body | startswith("**Preview:**")) | .id' | head -1)
+          if [ -n "$EXISTING" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING}" -f body="$BODY"
+          else
+            gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" -f body="$BODY"
+          fi
