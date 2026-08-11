@@ -6,7 +6,7 @@ description: >-
   the machinery that makes that true: a compact container, a nearly empty
   launcher repository, and two GitHub workflows that make a release and its
   launcher in the same breath.
-date: 2026-08-10
+date: 2026-08-11
 authors:
   - name: Louis Moresi
     orcid: 0000-0003-3685-174X

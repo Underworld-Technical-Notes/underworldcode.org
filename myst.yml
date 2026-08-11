@@ -34,6 +34,7 @@ project:
         - file: notes.md
         - title: "2026"
           children:
+            - file: articles/running-underworld-in-a-browser/running-underworld-in-a-browser.md
             - file: articles/finding-particles-in-a-distributed-unstructured-mesh/finding-particles-in-a-distributed-unstructured-mesh.md
             - file: articles/particles-in-underworld3/particles-in-underworld3.md
             - file: articles/symbolic-time-derivatives-in-underworld3/symbolic-time-derivatives-in-underworld3.md
