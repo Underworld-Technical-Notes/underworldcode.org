@@ -26,9 +26,10 @@ exports:
     article_id: UWTN 2026-010
     article_version: 1.0.0
 ---
+
 Somebody reads a paper, wants to run the model, and has forty minutes. They
-will not install PETSc. They may not have a compiler. If the answer is "clone
-this, then build these dependencies", the answer is really "no".
+will not have time to install PETSc. They may not have a compiler. If the answer is "clone
+this, then build these dependencies", the answer is really "no thanks".
 
 The answer we have now is a link. It opens JupyterLab in a browser, with
 Underworld already built, **any public repository** pulled in beside it, and
@@ -37,19 +38,21 @@ independent, and the repository being launched needs nothing added to it — no
 Dockerfile, no `.binder/` directory, no configuration at all.
 
 This note is about how that works, because the interesting parts are not
-obvious and one of them is specific to a code that compiles itself at runtime.
+entirely obvious and one of them is specific to a code that 
+needs access to compilation at runtime.
 
 ## Where this came from: the classroom
 
-The forty-minute reader is the general case, but the case that drove the work
-was teaching, and it is a harder problem than it looks.
+The forty-minute time limit is based on a realistic attention-span for a busy researcher, 
+but the case that drove the work was classroom teaching, and it is a more fraught
+problem.
 
-A two-hour practical with thirty students has, historically, been spent as
-follows: forty minutes installing, forty minutes on the six laptops where the
-install went wrong, and the remainder on the geodynamics. Departmental lab
+A two-hour practical with thirty students runs the risk of ...
+forty minutes installing, forty minutes on the six laptops where the
+install went wrong, and the remainder on the actual tasks. Departmental lab
 machines fix this until you need a version they do not have, or a student wants
-to continue at home. Underworld's own cloud was built to escape that loop and
-it did, at the cost of somebody running a Kubernetes cluster.
+to continue at home. Underworld's own cloud was built to escape that loop but
+it did mean somebody had to maintain a Kubernetes cluster.
 
 What a class actually needs turns out to be modest:
 
@@ -64,19 +67,16 @@ What a class actually needs turns out to be modest:
 - **Corrections that take effect immediately.** Fix the notebook, push, and the
   next student to click gets the fixed one — no reissued handout.
 
-The last two fall out of the URL described below; the second falls out of the
-release machinery. That is the whole design brief, and it is why the pieces are
-arranged the way they are.
+Modest, yes, but it needs some thought to get right.
 
-**Below university level, the calculation changes.** A school has no
-departmental cluster and no expectation of one, and often no ability to install
-anything on a managed device. But a link is not software — it is a link, and it
+**Below university level, the calculation changes.** A school can't repurpose a
+departmental cluster, and often teachers have no ability to install
+*anything* on a managed device. But a link is not software — it is a link, and it
 opens the same way a video does. Some of what Underworld produces is legible
 well before undergraduate level: a fault slipping and the ground deforming
 around it, a slab sinking, plates pulling apart. A class that could never be
 asked to install a finite element code can be asked to click something and
-change a number. We have not built materials pitched that way; the obstacle was
-never the delivery, and now the delivery is free.
+change a number. 
 
 ## The shape of it
 
@@ -84,19 +84,20 @@ Four pieces, each doing one job:
 
 1. A **container image** with Underworld already built, published to the GitHub
    Container Registry.
-2. A **launcher repository** — almost empty — that mybinder.org caches against.
+2. A **launcher repository** — almost empty, just instructions for firing up the containers on binder — that mybinder.org pre-builds and caches.
 3. Two **GitHub workflows** that build the image on a release and, in the same
-   run, create the launcher branch that points at it.
+   run, create a new branch in the launcher repository that knows about the release.
 4. **nbgitpuller**, which clones the reader's repository into the running
    session.
 
 The version guarantee comes from (3): the release and its launcher are made
 together, so they cannot drift apart.
 
-## The container, and what may not be removed from it
+## The container: just what we need and no less !
 
-The image is built in stages and then stripped, because binder start-up time is
-dominated by pulling it. The savings that mattered:
+The container image is built in stages and then stripped, because binder start-up time is
+dominated by pulling it. When the code is built, we remove anything that the
+run-time does not need. In our case that means things like this:
 
 | Removed | Saved |
 |---------|-------|
@@ -106,12 +107,13 @@ dominated by pulling it. The savings that mattered:
 | man pages, `__pycache__`, `*.pyc`, test suites | tens of MB |
 
 The git clone is `--depth 1 --single-branch`, which keeps `.git` at about 5 MB
-instead of 356 MB. It is kept rather than deleted, because a shallow history is
+instead of hundreds of MB. It is kept rather than deleted, because a shallow history is
 still enough to `git pull` at start-up.
 
 There is also a layer-size problem worth knowing about if you ever build one of
 these. The runtime library directory is around 2.7 GB, and a single Docker
-layer that large is unwieldy to push and pull. So the libraries are split by
+layer that large is unwieldy to push and pull (and overloads binder). 
+So the libraries are split by
 family — LLVM, VTK, gmsh, OpenBLAS, Qt — and copied in chunks under 800 MB, so
 no layer is over a gigabyte.
 
@@ -121,10 +123,9 @@ between them are substantial and which no ordinary Python image needs after the
 build. Underworld cannot. It turns symbolic mathematics into C and compiles it
 *while the model runs* — that is the whole design, and it is the subject of a
 [note of its own](/how-underworld3-turns-sympy-into-c/). Strip the compiler and
-the image builds, imports, and then fails the moment a user defines a
-constitutive model.
+the image builds, imports, and then fails the moment a user tries to solve a problem.
 
-So the Dockerfile carries these lines, commented out, with the reason attached:
+So the Dockerfile carries these reminders:
 
 ```dockerfile
 # KEEP include directory - needed for JIT compilation at runtime
@@ -152,10 +153,8 @@ you launch a repository that changes daily, you miss the cache daily, and every
 miss is a full image build in front of a waiting reader. The launcher's job is
 to be a repository that almost never changes — so the cache almost always hits,
 and the Underworld code arrives as a pre-built image rather than being built on
-demand.
-
-This is why a first launch after a release is slow and every launch after that
-is quick. Not a fault: a cache being filled.
+demand. This is why a first launch after a release is slow and launches after that
+are quicker.
 
 ## The workflows that keep versions honest
 
@@ -174,7 +173,7 @@ then does the thing that matters:
     client-payload: '{"branch": "...", "ref_type": "..."}'
 ```
 
-In the launcher repository, `update-image.yml` listens for that and behaves
+In the **_launcher_** repository, `update-image.yml` listens for that and behaves
 differently according to what arrived:
 
 - **A branch push** updates the existing launcher branch's `Dockerfile` to
@@ -203,7 +202,7 @@ later launches. The consequences are the useful part:
 ## The URL, taken apart
 
 Written plainly, the link says: which Underworld, which repository, and where
-to open.
+to start inside that repository. 
 
 ```
 https://mybinder.org/v2/gh/underworldcode/uw3-binder-launcher/VERSION
@@ -299,7 +298,8 @@ For anything past that, install Underworld or run it on a cluster.
 
 Underworld used to run its own cloud — Kubernetes for large classes, single
 droplets for small ones, under an [AuScope](https://www.auscope.org.au/)
-project. It was built for exactly the classroom problem above, it solved it,
+project (Underworld in the cloud). 
+It was built for exactly the classroom problem above, it solved it,
 and it did one thing this does not: it gave every user a persistent home
 directory, which for a semester-long course is a genuine loss.
 
