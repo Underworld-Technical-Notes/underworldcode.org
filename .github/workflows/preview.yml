@@ -92,8 +92,12 @@ jobs:
       # On the pull request, because that is where the reviewer is looking.
       # Edited in place rather than added to, so a branch pushed twenty times
       # leaves one comment rather than twenty.
+      # No event guard. It was `github.event_name == 'push'`, which silently
+      # skipped every manual run -- and a manual run is exactly what you do
+      # when you opened the pull request after pushing the branch, which is the
+      # ordinary order of events. The step already exits quietly when the
+      # branch has no pull request, so the guard protected nothing.
       - name: Comment the link on the pull request
-        if: github.event_name == 'push'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           URL: ${{ steps.target.outputs.url }}

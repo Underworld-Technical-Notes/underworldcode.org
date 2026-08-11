@@ -1525,3 +1525,20 @@ def test_the_preview_keeps_other_branches_previews():
     preview = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
     assert "keep_files: true" in preview
     assert "destination_dir:" in preview
+
+
+def test_the_preview_comments_on_manual_runs_too():
+    """The comment step must not be guarded to push events.
+
+    It was, and so it skipped every manual run -- which is exactly what you do
+    when the pull request was opened after the branch was pushed, the ordinary
+    order of events. The first push has no pull request to comment on; the
+    manual re-run does, and that was the run being skipped.
+    """
+    text = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    config = "\n".join(line for line in text.splitlines()
+                       if not line.lstrip().startswith("#"))
+    comment = config.split("Comment the link on the pull request")[1]
+    guard = comment.split("run:")[0]
+    assert "github.event_name" not in guard, \
+        "the comment step must run on manual dispatch as well as on push"
