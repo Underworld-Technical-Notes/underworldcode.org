@@ -18,11 +18,13 @@ Usage:
     python3 scripts/build_pdf.py
 """
 
+import os
 import pathlib
 import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "scripts"))
 
 
 def run(*command):
@@ -43,9 +45,24 @@ def main():
     if status != 0:
         sys.exit("myst build --typst failed (exit %d)" % status)
 
+    # Only the articles this build actually asked MyST for. A note at draft or
+    # review is left out of the toc in production, so MyST never sees it and no
+    # PDF appears -- and this guard, which exists to catch a template that has
+    # stopped producing PDFs at all, reported that as a failure. It is the
+    # correct alarm wired to the wrong sensor: nothing is wrong, the note is
+    # simply not being published yet.
+    import build_index
+    unpublished = set()
+    if not os.environ.get("UWTN_PREVIEW"):
+        for path in sorted(ROOT.glob("articles/*/metadata.yml")):
+            meta = build_index.read_yaml(path)
+            if meta.get("status") in ("draft", "review", "withdrawn"):
+                unpublished.add(meta["slug"])
+
     built = sorted(ROOT.glob("articles/*/*.pdf"))
     wanted = [p.parent.name for p in sorted(ROOT.glob("articles/*/*.md"))
-              if "format: typst" in p.read_text(encoding="utf-8")]
+              if "format: typst" in p.read_text(encoding="utf-8")
+              and p.parent.name not in unpublished]
     missing = sorted(set(wanted) - {p.parent.name for p in built})
     if missing:
         sys.exit("%d article(s) declare a PDF export but produced none: %s"

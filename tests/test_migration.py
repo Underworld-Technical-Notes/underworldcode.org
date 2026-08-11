@@ -1667,3 +1667,18 @@ def test_the_toolchain_can_convert_every_figure_format_in_use():
     pixi = (ROOT / "pixi.toml").read_text(encoding="utf-8")
     assert "imagemagick" in pixi, \
         "%d GIF(s) in the corpus and no converter in the environment" % len(gifs)
+
+
+def test_the_pdf_guard_does_not_fire_on_a_note_that_is_not_published():
+    """It exists to catch a template that has stopped producing PDFs at all.
+
+    A note at draft or review is left out of the toc in production, so MyST
+    never sees it and no PDF appears -- and the guard reported that as a
+    failure. The correct alarm wired to the wrong sensor: nothing was wrong,
+    the note was simply not being published yet. It broke CI on a green local
+    run, because locally the toc still had the note in it.
+    """
+    source = (ROOT / "scripts" / "build_pdf.py").read_text(encoding="utf-8")
+    assert "UWTN_PREVIEW" in source, \
+        "the guard must know which mode the build is in"
+    assert "unpublished" in source and "p.parent.name not in unpublished" in source
