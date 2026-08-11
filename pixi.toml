@@ -58,6 +58,11 @@ build = { depends-on = ["build-pdf", "build-html"] }
 # index.md, notes.md and the topic pages are generated, and myst refuses to
 # start without index.md, so the index has to be built first -- with the same
 # flag, or the note you are writing is the one thing missing from the site.
+# Writing a note and building the site are the same repository doing two things
+# at once, and they collide over myst.yml. Give the note its own working tree:
+#   pixi run worktree create particle-level-sets
+worktree = "python3 scripts/worktree.py"
+
 index-preview = { cmd = "python3 scripts/build_index.py", depends-on = ["pages"], env = { UWTN_PREVIEW = "1" } }
 start = { cmd = "myst start", depends-on = ["index-preview"], env = { UWTN_PREVIEW = "1" } }
 

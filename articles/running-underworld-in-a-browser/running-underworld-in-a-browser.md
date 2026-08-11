@@ -26,7 +26,6 @@ exports:
     article_id: UWTN 2026-010
     article_version: 1.0.0
 ---
-
 Somebody reads a paper, wants to run the model, and has forty minutes. They
 will not have time to install PETSc. They may not have a compiler. If the answer is "clone
 this, then build these dependencies", the answer is really "no thanks".

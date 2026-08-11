@@ -7,6 +7,7 @@ and without a build.
 
 import importlib.util
 import json
+import os
 import pathlib
 import sys
 
@@ -231,17 +232,24 @@ def ensure_generated():
     fresh checkout -- which is exactly what CI has -- none of them exists until
     something builds them. The Zotero bibliography is cached in the repository,
     so this needs no network.
+
+    These tests describe the PRODUCTION site, so they generate it in production
+    mode rather than reading whatever mode last wrote myst.yml. A local
+    `pixi run start` leaves the toc in preview mode -- drafts included -- and a
+    test that read that file as it found it passed or failed depending on which
+    command somebody had run last, which is not a test.
     """
     # These scripts parse sys.argv, which under pytest is pytest's own.
-    original = sys.argv
+    original, preview = sys.argv, os.environ.pop("UWTN_PREVIEW", None)
     try:
         sys.argv = ["generate"]
         if not list((ROOT / "pages").glob("*.md")):
             load("build_pages").main()
-        if not (ROOT / "index.md").exists() or not (ROOT / "notes.md").exists():
-            load("build_index").main()
+        load("build_index").main()
     finally:
         sys.argv = original
+        if preview is not None:
+            os.environ["UWTN_PREVIEW"] = preview
 
 
 def index_source():
