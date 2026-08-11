@@ -40,7 +40,11 @@ jobs:
       contents: read
       pull-requests: write
     steps:
+      # Full history: the comment links the notes this branch CHANGES, which
+      # means diffing against main, and a shallow clone has no main to diff on.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: prefix-dev/setup-pixi@v0.8.1
         with:
@@ -112,7 +116,24 @@ jobs:
         run: |
           PR=$(gh pr list --head "${GITHUB_REF_NAME}" --json number -q '.[0].number' || true)
           [ -z "$PR" ] && { echo "no open pull request for this branch"; exit 0; }
-          BODY=$(printf '**Preview:** %s\n\nBuilt from `%s`. Shows notes at draft and review, which the published site withholds. Not indexed, and not the citable version.' "$URL" "${GITHUB_SHA::7}")
+
+          # Link the notes this branch touches, not just the front door. A
+          # reviewer sent the site root has to go and find the thing they were
+          # asked to read, and on a site with fifty-odd notes that is a real
+          # ask. A branch that changes no article -- tooling, templates -- gets
+          # the root, which is then the right answer rather than a shrug.
+          CHANGED=$(git diff --name-only "origin/main...HEAD" -- 'articles/*/*.md' \
+                    | sed -E 's|articles/([^/]+)/.*|\1|' | sort -u)
+          LINKS=""
+          for SLUG in $CHANGED; do
+            TITLE=$(sed -n 's/^title: *//p' "articles/${SLUG}/metadata.yml" | head -1)
+            LINKS="${LINKS}- [${TITLE:-$SLUG}](${URL}${SLUG}/)"$'\n'
+          done
+          if [ -n "$LINKS" ]; then
+            BODY=$(printf '**Preview**\n\n%s\nOr the [whole site](%s).\n\nBuilt from `%s`. Shows notes at draft and review, which the published site withholds. Not indexed, no comments, and not the citable version.' "$LINKS" "$URL" "${GITHUB_SHA::7}")
+          else
+            BODY=$(printf '**Preview:** %s\n\nNo article changed on this branch. Built from `%s`. Shows notes at draft and review, which the published site withholds. Not indexed, no comments, and not the citable version.' "$URL" "${GITHUB_SHA::7}")
+          fi
           EXISTING=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" \
             --jq '.[] | select(.body | startswith("**Preview:**")) | .id' | head -1)
           if [ -n "$EXISTING" ]; then

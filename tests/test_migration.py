@@ -1469,8 +1469,10 @@ def test_a_preview_cannot_be_indexed_or_mistaken_for_the_real_thing():
     """
     preview_mark = load("preview_mark")
     assert "noindex" in preview_mark.NOINDEX and "nofollow" in preview_mark.NOINDEX
-    assert "PREVIEW" in preview_mark.BANNER
     source = (ROOT / "scripts" / "preview_mark.py").read_text(encoding="utf-8")
+    # The label is built at run time from the branch and commit, so the word
+    # lives in main() rather than in the template the script is made from.
+    assert "PREVIEW — %s at %s" in source, "the banner must say what it is"
     for gone in ("sitemap.xml", "feed.xml", "rss.xml"):
         assert gone in source, "a preview must not publish %s" % gone
     assert 'Disallow: /' in source
@@ -1559,3 +1561,46 @@ def test_the_preview_asks_for_no_more_than_it_needs():
     assert "pull-requests: write" in config, "the comment step needs this"
     assert "contents: read" in config, \
         "a preview build must not be able to write this repository's contents"
+
+
+def test_the_preview_marks_the_page_after_hydration_not_before():
+    """The theme hydrates the whole document; static markup is reconciled away.
+
+    The banner was written into the HTML and appeared for a fraction of a
+    second before React removed it. The discussion block is worse: it is in the
+    page TWICE, once as HTML and once as JSON in the hydration payload, so a
+    string replacement in the built file is undone the moment the page becomes
+    interactive. Both are now done by script, after load, and re-applied when
+    the theme routes client-side.
+
+    inject_comments.py learned this first and its docstring says so.
+    """
+    preview_mark = load("preview_mark")
+    banner = preview_mark.BANNER
+    assert 'addEventListener("load"' in banner, "must wait for hydration"
+    assert "MutationObserver" in banner, "must survive client-side routing"
+    assert ".uwtn-discuss-body" in banner and ".uwtn-discuss-links" in banner, \
+        "the discussion block must be rewritten in the DOM, not in the markup"
+
+
+def test_a_preview_never_opens_a_real_discussion_thread():
+    """Giscus keys a thread on the article slug.
+
+    Loaded on a preview, it would open discussions on the repository for notes
+    that are not published -- and a thread somebody has replied to cannot be
+    tidily withdrawn.
+    """
+    source = (ROOT / "scripts" / "preview_mark.py").read_text(encoding="utf-8")
+    assert "uwtn-giscus-bootstrap" in source, "the bootstrap must be removed"
+    assert "Discussion will be available after publication" in source
+
+
+def test_the_preview_comment_links_the_notes_that_changed():
+    """A reviewer sent the site root has to go and find what they were asked
+    to read, on a site with fifty-odd notes."""
+    text = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    config = "\n".join(line for line in text.splitlines()
+                       if not line.lstrip().startswith("#"))
+    assert "git diff --name-only" in config and "origin/main...HEAD" in config
+    assert "fetch-depth: 0" in config, \
+        "diffing against main needs the history a shallow clone does not have"
