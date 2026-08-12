@@ -36,7 +36,7 @@ Underworld already built, **any public repository** pulled in beside it, and
 independent, and the repository being launched needs nothing added to it — no
 Dockerfile, no `.binder/` directory, no configuration at all.
 
-This articles explains how it all works, because the interesting parts are not
+This article explains how it all works, because the interesting parts are not
 entirely obvious and one of them is specific to our code that 
 needs access to compilation at runtime.
 
