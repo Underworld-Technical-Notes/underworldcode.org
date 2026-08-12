@@ -1705,3 +1705,27 @@ def test_the_site_serves_its_own_favicon():
     assert header[:4] == b"\x00\x00\x01\x00", "not an .ico"
     assert int.from_bytes(header[4:6], "little") >= 3, \
         "the .ico should carry several sizes, not one"
+
+
+def test_a_preview_builds_only_the_pdfs_it_needs():
+    """Rebuilding all forty-two costs 75s against 4 for one.
+
+    It was the largest single part of a preview build, and a reviewer needs the
+    PDF of the note under review, not of the other forty-one.
+
+    Nothing archival is at risk either way: preview PDFs are published to the
+    preview site and nowhere else, and the deposited copies are built by the
+    deposit workflow from `main`, which the preview cannot reach.
+    """
+    build_pdf = (ROOT / "scripts" / "build_pdf.py").read_text(encoding="utf-8")
+    assert "UWTN_PDF_ONLY" in build_pdf
+    assert 'sys.exit("UWTN_PDF_ONLY matched no articles' in build_pdf, \
+        "asking for a subset that does not exist must fail, not build all 42"
+
+    text = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    config = "\n".join(line for line in text.splitlines()
+                       if not line.lstrip().startswith("#"))
+    assert "UWTN_PDF_ONLY:" in config, "the preview must pass the changed notes"
+    deploy = (ROOT / ".github" / "workflows" / "deploy.yml").read_text(encoding="utf-8")
+    assert "UWTN_PDF_ONLY" not in deploy, \
+        "production must build every PDF, not a subset"
