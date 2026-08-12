@@ -182,18 +182,11 @@ uw.meshing.node_redistribution(
     skip_threshold=0.9)      # don't move an already-aligned mesh
 ```
 
-:::{warning} `accel="cg"` currently under-delivers
-The conjugate-gradient accelerator is the documented default, and while
-producing the figure above we found that it stalls: the line search rejects
-the accelerated direction, backtracks to a zero step, and the outer loop reads
-that as convergence. On the problem shown it stopped at iteration 9 of 150
-having reached 1.08× grading, where the unaccelerated mover reaches 1.65×.
-Tolerances, `n_outer` and the area floor are all uninvolved — only the
-accelerator matters. Until
-[underworld3#531](https://github.com/underworldcode/underworld3/issues/531)
-is closed, pass `accel="none"` and a larger `n_outer` when the grading you get
-looks weaker than the grading you asked for.
-:::
+`accel` selects how the outer iteration is driven. The unaccelerated descent
+above is the setting to reach for when the grading you get is weaker than the
+grading you asked for; it needs more outer iterations and it converges
+reliably. *Checking that the mover moved*, below, says how to tell a mover
+that has finished from one that has merely stopped.
 
 ## The transfer that remains, and why it is cheap
 
@@ -368,58 +361,56 @@ the feature, which an isotropic metric in 3D gives them no reason to do. Use it
 in 3D for conditioning and element quality. An anisotropic 3D metric is the
 open question.
 
-**A single number for "wasted refinement".** We wanted a scalar for how much
-resolution ends up outside the region that asked for it, and produced four,
-each wrong in its own way: one measured "the base is finer than the far-field
-target", one penalised smooth grading because a staircase scores well against
-it, one conflated helpful over-refinement on the feature with a useless halo
-off it, and one disagreed with what the mesh plainly looked like. The property
-is spatial — large coherent blocks of over-refinement are a problem, scattered
-patches are not — and every attempt collapsed it to a scalar. The deliverable
-is the per-cell map of $\log_2(h / h_{\text{asked}})$, and if a number is ever
-needed it should be the size of connected components, not a mean.
+**A single number for "wasted refinement".** How much resolution ends up
+outside the region that asked for it is a natural thing to want as a scalar,
+and it resists being one. Measured against the metric target it reports that
+the base mesh is finer than the far field, which is true and irrelevant;
+measured against base cell size it penalises smooth grading, because a
+staircase scores well; measured as an efficiency ratio it conflates
+over-refinement *on* the feature, which is harmless, with a halo *off* it,
+which is not. The property is spatial — large coherent blocks of
+over-refinement matter, scattered cells do not — and any scalar averages that
+structure away. The useful diagnostic is the per-cell map of
+$\log_2(h / h_{\text{asked}})$; if a number is genuinely needed it should
+measure the size of connected components, not a mean.
 
-## Two bugs worth naming
+## Checking that the mover moved
 
-They are the same bug twice, in different places, and the pattern is worth
-more than either instance.
+One practical point, because it is the failure mode this method has and it is
+not self-announcing.
 
-The line search that accepts a trial node position required the minimum cell
-area to stay above a floor — and the floor was one absolute value derived from
-the median cell volume across the whole mesh. On any graded mesh, which is to
-say on anything coming out of `mesh.adapt`, the finest cells start orders of
-magnitude below that floor. Every trial step was rejected, the line search
-backtracked to zero, and **the mover silently did nothing**.
+A mover that stops early returns a perfectly valid mesh. It is non-folded, its
+topology is intact, its partition is unchanged, and every field on it is
+consistent — it is simply not the mesh you asked for. Nothing downstream can
+tell, and the symptom, *the grading looks weaker than the metric I supplied*,
+reads as a modelling problem rather than a solver one.
 
-Silently, and *partition-dependently*: the median was a global mean of per-rank
-medians, so the same mesh moved on one rank and stood dead still on two. A
-mover that does nothing produces a valid mesh and a plausible answer, which is
-why this survived as long as it did.
+So check two things after a move, and check them the first time you set a
+problem up rather than only when something looks wrong.
 
-The fix is a per-cell relative floor — no cell may shrink below a fixed
-fraction of its *own* starting volume. Scale-free, grading-free,
-partition-independent, and still a strict no-fold certificate.
+**The iteration trace.** The mover reports its outer iterations under
+`verbose=True`. What you want to see is the functional decreasing and the
+line-search scale staying off zero. An outer step with `scale=0.000` and
+`dI=+0.00e+00` is not convergence in any useful sense: it means the line
+search rejected the trial direction and backtracked to no step at all. If that
+appears after a handful of iterations out of a budget of a hundred and fifty,
+the mover stopped, it did not finish.
 
-The second surfaced while making the figure in this note, and it is still open.
-The conjugate-gradient accelerator produces a search direction the line search
-will not accept; the line search backtracks to a zero step; and the outer loop
-reads a zero step as convergence and returns. Nine iterations out of a hundred
-and fifty, a quarter of the requested grading, and no complaint. Neither the
-tolerances nor the area floor are involved this time — only the accelerator —
-so the two defects share nothing but their symptom.
+**The grading you actually got.** Take the median cell size inside the region
+the metric asked to refine, divide by the median well outside it, and compare
+against the ratio you requested. This is three lines of NumPy and it is the
+only direct evidence that the metric was honoured:
 
-Which is the point. In both cases the mover returned a valid, non-folded mesh
-and a plausible answer, having quietly declined to do its job. The first
-survived long enough to make results partition-dependent; the second is
-[underworld3#531](https://github.com/underworldcode/underworld3/issues/531)
-and had gone unnoticed because "the mover doesn't seem to do very much" reads
-as a modelling problem rather than a solver one.
+```python
+h = np.sqrt(cell_areas(mesh))            # cell size, per cell
+on, off = in_feature(centroids), far_from_feature(centroids)
+print("achieved %.2fx" % (np.median(h[off]) / np.median(h[on])))
+```
 
-Two lessons, then. Any threshold derived from a global average is a bug
-waiting for a mesh with a wide enough distribution. And a numerical component
-that fails by *doing nothing* is far more dangerous than one that fails by
-falling over: a zero step is not convergence, and code that cannot tell the
-difference will eventually tell you so at the worst possible moment.
+Expect the answer to fall short of the metric, and by a lot from a uniform
+base — that is the fixed-budget ceiling of the previous section, and it is
+honest behaviour. What it should not do is come out near 1.0 while the mover
+reports success.
 
 ## Using it
 
