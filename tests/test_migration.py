@@ -1682,3 +1682,26 @@ def test_the_pdf_guard_does_not_fire_on_a_note_that_is_not_published():
     assert "UWTN_PREVIEW" in source, \
         "the guard must know which mode the build is in"
     assert "unpublished" in source and "p.parent.name not in unpublished" in source
+
+
+def test_the_site_serves_its_own_favicon():
+    """The tab icon is what a reader picks this site out by.
+
+    MyST ships a default, so without this every note looked like a MyST demo
+    site in a row of tabs. The option belongs under `site.options`, not beside
+    `site.title` -- put in the wrong place MyST warns once per page built,
+    which took a clean build to 43 warnings and told us exactly where it wanted
+    it.
+    """
+    myst = (ROOT / "myst.yml").read_text(encoding="utf-8")
+    options = myst.split("  options:")[1].split("\n  toc:")[0]
+    assert "favicon:" in options, \
+        "favicon must be under site.options, or MyST warns on every page"
+    icon = ROOT / "static" / "uwtn-favicon.ico"
+    assert icon.exists(), "the declared favicon is not in the repository"
+    # An .ico is a container: browsers pick a frame per context, and one 16px
+    # frame scaled up to a 32px tab is the blurry favicon everyone recognises.
+    header = icon.read_bytes()[:6]
+    assert header[:4] == b"\x00\x00\x01\x00", "not an .ico"
+    assert int.from_bytes(header[4:6], "little") >= 3, \
+        "the .ico should carry several sizes, not one"
