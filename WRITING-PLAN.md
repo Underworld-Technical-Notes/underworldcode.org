@@ -74,6 +74,14 @@ hierarchy survives node movement, and it is worth much less to a reader who
 has not been told what that hierarchy is worth. G1 is that note; the two
 should go out together rather than months apart.
 
+**Hold the deposit until the cross-links are in.** M1 forward-refers to M2
+(stack-on-top) and carries refinement material that belongs in M4, and neither
+target exists yet, so those references are currently unlinked prose. Publishing
+on the site with dangling references is recoverable; depositing is not, because
+the PDF is the citable record and its links are frozen at the moment the DOI
+is minted. So: publish when ready, deposit once M2 and M4 exist and the links
+point at them.
+
 The mover redistributes nodes to follow a metric **while keeping the mesh
 topology and the parallel decomposition intact**. That is the whole point and it
 is what distinguishes it from remeshing: multigrid levels survive, the
@@ -98,6 +106,30 @@ Status: not started. **Deliberately separate from M2.**
 This one is about resolving a fault, and it may belong to the meshing paper or
 to the fault paper depending on how each turns out. Keeping it as its own note
 means it can serve either without being rewritten.
+
+### M4. Refinement strategies and what they cost in element quality
+
+Status: not started. **Holds material cut from M1**, which is where it was
+first written and where it did not belong — a note about redistribution under
+a fixed budget is not the place to explain tagging rules.
+
+The text is in the M1 branch history (`git show c60c934^ --
+articles/moving-the-mesh-without-remaking-it/`), and covers:
+
+- how a refinement rule chooses where a node goes — the nominated edge under
+  bisection, the cell centroid under Alfeld — and why neither looks at
+  geometry;
+- what that costs: bisection has bounded quality degradation, centroid/Alfeld
+  produces structural slivers that no node motion can repair;
+- `error x cells` as the scale-free comparator for P1 interpolation error in
+  2D, and why raw error misleads when the cell counts differ;
+- where relaxation belongs in an adapt loop — at the end, or per generation —
+  and why we decline to rank them.
+
+**Cross-link with M1 before either is deposited.** M1 currently forward-refers
+to "the next note in this series" with no link, because the target does not
+exist yet. The deposited PDF is the citable record, so the links have to be in
+place before the DOI is minted, not after.
 
 ---
 
@@ -364,7 +396,7 @@ Listed as candidates, not commitments.
 
 | Order | Note | Why |
 |-------|------|-----|
-| 1 | M1 MMPDE mover | Drafted (UWTN 2026-011); anchors the meshing paper |
+| 1 | M1 MMPDE mover | Drafted (UWTN 2026-011); anchors the meshing paper. Deposit held for cross-links |
 | 2 | M2 Stacking resolution | Reads as the answer to M1's limitation |
 | 3 | M3 Stack-on-top for faults | Bridges the two papers — settle the F3 overlap first |
 | 4 | F1 The problem and the options | The frame the rest of the fault cluster hangs on |
