@@ -10,7 +10,18 @@ name: deposit
 # Manual only. There is no push trigger: minting an identifier is an editorial
 # act, and it should take a person deciding to do it.
 
+# Two ways in, and both are a person deciding.
+#
+# A push to deposit-queue.txt means somebody merged a pull request titled
+# "Deposit: <note>". That is the editorial act; the merge is the consent. The
+# file is only ever changed by such a merge, so this cannot fire on its own.
+#
+# workflow_dispatch is the manual route, for a re-run or a mode other than
+# deposit-all.
 on:
+  push:
+    branches: [main]
+    paths: ['deposit-queue.txt']
   workflow_dispatch:
     inputs:
       slug:
@@ -103,8 +114,11 @@ jobs:
           FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
         run: pixi run deposit -- --slug "${{ inputs.slug }}" --live --publish
 
+      # A queue merge has no inputs, so `mode` is empty and this is the step
+      # that runs. Anything already holding a record is skipped, so a stale line
+      # in the queue does nothing.
       - name: Deposit and publish everything outstanding
-        if: inputs.mode == 'deposit-all'
+        if: inputs.mode == 'deposit-all' || github.event_name == 'push'
         env:
           FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
         run: pixi run deposit -- --all --live --publish
