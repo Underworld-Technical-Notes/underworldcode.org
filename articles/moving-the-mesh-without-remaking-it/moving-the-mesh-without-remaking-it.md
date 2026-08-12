@@ -88,7 +88,7 @@ recontructing the hierarchical nature of the grid. It may not require
 remapping the data under some circumstances. We stretch the grid, like an 
 elastic net, allowing the points to move but to stay connected to their neighbours.
 
-*The node budget is fixed?* No node is created, none is destroyed, and
+*When the node budget is fixed,* no node is created, none is destroyed, and
 no cell changes its neighbours. Every node stays on the rank that owned it.
 What moves is where the nodes **are** — they slide to where the resolution is
 wanted and away from where it is not.
@@ -104,7 +104,7 @@ Much of what makes refinement complex and expensive is then absent by constructi
 What you give up is equally clear, and we will come back to that: a fixed budget
 of nodes can only be redistributed, never increased.
 
-## It is an equidistribution problem, not a smoothing heuristic
+## Equidistribution is not mesh optimisation
 
 As with any simple idea, the practical implementation is often full of traps. 
 Redistributing a mesh is a global operation: nodes all need to move in synchrony
@@ -190,13 +190,13 @@ uw.meshing.node_redistribution(
 above is the setting to reach for when the grading you get is weaker than the
 grading you asked for; it needs more outer iterations and it converges
 reliably. *Checking that the mover moved*, below, says how to tell a mover
-that has finished from one that has merely stopped.
+that has finished from one that has merely stalled.
 
-## The transfer that remains, and why it is cheap
+## Data updates are still needed
 
-It would be too neat to say no field transfer is needed. Nodes move, so the
-value stored at a node is now the value of the old field at a place the node no
-longer is, and it has to be re-evaluated. That is an interpolation and it costs
+It would be nice to say no field transfer is needed but it's not true.
+Nodes move, so the value stored at a node is now the value of the old field at a place the node 
+used to be, and it has to be re-evaluated. That is an interpolation and it costs us in 
 accuracy once we evaluate the update.
 
 What it does not cost is communication. A node moves a fraction of a cell
@@ -207,7 +207,7 @@ land anywhere in the domain, on any rank, requiring a parallel search and then
 a migration to answer it. Same operation in name; entirely different in cost
 and in who has to talk to whom.
 
-## The reference frame is the lever
+## Setting a reference frame
 
 The functional measures a cell's distortion against a *reference* element. By
 default, the reference is the mesh as it was on the first call. That is the
@@ -250,18 +250,17 @@ went 117.9° → 113.8° without a metric and 117.9° → **127.4°** with one. 
 metric version is not the better-informed version; it is a different job.
 :::
 
-## The ceiling: a fixed node budget
-
-This is the honest limit, and it is structural rather than a matter of tuning.
+## The ceiling is set by the node budget
 
 A mover redistributes; it never adds a node. Starting from a uniform mesh it
 saturates — about 1.8× finer on a fault than in the background — and no amount
 of iteration goes past that. The nodes it would need are somewhere else, and if
-the metric has ridges between here and there, they cannot get here without
-someone paying in cell quality.
+the metric has ridges between where the nodes are and where we want them, the 
+algorithm cannot push nodes over that barrier. 
 
-The remedy is not to iterate harder. It is to start with the nodes. Put the
-refinement into the gmsh base and the mover does not merely maintain it, it
+We can see this limit directly if we add in the nodes that the redistribution 
+needs when we initially mesh the domain. If we put a refinement into the base mesh,
+the mover does not merely maintain it, it
 **compounds** it. Measured on a fault in an annulus, as the ratio of on-fault
 to bulk nearest-neighbour spacing — lower is finer:
 
@@ -271,14 +270,11 @@ to bulk nearest-neighbour spacing — lower is finer:
 | gmsh, `refine_lines` at 2 | 0.44 | 0.29 (~3.4×) |
 | gmsh, `refine_lines` at 3 | 0.30 | 0.19 (~5×) |
 
-The extra nodes lift the mover off its budget cap, and it then extracts
-grading the base mesh alone could not.
-
-The fixed budget is also the argument for the next note in this series. When the
-feature turns up where you did not put nodes at construction time — and in a
-convecting model it will — redistribution cannot reach it. Stacking local,
-ephemeral resolution *on top* of the moved mesh is the other answer, and it
-keeps every advantage described here underneath it.
+The MMPDE algorithm has the capacity to work with meshes that are already
+refined and improve them. It is helpful to have MMPDE even if you are 
+also refining the mesh. There is usually benefit, and the mover is benign: it
+will not degrade or undo any refinement you give it. We will come back to this
+in a later article. 
 
 ## Where the two strategies meet
 
