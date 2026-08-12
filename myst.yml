@@ -177,6 +177,11 @@ site:
   # END GENERATED NAV
   options:
     logo_text: Underworld Technical Notes
+    # The bat-and-globe, which is what a reader recognises in a row of tabs.
+    # MyST ships its own otherwise, so the site looked like a MyST demo. It
+    # belongs under `options`, not beside `title` -- MyST says so, once per
+    # page built, which is how a clean build went to 43 warnings.
+    favicon: static/uwtn-favicon.ico
     # The landing page is generated as a feed by scripts/build_index.py and
     # styled by static/uwtn.css, which borrows the archival PDF's typography so
     # the two renditions read as one publication.
