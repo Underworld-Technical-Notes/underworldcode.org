@@ -1,0 +1,75 @@
+name: deposit-ready
+
+# When a note lands on `main` without a DOI, ask whether it should have one.
+#
+# The step after publishing is depositing, and it was the step that got
+# forgotten -- nothing on the site says a note has no DOI, and the person who
+# merged it has moved on. So this opens a pull request adding the note to
+# deposit-queue.txt, and merging THAT is what runs the deposit.
+#
+# The reminder is automatic; the act is not. A note is never deposited because
+# it was published, only because somebody merged the request to deposit it.
+
+on:
+  push:
+    branches: [main]
+    paths: ['articles/**/metadata.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  ask:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: prefix-dev/setup-pixi@v0.8.1
+        with:
+          cache: true
+
+      - name: Which notes have no DOI
+        id: pending
+        run: |
+          SLUGS=$(pixi run -q python3 -c "
+          import sys; sys.path.insert(0, 'scripts'); import deposit
+          queued = set()
+          try:
+              for line in open('deposit-queue.txt'):
+                  line = line.split('#')[0].strip()
+                  if line: queued.add(line)
+          except FileNotFoundError:
+              pass
+          print(','.join(s for s in deposit.pending() if s not in queued))
+          ")
+          echo "slugs=${SLUGS}" >> "$GITHUB_OUTPUT"
+          echo "not yet queued: ${SLUGS:-none}"
+
+      - name: Ask, by pull request
+        if: steps.pending.outputs.slugs != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="deposit/queue-${GITHUB_RUN_ID}"
+          git config user.name "underworld-technical-notes"
+          git config user.email "help@underworldcode.org"
+          git checkout -b "$BRANCH"
+          for SLUG in $(echo "${{ steps.pending.outputs.slugs }}" | tr ',' ' '); do
+            echo "$SLUG" >> deposit-queue.txt
+          done
+          git add deposit-queue.txt
+          git commit -m "Deposit: ${{ steps.pending.outputs.slugs }}
+
+          Opened automatically because these notes are on main without a DOI.
+          Merging this runs the deposit workflow."
+          git push origin "$BRANCH"
+          gh pr create --base main --head "$BRANCH" \
+            --title "Deposit: ${{ steps.pending.outputs.slugs }}" \
+            --body "These notes are published and have no DOI.
+
+          **Merging this mints one.** The deposit workflow reserves a DOI, rebuilds the PDF so the DOI is on its title page, uploads the PDF and the archive package, publishes the record, and opens a further pull request with the identifiers.
+
+          A published DOI cannot be withdrawn, only superseded. Close this instead if a note is not ready — it will be offered again the next time anything changes, so nothing is lost by waiting.
+
+          Underworld development team with AI support from [Claude Code](https://claude.com/claude-code)"

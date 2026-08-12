@@ -10,7 +10,18 @@ name: deposit
 # Manual only. There is no push trigger: minting an identifier is an editorial
 # act, and it should take a person deciding to do it.
 
+# Two ways in, and both are a person deciding.
+#
+# A push to deposit-queue.txt means somebody merged a pull request titled
+# "Deposit: <note>". That is the editorial act; the merge is the consent. The
+# file is only ever changed by such a merge, so this cannot fire on its own.
+#
+# workflow_dispatch is the manual route, for a re-run or a mode other than
+# deposit-all.
 on:
+  push:
+    branches: [main]
+    paths: ['deposit-queue.txt']
   workflow_dispatch:
     inputs:
       slug:
@@ -64,6 +75,7 @@ jobs:
     # to avoid.
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
 
@@ -102,8 +114,11 @@ jobs:
           FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
         run: pixi run deposit -- --slug "${{ inputs.slug }}" --live --publish
 
+      # A queue merge has no inputs, so `mode` is empty and this is the step
+      # that runs. Anything already holding a record is skipped, so a stale line
+      # in the queue does nothing.
       - name: Deposit and publish everything outstanding
-        if: inputs.mode == 'deposit-all'
+        if: inputs.mode == 'deposit-all' || github.event_name == 'push'
         env:
           FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
         run: pixi run deposit -- --all --live --publish
@@ -132,25 +147,41 @@ jobs:
       # obtained, so a run that dies partway can resume instead of reserving a
       # second identifier. That only helps if the change gets back to the
       # repository, so it is committed here rather than left on the runner.
-      - name: Commit the identifiers
-        # always(): a run that dies partway has usually already created a draft
-        # and reserved a DOI. If that never reaches the repository, the guard
-        # against a second record has nothing to check -- which happened once
-        # already, when the push 403'd.
+      # A PULL REQUEST, not a push. `main` requires one, so the push was
+      # rejected -- after the DOI had been minted and the record published.
+      # That is the worst state this design has: a published identifier the
+      # repository does not know about, so the guard against minting a SECOND
+      # one for the same note has nothing to check.
+      #
+      # always(): a run that dies partway has usually already created a draft
+      # and reserved a DOI, and that must reach the repository even so.
+      - name: Open a pull request with the identifiers
         if: always() && inputs.mode != 'dry-run'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if git diff --quiet -- articles; then
             echo "no identifier changes to record"
             exit 0
           fi
+          BRANCH="deposit/identifiers-${GITHUB_RUN_ID}"
           git config user.name "underworld-technical-notes"
           git config user.email "help@underworldcode.org"
+          git checkout -b "$BRANCH"
           git add articles
-          git commit -m "Record the deposit identifiers for ${{ inputs.slug }}
+          git commit -m "Record the deposit identifiers${{ inputs.slug && format(' for {0}', inputs.slug) || '' }}
 
           Written by the deposit workflow (${{ inputs.mode }}). The record id is
-          the guard against ever minting a second DOI for this note."
-          git push
+          the guard against ever minting a second DOI for these notes, so this
+          has to reach the repository even if the run failed."
+          git push origin "$BRANCH"
+          gh pr create --base main --head "$BRANCH" \
+            --title "Deposit identifiers from run ${GITHUB_RUN_ID}" \
+            --body "DOIs and record ids written by the deposit workflow (\`${{ inputs.mode }}\`).
+
+          **Merge this.** Until it lands, the repository does not know these records exist, and the guard against minting a second DOI for the same note has nothing to check.
+
+          Underworld development team with AI support from [Claude Code](https://claude.com/claude-code)"
 
       - name: The package that was built
         if: always()
