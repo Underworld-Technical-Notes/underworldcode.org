@@ -1,11 +1,11 @@
 ---
 title: Moving the Mesh Without Remaking It
 description: >-
-  Adaptive refinement puts resolution where the physics needs it and charges for
-  it twice: in parallel data migration, and in the multigrid hierarchy it tears
-  down. Moving the nodes instead — an optimal-transport style redistribution
-  under a fixed node budget — buys much of the same resolution and pays neither
-  bill. Here is how it works in Underworld3, what it is worth in numbers, and
+  There are three ways to put resolution where a calculation needs it: rebuild
+  the mesh, subdivide it, or move its nodes. The third conserves the node budget
+  and leaves the connectivity, the parallel partition and the multigrid
+  hierarchy untouched — nothing is created or destroyed, only relocated. How
+  that redistribution works in Underworld3, what it is worth in numbers, and
   where its ceiling is.
 date: 2026-08-12
 authors:
@@ -29,7 +29,6 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 0.0.0
 ---
-
 A geodynamic model with a uniform mesh, almost certainly 
 expends most of its resolution in the wrong places. The
 features that need small cells: a thermal boundary layer; a shear band; a
@@ -251,69 +250,6 @@ went 117.9° → 113.8° without a metric and 117.9° → **127.4°** with one. 
 metric version is not the better-informed version; it is a different job.
 :::
 
-## What this is worth on a refined mesh
-
-Refinement chooses where a new node goes from *combinatorics*: which edge the
-tagging rule nominated under bisection, or the cell centroid (the Alfeld strategy). It
-never looks at geometry. So the needles and slivers a refined mesh carries
-reflect the base mesh's arbitrary choices rather than anything about the
-problem — which is exactly the situation the ideal frame was built for.
-
-On a mesh from the library's own bisection adapt (five levels, 1143 cells),
-measuring the P1 interpolation error of a fault-localised field, relaxing once
-at the end cut the error by **17.5%** in serial and 17.2% on two ranks. No new
-cells, no new degrees of freedom, no change to the solver setup.
-
-On the production path — gmsh base, one refinement pass, NVB adapt to three
-levels, Stokes preconditioned with a custom-prolongation full multigrid:
-
-| configuration | cells | error | error × cells | velocity KSP its |
-|---|---|---|---|---|
-| adapt only | 832 | 2.746e-2 | 22.85 | 4 |
-| relax at end | 832 | 2.559e-2 | 21.29 | 3 |
-| relax every generation | 856 | **2.384e-2** | **20.40** | 4 |
-
-The comparator is error × cells rather than error alone: P1 $L_2$
-interpolation error goes like $h^{2}$ and cell count like $h^{-2}$ in two
-dimensions, so their product is what does not depend on how fine you happened
-to go. Relaxing inside the refinement loop wins on both axes for three percent
-more cells.
-
-Both placements are defensible and we deliberately do not rank them.
-`adapt(metric, relax=True)` relaxes once at the end and is the default, being
-cheaper and less invasive; `relax="per-generation"` relaxes inside the loop so
-each pass marks from already-relaxed coordinates, giving the cleanest elements
-and the lowest error at a small cost in cells.
-
-:::{note} How much this is worth depends on how bad the start is
-The ordering study above used a structured right-triangle grid, which is nearly
-optimal for bisection to begin with ($q = 0.866$, maximum angle 90°), so the
-gains there are small. On a gmsh base — which is what production actually uses
-— the same operation was worth 17.5%. A mover's benefit scales with how much
-was wrong.
-:::
-
-## Does the hierarchy actually survive?
-
-That is the claim the whole approach rests on, so it should be checked rather
-than asserted. In the production comparison above, all three configurations
-kept a full four-level `pc=mg`, none fell back to algebraic multigrid, all
-converged for the same reason, and their peak velocities agreed to four
-significant figures. Moving the nodes did not cost a level.
-
-There is one real qualification. Multigrid does not care about coordinates —
-the hierarchy lives in the operators, and intermediate meshes are preserved as
-topology, not as geometry. But Underworld3's custom-prolongation transfers are
-*built* by geometric point location rather than derived from the refinement
-relation, and moving the nodes can leave a coarse degree of freedom with no
-fine image under the local-support barycentric builder. The build now retries
-with the global-support RBF builder before giving up. Measured in 3D: before
-the retry existed the hierarchy collapsed to algebraic multigrid at 23
-iterations; with it, `pc=mg` at 2.
-
-The topology survives, in other words, but a transfer operator built from
-geometry has to be told the geometry moved.
-
 ## The ceiling: a fixed node budget
 
 This is the honest limit, and it is structural rather than a matter of tuning.
@@ -338,21 +274,73 @@ to bulk nearest-neighbour spacing — lower is finer:
 The extra nodes lift the mover off its budget cap, and it then extracts
 grading the base mesh alone could not.
 
-That ceiling is also the argument for the next note in this series. When the
+The fixed budget is also the argument for the next note in this series. When the
 feature turns up where you did not put nodes at construction time — and in a
 convecting model it will — redistribution cannot reach it. Stacking local,
 ephemeral resolution *on top* of the moved mesh is the other answer, and it
 keeps every advantage described here underneath it.
 
+## Where the two strategies meet
+
+So the two are not really alternatives, and the second reference frame is where
+they meet. Once the base mesh carries refinement, or a subdivision has added
+some, the mover has a second job to do on it.
+
+Refinement puts each new node where its tagging rule says, never where the
+geometry would want it, so a refined mesh carries needles and slivers that
+record the base mesh's arbitrary choices rather than anything about the
+problem. That is precisely what the ideal frame is for: keep the resolution the
+refinement installed, and move the nodes to where the shapes want them.
+
+It is worth having. On an adapted mesh of 1143 cells, one `relax()` call cut
+the interpolation error of a localised feature by **17.5%** — no new cells, no
+new degrees of freedom, no change to the solver. On the production path, with
+Stokes preconditioned by a custom-prolongation full multigrid:
+
+| configuration | cells | error | velocity KSP its |
+|---|---|---|---|
+| adapt only | 832 | 2.746e-2 | 4 |
+| relax at end | 832 | 2.559e-2 | 3 |
+| relax every generation | 856 | **2.384e-2** | 4 |
+
+Relaxing once at the end costs nothing in cells and takes 6.8% off the error;
+relaxing inside the refinement loop, so that each pass marks from
+already-relaxed coordinates, takes off 13.2% for three percent more cells.
+How much either is worth depends on how poor the mesh was to begin with — on a
+base already near-optimal for its refinement rule there is little to repair,
+which is the honest reason these numbers are not larger.
+
+## Does the hierarchy actually survive?
+
+That is the claim the whole approach rests on, so it should be checked rather
+than asserted. In the production comparison above, all three configurations
+kept a full four-level `pc=mg`, none fell back to algebraic multigrid, all
+converged for the same reason, and their peak velocities agreed to four
+significant figures. Moving the nodes did not cost a level.
+
+There is one real qualification. Multigrid does not care about coordinates —
+the hierarchy lives in the operators, and intermediate meshes are preserved as
+topology, not as geometry. But Underworld3's custom-prolongation transfers are
+*built* by geometric point location rather than derived from the refinement
+relation, and moving the nodes can leave a coarse degree of freedom with no
+fine image under the local-support barycentric builder. The build now retries
+with the global-support RBF builder before giving up. Measured in 3D: before
+the retry existed the hierarchy collapsed to algebraic multigrid at 23
+iterations; with it, `pc=mg` at 2.
+
+The topology survives, in other words, but a transfer operator built from
+geometry has to be told the geometry moved.
+
 ## What it does not fix
 
-Three things, stated because each of them cost us a wrong conclusion first.
+Three limits, stated plainly.
 
-**Slivers that are structural.** Centroid and Alfeld refinement place an
-interior point against a fixed parent face. The resulting sliver is a property
-of the *topology*, and no amount of node motion repairs a topology. Relaxed or
-not, cells with $q < 0.3$ stay at 25–28% and maximum angles at 176–178°. The
-mover is a shallow tool on that mesh; use bisection.
+**Slivers that are structural.** Refinement by centroid — the Alfeld strategy —
+places an interior point against a fixed parent face. The resulting sliver is a
+property of the *topology*, and no amount of node motion repairs a topology.
+Relaxed or not, cells with $q < 0.3$ stay at 25–28% and maximum angles at
+176–178°. The mover is a shallow tool on that mesh; refine by bisection
+instead.
 
 **Accuracy in three dimensions.** In 3D, relaxation improves mesh quality
 substantially — the near-degenerate population halves (cells with $q < 0.1$,
@@ -366,16 +354,10 @@ open question.
 
 **A single number for "wasted refinement".** How much resolution ends up
 outside the region that asked for it is a natural thing to want as a scalar,
-and it resists being one. Measured against the metric target it reports that
-the base mesh is finer than the far field, which is true and irrelevant;
-measured against base cell size it penalises smooth grading, because a
-staircase scores well; measured as an efficiency ratio it conflates
-over-refinement *on* the feature, which is harmless, with a halo *off* it,
-which is not. The property is spatial — large coherent blocks of
-over-refinement matter, scattered cells do not — and any scalar averages that
-structure away. The useful diagnostic is the per-cell map of
-$\log_2(h / h_{\text{asked}})$; if a number is genuinely needed it should
-measure the size of connected components, not a mean.
+and it resists being one: the property is spatial, since large coherent blocks
+of over-refinement matter and scattered cells do not, and every scalar we tried
+averaged that structure away. Look at the per-cell map of
+$\log_2(h / h_{\text{asked}})$ instead.
 
 ## Checking that the mover moved
 
