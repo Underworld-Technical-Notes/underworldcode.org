@@ -74,13 +74,15 @@ hierarchy survives node movement, and it is worth much less to a reader who
 has not been told what that hierarchy is worth. G1 is that note; the two
 should go out together rather than months apart.
 
-**Hold the deposit until the cross-links are in.** M1 forward-refers to M2
-(stack-on-top) and carries refinement material that belongs in M4, and neither
-target exists yet, so those references are currently unlinked prose. Publishing
-on the site with dangling references is recoverable; depositing is not, because
-the PDF is the citable record and its links are frozen at the moment the DOI
-is minted. So: publish when ready, deposit once M2 and M4 exist and the links
-point at them.
+**Forward-refers to M2 and M4, which do not exist yet**, so those references
+are unlinked prose. Not a reason to delay the deposit — this is not a journal
+of record, the concept DOI resolves to the newest version, and re-versioning
+is cheap (`pixi run deposit -- --slug ... --live --new-version`; we put 40
+records to v2 in a single batch in August 2026). Publish and deposit when
+ready, then issue v2 with the links once the targets exist.
+
+The thing to remember is the v2, so the reminder lives on the entries for the
+notes that trigger it rather than here — see M2, M4 and G1.
 
 The mover redistributes nodes to follow a metric **while keeping the mesh
 topology and the parallel decomposition intact**. That is the whole point and it
@@ -98,6 +100,10 @@ there are ridges in the metric between here and there. Stack-on-top answers
 both: local, ephemeral resolution added where it is needed, keeping every MMPDE
 advantage underneath. The argument for the reader is the limitation first, then
 the remedy — the limitation is what makes the remedy interesting.
+
+**On publication: re-version M1.** UWTN 2026-011 refers to this note in prose
+without a link, because it did not exist yet. Issue a v2 of M1 with the
+cross-link in place.
 
 ### M3. Stack-on-top for faults
 
@@ -141,6 +147,10 @@ approaches is the contribution.
 The split is by **note**, not by mechanism. F1 lays out the problem and names
 the ways of attacking it; F2–F4 each take one and go deep; F5 puts them side by
 side.
+
+**On publication: re-version M1.** UWTN 2026-011 refers to this note in prose
+without a link, because it did not exist yet. Issue a v2 of M1 with the
+cross-link in place.
 
 ### F1. Faults: the problem, and the ways to attack it
 
@@ -233,6 +243,10 @@ make it more than a recipe:
 
 Relates to M1: preserving multigrid topology is the mover's selling point, and
 this is the note that says what that topology is worth.
+
+**On publication: re-version M1.** M1 defers to this note for what the
+multigrid hierarchy is worth, and says so without a link. Issue a v2 of M1
+with the cross-link in place.
 
 ## Running Underworld without installing it
 
@@ -396,7 +410,7 @@ Listed as candidates, not commitments.
 
 | Order | Note | Why |
 |-------|------|-----|
-| 1 | M1 MMPDE mover | Drafted (UWTN 2026-011); anchors the meshing paper. Deposit held for cross-links |
+| 1 | M1 MMPDE mover | Drafted (UWTN 2026-011); anchors the meshing paper |
 | 2 | M2 Stacking resolution | Reads as the answer to M1's limitation |
 | 3 | M3 Stack-on-top for faults | Bridges the two papers — settle the F3 overlap first |
 | 4 | F1 The problem and the options | The frame the rest of the fault cluster hangs on |
