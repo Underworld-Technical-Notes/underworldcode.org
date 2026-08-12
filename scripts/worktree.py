@@ -78,13 +78,31 @@ def create(name, base):
         print("worktree %s on new branch %s (from origin/%s)"
               % (target, branch, base))
 
-    print("\nIt needs its own environment -- that is the point, and it takes a")
-    print("few minutes the first time:\n")
+    # What to do next depends on whether the branch already has a note on it.
+    # Telling somebody to `pixi run new` on a branch that already carries the
+    # article they came to edit is worse than saying nothing: it reads as the
+    # required next step, and it is not.
+    existing_notes = subprocess.run(
+        ["git", "diff", "--name-only", "origin/%s...%s" % (base, branch),
+         "--", "articles/*/metadata.yml"],
+        cwd=ROOT, capture_output=True, text=True).stdout.split()
+    slugs = sorted({p.split("/")[1] for p in existing_notes if "/" in p})
+
+    print("\nIt has its own environment -- that is the point, and installing it")
+    print("takes a few minutes the first time:\n")
     print("    cd %s" % target)
     print("    pixi install")
-    print("    pixi run new --slug %s --title \"...\" --author louis" % slug)
-    print("    pixi run start\n")
-    print("Then push the branch to get a preview link on the pull request.")
+    if slugs:
+        print("    pixi run start          # then edit:")
+        for found in slugs:
+            print("        articles/%s/%s.md" % (found, found))
+    else:
+        print("    pixi run new --slug %s --title \"...\" --author louis" % slug)
+        print("    pixi run start")
+    print("\n`pixi run start` serves http://localhost:3000 with hot reload, and")
+    print("shows notes at draft and review the way the preview site does.")
+    print("Push the branch when it is worth someone else reading: the preview")
+    print("link appears on the pull request.")
 
 
 def listing():

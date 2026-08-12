@@ -34,6 +34,22 @@ Three cycles, three tools, and they do not interfere:
 `pixi run worktree list` shows what is in flight; `remove` takes the working
 copy away and leaves the branch, since those are different decisions.
 
+**Picking up a note that already exists** — one somebody started on the web, or
+that you left a fortnight ago — is the same command. It adopts the branch
+rather than creating one, and tells you which note is on it:
+
+```bash
+pixi run worktree create binder-note          # adopts note/binder-note
+cd ../underworld-technical-notes-worktrees/binder-note
+git pull
+pixi install                                  # first time only
+pixi run start
+```
+
+**Editing on GitHub is fine for a typo** and no worse than doing it locally.
+It is a poor way to fix formatting, because you cannot see the built page —
+and formatting is exactly what the local server is for.
+
 **Looking for something to write?** `WRITING-PLAN.md` holds the planned notes,
 what each is meant to explain, and which of them are grouped into a candidate
 paper. Notes are written as micro-preprints: two or three related ones become
