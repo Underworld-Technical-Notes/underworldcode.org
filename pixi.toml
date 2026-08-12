@@ -63,6 +63,11 @@ build = { depends-on = ["build-pdf", "build-html"] }
 #   pixi run worktree create particle-level-sets
 worktree = "python3 scripts/worktree.py"
 
+# Push the site you already built straight to the preview host, instead of
+# making a runner rebuild it. Removes everything before GitHub's own ~60s
+# deployment, which is the floor and is the same either way.
+preview = "python3 scripts/preview_push.py"
+
 index-preview = { cmd = "python3 scripts/build_index.py", depends-on = ["pages"], env = { UWTN_PREVIEW = "1" } }
 start = { cmd = "myst start", depends-on = ["index-preview"], env = { UWTN_PREVIEW = "1" } }
 

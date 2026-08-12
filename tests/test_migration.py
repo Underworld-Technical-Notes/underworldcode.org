@@ -1729,3 +1729,28 @@ def test_a_preview_builds_only_the_pdfs_it_needs():
     deploy = (ROOT / ".github" / "workflows" / "deploy.yml").read_text(encoding="utf-8")
     assert "UWTN_PDF_ONLY" not in deploy, \
         "production must build every PDF, not a subset"
+
+
+def test_the_fast_preview_cuts_the_toc_after_the_pdfs_not_before():
+    """`build-pdf` depends on `index`, which regenerates the FULL toc.
+
+    Cut the toc first and it is put straight back, MyST builds all fifty-four
+    pages, and the saving vanishes with nothing to show it went wrong -- the
+    preview still works, just slowly, which is the hardest kind of regression
+    to notice.
+    """
+    source = (ROOT / "scripts" / "preview_push.py").read_text(encoding="utf-8")
+    steps = source.split("steps = [")[1].split("]]")[0]
+    assert steps.index("build-pdf") < steps.index("preview_only.py"), \
+        "the toc must be cut after build-pdf, which rebuilds it"
+    assert steps.index("preview_only.py") < steps.index("build\", \"--html"), \
+        "the toc must be cut before the HTML build, or it has no effect"
+
+
+def test_a_single_note_preview_still_marks_itself():
+    """Fast must not mean unmarked: it is still an unpublished note on a public
+    host, so it still needs noindex, the banner and no Giscus."""
+    source = (ROOT / "scripts" / "preview_push.py").read_text(encoding="utf-8")
+    mark = source.index("preview_mark.py")
+    push = source.index('"push", "--quiet"')
+    assert mark < push, "mark the build before pushing it, not after"
