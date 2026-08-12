@@ -64,9 +64,15 @@ first note ships with examples and the pattern is settled.
 The immediate priority, in order. These three are close enough in subject that
 they are the first candidate paper.
 
-### M1. MMPDE as an optimal-transport style mover — **write this next**
+### M1. MMPDE as an optimal-transport style mover
 
-Status: not started.
+Status: **drafted** — UWTN 2026-011, *Moving the Mesh Without Remaking It*,
+at `review` on `note/moving-the-mesh-without-remaking-it`.
+
+**Publish alongside G1.** The note's central claim is that the multigrid
+hierarchy survives node movement, and it is worth much less to a reader who
+has not been told what that hierarchy is worth. G1 is that note; the two
+should go out together rather than months apart.
 
 The mover redistributes nodes to follow a metric **while keeping the mesh
 topology and the parallel decomposition intact**. That is the whole point and it
@@ -179,7 +185,8 @@ so a boundary condition that has to evolve in time still wants Nitsche.
 
 ### G1. Setting up full multigrid
 
-Status: not started. **One post.**
+Status: not started. **One post.** **Paired with M1** — see the note there;
+M1 is drafted and waiting on this one so the two can publish together.
 
 How to actually set FMG up, which is the part nobody writes down. Two things
 make it more than a recipe:
@@ -357,7 +364,7 @@ Listed as candidates, not commitments.
 
 | Order | Note | Why |
 |-------|------|-----|
-| 1 | M1 MMPDE mover | Louis's next; anchors the meshing paper |
+| 1 | M1 MMPDE mover | Drafted (UWTN 2026-011); anchors the meshing paper |
 | 2 | M2 Stacking resolution | Reads as the answer to M1's limitation |
 | 3 | M3 Stack-on-top for faults | Bridges the two papers — settle the F3 overlap first |
 | 4 | F1 The problem and the options | The frame the rest of the fault cluster hangs on |
