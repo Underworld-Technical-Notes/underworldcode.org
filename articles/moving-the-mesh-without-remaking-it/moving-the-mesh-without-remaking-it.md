@@ -29,22 +29,42 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 0.0.0
 ---
-A geodynamic model spends most of its resolution in the wrong place. The
-features that need small cells — a thermal boundary layer, a shear band, a
-subducting slab's nose, a fault — occupy a few percent of the domain and move
-around during the calculation. A uniform mesh sized for the thinnest of them is
-sized for all of it, and most of that expense buys nothing.
 
-The standard answer is adaptive refinement: mark the cells where an error
-estimate is large, split them, repeat. It works, and it is the right tool often
-enough that every serious code has it. But it charges for the resolution twice,
-and the second charge is the one nobody quotes.
+A geodynamic model with a uniform mesh, almost certainly 
+expends most of its resolution in the wrong places. The
+features that need small cells: a thermal boundary layer; a shear band; a
+subducting slab's megathrust zone, each occupy a few percent of the domain 
+and usually move around during the calculation. Mesh refinement is important,
+and so is the ability to respond to changes in where the refinement is needed.
+
+When the requirements for refinement change throughout the computation, we have to
+undertake an *adaptive mesh refinement* each step, or every few steps. 
+Conceptually, the simplest way to do this is to build a new mesh with exactly the
+resolution we need, then transfer all the problem data to the new mesh. This will give
+us the ideal mesh for the problem, but it does mean navigating and interpolating 
+between meshes and is particularly tricky in parallel. 
+
+An alternative is to *add* resolution to the mesh where and when it is needed, 
+starting from a base mesh which we keep as a reference point for the duration 
+of the calculation. Much of the mesh then remains unchanged and we only need
+to move data in areas where nodes have been added. Because we are limited to
+splitting existing elements, however, there are some limits to how "nice" a 
+mesh we can construct.
+
+An alternative to these form of refinement is to deform the grid so the
+nodes **bunch up** where additional resolution is required and become more widely
+spaced elsewhere. A fixed node budget, deployed as effectively as possible while
+maintaining mesh quality. 
+
+We'll show how mesh-redisribution can be done, what sort of resolution 
+improvements we can achieve, and discuss the advantages / disadvantages of 
+this way of doing things. But first, some background.
 
 ## What refinement charges
 
-Refinement changes the point set, and in a parallel run three things follow.
+Refinement changes the points in the mesh, and in a parallel run three things follow.
 
-**The partition is no longer balanced.** New cells appear where the physics is
+**The partition may no longer be balanced.** New cells appear where the physics is
 interesting, which is to say unevenly, so the ranks that own the interesting
 region end up owning most of the work. Fixing that means repartitioning and
 migrating — cells, degrees of freedom, every field, and any particles riding
@@ -58,38 +78,23 @@ places that do not correspond, and interpolating between them costs accuracy
 every time. Do it every ten steps for a thousand steps and the transfer error
 is a term in your answer.
 
-**The multigrid hierarchy is not what it was.** This is the one worth spelling
-out, because it is easy to assume that refinement builds a hierarchy for free —
-after all, the parent mesh is right there.
+**The multigrid hierarchy must be re-derived.** Remeshing or refining the existing
+mesh means creating a new hierarchical relationship between nodes on the 
+nesting of the grids. 
 
-Full multigrid gets its efficiency from levels separated by a factor of two in
-resolution. Each level is responsible for the error at its own wavelength, and
-the smoother on that level removes it cheaply. Adaptive refinement does not
-produce levels like that. A pass that marks five percent of the cells produces
-a mesh whose *mean* spacing differs from its parent's by a couple of percent.
-As a multigrid level, it costs a smoother sweep on every cycle and removes
-almost nothing, because there is no band of error that only it can see. Run
-seven adaptation passes and you have seven such levels and a solver slower than
-the one you started with. On the cut fault meshes where we first ran into this,
-throwing away the levels that were not a genuine doubling of $h$ made the
-Stokes solve about four times faster.
+## Distort the mesh, don't re-mesh
 
-So the hierarchy that survives an adaptation is not the hierarchy you want, and
-building the one you do want means starting over: coarsen, rebuild the
-transfers, redistribute, and hope the coarse levels still represent the fine
-problem.
+There is an alternative to re-meshing that does not require repartitioning or 
+recontructing the hierarchical nature of the grid. It may not require 
+remapping the data under some circumstances. We stretch the grid, like an 
+elastic net, allowing the points to move but to stay connected to their neighbours.
 
-## Move the nodes instead
-
-Here is the alternative, and the whole of this note is about what happens when
-you take it seriously.
-
-*What if the node budget is fixed?* No node is created, none is destroyed, and
+*The node budget is fixed?* No node is created, none is destroyed, and
 no cell changes its neighbours. Every node stays on the rank that owned it.
 What moves is where the nodes **are** — they slide to where the resolution is
 wanted and away from where it is not.
 
-Everything that made refinement expensive is then absent by construction:
+Much of what makes refinement complex and expensive is then absent by construction:
 
 - the partition is unchanged, because ownership is a property of the point set
   and the point set did not change;
@@ -97,23 +102,23 @@ Everything that made refinement expensive is then absent by construction:
   from the topology, not from the coordinates — is still a hierarchy;
 - there is no mesh-to-mesh transfer, because there is only one mesh.
 
-What you give up is equally clear, and we will come back to it: a fixed budget
+What you give up is equally clear, and we will come back to that: a fixed budget
 of nodes can only be redistributed, never increased.
 
 ## It is an equidistribution problem, not a smoothing heuristic
 
-Node movement has a bad name, and deservedly, because most of it is smoothing:
-push each node toward the average of its neighbours, iterate, stop when it
-looks tidier. Smoothing has no target. It cannot tell you when it is finished
-and it cannot be aimed at the physics.
+As with any simple idea, the practical implementation is often full of traps. 
+Redistributing a mesh is a global operation: nodes all need to move in synchrony
+and they cannot overtake each other or the mesh becomes tangled an unusable. 
+These are constraints that ultimately limit how much we can improve mesh resolution. 
 
-The formulation that can is *equidistribution*. Supply a metric $\mathsf{M}(x)$
+The algorithm that we need is *equidistribution*: supply a metric $\mathsf{M}(x)$
 — a monitor function saying how much resolution is wanted, and in a tensor
 metric, in which direction — and ask for the map from a fixed computational
 mesh to the physical mesh under which every cell carries the same amount of
 $\mathsf{M}$. That is a Monge–Ampère-style problem, and it is the same target
 the refiner is chasing; the difference is only that the refiner is allowed to
-add nodes and this is not.
+add nodes and we are not.
 
 Underworld3 solves it with the Huang–Kamenski moving mesh PDE
 [@10.1016/j.jcp.2015.08.032], which generates the physical mesh as the image of
@@ -193,11 +198,11 @@ that has finished from one that has merely stopped.
 It would be too neat to say no field transfer is needed. Nodes move, so the
 value stored at a node is now the value of the old field at a place the node no
 longer is, and it has to be re-evaluated. That is an interpolation and it costs
-accuracy like any other.
+accuracy once we evaluate the update.
 
 What it does not cost is communication. A node moves a fraction of a cell
-diameter, so the point it must be evaluated at lies in its own patch or a
-neighbour's — inside the halo the mesh already maintains. Compare the remeshing
+diameter, so the point it must be evaluated at lies in its own patch or one owned by a
+neighbour — inside the halo the mesh already maintains. Compare the full remeshing
 case, where source and target are unrelated meshes and locating a point can
 land anywhere in the domain, on any rank, requiring a parallel search and then
 a migration to answer it. Same operation in name; entirely different in cost
@@ -205,26 +210,24 @@ and in who has to talk to whom.
 
 ## The reference frame is the lever
 
-Now the part that changed what this mover is for.
-
 The functional measures a cell's distortion against a *reference* element. By
 default, the reference is the mesh as it was on the first call. That is the
-correct choice for redistribution — you are asking for a map from this mesh to
-a better-graded one — and it has a consequence that is easy to miss until it
-bites.
+correct choice for redistribution — we are asking for a map from this mesh to
+a better-graded one — and it has a consequence that is quite easy to miss.
 
 **Under a uniform metric, a distorted mesh is its own optimum.** If
 $\hat{\mathsf{E}} = \mathsf{E}$ then $\mathbb{J} = I$ in every cell, the shape
-gradient is zero everywhere, and the mover moves nothing. Not approximately
-nothing: the measured displacement of `redistribute_nodes` under
-$\mathsf{M} = I$ is exactly zero. Handed a mesh full of needles and asked to
-tidy it up, the redistributor correctly reports that it is already perfect.
+gradient is zero everywhere, and the mover does nothing. Not approximately, exactly.
+The measured displacement of `redistribute_nodes` under
+$\mathsf{M} = I$ is exactly zero. Handed a mesh full of needle-shaped elements, 
+for example, the redistributor does not drive towards a more evenly distributed 
+mesh as, intuitively, we might at first expect. 
 
-The fix is not a different mover. It is a different reference. Replace each
+But, if we replace each
 cell's reference element with a single *regular simplex*, scaled to that cell's
-own current volume, and the same functional means something else: "distorted"
-now means "away from equilateral" rather than "away from the mesh I was
-handed". Because each reference is scaled to the cell's own volume,
+own current volume, the same functional describes the distortion
+"away from equilateral" rather than "away from the mesh I was
+handed".  Because each reference is scaled to the cell's own volume,
 $r = \det\mathbb{J} = 1$ at entry, so the size term starts at its optimum and
 stays there — the grading is preserved and only shape does work.
 
@@ -236,7 +239,7 @@ Three frames, then, from one piece of machinery:
 | `"ideal"` | a regular simplex at each cell's own volume | repair shape, hold size |
 | `"ideal-metric"` | a regular simplex at one common volume | repair shape, metric sets size |
 
-The user-facing spelling is `mesh.relax()` for the metric-free case and
+The user-facing call is `mesh.relax()` for the metric-free case and
 `mesh.relax(M)` for the third, alongside `mesh.redistribute_nodes(M)` for the
 first.
 
@@ -251,7 +254,7 @@ metric version is not the better-informed version; it is a different job.
 ## What this is worth on a refined mesh
 
 Refinement chooses where a new node goes from *combinatorics*: which edge the
-tagging rule nominated under bisection, or the cell centroid under Alfeld. It
+tagging rule nominated under bisection, or the cell centroid (the Alfeld strategy). It
 never looks at geometry. So the needles and slivers a refined mesh carries
 reflect the base mesh's arbitrary choices rather than anything about the
 problem — which is exactly the situation the ideal frame was built for.
