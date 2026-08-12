@@ -189,8 +189,8 @@ uw.meshing.node_redistribution(
 `accel` selects how the outer iteration is driven. The unaccelerated descent
 above is the setting to reach for when the grading you get is weaker than the
 grading you asked for; it needs more outer iterations and it converges
-reliably. *Checking that the mover moved*, below, says how to tell a mover
-that has finished from one that has merely stalled.
+reliably. We come back below to telling a mover that has finished from one
+that has stalled.
 
 ## Data updates are still needed
 
@@ -270,147 +270,65 @@ to bulk nearest-neighbour spacing — lower is finer:
 | gmsh, `refine_lines` at 2 | 0.44 | 0.29 (~3.4×) |
 | gmsh, `refine_lines` at 3 | 0.30 | 0.19 (~5×) |
 
+Falling short of the metric is expected, then, and we need to tell that apart
+from a solve that stalled. A mover that stops early returns a
+valid mesh — non-folded, correct topology, consistent fields — so nothing
+downstream reports a problem. Run with `verbose=True` and watch the outer
+iterations: the functional should keep decreasing and the line-search scale
+should stay off zero. A step reporting `scale=0.000` means the line search
+rejected the trial direction and took no step at all, and if that happens
+after a handful of iterations out of a budget of 150 the mover has stalled
+rather than converged. The direct check is to divide the median cell size well
+outside the feature by the median inside it, and compare that against the
+ratio we asked for.
+
 The MMPDE algorithm has the capacity to work with meshes that are already
 refined and improve them. It is helpful to have MMPDE even if you are 
 also refining the mesh. There is usually benefit, and the mover is benign: it
 will not degrade or undo any refinement you give it. We will come back to this
 in a later article. 
 
-## Where the two strategies meet
+## The multigrid hierarchy survives
 
-So the two are not really alternatives, and the second reference frame is where
-they meet. Once the base mesh carries refinement, or a subdivision has added
-some, the mover has a second job to do on it.
+Node movement does not change the topology, so the coarse-to-fine relations
+that define a geometric multigrid hierarchy are the same relations afterwards.
+We checked this rather than assuming it. In Stokes solves on an adapted mesh,
+preconditioned by a custom-prolongation full multigrid, runs with moved nodes
+and runs without both kept a full four-level `pc=mg`, neither fell back to
+algebraic multigrid, and their peak velocities agreed to four significant
+figures.
 
-Refinement puts each new node where its tagging rule says, never where the
-geometry would want it, so a refined mesh carries needles and slivers that
-record the base mesh's arbitrary choices rather than anything about the
-problem. That is precisely what the ideal frame is for: keep the resolution the
-refinement installed, and move the nodes to where the shapes want them.
+One part of the machinery does need rebuilding. Underworld3 constructs its
+prolongation operators by geometric point location rather than from the
+refinement relation, so moving the nodes can leave a coarse degree of freedom
+with no fine image under the local-support builder. The build retries with the
+global-support RBF builder when that happens. In 3D, before that retry
+existed, the hierarchy dropped to algebraic multigrid at 23 iterations; with
+it, `pc=mg` converges in 2.
 
-It is worth having. On an adapted mesh of 1143 cells, one `relax()` call cut
-the interpolation error of a localised feature by **17.5%** — no new cells, no
-new degrees of freedom, no change to the solver. On the production path, with
-Stokes preconditioned by a custom-prolongation full multigrid:
+## Three dimensions behave differently
 
-| configuration | cells | error | velocity KSP its |
-|---|---|---|---|
-| adapt only | 832 | 2.746e-2 | 4 |
-| relax at end | 832 | 2.559e-2 | 3 |
-| relax every generation | 856 | **2.384e-2** | 4 |
-
-Relaxing once at the end costs nothing in cells and takes 6.8% off the error;
-relaxing inside the refinement loop, so that each pass marks from
-already-relaxed coordinates, takes off 13.2% for three percent more cells.
-How much either is worth depends on how poor the mesh was to begin with — on a
-base already near-optimal for its refinement rule there is little to repair,
-which is the honest reason these numbers are not larger.
-
-## Does the hierarchy actually survive?
-
-That is the claim the whole approach rests on, so it should be checked rather
-than asserted. In the production comparison above, all three configurations
-kept a full four-level `pc=mg`, none fell back to algebraic multigrid, all
-converged for the same reason, and their peak velocities agreed to four
-significant figures. Moving the nodes did not cost a level.
-
-There is one real qualification. Multigrid does not care about coordinates —
-the hierarchy lives in the operators, and intermediate meshes are preserved as
-topology, not as geometry. But Underworld3's custom-prolongation transfers are
-*built* by geometric point location rather than derived from the refinement
-relation, and moving the nodes can leave a coarse degree of freedom with no
-fine image under the local-support barycentric builder. The build now retries
-with the global-support RBF builder before giving up. Measured in 3D: before
-the retry existed the hierarchy collapsed to algebraic multigrid at 23
-iterations; with it, `pc=mg` at 2.
-
-The topology survives, in other words, but a transfer operator built from
-geometry has to be told the geometry moved.
-
-## What it does not fix
-
-Three limits, stated plainly.
-
-**Slivers that are structural.** Refinement by centroid — the Alfeld strategy —
-places an interior point against a fixed parent face. The resulting sliver is a
-property of the *topology*, and no amount of node motion repairs a topology.
-Relaxed or not, cells with $q < 0.3$ stay at 25–28% and maximum angles at
-176–178°. The mover is a shallow tool on that mesh; refine by bisection
-instead.
-
-**Accuracy in three dimensions.** In 3D, relaxation improves mesh quality
-substantially — the near-degenerate population halves (cells with $q < 0.1$,
-3.6% → 1.8%), median quality goes 0.32 → 0.39, the 99th-percentile dihedral
-angle comes back from 153° to 146° — and leaves interpolation error alone
-(+0.5%). That is consistent rather than disappointing: relaxation holds the
-size distribution, and in 2D the accuracy gain came from cells *aligning* onto
-the feature, which an isotropic metric in 3D gives them no reason to do. Use it
-in 3D for conditioning and element quality. An anisotropic 3D metric is the
-open question.
-
-**A single number for "wasted refinement".** How much resolution ends up
-outside the region that asked for it is a natural thing to want as a scalar,
-and it resists being one: the property is spatial, since large coherent blocks
-of over-refinement matter and scattered cells do not, and every scalar we tried
-averaged that structure away. Look at the per-cell map of
-$\log_2(h / h_{\text{asked}})$ instead.
-
-## Checking that the mover moved
-
-One practical point, because it is the failure mode this method has and it is
-not self-announcing.
-
-A mover that stops early returns a perfectly valid mesh. It is non-folded, its
-topology is intact, its partition is unchanged, and every field on it is
-consistent — it is simply not the mesh you asked for. Nothing downstream can
-tell, and the symptom, *the grading looks weaker than the metric I supplied*,
-reads as a modelling problem rather than a solver one.
-
-So check two things after a move, and check them the first time you set a
-problem up rather than only when something looks wrong.
-
-**The iteration trace.** The mover reports its outer iterations under
-`verbose=True`. What you want to see is the functional decreasing and the
-line-search scale staying off zero. An outer step with `scale=0.000` and
-`dI=+0.00e+00` is not convergence in any useful sense: it means the line
-search rejected the trial direction and backtracked to no step at all. If that
-appears after a handful of iterations out of a budget of a hundred and fifty,
-the mover stopped, it did not finish.
-
-**The grading you actually got.** Take the median cell size inside the region
-the metric asked to refine, divide by the median well outside it, and compare
-against the ratio you requested. This is three lines of NumPy and it is the
-only direct evidence that the metric was honoured:
-
-```python
-h = np.sqrt(cell_areas(mesh))            # cell size, per cell
-on, off = in_feature(centroids), far_from_feature(centroids)
-print("achieved %.2fx" % (np.median(h[off]) / np.median(h[on])))
-```
-
-Expect the answer to fall short of the metric, and by a lot from a uniform
-base — that is the fixed-budget ceiling of the previous section, and it is
-honest behaviour. What it should not do is come out near 1.0 while the mover
-reports success.
+In 3D the mover improves element quality but leaves interpolation error alone.
+The near-degenerate population halves (cells with $q < 0.1$, 3.6% → 1.8%),
+median quality goes 0.32 → 0.39, and the 99th-percentile dihedral angle comes
+back from 153° to 146°, while the interpolation error of an isotropic feature
+moves by +0.5%. Relaxation holds the size distribution, and in 2D the accuracy
+gain came from cells aligning onto the feature, which an isotropic metric in
+3D gives them no reason to do. Use it in 3D for conditioning and element
+quality. Whether an anisotropic 3D metric recovers the accuracy as well is
+still open.
 
 ## Using it
 
 ```python
-# Redistribute to a metric: grading, in the mesh's own reference frame.
+# Redistribute to a metric, in the mesh's own reference frame.
 mesh.redistribute_nodes(metric)
 
-# Repair element shapes at fixed size: the ideal frame.
-child = mesh.adapt(metric, max_levels=3)
-child.relax()
-
-# Or ask adapt to do it for you.
-child = mesh.adapt(metric, max_levels=3, relax=True)             # at the end
-child = mesh.adapt(metric, max_levels=3, relax="per-generation") # in the loop
+# Repair element shapes at fixed size, in the ideal frame.
+mesh.relax()
 ```
 
-All of these keep the vertex count, the degree-of-freedom layout and the
-parallel partition exactly as they were. That is the point of the whole
-exercise: the resolution follows the physics, and everything built on top of
-the mesh — the multigrid hierarchy above all — does not have to be told.
+Both keep the vertex count, the degree-of-freedom layout and the parallel
+partition exactly as they were.
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=moving-the-mesh-without-remaking-it">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=moving-the-mesh-without-remaking-it">Start one</a></div></div>

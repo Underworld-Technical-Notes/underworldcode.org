@@ -119,8 +119,8 @@ Status: not started. **Holds material cut from M1**, which is where it was
 first written and where it did not belong — a note about redistribution under
 a fixed budget is not the place to explain tagging rules.
 
-The text is in the M1 branch history (`git show c60c934^ --
-articles/moving-the-mesh-without-remaking-it/`), and covers:
+The text is in the M1 branch history — `git show f6563e1 -- articles/` has
+the last version that carried all of it — and covers:
 
 - how a refinement rule chooses where a node goes — the nominated edge under
   bisection, the cell centroid under Alfeld — and why neither looks at
@@ -130,7 +130,14 @@ articles/moving-the-mesh-without-remaking-it/`), and covers:
 - `error x cells` as the scale-free comparator for P1 interpolation error in
   2D, and why raw error misleads when the cell counts differ;
 - where relaxation belongs in an adapt loop — at the end, or per generation —
-  and why we decline to rank them.
+  and why we decline to rank them;
+- what relaxing an already-refined mesh is worth: 17.5% off the P1
+  interpolation error on a 1143-cell adapted mesh, and the adapt-only /
+  relax-at-end / relax-per-generation comparison (832, 832, 856 cells;
+  2.746e-2, 2.559e-2, 2.384e-2);
+- that there is no trustworthy scalar for how much resolution leaks outside
+  the region that asked for it — the property is spatial, so the deliverable
+  is the per-cell map of log2(h/h_asked).
 
 **Cross-link with M1 before either is deposited.** M1 currently forward-refers
 to "the next note in this series" with no link, because the target does not
