@@ -1164,8 +1164,10 @@ def test_identifiers_are_recorded_even_when_a_deposit_fails():
     """A draft with a reserved DOI that the repository does not know about is
     the worst state this design has: the duplicate guard has nothing to check."""
     workflow = (ROOT / ".github" / "workflows" / "deposit.yml").read_text(encoding="utf-8")
-    commit = workflow.split("- name: Commit the identifiers")[1]
-    assert "always()" in commit.split("run:")[0]
+    # Renamed when the write-back became a pull request: main is protected, so
+    # a push is rejected after the DOI has already been minted.
+    step = workflow.split("- name: Open a pull request with the identifiers")[1]
+    assert "always()" in step.split("run:")[0]
 
 
 def test_an_incomplete_record_is_not_published():
@@ -1776,3 +1778,22 @@ def test_both_preview_routes_build_the_same_thing():
     for route, text in (("preview_push.py", push), ("preview.yml", flow)):
         assert "pixi run build\"" not in text and "run: pixi run build\n" not in text, \
             "%s builds the site its own way instead of calling the shared one" % route
+
+def test_the_deposit_records_its_identifiers_through_a_pull_request():
+    """`main` is protected, so a push is rejected — AFTER the DOI is minted.
+
+    That happened: the record published, the write-back was refused, and the
+    repository was left not knowing a published identifier existed. It is the
+    worst state this design has, because the guard against minting a SECOND
+    DOI for the same note keys on the record id being present.
+    """
+    flow = (ROOT / ".github" / "workflows" / "deposit.yml").read_text(encoding="utf-8")
+    config = "\n".join(line for line in flow.splitlines()
+                       if not line.lstrip().startswith("#"))
+    assert "gh pr create" in config, \
+        "the identifiers must arrive by pull request; main refuses a push"
+    assert "git push origin main" not in config and "git push\n" not in config, \
+        "a direct push to main will be rejected after the DOI is already minted"
+    assert "pull-requests: write" in config, "opening a PR needs the permission"
+    assert "always()" in config.split("Open a pull request")[1].split("run:")[0], \
+        "a run that dies partway has usually already reserved a DOI"
