@@ -37,7 +37,30 @@ def main():
     if run(sys.executable, "scripts/banner_body.py", "--remove") != 0:
         sys.exit("could not strip the web-only banners")
 
-    status = run("myst", "build", "--typst")
+    # A preview needs the PDF of the note under review, not of the other
+    # forty-one. Rebuilding all of them costs 75 seconds against 4 for one, and
+    # it is the single largest part of a preview build.
+    #
+    # Nothing archival is at risk either way: these PDFs are published to the
+    # preview site and nowhere else. The deposited copies are built by the
+    # deposit workflow from `main`, and this cannot reach them.
+    only = [s for s in os.environ.get("UWTN_PDF_ONLY", "").split(",") if s.strip()]
+    targets = []
+    for slug in only:
+        source = ROOT / "articles" / slug / ("%s.md" % slug)
+        if source.exists():
+            targets.append(str(source.relative_to(ROOT)))
+        else:
+            print("UWTN_PDF_ONLY names %s, which is not an article" % slug,
+                  file=sys.stderr)
+    if only and not targets:
+        # Asked for a subset and none of it exists: build nothing rather than
+        # silently falling back to all 42, which would look like it worked.
+        sys.exit("UWTN_PDF_ONLY matched no articles: %r" % only)
+    if targets:
+        print("building %d PDF(s) only: %s" % (len(targets), ", ".join(only)))
+
+    status = run("myst", "build", "--typst", *targets)
 
     # Always, so a failed build does not leave every article without its banner.
     run(sys.executable, "scripts/banner_body.py", "--add")
@@ -63,6 +86,8 @@ def main():
     wanted = [p.parent.name for p in sorted(ROOT.glob("articles/*/*.md"))
               if "format: typst" in p.read_text(encoding="utf-8")
               and p.parent.name not in unpublished]
+    if only:
+        wanted = [slug for slug in wanted if slug in only]
     missing = sorted(set(wanted) - {p.parent.name for p in built})
     if missing:
         sys.exit("%d article(s) declare a PDF export but produced none: %s"

@@ -1519,9 +1519,9 @@ def test_the_preview_never_runs_on_a_fork_pull_request():
 
 def test_the_preview_build_shows_unpublished_notes_and_the_real_one_does_not():
     """The whole reason the preview exists."""
-    preview = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    build = (ROOT / "scripts" / "preview_build.py").read_text(encoding="utf-8")
     deploy = (ROOT / ".github" / "workflows" / "deploy.yml").read_text(encoding="utf-8")
-    assert 'UWTN_PREVIEW: "1"' in preview
+    assert 'env["UWTN_PREVIEW"] = "1"' in build
     assert "UWTN_PREVIEW" not in deploy, "the published site must not show drafts"
 
 
@@ -1705,3 +1705,74 @@ def test_the_site_serves_its_own_favicon():
     assert header[:4] == b"\x00\x00\x01\x00", "not an .ico"
     assert int.from_bytes(header[4:6], "little") >= 3, \
         "the .ico should carry several sizes, not one"
+
+
+def test_a_preview_builds_only_the_pdfs_it_needs():
+    """Rebuilding all forty-two costs 75s against 4 for one.
+
+    It was the largest single part of a preview build, and a reviewer needs the
+    PDF of the note under review, not of the other forty-one.
+
+    Nothing archival is at risk either way: preview PDFs are published to the
+    preview site and nowhere else, and the deposited copies are built by the
+    deposit workflow from `main`, which the preview cannot reach.
+    """
+    build_pdf = (ROOT / "scripts" / "build_pdf.py").read_text(encoding="utf-8")
+    assert "UWTN_PDF_ONLY" in build_pdf
+    assert 'sys.exit("UWTN_PDF_ONLY matched no articles' in build_pdf, \
+        "asking for a subset that does not exist must fail, not build all 42"
+
+    build = (ROOT / "scripts" / "preview_build.py").read_text(encoding="utf-8")
+    assert 'env["UWTN_PDF_ONLY"]' in build, "the preview must pass the changed notes"
+    text = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    config = "\n".join(line for line in text.splitlines()
+                       if not line.lstrip().startswith("#"))
+    assert "--slugs" in config, "the workflow must tell it which notes changed"
+    deploy = (ROOT / ".github" / "workflows" / "deploy.yml").read_text(encoding="utf-8")
+    assert "UWTN_PDF_ONLY" not in deploy, \
+        "production must build every PDF, not a subset"
+
+
+def test_the_fast_preview_cuts_the_toc_after_the_pdfs_not_before():
+    """`build-pdf` depends on `index`, which regenerates the FULL toc.
+
+    Cut the toc first and it is put straight back, MyST builds all fifty-four
+    pages, and the saving vanishes with nothing to show it went wrong -- the
+    preview still works, just slowly, which is the hardest kind of regression
+    to notice.
+    """
+    source = (ROOT / "scripts" / "preview_build.py").read_text(encoding="utf-8")
+    # The whole-site branch also assigns `steps`, so anchor on the marker that
+    # only the targeted sequence contains.
+    steps = source[source.index("preview_only.py") - 400:]
+    steps = steps[:steps.index("for step in steps")]
+    assert steps.index("build-pdf") < steps.index("preview_only.py"), \
+        "the toc must be cut after build-pdf, which rebuilds it"
+    assert steps.index("preview_only.py") < steps.index('build", "--html'), \
+        "the toc must be cut before the HTML build, or it has no effect"
+
+
+def test_a_single_note_preview_still_marks_itself():
+    """Fast must not mean unmarked: it is still an unpublished note on a public
+    host, so it still needs noindex, the banner and no Giscus."""
+    source = (ROOT / "scripts" / "preview_push.py").read_text(encoding="utf-8")
+    mark = source.index("preview_mark.py")
+    push = source.index('"push", "--quiet"')
+    assert mark < push, "mark the build before pushing it, not after"
+
+
+def test_both_preview_routes_build_the_same_thing():
+    """They publish to the SAME hashed directory.
+
+    If the workflow built the whole site and `pixi run preview` built one note,
+    the content at that URL would depend on which ran last — discovered, if
+    ever, by two people disagreeing about what the same link says. So there is
+    one definition and both call it.
+    """
+    push = (ROOT / "scripts" / "preview_push.py").read_text(encoding="utf-8")
+    flow = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    assert "preview_build" in push, "the local route must use the shared build"
+    assert "preview_build.py" in flow, "the workflow must use the shared build"
+    for route, text in (("preview_push.py", push), ("preview.yml", flow)):
+        assert "pixi run build\"" not in text and "run: pixi run build\n" not in text, \
+            "%s builds the site its own way instead of calling the shared one" % route

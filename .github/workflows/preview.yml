@@ -50,12 +50,19 @@ jobs:
         with:
           cache: true
 
-      - name: Where this branch publishes
+      - name: Where this branch publishes, and what it changes
         id: target
         run: |
           HASH=$(python3 scripts/preview_mark.py --path-only --branch "${GITHUB_REF_NAME}")
           echo "hash=${HASH}" >> "$GITHUB_OUTPUT"
           echo "url=https://underworld-technical-notes.github.io/underworldcode.org-preview/${HASH}/" >> "$GITHUB_OUTPUT"
+
+          # The notes this branch touches. Used twice: to build only their PDFs,
+          # and to link them from the pull request comment.
+          CHANGED=$(git diff --name-only "origin/main...HEAD" -- 'articles/*/*' \
+                    | sed -E 's|articles/([^/]+)/.*|\1|' | sort -u | paste -sd, -)
+          echo "changed=${CHANGED}" >> "$GITHUB_OUTPUT"
+          echo "notes changed on this branch: ${CHANGED:-none}"
 
       # UWTN_PREVIEW is what makes this worth having: the production build
       # withholds draft and review, and this one does not.
@@ -64,11 +71,20 @@ jobs:
       # two directories deep, so a root-relative asset would 404 on every page
       # without it -- the same trap the project-subpath build has, one level
       # further down.
-      - name: Build, showing unpublished notes
-        env:
-          UWTN_PREVIEW: "1"
-          BASE_URL: /underworldcode.org-preview/${{ steps.target.outputs.hash }}
-        run: pixi run build
+      # scripts/preview_build.py, which `pixi run preview` also calls, because
+      # both publish to the same hashed directory. If they built different
+      # things the content at that URL would depend on which ran last -- and
+      # that is only ever discovered by two people disagreeing about what the
+      # same link says.
+      #
+      # Nothing archival is at risk here: preview PDFs go to the preview site
+      # and nowhere else. The deposited copies are built by the deposit
+      # workflow from `main`, which this cannot reach.
+      - name: Build the preview
+        run: |
+          python3 scripts/preview_build.py \
+            --slugs "${{ steps.target.outputs.changed }}" \
+            --base-url "/underworldcode.org-preview/${{ steps.target.outputs.hash }}"
 
       - name: Mark it as a preview
         run: |
@@ -150,10 +166,8 @@ jobs:
           # asked to read, and on a site with fifty-odd notes that is a real
           # ask. A branch that changes no article -- tooling, templates -- gets
           # the root, which is then the right answer rather than a shrug.
-          CHANGED=$(git diff --name-only "origin/main...HEAD" -- 'articles/*/*.md' \
-                    | sed -E 's|articles/([^/]+)/.*|\1|' | sort -u)
           LINKS=""
-          for SLUG in $CHANGED; do
+          for SLUG in $(echo "${{ steps.target.outputs.changed }}" | tr ',' ' '); do
             TITLE=$(sed -n 's/^title: *//p' "articles/${SLUG}/metadata.yml" | head -1)
             LINKS="${LINKS}- [${TITLE:-$SLUG}](${URL}${SLUG}/)"$'\n'
           done
