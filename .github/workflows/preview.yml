@@ -71,19 +71,20 @@ jobs:
       # two directories deep, so a root-relative asset would 404 on every page
       # without it -- the same trap the project-subpath build has, one level
       # further down.
-      - name: Build, showing unpublished notes
-        env:
-          UWTN_PREVIEW: "1"
-          BASE_URL: /underworldcode.org-preview/${{ steps.target.outputs.hash }}
-          # Only the PDFs of the notes under review. Rebuilding all forty-two
-          # costs 75 seconds against 4 for one, and it was the largest single
-          # part of a preview. A branch that changes no article builds none.
-          #
-          # Nothing archival is at risk: these go to the preview site and
-          # nowhere else. The deposited PDFs are built by the deposit workflow
-          # from `main`, which this cannot reach.
-          UWTN_PDF_ONLY: ${{ steps.target.outputs.changed }}
-        run: pixi run build
+      # scripts/preview_build.py, which `pixi run preview` also calls, because
+      # both publish to the same hashed directory. If they built different
+      # things the content at that URL would depend on which ran last -- and
+      # that is only ever discovered by two people disagreeing about what the
+      # same link says.
+      #
+      # Nothing archival is at risk here: preview PDFs go to the preview site
+      # and nowhere else. The deposited copies are built by the deposit
+      # workflow from `main`, which this cannot reach.
+      - name: Build the preview
+        run: |
+          python3 scripts/preview_build.py \
+            --slugs "${{ steps.target.outputs.changed }}" \
+            --base-url "/underworldcode.org-preview/${{ steps.target.outputs.hash }}"
 
       - name: Mark it as a preview
         run: |

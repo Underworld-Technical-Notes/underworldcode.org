@@ -88,36 +88,14 @@ def main():
     commit = run("git", "rev-parse", "HEAD",
                  capture_output=True, text=True).stdout.strip()
 
-    env = dict(os.environ)
-    env["UWTN_PREVIEW"] = "1"
-    env["UWTN_PDF_ONLY"] = ",".join(notes)
-    # The same base path the site will be served from. Without it every
-    # root-relative asset 404s, since a preview lives two directories deep.
-    env["BASE_URL"] = "/underworldcode.org-preview/%s" % digest
-
     if not args.no_build:
         print("building %s (%s)" % (branch, ", ".join(notes) if notes
                                     else "no article changed"))
-        if notes and not args.whole_site:
-            # Just the notes under review: one page instead of fifty-four, and
-            # one PDF instead of forty-two. 37 seconds against 190.
-            #
-            # ORDER MATTERS. build-pdf depends on `index`, which regenerates the
-            # full toc -- so the toc has to be cut AFTER it and before the HTML,
-            # or MyST builds the whole site anyway and the saving vanishes with
-            # nothing to show it went wrong.
-            steps = [["pixi", "run", "build-pdf"],
-                     [sys.executable, "scripts/preview_only.py",
-                      "--slugs", ",".join(notes)],
-                     ["pixi", "run", "myst", "build", "--html"],
-                     [sys.executable, "scripts/fix_slugs.py"],
-                     [sys.executable, "scripts/inject_style.py"],
-                     [sys.executable, "scripts/stage_downloads.py"]]
-        else:
-            steps = [["pixi", "run", "build"]]
-        for step in steps:
-            if subprocess.call(step, cwd=ROOT, env=env) != 0:
-                sys.exit("the build failed; nothing pushed")
+        import preview_build
+        if not preview_build.build(
+                notes, "/underworldcode.org-preview/%s" % digest,
+                whole_site=args.whole_site):
+            sys.exit("the build failed; nothing pushed")
 
     build = ROOT / "_build" / "html"
     if not (build / "index.html").exists():
