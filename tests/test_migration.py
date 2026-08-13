@@ -1901,8 +1901,17 @@ def test_a_deposit_pull_request_gets_a_pdf_not_a_preview():
     builds the archival PDF and attaches it to the run instead.
     """
     preview = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
-    assert "paths-ignore" in preview and "deposit-queue.txt" in preview, \
+    # Assert the OUTCOME, not the mechanism: this began as a paths-ignore on
+    # deposit-queue.txt and became a positive paths list, which excludes it by
+    # not naming it. Either satisfies the point; pinning the mechanism made
+    # this fail on a change that strengthened it.
+    prev_cfg = "\n".join(l for l in preview.splitlines()
+                         if not l.lstrip().startswith("#"))
+    assert "paths:" in prev_cfg or "paths-ignore:" in prev_cfg, \
         "a deposit-queue branch must not trigger a full preview build"
+    assert "deposit-queue.txt" not in prev_cfg.split("jobs:")[0] \
+        or "paths-ignore:" in prev_cfg, \
+        "deposit-queue.txt must not be a path that triggers the preview"
 
     pdf = (ROOT / ".github" / "workflows" / "deposit-pdf.yml").read_text(encoding="utf-8")
     config = "\n".join(l for l in pdf.splitlines() if not l.lstrip().startswith("#"))
@@ -1937,3 +1946,80 @@ def test_the_deposit_stops_while_identifiers_are_unrecorded():
     first_live = config.index("--live")
     assert guard < first_live, \
         "the guard must come before the first step that can deposit"
+
+
+def test_a_pull_request_gets_its_preview_link_even_if_opened_later():
+    """preview.yml comments on PUSH, and only if a PR already exists.
+
+    Push the branch, open the pull request afterwards -- the natural order --
+    and the comment step finds no PR and exits. The preview is built and
+    serving, but nothing links to it and the directory is a hash of the branch
+    name, so it cannot be found. That happened to UWTN 2026-012.
+
+    Also guards the dedupe prefix. The linked variant of the body starts
+    "**Preview" with no colon, so a rule matching "**Preview:**" never finds
+    it: PR #7 collected thirteen preview comments before this was noticed.
+    """
+    link = (ROOT / ".github" / "workflows" / "preview-link.yml").read_text(encoding="utf-8")
+    config = "\n".join(l for l in link.splitlines() if not l.lstrip().startswith("#"))
+    assert "types: [opened, reopened]" in config, "it has to fire when the PR appears"
+    assert "pull_request.head.ref" in config, \
+        "GITHUB_REF_NAME is '<n>/merge' here; the preview path keys on the branch"
+    assert "preview_mark" in config, "import the path, do not reimplement it"
+    assert "myst build" not in config and "preview_build" not in config, \
+        "this comments on an existing preview; it must not rebuild one"
+
+    for name in ("preview.yml", "preview-link.yml"):
+        text = (ROOT / ".github" / "workflows" / name).read_text(encoding="utf-8")
+        assert 'startswith("**Preview")' in text, \
+            "%s dedupe must match the linked variant, which has no colon" % name
+
+
+def test_the_preview_only_runs_when_there_is_something_to_preview():
+    """Six minutes to republish an unchanged site helps nobody.
+
+    A branch that touches only workflows or tests has nothing to render, and
+    the preview used to build for it anyway. This is safe as a paths filter
+    ONLY because `preview` is not a required status check -- a required check
+    skipped by a paths filter stays "expected" and blocks the merge forever
+    instead of passing. If preview is ever made required, the filter has to go.
+    """
+    text = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    config = "\n".join(l for l in text.splitlines() if not l.lstrip().startswith("#"))
+    assert "paths:" in config, "the preview should not build for unrenderable changes"
+    for needed in ("'articles/**'", "'scripts/**'", "'myst.yml'"):
+        assert needed in config, (
+            "%s changes what the site looks like; leaving it out means no "
+            "preview when one is wanted" % needed)
+
+
+def test_checking_and_building_are_separate_jobs():
+    """A check should not have side effects, and should not need a build.
+
+    `test` used to run the unit tests and then build the site, the PDFs and an
+    artifact -- a "test" that made things, and a required check that took two
+    minutes to report a typo in a note. Louis: "I personally feel that tests
+    should not DO anything."
+
+    So `test` is now checks only, and `build` is where anything is made. The
+    two checks that read the BUILT site live with the build, because there is
+    nothing for them to look at before it runs.
+
+    Parsed as text, not with PyYAML: the pixi environment pytest runs in has no
+    yaml module, and a test that cannot run is not a guard.
+    """
+    text = (ROOT / ".github" / "workflows" / "test.yml").read_text(encoding="utf-8")
+    body = text[text.index("\njobs:"):]
+    assert "\n  test:\n" in body and "\n  build:\n" in body, \
+        "test and build must be separate jobs"
+    checking = body[body.index("\n  test:\n"):body.index("\n  build:\n")]
+    building = body[body.index("\n  build:\n"):]
+
+    assert "upload-artifact" not in checking, "the checking job must not upload"
+    assert "pixi run build" not in checking, "the checking job must not build"
+    assert "test-unit" in checking and "validate" in checking, \
+        "the checking job still has to do the checking"
+    # These read the built site, so they belong with the build, or they inspect
+    # an empty directory and pass for the wrong reason.
+    for needs_build in ("test-dois", "test-assets"):
+        assert needs_build in building, "%s needs the built site" % needs_build
