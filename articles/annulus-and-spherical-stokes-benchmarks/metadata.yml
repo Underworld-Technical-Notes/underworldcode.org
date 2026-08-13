@@ -1,0 +1,36 @@
+# Validated in CI against schemas/article-metadata.schema.json.
+# `pixi run validate` checks this and the cross-file invariants a schema cannot
+# express -- that the article file is named <slug>.md, that canonical_path
+# matches the slug, and that no legacy DOI is ever paired with a new registrant.
+id: UWTN 2026-012
+slug: annulus-and-spherical-stokes-benchmarks
+title: Benchmarking Stokes Flow in Annulus and Spherical-Shell Geometries
+article_type: technical-note
+status: review
+authors:
+  - name: Thyagarajulu Gollapalli
+    orcid: 0000-0001-9394-4104
+    affiliation: Monash University
+publication_date: null
+version: 1.0.0
+# The deposit writes archive_doi and repository_record_id when the note is
+# published; leave them out until then. `doi` and `doi_registrant` were here
+# once and are not fields the schema knows -- every note made from this
+# template failed `pixi run validate` on all three of them.
+license: CC-BY-4.0
+canonical_path: /annulus-and-spherical-stokes-benchmarks/
+legacy_paths: []
+# Facets, from vocabulary.yml. Both keys must be present even when empty: a
+# note with no subject is normal -- many are purely about method.
+subjects:
+  - mantle-convection
+  - planetary
+methods:
+  - benchmarks-validation
+  - solvers
+  - finite-elements
+ghost_tags:
+  - Underworld Code
+figures: 9
+banner_credit: "Photo by <a href=\"https://unsplash.com/@theblowup?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">the blowup</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplash</a>"
+source: native
