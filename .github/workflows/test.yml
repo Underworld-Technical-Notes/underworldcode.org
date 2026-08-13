@@ -1,11 +1,27 @@
 name: test
 
+# Two jobs, and the split is the point: `test` CHECKS and does nothing else,
+# `build` is where anything gets made.
+#
+# These used to be one job called `test` that ran the unit tests and then built
+# the site, the PDFs, and uploaded the result -- a "test" with side effects, and
+# a required check that took two minutes to tell you about a typo in a note.
+#
+# So: `test` runs what needs no build and finishes in seconds. `build` builds,
+# and runs the two checks that can only be made against a built site, and keeps
+# the artifact. They run in PARALLEL rather than build waiting on test, because
+# a contributor wants both answers as soon as they exist, not in sequence.
+#
+# BOTH are required on main. Requiring only `test` would let a broken build
+# merge on green tests, which is the hole the split would otherwise open.
+
 on:
   push:
     branches: [main]
   pull_request:
 
 jobs:
+  # Nothing here writes anything, uploads anything, or needs a site to exist.
   test:
     runs-on: ubuntu-latest
     steps:
@@ -15,12 +31,20 @@ jobs:
         with:
           cache: true
 
-      # Regression tests first: they need no build and fail fastest.
       - name: Unit tests
         run: pixi run test-unit
 
       - name: Validate article metadata
         run: pixi run validate
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: prefix-dev/setup-pixi@v0.8.1
+        with:
+          cache: true
 
       - name: Build site and archival PDFs
         run: pixi run build
@@ -28,14 +52,20 @@ jobs:
       # The gate that matters. Fifty Crossref DOIs resolve to /<slug>/ and
       # cannot be re-pointed; MyST truncates slugs to 50 characters, so a build
       # that skips scripts/fix_slugs.py silently 404s twelve of them.
+      #
+      # It lives here and not in `test` because it reads the BUILT site: there
+      # is nothing for it to check until the build has run.
       - name: No registered DOI is broken
         run: pixi run test-dois
 
       # MyST passes through any asset path it cannot resolve, silently, so a
-      # reference can look right and 404 in the browser.
+      # reference can look right and 404 in the browser. Also needs the build.
       - name: Referenced assets exist
         run: pixi run test-assets
 
+      # How a contributor working from a fork sees their change. They cannot
+      # have a preview -- that needs a token a fork run is not given -- so this
+      # is the only copy of the built site they can get at.
       - name: Upload built site
         uses: actions/upload-artifact@v4
         with:
