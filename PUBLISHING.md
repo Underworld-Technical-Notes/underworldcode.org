@@ -359,3 +359,23 @@ settled before code exists.
   would deposit, and requires an explicit flag to publish;
 - resumability: a run that dies after reserving a DOI must continue, not start
   again and reserve a second one.
+
+## The deposit is offered, not taken
+
+A note reaching `main` without a DOI opens a pull request titled
+**Deposit: <slug>**, adding it to `deposit-queue.txt`. Merging that pull
+request runs the deposit; closing it does not, and the note is offered again
+the next time anything changes.
+
+So the reminder is automatic and the decision is not. Nothing is deposited
+because a note was published — only because somebody merged the request to
+deposit it. That matters because a published DOI cannot be withdrawn, only
+superseded.
+
+The deposit then opens a further pull request carrying the identifiers it
+obtained. **Merge that too**: until it lands, the repository does not know the
+record exists, and the guard against minting a second DOI for the same note
+keys on the record id being present.
+
+Queue entries stay after the deposit. They are a log of what was approved, and
+the deposit skips anything already holding a record, so a stale line is inert.

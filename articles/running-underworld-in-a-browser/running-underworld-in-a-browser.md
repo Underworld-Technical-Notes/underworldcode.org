@@ -18,6 +18,7 @@ keywords:
   - Python/Jupyter
 exports:
   - format: typst
+    archived: "2026-08-12T06:09:48Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/running-underworld-in-a-browser/
@@ -25,6 +26,7 @@ exports:
     output: running-underworld-in-a-browser.pdf
     article_id: UWTN 2026-010
     article_version: 1.0.0
+doi: 10.6084/m9.figshare.33216996
 ---
 Somebody reads a paper, wants to run the model, and has forty minutes. They
 will not have time to install PETSc. They may not have a compiler. If the answer is "clone
