@@ -600,6 +600,10 @@ a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); 
   width: 100%;
   max-height: 300px;
   object-fit: cover;
+  object-position: center top;          /* if the box is shorter than the
+                                           scaled band, lose the inner hole at
+                                           the bottom -- never the outer
+                                           surface, which is the subject */
   margin: 0 0 2rem;
   border-radius: 3px;
   border: 1px solid var(--uwtn-rule);
