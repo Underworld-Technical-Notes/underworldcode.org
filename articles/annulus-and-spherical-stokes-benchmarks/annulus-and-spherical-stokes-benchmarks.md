@@ -30,7 +30,7 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 0.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@theblowup?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">the blowup</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 
 This post introduces a suite of annulus and spherical-shell Stokes benchmarks
 reproduced using Underworld3 [@Moresi_2025]. These benchmark problems have
@@ -123,9 +123,13 @@ suites test curved geometries, pressure treatment, mesh approximation,
 boundary-condition implementation, smooth and singular forcing, and convergence
 behaviour in both two- and three-dimensional Stokes flow.
 
-The figure at the head of this post collects the analytical benchmark fields
-for all four cases: the Thieulot–Puckett annulus, the Kramer annulus, the
-Thieulot spherical shell, and the Kramer spherical shell.
+```{figure} figures/benchmark-fields.jpg
+:alt: Four panels of analytical benchmark fields, showing density distributions for the Thieulot-Puckett annulus, the Kramer annulus, the Thieulot spherical shell and the Kramer spherical shell.
+
+Analytical benchmark fields used in the annulus and spherical-shell Stokes
+benchmark suite. The panels collect the Thieulot–Puckett annulus, Kramer
+annulus, Thieulot spherical-shell, and Kramer spherical-shell cases.
+```
 
 ## What Do We Measure? Error Quantification
 

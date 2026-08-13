@@ -31,5 +31,6 @@ methods:
   - finite-elements
 ghost_tags:
   - Underworld Code
-figures: 8
+figures: 9
+banner_credit: "Photo by <a href=\"https://unsplash.com/@theblowup?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">the blowup</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplash</a>"
 source: native
