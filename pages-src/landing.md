@@ -15,13 +15,9 @@ Everything else here is passed through as MyST markdown.
 
 <div class="uwtn-hero"><div class="uwtn-hero-text"><div class="uwtn-kicker">Geodynamics</div><div class="uwtn-hero-title">Underworld</div><div class="uwtn-standfirst">A parallel, particle-in-cell finite element code for modelling the solid Earth as a complex fluid — from a laptop to a supercomputer, driven from Python.</div><div class="uwtn-hero-actions"><a class="uwtn-cta" href="https://github.com/underworldcode/underworld3">Get the code</a><a href="/intro-to-underworld/">What is Underworld?</a><a href="/notes/">Technical Notes</a></div></div></div>
 
-```{figure} /static/adaptive-convection-small.gif
-:alt: Animated cross-section of a convecting annulus: warm upwellings and cool downwellings develop and migrate while the triangular mesh tightens around the thermal boundary layers and plume margins.
-:class: uwtn-float-right
-:width: 260px
-
-Convection in an annulus, with the mesh following the flow.
-[How that works](/moving-the-mesh-without-remaking-it/).
+```{image} /static/landing-convection.gif
+:alt: Animated band across the top of a convecting annulus: warm upwellings and cool downwellings develop and migrate while the triangular mesh tightens around the thermal boundary layers and plume margins.
+:class: uwtn-landing-banner
 ```
 
 Underworld solves the equations of slow, viscous flow on a finite element mesh

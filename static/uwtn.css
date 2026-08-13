@@ -590,42 +590,26 @@ a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); 
   margin: 0 0 1.2rem;
 }
 
-/* A figure the front-page prose wraps around.
-   MyST's `:align: right` sets an attribute the theme reads as alignment, not
-   as a float, so a genuine text wrap is done here -- the same way the hero
-   block is, with markup in pages-src/landing.md and the layout in this file. */
-.uwtn-float-right {
-  float: right;
-  width: 260px;
-  max-width: 42%;
-  margin: 0.2rem 0 1rem 1.6rem;
-  shape-outside: circle(50%);          /* the animation IS a disc: let the
-                                          text follow its edge, not its box */
-}
-.uwtn-float-right img {
-  width: 100%;
-  height: auto;
+/* The front page's animated band. Shaped like an article banner -- full
+   width, capped height, cropped rather than squashed -- so the two read as the
+   same kind of object. The class may land on the image itself or on a wrapper
+   depending on how the theme renders a MyST :class:, so both are covered. */
+.uwtn-landing-banner,
+.uwtn-landing-banner img {
   display: block;
-  margin: 0;                            /* the theme centres figure images with
-                                           auto margins, which would cancel the
-                                           float's alignment inside its box */
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  margin: 0 0 2rem;
+  border-radius: 3px;
+  border: 1px solid var(--uwtn-rule);
 }
-.uwtn-float-right figcaption,
-.uwtn-float-caption {
-  font-size: 0.78rem;
-  line-height: 1.35;
-  opacity: 0.72;
-  margin-top: 0.4rem;
-  text-align: center;
+.uwtn-landing-banner img {
+  margin: 0;
+  border: 0;
 }
-/* Below this width a 260px float leaves a column too narrow to read, so it
-   stops floating and becomes a centred block. */
+
 @media (max-width: 720px) {
-  .uwtn-float-right {
-    float: none;
-    width: min(320px, 80%);
-    max-width: none;
-    margin: 1.2rem auto;
-    shape-outside: none;
-  }
+  .uwtn-landing-banner,
+  .uwtn-landing-banner img { max-height: 180px; }
 }
