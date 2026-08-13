@@ -1,0 +1,77 @@
+name: preview-link
+
+# Put the preview link on a pull request the moment it is opened.
+#
+# preview.yml builds on PUSH and comments only if a pull request already exists
+# for that branch. Push first and open the pull request afterwards -- which is
+# the natural order, and the one the worktree flow encourages -- and the comment
+# step correctly finds nothing and exits. The preview is built and serving; only
+# the notification is missing, and there is no other way to find the URL: the
+# directory is a hash of the branch name and nothing links to it.
+#
+# So this comments when the pull request is opened, WITHOUT rebuilding. It reads
+# the same URL preview.yml would have published to and checks that it is really
+# serving before saying anything, which is the same discipline preview.yml uses.
+# If the preview is not up -- push and open in quick succession, and the build
+# takes minutes -- it says nothing, and the push-triggered run will comment when
+# it finishes.
+
+on:
+  pull_request:
+    types: [opened, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  link:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Comment the preview link, if there is a preview
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # head.ref, NOT GITHUB_REF_NAME: on a pull_request event that is
+          # "<number>/merge", and the preview directory is keyed on the BRANCH.
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          # One definition of the path, imported rather than reimplemented, so
+          # it cannot drift from what preview_mark.py actually publishes to.
+          HASH=$(python3 -c "import sys; sys.path.insert(0, 'scripts'); \
+                 import preview_mark; print(preview_mark.preview_path('$BRANCH'))")
+          URL="https://underworld-technical-notes.github.io/underworldcode.org-preview/${HASH}/"
+
+          CODE=$(curl -s -o /dev/null -w '%{http_code}' "$URL" || echo 000)
+          if [ "$CODE" != "200" ]; then
+            echo "no preview serving at $URL (HTTP $CODE) -- the push build will comment"
+            exit 0
+          fi
+
+          # Link the notes this pull request touches, the same as preview.yml.
+          LINKS=""
+          for SLUG in $(gh pr diff "$PR" --name-only \
+                        | sed -n 's|^articles/\([^/]*\)/.*|\1|p' | sort -u); do
+            [ -f "articles/${SLUG}/metadata.yml" ] || continue
+            TITLE=$(sed -n 's/^title: *//p' "articles/${SLUG}/metadata.yml" | head -1)
+            LINKS="${LINKS}- [${TITLE:-$SLUG}](${URL}${SLUG}/)"$'\n'
+          done
+
+          if [ -n "$LINKS" ]; then
+            BODY=$(printf '**Preview**\n\n%s\nOr the [whole site](%s).\n\nShows notes at draft and review, which the published site withholds. Not indexed, no comments, and not the citable version.' "$LINKS" "$URL")
+          else
+            BODY=$(printf '**Preview:** %s\n\nNo article changed on this branch. Shows notes at draft and review, which the published site withholds. Not indexed, no comments, and not the citable version.' "$URL")
+          fi
+
+          # Update the existing comment rather than adding another. Matching on
+          # "**Preview" and not "**Preview:**": the linked variant has no colon,
+          # which is why one pull request collected thirteen of these.
+          EXISTING=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" \
+            --jq '.[] | select(.body | startswith("**Preview")) | .id' | head -1)
+          if [ -n "$EXISTING" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING}" -f body="$BODY"
+          else
+            gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" -f body="$BODY"
+          fi
