@@ -190,7 +190,7 @@ jobs:
             BODY=$(printf '**Preview:** %s\n\nNo article changed on this branch. Built from `%s`. Shows notes at draft and review, which the published site withholds. Not indexed, no comments, and not the citable version.' "$URL" "${GITHUB_SHA::7}")
           fi
           EXISTING=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" \
-            --jq '.[] | select(.body | startswith("**Preview:**")) | .id' | head -1)
+            --jq '.[] | select(.body | startswith("**Preview")) | .id' | head -1)
           if [ -n "$EXISTING" ]; then
             gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING}" -f body="$BODY"
           else
