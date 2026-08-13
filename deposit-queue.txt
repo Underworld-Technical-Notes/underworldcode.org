@@ -11,3 +11,4 @@
 # Entries stay after the deposit. They are a record of what was approved and
 # when, and the workflow skips anything that already has a record, so a stale
 # line is inert.
+moving-the-mesh-without-remaking-it
