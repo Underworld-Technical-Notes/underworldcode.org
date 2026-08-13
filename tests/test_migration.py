@@ -1891,3 +1891,24 @@ def test_the_deposit_workflows_can_be_re_run():
             assert "GITHUB_RUN_ATTEMPT" in branch, (
                 "%s branch %r is not unique per attempt, so a re-run cannot "
                 "push" % (name, branch))
+
+def test_a_deposit_pull_request_gets_a_pdf_not_a_preview():
+    """The question a deposit PR asks is answered by the PDF, not by the site.
+
+    Publishing a whole preview site for a one-line change to deposit-queue.txt
+    costs minutes and still leaves the reviewer clicking through a page to
+    reach the download. So the preview skips those branches and deposit-pdf.yml
+    builds the archival PDF and attaches it to the run instead.
+    """
+    preview = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    assert "paths-ignore" in preview and "deposit-queue.txt" in preview, \
+        "a deposit-queue branch must not trigger a full preview build"
+
+    pdf = (ROOT / ".github" / "workflows" / "deposit-pdf.yml").read_text(encoding="utf-8")
+    config = "\n".join(l for l in pdf.splitlines() if not l.lstrip().startswith("#"))
+    assert "upload-artifact" in config, "the PDF has to come back as an artifact"
+    assert "UWTN_PDF_ONLY" in config, "build the queued notes, not all forty-odd"
+    assert "if-no-files-found: error" in config, \
+        "an empty artifact must fail, not pass quietly"
+    assert "FIGSHARE_TOKEN" not in config and "--live" not in config, \
+        "this builds and shows; it must not be able to deposit anything"

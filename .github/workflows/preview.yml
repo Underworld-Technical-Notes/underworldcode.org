@@ -20,6 +20,11 @@ name: preview
 on:
   push:
     branches-ignore: [main]
+    # A deposit-queue branch changes this one file and nothing a reader would
+    # look at. Publishing a whole preview site for it costs minutes and tells
+    # nobody anything; deposit-pdf.yml builds the PDF instead, which is the
+    # artefact that is actually under review at that point.
+    paths-ignore: ['deposit-queue.txt']
   workflow_dispatch:
 
 concurrency:
@@ -169,7 +174,15 @@ jobs:
           LINKS=""
           for SLUG in $(echo "${{ steps.target.outputs.changed }}" | tr ',' ' '); do
             TITLE=$(sed -n 's/^title: *//p' "articles/${SLUG}/metadata.yml" | head -1)
-            LINKS="${LINKS}- [${TITLE:-$SLUG}](${URL}${SLUG}/)"$'\n'
+            # The staged PDF carries a content hash, so find it rather than
+            # guessing the name. Truncation in stage_downloads.py means the
+            # prefix is the slug's first 20 characters.
+            PDF=$(cd _build/site/public 2>/dev/null && ls "${SLUG:0:20}"*.pdf 2>/dev/null | head -1)
+            if [ -n "$PDF" ]; then
+              LINKS="${LINKS}- [${TITLE:-$SLUG}](${URL}${SLUG}/) — [PDF](${URL}${PDF})"$'\n'
+            else
+              LINKS="${LINKS}- [${TITLE:-$SLUG}](${URL}${SLUG}/)"$'\n'
+            fi
           done
           if [ -n "$LINKS" ]; then
             BODY=$(printf '**Preview**\n\n%s\nOr the [whole site](%s).\n\nBuilt from `%s`. Shows notes at draft and review, which the published site withholds. Not indexed, no comments, and not the citable version. Confirmed serving this commit before this was posted.' "$LINKS" "$URL" "${GITHUB_SHA::7}")
