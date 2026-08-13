@@ -79,6 +79,40 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # STOP if a previous run's identifiers have not been recorded yet.
+      #
+      # The guard against minting a second DOI for a note is `archive_published_at`
+      # in its metadata.yml, and a run writes that on the way past. If a run
+      # published a record and then died before its identifiers pull request was
+      # merged, the DOI is live and citable but this repository does not know it
+      # exists -- so `pending()` still offers the note and a second run would mint
+      # a SECOND live identifier for it. Two citable DOIs for one note is the only
+      # outcome here that cannot be undone.
+      #
+      # An open deposit/identifiers-* pull request is exactly that state, sitting
+      # in plain sight. So refuse to start, and say what to do about it. dry-run
+      # and delete-draft are exempt: neither can publish anything, and cleaning up
+      # a stray draft is a reasonable thing to want to do while the pull request
+      # is still open.
+      - name: Refuse to run while identifiers are unrecorded
+        if: inputs.mode != 'dry-run' && inputs.mode != 'delete-draft'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          OPEN=$(gh pr list --state open --json number,headRefName \
+                 --jq '.[] | select(.headRefName | startswith("deposit/identifiers-")) | .number')
+          if [ -n "$OPEN" ]; then
+            echo "::error::A previous deposit's identifiers are still unmerged (PR #$(echo "$OPEN" | tr '\n' ' '))."
+            echo "Those pull requests carry the record id and DOI of records that may"
+            echo "ALREADY BE PUBLISHED. Until they land, this repository cannot tell"
+            echo "whether a note has been deposited, and running now risks minting a"
+            echo "second live DOI for the same note."
+            echo ""
+            echo "Merge them, then re-run this workflow."
+            exit 1
+          fi
+          echo "no unrecorded identifiers outstanding"
+
       - uses: prefix-dev/setup-pixi@v0.8.1
         with:
           cache: true
