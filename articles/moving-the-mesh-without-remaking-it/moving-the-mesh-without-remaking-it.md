@@ -272,6 +272,14 @@ to bulk nearest-neighbour spacing — lower is finer:
 | gmsh, `refine_lines` at 2 | 0.44 | 0.29 (~3.4×) |
 | gmsh, `refine_lines` at 3 | 0.30 | 0.19 (~5×) |
 
+So `refinement` is a fly-by-wire dial: the knob is not wired directly to the
+outcome. Turning it up asks for more, but what arrives depends on the node
+budget and on how the metric is distributed across the domain, and no setting
+guarantees a particular result. That is why redistribution is better thought of
+as a way of grading the base mesh than as adaptive refinement in its own right.
+It is enough for the convection problem in the example below, which is why that
+example is here.
+
 Falling short of the metric is expected, then, and we need to tell that apart
 from a solve that stalled. A mover that stops early returns a
 valid mesh — non-folded, correct topology, consistent fields — so nothing
