@@ -23,6 +23,7 @@ keywords:
   - development
 exports:
   - format: typst
+    archived: "2026-08-13T11:10:11Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/moving-the-mesh-without-remaking-it/
@@ -31,6 +32,7 @@ exports:
     article_id: UWTN 2026-011
     article_version: 1.0.0
     software_version: underworld3 0.0.0
+doi: 10.6084/m9.figshare.33241170
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@waldemarbrandt67w?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Waldemar Brandt</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 
