@@ -14,6 +14,8 @@ authors:
     affiliations:
       - Australian National University
 license: CC-BY-4.0
+bibliography:
+  - references.bib
 banner: figures/banner.jpg
 keywords:
   - Underworld Code
@@ -123,7 +125,7 @@ the refiner is chasing; the difference is only that the refiner is allowed to
 add nodes and we are not.
 
 Underworld3 solves it with the Huang–Kamenski moving mesh PDE
-[@10.1016/j.jcp.2015.08.032], which generates the physical mesh as the image of
+[@Huang_2015], which generates the physical mesh as the image of
 a fixed computational mesh under the inverse coordinate map, minimising
 
 $$
@@ -142,7 +144,7 @@ of the several we retired.
 
 **It cannot fold the mesh.** $G \to \infty$ as $\det\mathbb{J} \to 0$, so a
 cell cannot be driven through zero volume without the energy going to infinity
-first. That is a theorem about the functional [@10.1090/mcom/3271], not a guard
+first. That is a theorem about the functional [@Huang_2017], not a guard
 bolted on afterwards, and it is the difference between a mover you can leave
 running in a time loop and one you have to watch.
 
