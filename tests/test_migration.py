@@ -1901,8 +1901,17 @@ def test_a_deposit_pull_request_gets_a_pdf_not_a_preview():
     builds the archival PDF and attaches it to the run instead.
     """
     preview = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
-    assert "paths-ignore" in preview and "deposit-queue.txt" in preview, \
+    # Assert the OUTCOME, not the mechanism: this began as a paths-ignore on
+    # deposit-queue.txt and became a positive paths list, which excludes it by
+    # not naming it. Either satisfies the point; pinning the mechanism made
+    # this fail on a change that strengthened it.
+    prev_cfg = "\n".join(l for l in preview.splitlines()
+                         if not l.lstrip().startswith("#"))
+    assert "paths:" in prev_cfg or "paths-ignore:" in prev_cfg, \
         "a deposit-queue branch must not trigger a full preview build"
+    assert "deposit-queue.txt" not in prev_cfg.split("jobs:")[0] \
+        or "paths-ignore:" in prev_cfg, \
+        "deposit-queue.txt must not be a path that triggers the preview"
 
     pdf = (ROOT / ".github" / "workflows" / "deposit-pdf.yml").read_text(encoding="utf-8")
     config = "\n".join(l for l in pdf.splitlines() if not l.lstrip().startswith("#"))
