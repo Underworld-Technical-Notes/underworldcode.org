@@ -14,6 +14,7 @@ authors:
     affiliations:
       - Australian National University
 license: CC-BY-4.0
+banner: figures/banner.jpg
 keywords:
   - Underworld Code
   - Tricks of the Trade
@@ -29,6 +30,8 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 0.0.0
 ---
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+
 A geodynamic model with a uniform mesh, almost certainly 
 expends most of its resolution in the wrong places. The
 features that need small cells: a thermal boundary layer; a shear band; a
@@ -301,17 +304,39 @@ refinement relation, so although the relation those operators represent is
 unchanged, the operators themselves have to be built again once the
 coordinates move.
 
-## Three dimensions behave differently
+## Mesh quality is harder to control in three dimensions
 
-In 3D the mover improves element quality but leaves interpolation error alone.
-The near-degenerate population halves (cells with $q < 0.1$, 3.6% → 1.8%),
-median quality goes 0.32 → 0.39, and the 99th-percentile dihedral angle comes
-back from 153° to 146°, while the interpolation error of an isotropic feature
-moves by +0.5%. Relaxation holds the size distribution, and in 2D the accuracy
-gain came from cells aligning onto the feature, which an isotropic metric in
-3D gives them no reason to do. Use it in 3D for conditioning and element
-quality. Whether an anisotropic 3D metric recovers the accuracy as well is
-still open.
+All of this works in 3D. The functional is written over the dimension
+throughout, and tetrahedra are moved in the same way as triangles.
+
+What changes is how much the metric guarantees. In two dimensions, asking for
+cells of a given size and orientation very nearly settles the question of
+quality as well: satisfy the metric and the triangles are decent. In three
+dimensions it does not. A tetrahedron can have the right volume and sensible
+edge lengths in every direction the metric asked about and still be a sliver,
+because those constraints leave free the one degree of freedom that flattens
+its four vertices onto a plane. Good size is not the same as a good element.
+
+So the mover does improve element quality in 3D — the near-degenerate
+population roughly halves — but expect to watch quality separately rather than
+trusting the metric to deliver it, and do not expect the accuracy gain that
+came with it in two dimensions. That gain came from cells aligning onto the
+feature, and an isotropic metric in 3D gives them no reason to align.
+
+## A worked example
+
+Convection in an annulus, with the mesh redistributed as the calculation runs.
+
+```{figure} figures/adaptive-convection.gif
+:alt: Animated cross-section of a convecting annulus. Warm upwellings and cool downwellings develop and migrate, and the triangular mesh visibly tightens around the thermal boundary layers and the plume margins, following them as they move.
+
+Thermal convection in an annulus at $\mathrm{Ra} = 10^{7}$ with a viscosity
+contrast of $10^{3}$, adapted every few steps. The node count never changes:
+the mesh tightens onto the boundary layers and the plume margins and slackens
+in the interior, and it keeps doing so as those features migrate. Nothing here
+is remeshed, and the multigrid hierarchy the solver uses is the one the mesh
+started with.
+```
 
 ## Using it
 
