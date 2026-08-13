@@ -54,10 +54,12 @@ jobs:
         with:
           cache: true
 
-      # Same entry point the deposit itself uses, so what you read here is what
-      # gets uploaded to the archive -- give or take the DOI, which is stamped
-      # onto the title page during the deposit run itself and cannot be known
-      # before the identifier is reserved.
+      # Same entry point the deposit itself uses, so the BODY is what gets
+      # archived. The TITLE PAGE is not. The deposit run reserves the DOI,
+      # stamps archived_at, and only then rebuilds -- so both of those fields
+      # are absent here, and cannot be otherwise, because neither exists until
+      # the run that mints them. What this checks is the part that can actually
+      # be wrong: figures, maths, references, layout.
       - name: Build the PDF
         if: steps.slugs.outputs.slugs != ''
         env:
