@@ -170,8 +170,10 @@ In use it is two calls:
 ```python
 import underworld3 as uw
 
-# A scalar metric from |grad T|. refinement=R is the finest:coarsest
-# cell-size ratio you are asking for, not a quality target.
+# A scalar metric from |grad T|. refinement=R asks for cells up to R
+# times finer than the BACKGROUND spacing h0, not a finest:coarsest
+# ratio: with coarsening="auto" the sparsest cells relax to h0*R**(1/d),
+# so the full envelope is [h0/R, h0*R**(1/d)].
 rho = uw.meshing.metric_density_from_gradient(
     mesh, T, refinement=5, coarsening="auto",
     metric_choice="front-following")
@@ -332,9 +334,9 @@ Convection in an annulus, with the mesh redistributed as the calculation runs.
 
 Thermal convection in an annulus with a Frank–Kamenetskii viscosity spanning a
 factor of $10^{3}$, at $\mathrm{Ra} = 10^{7}$ defined on the lowest viscosity.
-The base mesh is resolution 32, and the metric asks for a finest-to-coarsest
-ratio of 8 — more than a fixed node budget can deliver, for the reason given
-above. The node count never changes: the mesh tightens onto the boundary
+The base mesh is resolution 32, and the metric asks for cells up to 8× finer
+than the background spacing — more than a fixed node budget can deliver, for
+the reason given above. The node count never changes: the mesh tightens onto the boundary
 layers and the plume margins and slackens in the interior, and it keeps doing
 so as those features migrate. Nothing here is remeshed, and the multigrid
 hierarchy the solver uses is the one the mesh started with.
