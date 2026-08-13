@@ -7,7 +7,7 @@ description: >-
   hierarchy untouched — nothing is created or destroyed, only relocated. How
   that redistribution works in Underworld3, what it is worth in numbers, and
   where its ceiling is.
-date: 2026-08-12
+date: 2026-08-13
 authors:
   - name: Louis Moresi
     orcid: 0000-0003-3685-174X
