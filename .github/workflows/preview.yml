@@ -19,7 +19,13 @@ name: preview
 
 on:
   push:
-    branches-ignore: [main]
+    # deposit/** by NAME, not just by path. A paths filter reads the files
+    # changed IN THE PUSH, and "Update branch" merges main into the branch --
+    # so that merge commit touches articles and the filter matches, even though
+    # the branch's net difference from main is still one line of
+    # deposit-queue.txt. Observed on #8. The question a deposit branch asks is
+    # answered by deposit-pdf.yml, never by a preview site.
+    branches-ignore: [main, 'deposit/**']
     # Only build when something a reader would actually SEE has changed. A
     # branch that touches workflows or tests has nothing to preview, and a
     # six-minute build to publish an unchanged site helps nobody -- including
