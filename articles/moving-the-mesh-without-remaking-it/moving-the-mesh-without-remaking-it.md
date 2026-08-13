@@ -151,10 +151,7 @@ sheet-like feature is worth far more than the same node count spent
 isotropically.
 
 ```{figure} figures/redistribute-before-after.png
-:alt: Two panels of a triangular mesh in a unit square. On the left the mesh
-      is uniform. On the right the same mesh has its cells drawn in along a
-      diagonal band, where they are noticeably smaller and elongated along the
-      band direction, and correspondingly larger away from it.
+:alt: Two panels of the same triangular mesh in a unit square: uniform on the left; on the right its cells are drawn in along a diagonal band, smaller there and elongated along the band, and correspondingly larger away from it.
 
 The same mesh, before and after redistribution to an anisotropic metric across
 a diagonal band. Both panels have **1152 cells and 621 nodes** — the counts are
