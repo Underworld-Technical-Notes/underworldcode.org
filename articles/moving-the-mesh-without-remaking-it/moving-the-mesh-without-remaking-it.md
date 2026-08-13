@@ -263,8 +263,9 @@ algorithm cannot push nodes over that barrier.
 We can see this limit directly if we add in the nodes that the redistribution 
 needs when we initially mesh the domain. If we put a refinement into the base mesh,
 the mover does not merely maintain it, it
-**compounds** it. Measured on a fault in an annulus, as the ratio of on-fault
-to bulk nearest-neighbour spacing — lower is finer:
+**compounds** it. In the table below, we try to resolve a (linear) fault
+zone. If we pre-refine the mesh with gmsh, the MMPDE algorithm will 
+further enhance the resolution by bunching up the extra nodes (lower is finer resolution):
 
 | base mesh | base ratio | after the mover |
 |---|---|---|
@@ -273,11 +274,11 @@ to bulk nearest-neighbour spacing — lower is finer:
 | gmsh, `refine_lines` at 3 | 0.30 | 0.19 (~5×) |
 
 So `refinement` is a fly-by-wire dial: the knob is not wired directly to the
-outcome. Turning it up asks for more, but what arrives depends on the node
+outcome. Turning it up asks for more refinement, but what we get depends on the node
 budget and on how the metric is distributed across the domain, and no setting
 guarantees a particular result. That is why redistribution is better thought of
-as a way of grading the base mesh than as adaptive refinement in its own right.
-It is well-suited to the convection problem in the example below.
+as a way of grading the mesh than as adaptive refinement with resolution guarantees.
+It is well-suited to the convection problem that you can see in the figure below.
 
 Falling short of the metric is expected, then, and we need to tell that apart
 from a solve that stalled. A mover that stops early returns a
@@ -287,15 +288,15 @@ iterations: the functional should keep decreasing and the line-search scale
 should stay off zero. A step reporting `scale=0.000` means the line search
 rejected the trial direction and took no step at all, and if that happens
 after a handful of iterations out of a budget of 150 the mover has stalled
-rather than converged. The direct check is to divide the median cell size well
+rather than converged. One direct check is to divide the median cell size well
 outside the feature by the median inside it, and compare that against the
 ratio we asked for.
 
 The MMPDE algorithm has the capacity to work with meshes that are already
-refined and improve them. It is helpful to have MMPDE even if you are 
-also refining the mesh. There is usually benefit, and the mover is benign: it
-will not degrade or undo any refinement you give it. We will come back to this
-in a later article. 
+refined and improve them. It is helpful to use MMPDE even if you are 
+also refining the mesh by adding nodes. There is usually some benefit, 
+and the mover is benign: it will not degrade or undo any refinement you give it.
+We will come back to this in a later article. 
 
 ## The multigrid hierarchy survives
 
@@ -315,16 +316,17 @@ coordinates move.
 
 ## Mesh quality is harder to control in three dimensions
 
-All of this works in 3D. The functional is written over the dimension
-throughout, and tetrahedra are moved in the same way as triangles.
+All of this works in 3D. The functional is written with the dimension kept general,
+and tetrahedra are moved in the same way as triangles.
 
 What changes is how much the metric guarantees. In two dimensions, asking for
 cells of a given size and orientation very nearly settles the question of
 quality as well: satisfy the metric and the triangles are decent. In three
-dimensions it does not. A tetrahedron can have the right volume and sensible
+dimensions it does not come with these guarantees. 
+A tetrahedron can have the right volume and sensible
 edge lengths in every direction the metric asked about and still be a sliver,
 because those constraints leave free the one degree of freedom that flattens
-its four vertices onto a plane. Good size is not the same as a good element.
+its four vertices onto a plane. 
 
 So the mover does improve element quality in 3D — the near-degenerate
 population roughly halves — but expect to watch quality separately rather than
