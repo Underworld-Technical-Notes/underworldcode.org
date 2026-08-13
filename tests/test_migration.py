@@ -1891,3 +1891,49 @@ def test_the_deposit_workflows_can_be_re_run():
             assert "GITHUB_RUN_ATTEMPT" in branch, (
                 "%s branch %r is not unique per attempt, so a re-run cannot "
                 "push" % (name, branch))
+
+def test_a_deposit_pull_request_gets_a_pdf_not_a_preview():
+    """The question a deposit PR asks is answered by the PDF, not by the site.
+
+    Publishing a whole preview site for a one-line change to deposit-queue.txt
+    costs minutes and still leaves the reviewer clicking through a page to
+    reach the download. So the preview skips those branches and deposit-pdf.yml
+    builds the archival PDF and attaches it to the run instead.
+    """
+    preview = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    assert "paths-ignore" in preview and "deposit-queue.txt" in preview, \
+        "a deposit-queue branch must not trigger a full preview build"
+
+    pdf = (ROOT / ".github" / "workflows" / "deposit-pdf.yml").read_text(encoding="utf-8")
+    config = "\n".join(l for l in pdf.splitlines() if not l.lstrip().startswith("#"))
+    assert "upload-artifact" in config, "the PDF has to come back as an artifact"
+    assert "UWTN_PDF_ONLY" in config, "build the queued notes, not all forty-odd"
+    assert "if-no-files-found: error" in config, \
+        "an empty artifact must fail, not pass quietly"
+    assert "FIGSHARE_TOKEN" not in config and "--live" not in config, \
+        "this builds and shows; it must not be able to deposit anything"
+
+
+def test_the_deposit_stops_while_identifiers_are_unrecorded():
+    """The one unrecoverable outcome is two live DOIs for one note.
+
+    A run that publishes a record and then dies before its identifiers pull
+    request is merged leaves the DOI live and the repository unaware. Since
+    `pending()` selects on `archive_published_at`, the note still looks
+    undeposited, and the next run would mint a SECOND citable identifier for
+    it. That cannot be undone -- a published DOI is only ever superseded.
+
+    An open `deposit/identifiers-*` pull request IS that state, so the deposit
+    refuses to start while one exists.
+    """
+    flow = (ROOT / ".github" / "workflows" / "deposit.yml").read_text(encoding="utf-8")
+    config = "\n".join(l for l in flow.splitlines() if not l.lstrip().startswith("#"))
+    assert "deposit/identifiers-" in config, \
+        "nothing checks for a previous run's unrecorded identifiers"
+    assert "exit 1" in config, "the check has to stop the run, not just log"
+    # It must sit ahead of anything that can talk to Figshare, or it guards
+    # nothing: the first --live step would already have run.
+    guard = config.index("deposit/identifiers-")
+    first_live = config.index("--live")
+    assert guard < first_live, \
+        "the guard must come before the first step that can deposit"
