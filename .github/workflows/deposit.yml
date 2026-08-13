@@ -164,7 +164,11 @@ jobs:
             echo "no identifier changes to record"
             exit 0
           fi
-          BRANCH="deposit/identifiers-${GITHUB_RUN_ID}"
+          # RUN_ATTEMPT, not just RUN_ID: a re-run keeps the same run id, so
+          # without it the second attempt pushes to the branch the first one
+          # already created and is rejected non-fast-forward. Re-running a
+          # failed workflow is the obvious thing to do, and it must work.
+          BRANCH="deposit/identifiers-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           git config user.name "underworld-technical-notes"
           git config user.email "help@underworldcode.org"
           git checkout -b "$BRANCH"
@@ -176,7 +180,7 @@ jobs:
           has to reach the repository even if the run failed."
           git push origin "$BRANCH"
           gh pr create --base main --head "$BRANCH" \
-            --title "Deposit identifiers from run ${GITHUB_RUN_ID}" \
+            --title "Deposit identifiers from run ${GITHUB_RUN_ID} (attempt ${GITHUB_RUN_ATTEMPT})" \
             --body "DOIs and record ids written by the deposit workflow (\`${{ inputs.mode }}\`).
 
           **Merge this.** Until it lands, the repository does not know these records exist, and the guard against minting a second DOI for the same note has nothing to check.

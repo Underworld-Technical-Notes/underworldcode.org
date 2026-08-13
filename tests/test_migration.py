@@ -1868,3 +1868,26 @@ def test_no_directive_option_is_wrapped_over_two_lines():
     assert not offenders, (
         "directive option wrapped onto a second line; put it on one line:\n  "
         + "\n  ".join(offenders))
+
+
+def test_the_deposit_workflows_can_be_re_run():
+    """A re-run keeps the same run id, so a branch named only after it collides.
+
+    Both workflows commit to a new branch and open a pull request. Named
+    `deposit/<kind>-${GITHUB_RUN_ID}`, the second attempt pushes to the branch
+    the first attempt already created and is rejected non-fast-forward -- so
+    the workflow can never be re-run, which is the first thing anyone tries
+    after a failure. Observed on the deposit-ready run for UWTN 2026-011.
+
+    It matters most in deposit.yml: that branch carries the record id back
+    after a DOI has been minted, and a re-run that cannot push leaves the
+    repository not knowing a published identifier exists.
+    """
+    for name in ("deposit.yml", "deposit-ready.yml"):
+        text = (ROOT / ".github" / "workflows" / name).read_text(encoding="utf-8")
+        branches = re.findall(r'BRANCH="([^"]+)"', text)
+        assert branches, "%s no longer names a branch" % name
+        for branch in branches:
+            assert "GITHUB_RUN_ATTEMPT" in branch, (
+                "%s branch %r is not unique per attempt, so a re-run cannot "
+                "push" % (name, branch))
