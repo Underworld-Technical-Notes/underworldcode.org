@@ -32,6 +32,7 @@ methods:
 ghost_tags:
   - Underworld Code
 figures: 2
+banner_credit: "Photo by <a href=\"https://unsplash.com/@waldemarbrandt67w?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Waldemar Brandt</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplash</a>"
 source: native
 repository_record_id: 33241170
 archive_doi: 10.6084/m9.figshare.33241170

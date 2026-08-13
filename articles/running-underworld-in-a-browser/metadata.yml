@@ -27,5 +27,6 @@ methods:
 ghost_tags:
   - Underworld Code
   - Python/Jupyter
-figures: 0
+figures: 1
+banner_credit: "Photo by <a href=\"https://unsplash.com/@jbl12761?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">James Lee</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplash</a>"
 source: native

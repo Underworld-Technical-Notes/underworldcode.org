@@ -13,6 +13,7 @@ authors:
     affiliations:
       - Australian National University
 license: CC-BY-4.0
+banner: figures/banner.jpg
 keywords:
   - Underworld Code
   - Python/Jupyter
@@ -28,6 +29,8 @@ exports:
     article_version: 1.0.0
 doi: 10.6084/m9.figshare.33216996
 ---
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@jbl12761?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">James Lee</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
+
 Somebody reads a paper, wants to run the model, and has forty minutes. They
 will not have time to install PETSc. They may not have a compiler. If the answer is "clone
 this, then build these dependencies", the answer is really: "no thanks".

@@ -34,7 +34,7 @@ exports:
     software_version: underworld3 0.0.0
 doi: 10.6084/m9.figshare.33241170
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@waldemarbrandt67w?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Waldemar Brandt</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 
 A geodynamic model with a uniform mesh, almost certainly 
 expends most of its resolution in the wrong places. The
