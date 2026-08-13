@@ -20,11 +20,28 @@ name: preview
 on:
   push:
     branches-ignore: [main]
-    # A deposit-queue branch changes this one file and nothing a reader would
-    # look at. Publishing a whole preview site for it costs minutes and tells
-    # nobody anything; deposit-pdf.yml builds the PDF instead, which is the
-    # artefact that is actually under review at that point.
-    paths-ignore: ['deposit-queue.txt']
+    # Only build when something a reader would actually SEE has changed. A
+    # branch that touches workflows or tests has nothing to preview, and a
+    # six-minute build to publish an unchanged site helps nobody -- including
+    # a deposit-queue branch, whose one-line change is answered by the PDF that
+    # deposit-pdf.yml builds instead.
+    #
+    # Safe as a filter because `preview` is NOT a required status check -- only
+    # `test` is. A paths filter on a required check would leave the run
+    #remaining "expected" and block the merge forever rather than skipping it.
+    # If that ever changes, this has to change with it.
+    #
+    # scripts/ is included deliberately: those build the site, so a change
+    # there can alter every page without touching an article.
+    paths:
+      - 'articles/**'
+      - 'pages-src/**'
+      - 'static/**'
+      - 'templates/**'
+      - 'scripts/**'
+      - 'myst.yml'
+      - 'authors.yml'
+      - 'classification.yml'
   workflow_dispatch:
 
 concurrency:

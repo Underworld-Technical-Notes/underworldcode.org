@@ -1964,3 +1964,21 @@ def test_a_pull_request_gets_its_preview_link_even_if_opened_later():
         text = (ROOT / ".github" / "workflows" / name).read_text(encoding="utf-8")
         assert 'startswith("**Preview")' in text, \
             "%s dedupe must match the linked variant, which has no colon" % name
+
+
+def test_the_preview_only_runs_when_there_is_something_to_preview():
+    """Six minutes to republish an unchanged site helps nobody.
+
+    A branch that touches only workflows or tests has nothing to render, and
+    the preview used to build for it anyway. This is safe as a paths filter
+    ONLY because `preview` is not a required status check -- a required check
+    skipped by a paths filter stays "expected" and blocks the merge forever
+    instead of passing. If preview is ever made required, the filter has to go.
+    """
+    text = (ROOT / ".github" / "workflows" / "preview.yml").read_text(encoding="utf-8")
+    config = "\n".join(l for l in text.splitlines() if not l.lstrip().startswith("#"))
+    assert "paths:" in config, "the preview should not build for unrenderable changes"
+    for needed in ("'articles/**'", "'scripts/**'", "'myst.yml'"):
+        assert needed in config, (
+            "%s changes what the site looks like; leaving it out means no "
+            "preview when one is wanted" % needed)
