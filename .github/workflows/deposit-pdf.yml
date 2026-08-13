@@ -1,0 +1,100 @@
+name: deposit-pdf
+
+# Build the PDF a deposit is about, and attach it to the pull request.
+#
+# A "Deposit: <slug>" pull request asks one question: is this note ready to
+# have a DOI minted against it? What you need to answer that is the archival
+# PDF -- the thing that gets deposited and the thing a reader will cite. The
+# preview site is the wrong tool here. It costs minutes to publish a whole
+# site, and it still leaves you clicking through a page to reach the download.
+#
+# So this builds the PDF for the queued notes and nothing else, and uploads it
+# as a run artifact. Download it from the checks, read it, and merge if it is
+# right.
+
+on:
+  pull_request:
+    paths: ['deposit-queue.txt']
+
+concurrency:
+  group: deposit-pdf-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The base is needed to work out which lines this pull request ADDED.
+          # A queue entry that was already there has already been deposited, and
+          # rebuilding its PDF would say nothing about the decision at hand.
+          fetch-depth: 0
+
+      - name: Work out which notes are being asked about
+        id: slugs
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          ADDED=$(git diff "$BASE"...HEAD -- deposit-queue.txt \
+                  | sed -n 's/^+\([a-z0-9][a-z0-9-]*\)$/\1/p' | tr '\n' ',' | sed 's/,$//')
+          if [ -z "$ADDED" ]; then
+            echo "no slug added to the queue by this pull request"
+            echo "slugs=" >> "$GITHUB_OUTPUT"
+          else
+            echo "building: $ADDED"
+            echo "slugs=$ADDED" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: prefix-dev/setup-pixi@v0.8.1
+        if: steps.slugs.outputs.slugs != ''
+        with:
+          cache: true
+
+      # Same entry point the deposit itself uses, so the BODY is what gets
+      # archived. The TITLE PAGE is not. The deposit run reserves the DOI,
+      # stamps archived_at, and only then rebuilds -- so both of those fields
+      # are absent here, and cannot be otherwise, because neither exists until
+      # the run that mints them. What this checks is the part that can actually
+      # be wrong: figures, maths, references, layout.
+      - name: Build the PDF
+        if: steps.slugs.outputs.slugs != ''
+        env:
+          UWTN_PDF_ONLY: ${{ steps.slugs.outputs.slugs }}
+        run: pixi run build-pdf
+
+      - name: Confirm a PDF was actually produced
+        if: steps.slugs.outputs.slugs != ''
+        run: |
+          # MyST drops a figure it cannot convert and carries on, and it can
+          # fail the whole export without a non-zero exit. An empty artifact
+          # that looks like a successful check is worse than a failed run.
+          COUNT=$(ls -1 articles/*/*.pdf 2>/dev/null | wc -l | tr -d ' ')
+          [ "$COUNT" -gt 0 ] || { echo "no PDF was produced"; exit 1; }
+          ls -la articles/*/*.pdf
+
+      - uses: actions/upload-artifact@v4
+        if: steps.slugs.outputs.slugs != ''
+        with:
+          name: deposit-pdf
+          path: articles/*/*.pdf
+          if-no-files-found: error
+
+      - name: Say where it is
+        if: steps.slugs.outputs.slugs != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RUN="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          BODY=$(printf '**The PDF is built and attached to [this run](%s)** — download `deposit-pdf` from the Artifacts section at the bottom of that page.\n\nThe body is what gets archived, so reading it is the check. The title page is NOT the same: the deposit run reserves the DOI and stamps the archive date and only then rebuilds, so neither appears here \u2014 they do not exist until the run that mints them. What this shows you is the part that can be wrong: figures, maths, references, layout.\n\nMerging this pull request mints the DOI. Close it instead if the note is not ready — it will be offered again next time anything changes.' "$RUN")
+          # One comment, updated, rather than one per push.
+          EXISTING=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${{ github.event.pull_request.number }}/comments" \
+            --jq '.[] | select(.body | startswith("**The PDF is built")) | .id' | head -1)
+          if [ -n "$EXISTING" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING}" -f body="$BODY"
+          else
+            gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/${{ github.event.pull_request.number }}/comments" -f body="$BODY"
+          fi
