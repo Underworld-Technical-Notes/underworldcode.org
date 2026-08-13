@@ -1991,3 +1991,35 @@ def test_the_preview_only_runs_when_there_is_something_to_preview():
         assert needed in config, (
             "%s changes what the site looks like; leaving it out means no "
             "preview when one is wanted" % needed)
+
+
+def test_checking_and_building_are_separate_jobs():
+    """A check should not have side effects, and should not need a build.
+
+    `test` used to run the unit tests and then build the site, the PDFs and an
+    artifact -- a "test" that made things, and a required check that took two
+    minutes to report a typo in a note. Louis: "I personally feel that tests
+    should not DO anything."
+
+    So `test` is now checks only, and `build` is where anything is made. The
+    two checks that read the BUILT site live with the build, because there is
+    nothing for them to look at before it runs.
+
+    Parsed as text, not with PyYAML: the pixi environment pytest runs in has no
+    yaml module, and a test that cannot run is not a guard.
+    """
+    text = (ROOT / ".github" / "workflows" / "test.yml").read_text(encoding="utf-8")
+    body = text[text.index("\njobs:"):]
+    assert "\n  test:\n" in body and "\n  build:\n" in body, \
+        "test and build must be separate jobs"
+    checking = body[body.index("\n  test:\n"):body.index("\n  build:\n")]
+    building = body[body.index("\n  build:\n"):]
+
+    assert "upload-artifact" not in checking, "the checking job must not upload"
+    assert "pixi run build" not in checking, "the checking job must not build"
+    assert "test-unit" in checking and "validate" in checking, \
+        "the checking job still has to do the checking"
+    # These read the built site, so they belong with the build, or they inspect
+    # an empty directory and pass for the wrong reason.
+    for needs_build in ("test-dois", "test-assets"):
+        assert needs_build in building, "%s needs the built site" % needs_build
