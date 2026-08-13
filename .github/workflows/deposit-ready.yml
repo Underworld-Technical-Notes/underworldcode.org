@@ -51,7 +51,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          BRANCH="deposit/queue-${GITHUB_RUN_ID}"
+          # RUN_ATTEMPT, not just RUN_ID: a re-run keeps the same run id, so
+          # without it the second attempt pushes to the branch the first one
+          # already created and is rejected non-fast-forward. Re-running a
+          # failed workflow is the obvious thing to do, and it must work.
+          BRANCH="deposit/queue-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           git config user.name "underworld-technical-notes"
           git config user.email "help@underworldcode.org"
           git checkout -b "$BRANCH"
