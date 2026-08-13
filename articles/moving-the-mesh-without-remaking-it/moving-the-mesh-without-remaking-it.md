@@ -297,11 +297,9 @@ figures.
 
 One part of the machinery does need rebuilding. Underworld3 constructs its
 prolongation operators by geometric point location rather than from the
-refinement relation, so moving the nodes can leave a coarse degree of freedom
-with no fine image under the local-support builder. The build retries with the
-global-support RBF builder when that happens. In 3D, before that retry
-existed, the hierarchy dropped to algebraic multigrid at 23 iterations; with
-it, `pc=mg` converges in 2.
+refinement relation, so although the relation those operators represent is
+unchanged, the operators themselves have to be built again once the
+coordinates move.
 
 ## Three dimensions behave differently
 
