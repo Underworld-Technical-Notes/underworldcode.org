@@ -1,0 +1,35 @@
+% Resolved from doi.org and pinned here on purpose. Letting MyST fetch these at
+% build time made the build depend on doi.org answering: it worked locally and
+% failed on CI with "Citation data from doi.org was not available or malformed",
+% which would have published the note with a broken citation and no reference
+% entry. A deposited PDF cannot be repaired after the fact, so the bibliography
+% is part of the source.
+
+@article{Huang_2015,
+  title   = {A geometric discretization and a simple implementation for variational mesh generation and adaptation},
+  volume  = {301},
+  ISSN    = {0021-9991},
+  url     = {http://dx.doi.org/10.1016/j.jcp.2015.08.032},
+  DOI     = {10.1016/j.jcp.2015.08.032},
+  journal = {Journal of Computational Physics},
+  publisher = {Elsevier BV},
+  author  = {Huang, Weizhang and Kamenski, Lennard},
+  year    = {2015},
+  month   = nov,
+  pages   = {322--337}
+}
+
+@article{Huang_2017,
+  title   = {On the mesh nonsingularity of the moving mesh PDE method},
+  volume  = {87},
+  ISSN    = {0025-5718},
+  url     = {http://dx.doi.org/10.1090/mcom/3271},
+  DOI     = {10.1090/mcom/3271},
+  number  = {312},
+  journal = {Mathematics of Computation},
+  publisher = {American Mathematical Society (AMS)},
+  author  = {Huang, Weizhang and Kamenski, Lennard},
+  year    = {2017},
+  month   = oct,
+  pages   = {1887--1911}
+}

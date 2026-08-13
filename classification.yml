@@ -307,3 +307,8 @@ running-underworld-in-a-browser:
   article_type: technical-note
   subjects: []
   methods: [parallel-hpc]
+
+moving-the-mesh-without-remaking-it:
+  article_type: technical-note
+  subjects: [mantle-convection, earthquakes-faults]
+  methods: [meshing, solvers, parallel-hpc]

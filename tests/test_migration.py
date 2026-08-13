@@ -9,6 +9,7 @@ import importlib.util
 import json
 import os
 import pathlib
+import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -1835,3 +1836,35 @@ def test_the_queue_skips_what_is_already_deposited():
     assert queue.exists(), "the queue file is how a DOI gets minted"
     ready = (ROOT / ".github" / "workflows" / "deposit-ready.yml").read_text(encoding="utf-8")
     assert "queued" in ready, "a note already in the queue must not be asked about twice"
+
+
+def test_no_directive_option_is_wrapped_over_two_lines():
+    """A wrapped `:alt:` silently becomes half an alt and a stray caption.
+
+    MyST reads a directive option as the rest of ITS OWN line. An indented
+    continuation is not joined to it -- it falls through into the directive
+    body, so a figure ends up with a truncated alt AND the leftover words
+    rendered on the page as a second caption. Both halves are wrong and
+    neither is reported: the build succeeds, the assets check passes, and the
+    only symptom is prose appearing where no prose was written.
+
+    Caught on UWTN 2026-011 by reading the preview, which is the only place it
+    shows. Directive options go on one line however long that line gets.
+    """
+    offenders = []
+    for path in sorted(ROOT.glob("articles/*/*.md")) + sorted(ROOT.glob("pages-src/*.md")):
+        lines = path.read_text(encoding="utf-8").split("\n")
+        inside = False
+        for n, line in enumerate(lines):
+            if re.match(r"^\s*```\{", line):
+                inside = True
+            elif re.match(r"^\s*```\s*$", line):
+                inside = False
+            if not inside or not re.match(r"^:[A-Za-z_-]+:", line):
+                continue
+            following = lines[n + 1] if n + 1 < len(lines) else ""
+            if following.strip() and following.startswith((" ", "\t")):
+                offenders.append("%s:%d %s" % (path.name, n + 1, line.strip()[:50]))
+    assert not offenders, (
+        "directive option wrapped onto a second line; put it on one line:\n  "
+        + "\n  ".join(offenders))
