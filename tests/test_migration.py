@@ -1516,7 +1516,8 @@ def test_the_preview_never_runs_on_a_fork_pull_request():
                        if not line.lstrip().startswith("#"))
     assert "pull_request_target" not in config, \
         "pull_request_target would run untrusted content with a token in scope"
-    assert "branches-ignore: [main]" in config, \
+    branches_ignored = re.search(r"branches-ignore:\s*\[([^\]]*)\]", config)
+    assert branches_ignored and "main" in branches_ignored.group(1), \
         "the preview must never publish main -- that is the live site's job"
 
 
@@ -1909,6 +1910,12 @@ def test_a_deposit_pull_request_gets_a_pdf_not_a_preview():
                          if not l.lstrip().startswith("#"))
     assert "paths:" in prev_cfg or "paths-ignore:" in prev_cfg, \
         "a deposit-queue branch must not trigger a full preview build"
+    # By NAME as well as by path. A paths filter reads the files changed in the
+    # push, and "Update branch" merges main in, so the merge commit touches
+    # articles and the filter matches -- even though the branch still differs
+    # from main by one line of deposit-queue.txt. Seen on #8.
+    assert "'deposit/**'" in prev_cfg, \
+        "deposit branches must be excluded by name, not only by path"
     assert "deposit-queue.txt" not in prev_cfg.split("jobs:")[0] \
         or "paths-ignore:" in prev_cfg, \
         "deposit-queue.txt must not be a path that triggers the preview"
