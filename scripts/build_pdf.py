@@ -60,7 +60,29 @@ def main():
     if targets:
         print("building %d PDF(s) only: %s" % (len(targets), ", ".join(only)))
 
-    status = run("myst", "build", "--typst", *targets)
+    # Build the first one ALONE, then the rest.
+    #
+    # MyST renders exports concurrently, and Typst downloads the packages its
+    # generated preamble imports -- @preview/tablex -- into a per-user cache on
+    # first use. On a cold cache two compiles starting together race: one is
+    # still writing the package while the other tries to read it, and that one
+    # dies with "unresolved import" having just watched the download reach 100%.
+    # A CI runner is fresh every time, so the cache is ALWAYS cold there.
+    #
+    # One serial compile first warms the cache; everything after it finds the
+    # package already present. Deliberately not a list of package names to
+    # pre-fetch: MyST generates that preamble, so any such list would be a copy
+    # of someone else's decision, silently wrong after a MyST upgrade.
+    #
+    # Seen on PR #17, the first build to produce two PDFs at once. It is luck
+    # rather than design that the 43-PDF production build has not hit it.
+    status = 0
+    if len(targets) > 1:
+        status = run("myst", "build", "--typst", targets[0])
+        if status == 0:
+            status = run("myst", "build", "--typst", *targets[1:])
+    else:
+        status = run("myst", "build", "--typst", *targets)
 
     # Always, so a failed build does not leave every article without its banner.
     run(sys.executable, "scripts/banner_body.py", "--add")
