@@ -312,3 +312,8 @@ moving-the-mesh-without-remaking-it:
   article_type: technical-note
   subjects: [mantle-convection, earthquakes-faults]
   methods: [meshing, solvers, parallel-hpc]
+
+annulus-and-spherical-stokes-benchmarks:
+  article_type: technical-note
+  subjects: [mantle-convection, planetary]
+  methods: [benchmarks-validation, solvers, finite-elements]
