@@ -277,8 +277,7 @@ outcome. Turning it up asks for more, but what arrives depends on the node
 budget and on how the metric is distributed across the domain, and no setting
 guarantees a particular result. That is why redistribution is better thought of
 as a way of grading the base mesh than as adaptive refinement in its own right.
-It is enough for the convection problem in the example below, which is why that
-example is here.
+It is well-suited to the convection problem in the example below.
 
 Falling short of the metric is expected, then, and we need to tell that apart
 from a solve that stalled. A mover that stops early returns a
