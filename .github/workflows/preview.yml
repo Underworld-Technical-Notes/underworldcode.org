@@ -19,7 +19,35 @@ name: preview
 
 on:
   push:
-    branches-ignore: [main]
+    # deposit/** by NAME, not just by path. A paths filter reads the files
+    # changed IN THE PUSH, and "Update branch" merges main into the branch --
+    # so that merge commit touches articles and the filter matches, even though
+    # the branch's net difference from main is still one line of
+    # deposit-queue.txt. Observed on #8. The question a deposit branch asks is
+    # answered by deposit-pdf.yml, never by a preview site.
+    branches-ignore: [main, 'deposit/**']
+    # Only build when something a reader would actually SEE has changed. A
+    # branch that touches workflows or tests has nothing to preview, and a
+    # six-minute build to publish an unchanged site helps nobody -- including
+    # a deposit-queue branch, whose one-line change is answered by the PDF that
+    # deposit-pdf.yml builds instead.
+    #
+    # Safe as a filter because `preview` is NOT a required status check -- only
+    # `test` is. A paths filter on a required check would leave the run
+    #remaining "expected" and block the merge forever rather than skipping it.
+    # If that ever changes, this has to change with it.
+    #
+    # scripts/ is included deliberately: those build the site, so a change
+    # there can alter every page without touching an article.
+    paths:
+      - 'articles/**'
+      - 'pages-src/**'
+      - 'static/**'
+      - 'templates/**'
+      - 'scripts/**'
+      - 'myst.yml'
+      - 'authors.yml'
+      - 'classification.yml'
   workflow_dispatch:
 
 concurrency:
@@ -169,7 +197,15 @@ jobs:
           LINKS=""
           for SLUG in $(echo "${{ steps.target.outputs.changed }}" | tr ',' ' '); do
             TITLE=$(sed -n 's/^title: *//p' "articles/${SLUG}/metadata.yml" | head -1)
-            LINKS="${LINKS}- [${TITLE:-$SLUG}](${URL}${SLUG}/)"$'\n'
+            # The staged PDF carries a content hash, so find it rather than
+            # guessing the name. Truncation in stage_downloads.py means the
+            # prefix is the slug's first 20 characters.
+            PDF=$(cd _build/site/public 2>/dev/null && ls "${SLUG:0:20}"*.pdf 2>/dev/null | head -1)
+            if [ -n "$PDF" ]; then
+              LINKS="${LINKS}- [${TITLE:-$SLUG}](${URL}${SLUG}/) — [PDF](${URL}${PDF})"$'\n'
+            else
+              LINKS="${LINKS}- [${TITLE:-$SLUG}](${URL}${SLUG}/)"$'\n'
+            fi
           done
           if [ -n "$LINKS" ]; then
             BODY=$(printf '**Preview**\n\n%s\nOr the [whole site](%s).\n\nBuilt from `%s`. Shows notes at draft and review, which the published site withholds. Not indexed, no comments, and not the citable version. Confirmed serving this commit before this was posted.' "$LINKS" "$URL" "${GITHUB_SHA::7}")
@@ -177,7 +213,7 @@ jobs:
             BODY=$(printf '**Preview:** %s\n\nNo article changed on this branch. Built from `%s`. Shows notes at draft and review, which the published site withholds. Not indexed, no comments, and not the citable version.' "$URL" "${GITHUB_SHA::7}")
           fi
           EXISTING=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" \
-            --jq '.[] | select(.body | startswith("**Preview:**")) | .id' | head -1)
+            --jq '.[] | select(.body | startswith("**Preview")) | .id' | head -1)
           if [ -n "$EXISTING" ]; then
             gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING}" -f body="$BODY"
           else
