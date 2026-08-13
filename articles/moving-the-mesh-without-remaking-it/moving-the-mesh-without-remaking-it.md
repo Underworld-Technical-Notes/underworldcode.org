@@ -330,12 +330,14 @@ Convection in an annulus, with the mesh redistributed as the calculation runs.
 ```{figure} figures/adaptive-convection.gif
 :alt: Animated cross-section of a convecting annulus. Warm upwellings and cool downwellings develop and migrate, and the triangular mesh visibly tightens around the thermal boundary layers and the plume margins, following them as they move.
 
-Thermal convection in an annulus at $\mathrm{Ra} = 10^{7}$ with a viscosity
-contrast of $10^{3}$, adapted every few steps. The node count never changes:
-the mesh tightens onto the boundary layers and the plume margins and slackens
-in the interior, and it keeps doing so as those features migrate. Nothing here
-is remeshed, and the multigrid hierarchy the solver uses is the one the mesh
-started with.
+Thermal convection in an annulus with a Frank–Kamenetskii viscosity spanning a
+factor of $10^{3}$, at $\mathrm{Ra} = 10^{7}$ defined on the lowest viscosity.
+The base mesh is resolution 32, and the metric asks for a finest-to-coarsest
+ratio of 8 — more than a fixed node budget can deliver, for the reason given
+above. The node count never changes: the mesh tightens onto the boundary
+layers and the plume margins and slackens in the interior, and it keeps doing
+so as those features migrate. Nothing here is remeshed, and the multigrid
+hierarchy the solver uses is the one the mesh started with.
 ```
 
 ## Using it
