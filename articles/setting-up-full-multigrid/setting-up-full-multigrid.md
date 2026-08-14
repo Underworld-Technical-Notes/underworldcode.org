@@ -137,11 +137,25 @@ elements meet. The pattern is a record of how the mesh was made rather than of
 the problem being solved.
 
 `mesh.relax()` moves the nodes to improve element shapes while keeping the
-resolution and the topology, which loosens that imprint. On a twice-refined box
-it lifts median element quality from 0.976 to 0.994. The gain is small there
-because a gmsh base mesh is already good; it is larger the worse the base is.
-Relaxation moves coordinates only, so the hierarchy survives it — that is the
-subject of a [companion note](/moving-the-mesh-without-remaking-it/).
+resolution and the topology, which loosens that imprint.
+
+```{figure} figures/relax-annulus.png
+:alt: Two wireframe views of a twice-refined annulus mesh. On the left, long straight seams from the coarse base mesh run across the refined mesh and meet at vertices where an unusual number of elements converge. On the right the same mesh after relaxation, with the seams much less apparent and the element sizes more even.
+
+A twice-refined annulus, before and after `relax()`. The seams on the left are
+the coarse mesh's own edges, still visible after two refinements. Median
+element quality goes from 0.940 to 0.972 and the tenth percentile from 0.839 to
+0.927; the worst single cell goes the other way, 0.827 to 0.763, because the
+mover minimises a global energy and will trade a few cells for many. Every node
+that began on a bounding circle is still exactly on it: relaxation moves
+interior coordinates only.
+```
+
+The effect is clearer on the annulus than on a box, whose base mesh is already
+good — there the same operation moves median quality only from 0.976 to 0.994.
+Because relaxation moves coordinates and not topology, the hierarchy survives
+it, which is the subject of a
+[companion note](/moving-the-mesh-without-remaking-it/).
 
 ## When the choice matters
 

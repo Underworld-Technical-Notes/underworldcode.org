@@ -1,4 +1,6 @@
-"""FMG against GAMG: when the choice does not matter, and when it does.
+"""Table: FMG against GAMG. Run from the repository root.
+
+FMG against GAMG: when the choice does not matter, and when it does.
 
 Same mesh and same discretisation each time; the only differences are the
 viscosity structure and which preconditioner the velocity block uses.
