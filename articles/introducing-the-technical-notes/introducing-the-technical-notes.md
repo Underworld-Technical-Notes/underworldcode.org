@@ -11,9 +11,12 @@ authors:
     affiliations:
       - Australian National University
 license: CC-BY-4.0
+banner: figures/banner.jpg
 keywords:
   - Underworld Code
 ---
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@lukashron?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Lukas Hron</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
+
 This site has always carried two kinds of writing. Some of it is news — a
 release, a workshop, a paper accepted. The rest is the sort of thing a reader
 later wants to point at: how a solver actually behaves, what a benchmark
