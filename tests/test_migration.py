@@ -2030,3 +2030,27 @@ def test_checking_and_building_are_separate_jobs():
     # an empty directory and pass for the wrong reason.
     for needs_build in ("test-dois", "test-assets"):
         assert needs_build in building, "%s needs the built site" % needs_build
+
+
+def test_no_page_repeats_the_name_of_its_own_group():
+    """"About > About" in the sidebar, and "About" as the page heading.
+
+    A page titled the same as the group holding it reads as a mistake, because
+    it looks like the navigation failed rather than like a choice. pages.yml
+    sets both the header dropdown and the sidebar, so the collision has one
+    source and one fix.
+    """
+    pages, slug = {}, None
+    for raw in (ROOT / "pages.yml").read_text(encoding="utf-8").splitlines():
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        if not raw.startswith(" ") and raw.rstrip().endswith(":"):
+            slug = raw.rstrip()[:-1]
+            pages[slug] = {}
+        elif slug and ":" in raw:
+            key, _, value = raw.strip().partition(":")
+            pages[slug][key.strip()] = value.strip().strip('"')
+    clashes = ["%s (%s)" % (slug, page["title"]) for slug, page in pages.items()
+               if page.get("group") and page.get("title")
+               and page["group"].lower() == page["title"].lower()]
+    assert not clashes, "page titled the same as its group: %s" % ", ".join(clashes)
