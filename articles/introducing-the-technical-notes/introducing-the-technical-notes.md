@@ -14,22 +14,24 @@ license: CC-BY-4.0
 keywords:
   - Underworld Code
 ---
-This site has always carried two kinds of writing. Some of it is news — a
-release, a workshop, a paper accepted. The rest is the sort of thing a reader
-later wants to point at: how a solver actually behaves, what a benchmark
-measured, why a method works the way it does and where it stops working. The
-two have been mixed together, and there has been no way to cite the second
-kind.
 
-So it now has its own series. A **technical note** is written like a short
-paper. It carries a version, an archival PDF built from the same source as the
+Our underworld web site has always carried two kinds of writing. Some of it is news — a
+release, a workshop, a paper accepted. The rest is the sort of thing a reader
+later wants to point at: how a solver behaves, what a benchmark
+measured and what it demonstrates, why a method works the way it does and
+where it stops working. The two have been mixed together, and there has been
+no way to cite the second kind.
+
+So we now have **technical notes** that are written like a short
+paper or perhaps a preprint. Each one carries a version, an archival PDF built from the same source as the
 page, and a DOI that resolves to that PDF. Deposit is deliberate rather than
 automatic: a note is published here first, and only gets an identifier when we
-decide it is worth one.
+decide it is worth one. 
 
-The point is not formality. It is that we can write down what we measured, at
-the length it takes to be useful, and then refer to it — from a paper, from an
-issue, from the next note — instead of describing it again.
+The point is for us to write down what we have created with enough content
+to be useful and not a lot more, and then refer to it — from a paper, from an
+issue, from the next note; instead of describing it again. Not quite
+documentation and not yet a research publication.
 
 The first two are up: [Moving the Mesh Without
 Remaking It](/moving-the-mesh-without-remaking-it/), on redistributing mesh
