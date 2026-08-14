@@ -1,5 +1,5 @@
 ---
-title: Introducing the Technical Notes
+title: Introducing Underworld Technical Notes
 description: >-
   The writing on this site that people want to cite now has its own series.
   A technical note is written like a short paper, gets an archival PDF, and
