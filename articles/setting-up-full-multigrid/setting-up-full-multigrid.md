@@ -1,10 +1,10 @@
 ---
 title: Setting Up Full Multigrid
 description: >-
-  Geometric multigrid is the fastest preconditioner we have for Stokes on a
-  refined mesh, and most of what decides whether it works is not in the solver
-  options. What counts as a level, how the transfers are built when the levels
-  were not made from each other, and why the outer Krylov has to be flexible.
+  Underworld can precondition a Stokes solve with geometric multigrid built
+  from a real hierarchy of meshes, rather than with the algebraic multigrid it
+  falls back to. What the difference is, how to build a mesh that has a
+  hierarchy, and when the choice is worth making.
 date: 2026-08-14
 authors:
   - name: Louis Moresi
@@ -27,215 +27,171 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 0.0.0
 ---
-A Stokes solve is where the time goes, and multigrid is how we stop it going
-there. The idea is old and well described: solve the problem on a sequence of
-grids, let each grid remove the part of the error it can see cheaply, and the
-work per unknown stops growing with the size of the problem.
+Most of the time in a geodynamics model goes into solving the Stokes equations,
+and most of that goes into the velocity block. How that block is preconditioned
+decides how long a model takes to run, and it is one of the few settings where
+the right choice is worth an order of magnitude.
 
-What is much less well described is what to do when the hierarchy you have is
-not the tidy one in the textbook. Ours rarely is. A mesh gets refined where a
-fault or a boundary layer needs it, so the levels differ by a factor that is
-not two. A mesh gets cut, or moved, or adapted between timesteps, so the levels
-were not all built from one another. This note is about the parts that decide
-whether multigrid actually helps on a mesh like that, and none of them are the
-options you type into PETSc.
+## What multigrid does
 
-## Turning it on
+An iterative solver reduces error unevenly. Simple relaxation methods — the
+smoothers — are good at removing error that varies rapidly from cell to cell,
+and poor at removing error that varies smoothly across the whole domain. The
+smooth part is the expensive part: on a fine mesh it takes many sweeps to move
+information from one side of the model to the other.
 
-Build the mesh with a refinement hierarchy and it is already on:
+Multigrid removes that part somewhere else. Error that is smooth on a fine mesh
+is *not* smooth on a mesh twice as coarse, where it spans half as many cells, so
+a few sweeps on the coarse mesh remove what the fine mesh could not. The method
+is a recursion: smooth on the fine mesh, transfer what is left to a coarser one,
+solve there (by recursing again), transfer the correction back, smooth again.
+Each level handles the band of error it can see cheaply, and the work per
+unknown stops growing as the model gets bigger.
+
+Two things have to be supplied: the coarse levels, and the operators that move
+between them.
+
+## Two ways to build the coarse levels
+
+**Algebraic multigrid** builds them from the matrix. It inspects the operator's
+connectivity, groups unknowns that are strongly coupled, and constructs coarse
+levels and transfer operators from that grouping alone. It needs nothing from
+the mesh, which is why it works everywhere and is the sensible default. PETSc's
+implementation is GAMG, and it is what Underworld uses when it has nothing
+better.
+
+**Geometric multigrid** uses actual coarser meshes. If the fine mesh was built
+by refining a coarse one, those coarser meshes already exist, and the transfers
+follow from the refinement relation: each fine node either coincides with a
+coarse node or lies inside a known coarse cell. In PETSc this is `pc_type=mg`,
+and run as a *full* multigrid cycle — starting on the coarsest level and working
+up, rather than starting fine — it is what we call FMG.
+
+The difference matters when the operator's connectivity is a poor guide to the
+geometry, which is exactly what a strong viscosity contrast produces. The
+algebraic method sees a matrix whose couplings are dominated by the stiff
+region and groups unknowns accordingly; the geometric method does not care,
+because it was told the grids.
+
+## Making a mesh that has a hierarchy
+
+A mesh only carries a hierarchy if it was built with one. That is the
+`refinement` argument:
 
 ```python
 mesh = uw.meshing.UnstructuredSimplexBox(cellSize=0.05, refinement=2)
+len(mesh.dm_hierarchy)     # 3: the base and two refinements
+```
+
+The mesh you get back is the finest level. The coarser ones are kept alongside
+it, and they are what the preconditioner uses. Build the same mesh at
+`cellSize=0.0125` with no refinement and you get a mesh of about the same
+resolution with no hierarchy at all — and no geometric multigrid.
+
+The solver picks it up on its own:
+
+```python
 stokes = uw.systems.Stokes(mesh)
+stokes.preconditioner            # "auto" by default
 stokes.solve()
 ```
 
-`refinement=2` builds the mesh twice-refined from a coarse base and keeps the
-coarse levels. The solver's `preconditioner` property defaults to `"auto"`,
-which uses geometric full multigrid when the mesh carries a genuine hierarchy —
-`len(mesh.dm_hierarchy) > 1` — and algebraic multigrid (GAMG) when it does not.
-You can ask for either explicitly:
+`"auto"` uses geometric multigrid when `len(mesh.dm_hierarchy) > 1` and GAMG
+when it does not. You can also ask directly, with `"fmg"` or `"gamg"`. Two
+behaviours are deliberate: `"auto"` only ever adds geometric multigrid to an
+untouched configuration, so it will not overwrite preconditioner options you
+have set yourself; and where a request cannot be honoured, the reason is
+recorded in `stokes.pc_fallbacks` instead of the solve quietly running on
+something else. `stokes.preconditioner_settings` reports what was actually
+applied.
+
+## Curved boundaries have to be told they are curved
+
+Refining a mesh puts new nodes at the midpoints of existing edges. On a
+straight boundary that is fine. On a curved one it is not: the coarse mesh
+approximates a circle by a polygon, and the midpoint of a chord lies inside the
+circle, not on it. Refine naively and every level keeps the coarsest level's
+polygon, so the geometry never improves no matter how fine the mesh becomes.
+
+Underworld's curved meshes carry a refinement callback that snaps
+boundary-labelled nodes back onto the true surface after each refinement. For
+the annulus it is a few lines — take the nodes labelled `Upper` and `Lower` and
+rescale each to the correct radius:
 
 ```python
-stokes.preconditioner = "fmg"     # geometric; warns and falls back if no hierarchy
-stokes.preconditioner = "gamg"    # algebraic
-stokes.preconditioner_settings    # what actually got applied
+coords[upper] *= radiusOuter / R[upper]
+coords[lower] *= radiusInner / R[lower]
 ```
 
-`preconditioner_settings` is worth knowing about. It reports the option keys UW3
-has put in the database for this solver, so what was applied can be asserted on
-rather than inferred from how long the solve took.
+This happens automatically for the built-in meshes, so in normal use there is
+nothing to do. It matters if you build a mesh of your own with curved
+boundaries: without a callback of this kind the hierarchy is geometrically
+wrong, and the error does not go away with refinement.
 
-Two things about `"auto"` that are deliberate. It only ever *adds* geometric
-multigrid to an untouched default: if you have configured the preconditioner
-yourself, it leaves your configuration alone. And on a single-field scalar or
-vector solver it stays with GAMG even when a hierarchy exists, because the
-native geometric path there is unreliable; asking for `"fmg"` explicitly routes
-it through custom transfers instead. Where a request is declined, the reason is
-recorded in `pc_fallbacks` rather than being silent.
+## What the coarse mesh leaves behind
 
-## A level is a coarsening ratio
+Because the fine mesh is made by subdividing the coarse one, the coarse mesh's
+own triangulation is still visible in it. Its edges survive as continuous lines
+across the fine mesh, and its vertices remain places where an unusual number of
+elements meet. The pattern is a record of how the mesh was made rather than of
+the problem being solved.
 
-This is the one that costs the most time when it is wrong.
+`mesh.relax()` moves the nodes to improve element shapes while keeping the
+resolution and the topology, which loosens that imprint. On a twice-refined box
+it lifts median element quality from 0.976 to 0.994. The gain is small there
+because a gmsh base mesh is already good; it is larger the worse the base is.
+Relaxation moves coordinates only, so the hierarchy survives it — that is the
+subject of a [companion note](/moving-the-mesh-without-remaking-it/).
 
-A multigrid level earns its place by seeing error that no other level can see
-cheaply. That is a statement about *resolution*: each level should differ from
-its neighbour by something near a factor of two in cell size. It is not a
-statement about how the mesh was made.
+## When the choice matters
 
-Refinement engines do not work that way. A pass is how an engine *reaches* a
-target size — independence conditions cap how many edges may be split at once,
-and a conforming closure cascades — so the number of passes reflects the
-engine's constraints, not the geometry. Recording one level per pass produces
-levels that coarsen almost nothing. We measured ratios of 1.06, 1.02 and 1.007
-sitting in a hierarchy, each costing a full Galerkin triple product and a
-smoother sweep on every cycle to remove error that its neighbour had already
-removed.
+The same box, the same discretisation, twice-refined so a hierarchy exists, and
+only two things varied: whether there is a viscosity contrast, and which
+preconditioner the velocity block uses.
 
-Cutting a mesh has the same problem in a purer form. A cut re-represents the
-same grid with a surface conformed to it; it adds no resolution at all. Two
-cuts once produced two levels coarsening by 1.11 and 1.17 against a threshold
-of 1.8.
+| viscosity contrast | preconditioner | velocity iterations | outcome | wall clock |
+|---|---|---|---|---|
+| 1 | GAMG | 391 | converged | 3.3 s |
+| 1 | FMG | **2** | converged | **2.0 s** |
+| 10⁴ | GAMG | 2000 | `DIVERGED_ITS` | 78 s |
+| 10⁴ | FMG | **3** | converged | **3.0 s** |
 
-The cost is not subtle. On a box-fault shear solve, dropping the levels that
-were not genuine coarsenings:
+On the constant-viscosity problem both work. GAMG takes a few hundred
+iterations of the velocity block against two, but the solve is a couple of
+seconds either way, and on a model that size the choice does not change the
+day.
 
-| levels | how | wall clock |
-|---|---|---|
-| 9 | one per pass | 93.7 s |
-| 7 | `mg_coarsening_ratio=2.0` | 47.5 s |
-| 5 | `mg_coarsening_ratio=3.0` | **23.3 s** |
+With a factor of 10⁴ across a viscous layer, GAMG does not converge the
+velocity block at all: it runs into the iteration cap, at 200 and again at
+2000, and takes 78 seconds to fail. FMG takes three iterations and three
+seconds. The gap is not a speed-up, it is the difference between a model that
+runs and one that does not.
 
-Same mesh, same answer, four times the speed.
-
-:::{warning} Measure resolution, not cell count
-Under adapt-on-top the mesh only grows where the feature is, so a genuine
-halving of $h$ can show as a global cell-count ratio near 1. Counting cells to
-decide whether a level is real will tell you that every level is redundant on
-exactly the meshes where the levels matter most.
+:::{note} The GAMG here is the default configuration
+These runs use the GAMG bundle Underworld applies without tuning. Algebraic
+multigrid on an elasticity-like operator usually wants the near-null-space —
+the rigid body modes — supplied to it, and it can be made considerably better
+than this. The comparison shows what the two choices give you out of the box,
+which is the choice most people are actually making.
 :::
-
-## Levels that were not built from each other
-
-The textbook hierarchy is nested: every coarse node is a fine node, every
-coarse cell is a union of fine cells, and the transfer between them follows
-from the refinement relation. When that holds you can write the prolongation
-down exactly, for any element degree, from the parent-cell map alone. With the
-Lagrange basis dual to its nodal points,
-
-$$
-W = B\,M^{-1},
-\qquad
-M_{im} = \mu_m(x_i),
-\qquad
-B_{tm} = \mu_m(x_t),
-$$
-
-where $\mu_m$ are the parent cell's basis functions, $x_i$ its own nodes and
-$x_t$ the fine degrees of freedom inside it. No reference element, no
-per-degree formulae, no point location. One detail is not optional: pull the
-coordinates back through the parent's own vertices before evaluating. Raw
-monomials give a conditioning that grows like $h^{-k}$ — around $10^{6}$ at
-$P_3$ — while under the pullback the conditioning depends only on the degree
-and the dimension.
-
-Often, though, the levels were *not* built from each other. A mesh that has
-been cut, moved or adapted has coarse levels that are related to the fine one
-geometrically but not combinatorially. Then the transfer has to be constructed
-rather than derived, and UW3 falls back to locating fine degrees of freedom
-inside a triangulation of the coarse degree-of-freedom cloud.
-
-That fallback works, and it is worth being clear about *why* it works, because
-it is not the reason one might assume. The triangulation is of the coarse
-**degree-of-freedom points**, and it never consults the mesh cells. How often
-its simplices agree with the actual cells:
-
-| mesh | agreement with real cells |
-|---|---|
-| 2D uniform, $P_1$ | 100% |
-| 2D adapt child | 90.8% |
-| 3D uniform, $P_1$ | 58.8% |
-| 3D adapt child | **17.1%** |
-
-At 17% agreement the construction is not reproducing the mesh in any meaningful
-sense. It works because it reproduces *linear functions* exactly, and that is
-the property multigrid transfers actually need. Knowing this changes what you
-check when a hierarchy underperforms in 3D: the question is not whether the
-transfer found the right cells, because mostly it did not.
-
-## The outer solver has to be flexible
-
-This one is not about the hierarchy at all, and it is the single largest effect
-we have measured on a hard nonlinear problem.
-
-In the Schur factorisation used for Stokes, the velocity block is solved with
-its own Krylov method. That solve is not a passive preconditioner: it computes
-the search direction. Being Krylov, it is inexact, and being inexact, the
-operator effectively applied *differs between outer iterations*. A non-flexible
-GMRES assumes a fixed preconditioner and its residual recurrence has no
-guarantee against an operator that drifts.
-
-On a notch problem at refinement 3, varying only this:
-
-| outer | inner rtol | velocity its/step | result |
-|---|---|---|---|
-| `gmres` | 3.3e-08 | 983 | DIVERGED_LINEAR_SOLVE |
-| `gmres` | 1e-03 | 915 | DIVERGED_LINEAR_SOLVE |
-| **`fgmres`** | 3.3e-08 | **58** | no linear failure |
-| **`fgmres`** | 1e-03 | **23** | no linear failure |
-
-Raising the velocity iteration cap from 200 to 2000 changed nothing at all —
-the rows were byte-identical. Loosening the inner tolerance by five orders of
-magnitude while the outer stayed non-flexible was worth 7%. The flexible outer
-Krylov is the entire effect, and once it is in place the same loosening is
-worth a further factor of 2.6.
-
-The inner solves being deliberately inexact is an old design, inherited from
-Citcom. Two halves of one decision: inexact inner solves require a flexible
-outer method, and *how* inexact is bounded by requiring the inner solves to
-converge well below the tolerance demanded of the outer one. The factors UW3
-uses — 0.033 for velocity, 0.1 for pressure — are that margin. Their existence
-is principled; their particular sizes are inherited convention.
-
-## What it is worth
-
-The comparison that matters is against algebraic multigrid, which is what you
-get without a hierarchy and which needs nothing from the mesh.
-
-On a refined mesh with a genuine hierarchy, geometric multigrid is
-substantially better conditioned, because it is built from the refinement
-relation rather than inferred from the operator's connectivity — which is
-exactly what mesh anisotropy makes misleading. In the runs behind the
-[mesh-mover note](/moving-the-mesh-without-remaking-it/), a four-level
-`pc=mg` converged the velocity block in three to four iterations; where the
-hierarchy was lost and the solve fell back to algebraic multigrid, the same
-block took 23.
-
-The corollary is the reason those two notes are a pair. A hierarchy is a
-capital asset: it is built once and it is what makes the solve cheap. Anything
-that destroys it — remeshing in particular — is not only paying for the
-remesh, it is paying for every solve afterwards until a new hierarchy is built.
-That is what moving the mesh instead of remaking it is protecting.
 
 ## Using it
 
 ```python
-# A hierarchy: two refinements from a coarse base, coarse levels kept.
+# Build the hierarchy at mesh construction: base + two refinements.
 mesh = uw.meshing.UnstructuredSimplexBox(cellSize=0.05, refinement=2)
 
 stokes = uw.systems.Stokes(mesh)
-stokes.preconditioner = "auto"        # the default: FMG if there is a hierarchy
+stokes.preconditioner = "auto"        # FMG when a hierarchy exists
 stokes.solve()
 
+print(len(mesh.dm_hierarchy))         # how many levels there are
 print(stokes.preconditioner_settings) # what was applied
 print(stokes.pc_fallbacks)            # anything declined, and why
 ```
 
-When adapting, ask for levels by coarsening ratio rather than taking one per
-engine pass:
-
-```python
-child = mesh.adapt(metric, max_levels=3, mg_coarsening_ratio=2.0)
-```
+If a solve is slow and the mesh has no hierarchy, that is the first thing to
+change: rebuild the mesh with `refinement` rather than at a fine `cellSize`,
+and the same resolution arrives with the coarse levels attached.
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=setting-up-full-multigrid">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=setting-up-full-multigrid">Start one</a></div></div>
