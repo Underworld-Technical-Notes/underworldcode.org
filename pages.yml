@@ -48,7 +48,7 @@
 ugcomm:
   # Not "About": inside the About group it produced About > About in the
   # sidebar and About as the page heading.
-  title: The group
+  title: Who we are
   group: About
   source: pages-src/ugcomm.md
 
