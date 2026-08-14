@@ -312,3 +312,8 @@ moving-the-mesh-without-remaking-it:
   article_type: technical-note
   subjects: [mantle-convection, earthquakes-faults]
   methods: [meshing, solvers, parallel-hpc]
+
+introducing-the-technical-notes:
+  article_type: news
+  subjects: []
+  methods: []
