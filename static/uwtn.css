@@ -589,3 +589,31 @@ a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); 
   color: var(--uwtn-muted);
   margin: 0 0 1.2rem;
 }
+
+/* The front page's animated band. Shaped like an article banner -- full
+   width, capped height, cropped rather than squashed -- so the two read as the
+   same kind of object. The class may land on the image itself or on a wrapper
+   depending on how the theme renders a MyST :class:, so both are covered. */
+.uwtn-landing-banner,
+.uwtn-landing-banner img {
+  display: block;
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  object-position: center top;          /* if the box is shorter than the
+                                           scaled band, lose the inner hole at
+                                           the bottom -- never the outer
+                                           surface, which is the subject */
+  margin: 0 0 2rem;
+  border-radius: 3px;
+  border: 1px solid var(--uwtn-rule);
+}
+.uwtn-landing-banner img {
+  margin: 0;
+  border: 0;
+}
+
+@media (max-width: 720px) {
+  .uwtn-landing-banner,
+  .uwtn-landing-banner img { max-height: 180px; }
+}
