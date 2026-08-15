@@ -83,10 +83,14 @@ mesh = uw.meshing.UnstructuredSimplexBox(cellSize=0.05, refinement=2)
 len(mesh.dm_hierarchy)     # 3: the base and two refinements
 ```
 
-The mesh you get back is the finest level. The coarser ones are kept alongside
-it, and they are what the preconditioner uses. Build the same mesh at
-`cellSize=0.0125` with no refinement and you get a mesh of about the same
-resolution with no hierarchy at all — and no geometric multigrid.
+The mesh you get back is the finest level, and the coarser ones are stored
+within it as PETSc `DMPlex` objects in `mesh.dm_hierarchy`. They are what the
+preconditioner uses. They are not Underworld meshes: there is no `Mesh` object
+for a coarse level, and building one takes work, so the hierarchy is something
+the solver reads rather than something you interact with.
+
+Build the same mesh at `cellSize=0.0125` with no refinement and you get about
+the same resolution with no hierarchy at all — and no geometric multigrid.
 
 The solver picks it up on its own:
 
@@ -159,35 +163,80 @@ it, which is the subject of a
 
 ## When the choice matters
 
-The same box, the same discretisation, twice-refined so a hierarchy exists, and
-only two things varied: whether there is a viscosity contrast, and which
-preconditioner the velocity block uses.
+The test is SolKz, a standard Stokes benchmark on the unit box: viscosity
+varying exponentially with depth, $\eta = e^{2Bz}$, forced by
+$\mathbf{f} = (0,\; \sin(m\pi z)\cos(n\pi x))$ with $n = 3$, $m = 2$, free slip
+on all four walls, Taylor–Hood $P_2$–$P_1$ elements. The viscosity contrast
+across the box is $e^{2B}$. SolKz has a closed-form solution, but nothing here
+uses it: these are timings, not accuracy measurements.
 
-| viscosity contrast | preconditioner | velocity iterations | outcome | wall clock |
-|---|---|---|---|---|
-| 1 | GAMG | 391 | converged | 3.3 s |
-| 1 | FMG | **2** | converged | **2.0 s** |
-| 10⁴ | GAMG | 2000 | `DIVERGED_ITS` | 78 s |
-| 10⁴ | FMG | **3** | converged | **3.0 s** |
+Effort is reported per unknown and relative to the cheapest FMG run, which
+makes it a ratio rather than a time. A ratio does not depend on the machine it
+was measured on, so the table means the same thing wherever it is read.
 
-On the constant-viscosity problem both work. GAMG takes a few hundred
-iterations of the velocity block against two, but the solve is a couple of
-seconds either way, and on a model that size the choice does not change the
-day.
+First, cost against viscosity contrast at a fixed resolution of 11 727
+unknowns:
 
-With a factor of 10⁴ across a viscous layer, GAMG does not converge the
-velocity block at all: it runs into the iteration cap, at 200 and again at
-2000, and takes 78 seconds to fail. FMG takes three iterations and three
-seconds. The gap is not a speed-up, it is the difference between a model that
-runs and one that does not.
+| preconditioner | viscosity contrast | velocity iterations | relative effort per unknown |
+|---|---|---|---|
+| FMG | 10⁰ | 48 | 1.00 |
+| FMG | 10² | 66 | 1.12 |
+| FMG | 10⁴ | 84 | 1.25 |
+| FMG | 10⁶ | 198 | 2.67 |
+| GAMG | 10⁰ | 4 620 | 3.45 |
+| GAMG | 10² | 5 913 | 4.27 |
+| GAMG | 10⁴ | 6 647 | 4.75 |
+| GAMG | 10⁶ | 14 388 | 10.02 |
 
-:::{note} The GAMG here is the default configuration
-These runs use the GAMG bundle Underworld applies without tuning. Algebraic
-multigrid on an elasticity-like operator usually wants the near-null-space —
-the rigid body modes — supplied to it, and it can be made considerably better
-than this. The comparison shows what the two choices give you out of the box,
-which is the choice most people are actually making.
+Both work at every contrast. FMG costs about three times more at $10^6$ than at
+constant viscosity; GAMG costs ten times more than the cheapest FMG run at
+constant viscosity, and ten times *that* by $10^6$.
+
+Second, cost against problem size at constant viscosity:
+
+| preconditioner | unknowns | velocity iterations | relative effort per unknown |
+|---|---|---|---|
+| FMG | 2 947 | 48 | 1.00 |
+| FMG | 11 727 | 48 | 1.23 |
+| FMG | 46 783 | 48 | 1.50 |
+| FMG | 186 879 | 48 | 1.82 |
+| GAMG | 2 947 | 1 726 | 2.00 |
+| GAMG | 11 727 | 4 620 | 4.33 |
+| GAMG | 46 783 | 14 574 | 13.04 |
+
+This is what multigrid exists for. Across a 64-fold growth in the problem, the
+effort FMG spends per unknown does not quite double. Fitted against problem
+size the solve time goes as $N^{1.16}$, against $N^{1.69}$ for GAMG.
+
+The iteration column says where the difference comes from. FMG takes **exactly
+48 velocity iterations at every size** — the count is independent of the mesh,
+which is the property multigrid is built to have. Everything above linear in
+its timing is the cost of an iteration rising as the hierarchy deepens, not
+more iterations being needed. GAMG's iteration count grows as roughly
+$N^{0.7}$–$N^{0.8}$, and that exponent is itself increasing.
+
+Neither is $N\log N$: that would predict growth factors of 4.67, 4.58 and 4.51
+across the three refinement steps, against the 5.21, 4.92 and 4.83 measured.
+
+:::{note} Two things this comparison does not settle
+The solver tolerance is held fixed as the mesh refines. That is the usual way
+to show a multigrid scaling and it is a choice: a finer mesh has a smaller
+discretisation error, so an argument can be made for tightening the solver
+tolerance alongside it, which would make the effort per unknown grow. The table
+answers "what does it cost to solve this system", not "what does it cost to
+reach the accuracy the mesh can support".
+
+The GAMG column is GAMG *as Underworld configures it*. Algebraic multigrid on
+an elasticity-like operator wants the rigid-body near-null space, and
+Underworld does not currently supply it for the Stokes velocity block, so these
+numbers are the default rather than the best algebraic multigrid can do.
 :::
+
+SolKz is also a gentle test, because its viscosity varies smoothly everywhere.
+Replace the smooth profile with a *localised* viscous layer and GAMG stops
+converging at all above a contrast of about $10^2$, while FMG is barely
+affected. Smoothness is what algebraic coarsening reads, and structure that is
+concentrated rather than distributed is what takes it away.
 
 ## Using it
 
