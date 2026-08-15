@@ -23,13 +23,14 @@ Two things are deliberately fixed across every run:
   * the velocity iteration cap, raised well above the default 200 so that
     neither preconditioner is truncated rather than allowed to converge.
 
-GAMG here is GAMG AS UNDERWORLD CONFIGURES IT. Algebraic multigrid on an
-elasticity-like operator wants the rigid-body near-null space, and Underworld
-does not supply it for the Stokes velocity block. Attaching it from outside was
-attempted with PCSetCoordinates on the velocity sub-PC, with and without a PC
-reset, and had no effect -- byte-identical iteration counts either way -- so it
-needs a change inside Underworld. Read the GAMG column as "the default", not as
-"the best algebraic multigrid can do".
+The velocity block is solved with fgmres preconditioned by multigrid, so one
+Krylov iteration is one multigrid cycle. Counting them needs care: the Schur
+factorisation invokes the velocity solve SIXTEEN times per Stokes solve, so a
+naive total folds in a factor that is identical for both preconditioners. What
+is reported here is therefore cycles PER VELOCITY SOLVE, which is the
+like-for-like number. Even so it counts cycles, not work -- a geometric cycle
+and an algebraic one are different amounts of it, which is what the timings
+are for.
 """
 import math
 import time
@@ -78,9 +79,11 @@ def solve_once(pc, refinement, contrast):
     # trivial one and makes every resolution look identical.
     ksp = stokes.snes.getKSP()
     sub = ksp.getPC().getFieldSplitSubKSP()[0]
-    tally = {"outer": 0, "velocity": 0}
-    ksp.setMonitor(lambda k, i, rn: tally.__setitem__("outer", tally["outer"] + 1))
-    sub.setMonitor(lambda k, i, rn: tally.__setitem__("velocity", tally["velocity"] + 1))
+    # Record the ITERATION INDEX, not just a count: every time it restarts at
+    # zero the Schur factorisation has invoked the velocity solve again, which
+    # is what separates "cycles per solve" from "cycles in total".
+    seen = []
+    sub.setMonitor(lambda k, i, rn: seen.append(i))
 
     v.array[...] = 0.0
     p.array[...] = 0.0
@@ -90,8 +93,11 @@ def solve_once(pc, refinement, contrast):
     wall = time.time() - t0
 
     ok = stokes.snes.getConvergedReason() > 0 and sub.getConvergedReason() > 0
+    starts = [j for j, i in enumerate(seen) if i == 0]
+    per_solve = [len(seen[a:b]) for a, b in zip(starts, starts[1:] + [len(seen)])]
     return dict(wall=wall, ok=ok, ndof=stokes.snes.getSolution().getSize(),
-                outer=tally["outer"], velocity=tally["velocity"])
+                invocations=len(starts), velocity=len(seen),
+                cycles=(min(per_solve), max(per_solve)) if per_solve else (0, 0))
 
 
 def repeat(pc, refinement, contrast):
@@ -113,8 +119,8 @@ def contrast_table():
     # on purpose: a ratio does not depend on the machine it was measured on, so
     # the table means the same thing wherever it is read.
     base = next(r["wall"] / r["ndof"] for c, pc, r in rows if c == 1.0 and pc == "fmg")
-    print("\n| preconditioner | viscosity contrast | velocity iterations | relative effort per unknown |")
-    print("|---|---|---|---|")
+    print("\n| preconditioner | viscosity contrast | relative effort per unknown |")
+    print("|---|---|---|")
     for c, pc, r in sorted(rows, key=lambda k: (k[1] != "fmg", k[0])):
         if r["ok"]:
             print("| %s | 10^%d | %d | %.1f |"
@@ -131,13 +137,23 @@ def scaling_table():
         out[pc] = [repeat(pc, r, 1.0) for r in refs]
     # Same normalisation as the contrast table: FMG on the smallest problem.
     base = out["fmg"][0]["wall"] / out["fmg"][0]["ndof"]
-    print("\n| preconditioner | unknowns | velocity iterations | relative effort per unknown |")
-    print("|---|---|---|---|")
+    print("\n| preconditioner | unknowns | relative effort per unknown |")
+    print("|---|---|---|")
     for pc in ("fmg", "gamg"):
         for r in out[pc]:
-            print("| %s | %d | %d | %.1f |"
-                  % (pc.upper(), r["ndof"], r["velocity"],
-                     (r["wall"] / r["ndof"]) / base))
+            print("| %s | %d | %.1f |"
+                  % (pc.upper(), r["ndof"], (r["wall"] / r["ndof"]) / base))
+    print("\n| preconditioner | " + " | ".join("%d unknowns" % r["ndof"] for r in out["fmg"][:3]) + " |")
+    print("|---|" + "---|" * 3)
+    for pc in ("fmg", "gamg"):
+        cells = []
+        for r in out[pc][:3]:
+            lo, hi = r["cycles"]
+            cells.append(str(lo) if lo == hi else "%d\u2013%d" % (lo, hi))
+        print("| %s | %s |" % (pc.upper(), " | ".join(cells)))
+    print("\n(velocity solves per Stokes solve: %s)"
+          % sorted({r["invocations"] for rows in out.values() for r in rows}))
+
     print()
     for pc, rows in out.items():
         xs = [math.log(r["ndof"]) for r in rows]
