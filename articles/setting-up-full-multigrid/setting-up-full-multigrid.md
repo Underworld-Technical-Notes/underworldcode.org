@@ -172,7 +172,9 @@ uses it: these are timings, not accuracy measurements.
 
 Effort is reported per unknown and relative to the cheapest FMG run, which
 makes it a ratio rather than a time. A ratio does not depend on the machine it
-was measured on, so the table means the same thing wherever it is read.
+was measured on, so the table means the same thing wherever it is read. These
+are still wall-clock measurements: repeat the runs and the ratios move by a few
+per cent, so read them as the shape of the difference rather than as constants.
 
 First, cost against viscosity contrast at a fixed resolution of 11 727
 unknowns:
@@ -180,13 +182,13 @@ unknowns:
 | preconditioner | viscosity contrast | velocity iterations | relative effort per unknown |
 |---|---|---|---|
 | FMG | 10⁰ | 48 | 1.00 |
-| FMG | 10² | 66 | 1.12 |
-| FMG | 10⁴ | 84 | 1.25 |
-| FMG | 10⁶ | 198 | 2.67 |
-| GAMG | 10⁰ | 4 620 | 3.45 |
-| GAMG | 10² | 5 913 | 4.27 |
-| GAMG | 10⁴ | 6 647 | 4.75 |
-| GAMG | 10⁶ | 14 388 | 10.02 |
+| FMG | 10² | 66 | 1.14 |
+| FMG | 10⁴ | 84 | 1.27 |
+| FMG | 10⁶ | 198 | 2.72 |
+| GAMG | 10⁰ | 4 620 | 3.55 |
+| GAMG | 10² | 5 913 | 4.41 |
+| GAMG | 10⁴ | 6 647 | 4.88 |
+| GAMG | 10⁶ | 14 388 | 10.44 |
 
 Both work at every contrast. FMG costs about three times more at $10^6$ than at
 constant viscosity; GAMG costs ten times more than the cheapest FMG run at
@@ -197,16 +199,16 @@ Second, cost against problem size at constant viscosity:
 | preconditioner | unknowns | velocity iterations | relative effort per unknown |
 |---|---|---|---|
 | FMG | 2 947 | 48 | 1.00 |
-| FMG | 11 727 | 48 | 1.23 |
-| FMG | 46 783 | 48 | 1.50 |
-| FMG | 186 879 | 48 | 1.82 |
-| GAMG | 2 947 | 1 726 | 2.00 |
-| GAMG | 11 727 | 4 620 | 4.33 |
-| GAMG | 46 783 | 14 574 | 13.04 |
+| FMG | 11 727 | 48 | 1.29 |
+| FMG | 46 783 | 48 | 1.57 |
+| FMG | 186 879 | 48 | 1.86 |
+| GAMG | 2 947 | 1 726 | 2.05 |
+| GAMG | 11 727 | 4 620 | 4.66 |
+| GAMG | 46 783 | 14 574 | 14.16 |
 
 This is what multigrid exists for. Across a 64-fold growth in the problem, the
 effort FMG spends per unknown does not quite double. Fitted against problem
-size the solve time goes as $N^{1.16}$, against $N^{1.69}$ for GAMG.
+size the solve time goes as $N^{1.15}$, against $N^{1.70}$ for GAMG.
 
 The iteration column says where the difference comes from. FMG takes **exactly
 48 velocity iterations at every size** — the count is independent of the mesh,
