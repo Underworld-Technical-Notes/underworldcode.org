@@ -41,6 +41,7 @@ BASE_CELL = 1 / 8
 QDEG = 3
 TOL = 1.0e-6
 VEL_CAP = 2000
+REPEATS = 3          # timings scatter; take the median of a few
 N_X, M_Z = 3, 2          # the SolKz wavenumbers
 
 
@@ -93,9 +94,20 @@ def solve_once(pc, refinement, contrast):
                 outer=tally["outer"], velocity=tally["velocity"])
 
 
+def repeat(pc, refinement, contrast):
+    """Median of REPEATS timings. Wall clock scatters by a few per cent, so a
+    single run is not a number worth reporting to two decimal places."""
+    runs = [solve_once(pc, refinement, contrast) for _ in range(REPEATS)]
+    walls = sorted(r["wall"] for r in runs)
+    out = dict(runs[0])
+    out["wall"] = walls[len(walls) // 2]
+    out["spread"] = (walls[-1] - walls[0]) / walls[len(walls) // 2]
+    return out
+
+
 def contrast_table():
     """Cost against viscosity contrast, at one resolution."""
-    rows = [(c, pc, solve_once(pc, 2, c))
+    rows = [(c, pc, repeat(pc, 2, c))
             for c in (1.0, 1.0e2, 1.0e4, 1.0e6) for pc in ("fmg", "gamg")]
     # Effort per unknown, relative to FMG on the easiest problem. Dimensionless
     # on purpose: a ratio does not depend on the machine it was measured on, so
@@ -105,7 +117,7 @@ def contrast_table():
     print("|---|---|---|---|")
     for c, pc, r in sorted(rows, key=lambda k: (k[1] != "fmg", k[0])):
         if r["ok"]:
-            print("| %s | 10^%d | %d | %.2f |"
+            print("| %s | 10^%d | %d | %.1f |"
                   % (pc.upper(), round(math.log10(c)), r["velocity"],
                      (r["wall"] / r["ndof"]) / base))
         else:
@@ -116,14 +128,14 @@ def scaling_table():
     """Cost against problem size, at constant viscosity. Same columns as above."""
     out = {}
     for pc, refs in (("fmg", (1, 2, 3, 4)), ("gamg", (1, 2, 3))):
-        out[pc] = [solve_once(pc, r, 1.0) for r in refs]
+        out[pc] = [repeat(pc, r, 1.0) for r in refs]
     # Same normalisation as the contrast table: FMG on the smallest problem.
     base = out["fmg"][0]["wall"] / out["fmg"][0]["ndof"]
     print("\n| preconditioner | unknowns | velocity iterations | relative effort per unknown |")
     print("|---|---|---|---|")
     for pc in ("fmg", "gamg"):
         for r in out[pc]:
-            print("| %s | %d | %d | %.2f |"
+            print("| %s | %d | %d | %.1f |"
                   % (pc.upper(), r["ndof"], r["velocity"],
                      (r["wall"] / r["ndof"]) / base))
     print()
@@ -133,7 +145,8 @@ def scaling_table():
         mx, my = sum(xs) / len(xs), sum(ys) / len(ys)
         power = (sum((x - mx) * (y - my) for x, y in zip(xs, ys))
                  / sum((x - mx) ** 2 for x in xs))
-        print("%s: wall clock scales as N^%.2f" % (pc.upper(), power))
+        print("%s: solve time scales as N^%.2f  (worst run-to-run spread %.0f%%)"
+              % (pc.upper(), power, 100 * max(r["spread"] for r in rows)))
 
 
 if __name__ == "__main__":

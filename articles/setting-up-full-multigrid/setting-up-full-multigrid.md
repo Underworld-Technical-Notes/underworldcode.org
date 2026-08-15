@@ -172,23 +172,23 @@ uses it: these are timings, not accuracy measurements.
 
 Effort is reported per unknown and relative to the cheapest FMG run, which
 makes it a ratio rather than a time. A ratio does not depend on the machine it
-was measured on, so the table means the same thing wherever it is read. These
-are still wall-clock measurements: repeat the runs and the ratios move by a few
-per cent, so read them as the shape of the difference rather than as constants.
+was measured on, so the table means the same thing wherever it is read. Each
+number is the median of three runs, and the worst run-to-run spread was 5%, so
+they are quoted to one decimal place — timings do not support more than that.
 
 First, cost against viscosity contrast at a fixed resolution of 11 727
 unknowns:
 
 | preconditioner | viscosity contrast | velocity iterations | relative effort per unknown |
 |---|---|---|---|
-| FMG | 10⁰ | 48 | 1.00 |
-| FMG | 10² | 66 | 1.14 |
-| FMG | 10⁴ | 84 | 1.27 |
-| FMG | 10⁶ | 198 | 2.72 |
-| GAMG | 10⁰ | 4 620 | 3.55 |
-| GAMG | 10² | 5 913 | 4.41 |
-| GAMG | 10⁴ | 6 647 | 4.88 |
-| GAMG | 10⁶ | 14 388 | 10.44 |
+| FMG | 10⁰ | 48 | 1.0 |
+| FMG | 10² | 66 | 1.1 |
+| FMG | 10⁴ | 84 | 1.2 |
+| FMG | 10⁶ | 198 | 2.7 |
+| GAMG | 10⁰ | 4 620 | 3.5 |
+| GAMG | 10² | 5 913 | 4.3 |
+| GAMG | 10⁴ | 6 647 | 4.8 |
+| GAMG | 10⁶ | 14 388 | 10.4 |
 
 Both work at every contrast. FMG costs about three times more at $10^6$ than at
 constant viscosity; GAMG costs ten times more than the cheapest FMG run at
@@ -198,17 +198,23 @@ Second, cost against problem size at constant viscosity:
 
 | preconditioner | unknowns | velocity iterations | relative effort per unknown |
 |---|---|---|---|
-| FMG | 2 947 | 48 | 1.00 |
-| FMG | 11 727 | 48 | 1.29 |
-| FMG | 46 783 | 48 | 1.57 |
-| FMG | 186 879 | 48 | 1.86 |
-| GAMG | 2 947 | 1 726 | 2.05 |
-| GAMG | 11 727 | 4 620 | 4.66 |
-| GAMG | 46 783 | 14 574 | 14.16 |
+| FMG | 2 947 | 48 | 1.0 |
+| FMG | 11 727 | 48 | 1.3 |
+| FMG | 46 783 | 48 | 1.6 |
+| FMG | 186 879 | 48 | 1.9 |
+| GAMG | 2 947 | 1 726 | 2.1 |
+| GAMG | 11 727 | 4 620 | 4.7 |
+| GAMG | 46 783 | 14 574 | 14.3 |
 
 This is what multigrid exists for. Across a 64-fold growth in the problem, the
 effort FMG spends per unknown does not quite double. Fitted against problem
-size the solve time goes as $N^{1.15}$, against $N^{1.70}$ for GAMG.
+size the solve time goes as $N^{1.16}$, against $N^{1.70}$ for GAMG.
+
+Both are superlinear, and that is worth saying rather than rounding away: an
+ideal multigrid solve is $O(N)$, and neither of these is. FMG is close enough
+that the cost stays predictable as a model grows, which is what makes it usable
+at scale; GAMG's exponent is far enough above one that the cost of the next
+refinement is hard to plan for.
 
 The iteration column says where the difference comes from. FMG takes **exactly
 48 velocity iterations at every size** — the count is independent of the mesh,
@@ -234,7 +240,13 @@ Underworld does not currently supply it for the Stokes velocity block, so these
 numbers are the default rather than the best algebraic multigrid can do.
 :::
 
-SolKz is also a gentle test, because its viscosity varies smoothly everywhere.
+Taken together the picture is of a solver that holds up well. FMG converged on
+every problem here, from constant viscosity to a contrast of $10^6$ and from
+three thousand unknowns to nearly two hundred thousand, without any tuning
+beyond choosing it. GAMG converged everywhere too — more slowly, and with a
+worse trend, but it is not fragile on this problem.
+
+SolKz is a gentle test, though, because its viscosity varies smoothly everywhere.
 Replace the smooth profile with a *localised* viscous layer and GAMG stops
 converging at all above a contrast of about $10^2$, while FMG is barely
 affected. Smoothness is what algebraic coarsening reads, and structure that is
