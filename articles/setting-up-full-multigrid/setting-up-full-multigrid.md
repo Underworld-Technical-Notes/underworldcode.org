@@ -25,7 +25,7 @@ exports:
     output: setting-up-full-multigrid.pdf
     article_id: UWTN 2026-014
     article_version: 1.0.0
-    software_version: underworld3 0.0.0
+    software_version: underworld3 development @ 0addec15
 ---
 Most of the effort in a geodynamics model is spent on solving the Stokes equations,
 and most of that goes into the velocity solver. How that is preconditioned
@@ -182,16 +182,16 @@ Each number is the median of three runs, and the worst run-to-run spread was 5%.
 
 First, cost against viscosity contrast at a fixed resolution of 11 727 unknowns:
 
-| preconditioner | viscosity contrast | relative effort per unknown |
-|---|---|---|
-| FMG | 10⁰ | 1.0 |
-| FMG | 10² | 1.1 |
-| FMG | 10⁴ | 1.2 |
-| FMG | 10⁶ | 2.7 |
-| GAMG | 10⁰ | 3.5 |
-| GAMG | 10² | 4.3 |
-| GAMG | 10⁴ | 4.8 |
-| GAMG | 10⁶ | 10.4 |
+| preconditioner | viscosity contrast | relative work per unknown | relative time per unknown |
+|---|---|---|---|
+| FMG | 10⁰ | 1.0 | 1.0 |
+| FMG | 10² | 1.3 | 1.1 |
+| FMG | 10⁴ | 1.6 | 1.2 |
+| FMG | 10⁶ | 3.8 | 2.7 |
+| GAMG | 10⁰ | 9.1 | 3.5 |
+| GAMG | 10² | 11.7 | 4.3 |
+| GAMG | 10⁴ | 13.1 | 4.8 |
+| GAMG | 10⁶ | 28.3 | 10.4 |
 
 FMG costs about three times more at $10^6$ than at
 constant viscosity; GAMG costs ten times more than the cheapest FMG run at
@@ -199,25 +199,46 @@ constant viscosity, and ten times *that* by $10^6$.
 
 Second, cost against problem size at constant viscosity:
 
-| preconditioner | unknowns | relative effort per unknown |
-|---|---|---|
-| FMG | 2 947 | 1.0 |
-| FMG | 11 727 | 1.3 |
-| FMG | 46 783 | 1.6 |
-| FMG | 186 879 | 1.9 |
-| GAMG | 2 947 | 2.1 |
-| GAMG | 11 727 | 4.7 |
-| GAMG | 46 783 | 14.3 |
+| preconditioner | unknowns | relative work per unknown | relative time per unknown | Gflop/s |
+|---|---|---|---|---|
+| FMG | 2 947 | 1.0 | 1.0 | 2.2 |
+| FMG | 11 727 | 1.9 | 1.3 | 3.3 |
+| FMG | 46 783 | 2.6 | 1.6 | 3.7 |
+| FMG | 186 879 | 2.9 | 1.8 | 3.6 |
+| FMG | 747 007 | 3.0 | 2.2 | 3.1 |
+| GAMG | 2 947 | 6.2 | 2.1 | 6.7 |
+| GAMG | 11 727 | 17.3 | 4.6 | 8.5 |
+| GAMG | 46 783 | 55.3 | 13.6 | 9.1 |
+| GAMG | 186 879 | 178.3 | 45.4 | 8.8 |
 
-This is what multigrid exists for. Across a 64-fold growth in the problem, the
-effort FMG spends per unknown does not quite double. Fitted against problem
-size the solve time goes as $N^{1.16}$, against $N^{1.70}$ for GAMG.
+This is what multigrid exists for, and it needs the last row to see it. FMG's
+work per unknown climbs steeply at first and then stops: 1.0, 1.9, 2.6, 2.9,
+3.0. Step by step the flop count goes as $N^{1.46}$, $N^{1.23}$, $N^{1.08}$,
+$N^{1.03}$ — converging on linear. That is the promise of multigrid, and it is
+only visible once the problem is large enough that the fixed costs stop
+dominating. GAMG goes the other way and settles: $N^{1.74}$, $N^{1.84}$,
+$N^{1.85}$.
 
-Both are superlinear, and that is worth saying rather than rounding away: an
-ideal multigrid solve is $O(N)$, and neither of these is. FMG is close enough
-that the cost stays predictable as a model grows, which is what makes it usable
-at scale; GAMG's exponent is far enough above one that the cost of the next
-refinement is hard to plan for.
+The time column tells a different story, and the third column is why. FMG's
+wall clock sits at $N^{1.14}$ throughout, worse than its flop count, and the
+reason is in its rate: 2.2, 3.3, 3.7, 3.6, 3.1 Gflop/s — rising, then
+*falling* as the problem outgrows cache. GAMG holds 8.5–9.1 Gflop/s at every
+size, two and a half times FMG's.
+
+This is the classic dilemma of an efficient algorithm. Geometric multigrid on
+an unstructured hierarchy does far less arithmetic, but it does it in a shape
+the processor dislikes: sparse, indirect, pointer-chasing, with small coarse
+levels that cannot fill a pipeline. Algebraic multigrid does much more
+arithmetic in denser, more regular operators that run close to the machine's
+peak. The better algorithm cannot get near the hardware's sweet spot, and a
+good part of its advantage is handed back at the door — FMG does 61 times less
+work than GAMG at the largest size compared here, and is 24 times faster.
+
+Which measure you want depends on the question. Flops per unknown is the
+property of the *method*, and it is deterministic and machine-independent — it
+is what tells you FMG is asymptotically $O(N)$ and GAMG is not. Wall clock is
+what you wait for on this machine today. Neither is the honest number on its
+own.
 
 Underneath the timings there is a cleaner number. Solving the Stokes system
 does not call the velocity block once: the Schur factorisation invokes it

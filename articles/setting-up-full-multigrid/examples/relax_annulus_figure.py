@@ -9,6 +9,11 @@ to the curvature, so the coarse cells' edges survive as visible seams across the
 refined mesh. It also shows that the boundary snapping holds -- every node that
 starts on a bounding circle is still exactly on it afterwards, because relax()
 moves interior coordinates only.
+
+Run against underworld3 `development` at commit `0addec15`
+(0addec1595f8d7a59b99e15b42455267a73dab86, 2026-08-15). `uw.__version__`
+reports 0.0.0 for every build, so the commit is the only thing that
+identifies what these numbers came from.
 """
 import numpy as np
 import underworld3 as uw
