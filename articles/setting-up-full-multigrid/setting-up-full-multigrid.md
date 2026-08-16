@@ -170,114 +170,105 @@ which is the subject of a [related technical note](/moving-the-mesh-without-rema
 
 ## When the choice matters
 
-The test is `SolKz`, a standard Stokes benchmark on the unit box: viscosity
+The test is SolKz, a standard Stokes benchmark on the unit box: viscosity
 varying exponentially with depth, $\eta = e^{2Bz}$, forced by
 $\mathbf{f} = (0,\; \sin(m\pi z)\cos(n\pi x))$ with $n = 3$, $m = 2$, free slip
 on all four walls, Taylor–Hood $P_2$–$P_1$ elements. The viscosity contrast
-across the box is $e^{2B}$. 
+across the box is $e^{2B}$. SolKz has a closed-form solution, but nothing here
+uses it: these are timings, not accuracy measurements.
 
-Effort is reported per unknown and relative to the cheapest FMG run - a ratio 
-that we expect holds up reasonably well when we move from one platform to another. 
-Each number is the median of three runs, and the worst run-to-run spread was 5%.
+Work is reported as floating-point operations counted by PETSc, per unknown and
+relative to the cheapest FMG run. Flops are the better measure: they do not
+depend on the machine, and they are deterministic — repeating a run reproduces
+the count exactly, where a timing moves by a few per cent. Times are given
+alongside, because they are what you wait for and they do not tell the same
+story.
 
-First, cost against viscosity contrast at a fixed resolution of 11 727 unknowns:
+:::{warning} These numbers required fixing Underworld's GAMG settings
+Underworld configures GAMG with `pc_mg_type=additive`, where PETSc's default is
+`multiplicative`, and hands it a velocity operator with block size 1 on a
+two-component field, so it aggregates scalars rather than nodes. Together those
+cost GAMG a factor of seven in cycles and 3.7 in arithmetic. Both are corrected
+here — the shipped script does it explicitly — because a comparison against
+that configuration measures our settings rather than the method. See
+[underworld3#579](https://github.com/underworldcode/underworld3/issues/579).
+:::
+
+Cost against viscosity contrast, at 11 727 unknowns:
 
 | preconditioner | viscosity contrast | relative work per unknown | relative time per unknown |
 |---|---|---|---|
 | FMG | 10⁰ | 1.0 | 1.0 |
 | FMG | 10² | 1.3 | 1.1 |
-| FMG | 10⁴ | 1.6 | 1.2 |
+| FMG | 10⁴ | 1.6 | 1.3 |
 | FMG | 10⁶ | 3.8 | 2.7 |
-| GAMG | 10⁰ | 9.1 | 3.5 |
-| GAMG | 10² | 11.7 | 4.3 |
-| GAMG | 10⁴ | 13.1 | 4.8 |
-| GAMG | 10⁶ | 28.3 | 10.4 |
+| GAMG | 10⁰ | 2.5 | 1.4 |
+| GAMG | 10² | 3.7 | 1.8 |
+| GAMG | 10⁴ | 4.5 | 2.1 |
+| GAMG | 10⁶ | 9.1 | 4.1 |
 
-FMG costs about three times more at $10^6$ than at
-constant viscosity; GAMG costs ten times more than the cheapest FMG run at
-constant viscosity, and ten times *that* by $10^6$.
+Both handle the whole range. FMG does between two and three times less
+arithmetic than GAMG at every contrast, and the ratio is stable — neither
+degrades relative to the other as the viscosity structure gets harder.
 
-Second, cost against problem size at constant viscosity:
+Cost against problem size, at constant viscosity:
 
 | preconditioner | unknowns | relative work per unknown | relative time per unknown | Gflop/s |
 |---|---|---|---|---|
 | FMG | 2 947 | 1.0 | 1.0 | 2.2 |
 | FMG | 11 727 | 1.9 | 1.3 | 3.3 |
 | FMG | 46 783 | 2.6 | 1.6 | 3.7 |
-| FMG | 186 879 | 2.9 | 1.8 | 3.6 |
-| FMG | 747 007 | 3.0 | 2.2 | 3.1 |
-| GAMG | 2 947 | 6.2 | 2.1 | 6.7 |
-| GAMG | 11 727 | 17.3 | 4.6 | 8.5 |
-| GAMG | 46 783 | 55.3 | 13.6 | 9.1 |
-| GAMG | 186 879 | 178.3 | 45.4 | 8.8 |
+| FMG | 186 879 | 2.9 | 1.9 | 3.4 |
+| FMG | 747 007 | 3.0 | 2.3 | 3.0 |
+| GAMG | 2 947 | 3.3 | 1.5 | 4.9 |
+| GAMG | 11 727 | 4.7 | 1.8 | 5.7 |
+| GAMG | 46 783 | 4.9 | 2.0 | 5.6 |
+| GAMG | 186 879 | 5.8 | 2.2 | 5.8 |
 
-This is what multigrid exists for, and it needs the last row to see it. FMG's
-work per unknown climbs steeply at first and then stops: 1.0, 1.9, 2.6, 2.9,
-3.0. Step by step the flop count goes as $N^{1.46}$, $N^{1.23}$, $N^{1.08}$,
-$N^{1.03}$ — converging on linear. That is the promise of multigrid, and it is
-only visible once the problem is large enough that the fixed costs stop
-dominating. GAMG goes the other way and settles: $N^{1.74}$, $N^{1.84}$,
-$N^{1.85}$.
+Both flatten. Step by step, FMG's flop count goes as $N^{1.46}$, $N^{1.23}$,
+$N^{1.08}$, $N^{1.03}$; GAMG's as $N^{1.25}$, $N^{1.04}$, $N^{1.11}$. Both are
+converging on linear, which is what multigrid of either kind is supposed to do
+and what a correctly configured algebraic method delivers as well as a
+geometric one.
 
-The time column tells a different story, and the third column is why. FMG's
-wall clock sits at $N^{1.14}$ throughout, worse than its flop count, and the
-reason is in its rate: 2.2, 3.3, 3.7, 3.6, 3.1 Gflop/s — rising, then
-*falling* as the problem outgrows cache. GAMG holds 8.5–9.1 Gflop/s at every
-size, two and a half times FMG's.
+The cycle counts say the same thing. FMG converges the velocity block in three
+cycles at every size; GAMG takes 26–32, then 34–47, then 33–49 — ten times as
+many, but not a growing number. (The Schur factorisation invokes the velocity
+solve sixteen times per Stokes solve, the same for both, so that factor
+cancels.)
+
+So the geometric hierarchy is worth something, and it is worth roughly a factor
+of two: FMG does about half GAMG's arithmetic on this problem, consistently,
+and holds that through six orders of viscosity contrast and a 250-fold growth
+in problem size. It is not the order-of-magnitude difference it appears to be
+against Underworld's shipped GAMG settings.
+
+In wall clock the advantage is smaller still — 2.3 against 2.2 at the largest
+size, which is no advantage at all — and the last column says why. GAMG runs at
+5–6 Gflop/s where FMG runs at 2–4, and FMG's rate *falls* at the largest size
+as the problem outgrows cache.
 
 This is the classic dilemma of an efficient algorithm. Geometric multigrid on
-an unstructured hierarchy does far less arithmetic, but it does it in a shape
-the processor dislikes: sparse, indirect, pointer-chasing, with small coarse
-levels that cannot fill a pipeline. Algebraic multigrid does much more
-arithmetic in denser, more regular operators that run close to the machine's
-peak. The better algorithm cannot get near the hardware's sweet spot, and a
-good part of its advantage is handed back at the door — FMG does 61 times less
-work than GAMG at the largest size compared here, and is 24 times faster.
+an unstructured hierarchy does less arithmetic, but in a shape the processor
+dislikes: sparse, indirect, with small coarse levels that cannot fill a
+pipeline. Algebraic multigrid does more arithmetic in denser, more regular
+operators that run closer to peak. Doing half the work and getting none of the
+time back is a fair summary of where that leaves us on this hardware, and it is
+the reason to keep both measures in view — flops tell you about the method,
+seconds tell you about the machine, and here they disagree.
 
-Which measure you want depends on the question. Flops per unknown is the
-property of the *method*, and it is deterministic and machine-independent — it
-is what tells you FMG is asymptotically $O(N)$ and GAMG is not. Wall clock is
-what you wait for on this machine today. Neither is the honest number on its
-own.
-
-Underneath the timings there is a cleaner number. Solving the Stokes system
-does not call the velocity block once: the Schur factorisation invokes it
-sixteen times, and that count is the same for both preconditioners at every
-resolution, so it cancels from any comparison between them. What is left is how
-many multigrid cycles each of those velocity solves takes:
-
-| preconditioner | 2 947 unknowns | 11 727 | 46 783 |
-|---|---|---|---|
-| FMG | 3 | 3 | 3 |
-| GAMG | 89–126 | 243–347 | 723–1129 |
-
-FMG converges the velocity block in **three cycles, whatever the resolution**.
-That is the property multigrid is built to have, stated as plainly as it can
-be: the mesh grows sixteenfold and the work to solve does not move. Everything
-above linear in the timings is the cost of a cycle rising as the hierarchy
-deepens, not more cycles being needed. GAMG's count grows as roughly
-$N^{0.7}$–$N^{0.8}$, and that exponent is itself increasing.
-
-One thing these counts still do not measure is cost. A geometric cycle and an
-algebraic one are different amounts of work, over different hierarchies with
-different smoothers and coarse solves, so three against a hundred is not a
-hundred-fold difference in effort — the timings above are what answers that.
-What the counts show is the shape: one flat, one growing.
-
-:::{note} Two things this comparison does not address
+:::{note} What this comparison does not settle
 The solver tolerance is held fixed as the mesh refines. That is the usual way
-to show a multigrid scaling an does not account for the fact that a finer mesh has a smaller
-discretisation error, and would potentially require tightening the solver tolerance to 
-reach that error. 
-:::
+to show a multigrid scaling, and it is a choice: a finer mesh has a smaller
+discretisation error, so an argument can be made for tightening the solver
+tolerance alongside it, which would make the work per unknown grow. The table
+answers "what does it cost to solve this system", not "what does it cost to
+reach the accuracy the mesh can support".
 
-Taken together the picture is of two solver choices that hold up well. Both converged on
-every problem here, from constant viscosity to a contrast of $10^6$ and from
-three thousand unknowns to nearly two hundred thousand, without any tuning
-beyond the solver choice. GAMG converged more slowly, and with a
-worse scaling trend, but it is not fragile on this problem. We can, however, achieve
-better scaling and overall performance with the full-multigrid options and the set-up is
-quite straightforward.
+SolKz is also a smooth problem. Viscosity that varies smoothly everywhere is
+what algebraic coarsening reads best; structure that is concentrated rather
+than distributed is harder for it, and that case is not measured here.
+:::
 
 ## Using it
 

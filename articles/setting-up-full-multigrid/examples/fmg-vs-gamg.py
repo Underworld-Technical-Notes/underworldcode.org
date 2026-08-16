@@ -94,8 +94,23 @@ def solve_once(pc, refinement, contrast):
     stokes.preconditioner = pc
     stokes.tolerance = TOL
     stokes.petsc_options.setValue("fieldsplit_velocity_ksp_max_it", VEL_CAP)
+    if pc == "gamg":
+        # Back to the PETSc default; Underworld sets `additive`.
+        stokes.petsc_options.setValue(
+            "fieldsplit_velocity_pc_mg_type", "multiplicative")
 
     stokes.solve()                       # build everything; not timed
+
+    if pc == "gamg":
+        # Tell GAMG the field has two components per node, so it aggregates
+        # nodes rather than scalars. The operator is built by PETSc from the
+        # DM, so this has to be set after it exists and the PC rebuilt.
+        sub_v = stokes.snes.getKSP().getPC().getFieldSplitSubKSP()[0]
+        A, P = sub_v.getOperators()
+        A.setBlockSize(mesh.dim)
+        if P.handle != A.handle:
+            P.setBlockSize(mesh.dim)
+        sub_v.getPC().reset()
 
     # Count iterations across the WHOLE solve, not the last linear solve. A
     # linear Stokes SNES does its work in the first solve and the second
