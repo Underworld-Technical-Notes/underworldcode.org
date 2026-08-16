@@ -31,4 +31,8 @@ methods:
 ghost_tags:
   - Underworld Code
 figures: 1
+# Generated from the model rather than a stock photograph, so there is nobody to
+# credit. `figures` counts the figures in the body; the banner is not one.
+banner: figures/banner.png
+banner_credit: null
 source: native

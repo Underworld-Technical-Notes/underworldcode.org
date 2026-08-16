@@ -12,6 +12,7 @@ authors:
     affiliations:
       - Australian National University
 license: CC-BY-4.0
+banner: figures/banner.png
 keywords:
   - Underworld Code
   - Tricks of the Trade
@@ -27,6 +28,8 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 development @ 0addec15
 ---
+<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
+
 Most of the effort in a geodynamics model goes into solving the Stokes
 equations, and most of that into the velocity solver. How that solver is
 preconditioned sets how long a model takes to run. Underworld can build the
@@ -189,20 +192,21 @@ than scalars.
 
 Cost against viscosity contrast, at 11 727 unknowns:
 
-| preconditioner | viscosity contrast | relative work per unknown | relative time per unknown |
-|---|---|---|---|
-| FMG | 10⁰ | 1.0 | 1.0 |
-| FMG | 10² | 1.3 | 1.1 |
-| FMG | 10⁴ | 1.6 | 1.3 |
-| FMG | 10⁶ | 3.8 | 2.7 |
-| GAMG | 10⁰ | 2.5 | 1.4 |
-| GAMG | 10² | 3.7 | 1.8 |
-| GAMG | 10⁴ | 4.5 | 2.1 |
-| GAMG | 10⁶ | 9.1 | 4.1 |
+| preconditioner | viscosity contrast | relative work per unknown | relative time per unknown | cycles per velocity solve |
+|---|---|---|---|---|
+| FMG | 10⁰ | 1.0 | 1.0 | 3 |
+| FMG | 10² | 1.3 | 1.1 | 3 |
+| FMG | 10⁴ | 1.6 | 1.2 | 3 |
+| FMG | 10⁶ | 1.8 | 1.3 | 3 |
+| GAMG | 10⁰ | 2.2 | 1.2 | 34–47 |
+| GAMG | 10² | 3.3 | 1.5 | 39–49 |
+| GAMG | 10⁴ | 4.0 | 1.7 | 36–48 |
+| GAMG | 10⁶ | 4.0 | 1.6 | 30–44 |
 
-Both handle the whole range. FMG does between two and three times less
-arithmetic than GAMG at every contrast, and the ratio is stable — neither
-degrades relative to the other as the viscosity structure gets harder.
+Both handle the whole range, and neither degrades relative to the other as the
+viscosity gets harder. GAMG does a little over twice FMG's arithmetic — the
+ratio runs 2.2, 2.5, 2.5, 2.2 — and FMG holds three cycles per velocity solve
+throughout where GAMG needs thirty to fifty.
 
 Cost against problem size, at constant viscosity:
 
