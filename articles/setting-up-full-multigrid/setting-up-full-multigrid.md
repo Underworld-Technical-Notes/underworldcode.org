@@ -252,7 +252,7 @@ contrast 1 the two problems are the same problem, and the runs agree to the last
 digit.
 
 ```{figure} figures/layer-vs-smooth.png
-:alt: Two log-log panels of solver cost against viscosity contrast, work on the left and time on the right. Solid lines are the smooth SolKz viscosity, dashed lines the concentrated band; blue is FMG and orange GAMG. All four curves start together at contrast one. The three curves for FMG-smooth, FMG-band and GAMG-smooth stay nearly flat across six orders of contrast. The GAMG-band curve climbs steeply in both panels and stops at contrast ten thousand, labelled as not converging beyond that point.
+:alt: Two side-by-side log-log panels. Both have viscosity contrast on the horizontal axis, marked at 1, 10^2, 10^4 and 10^6. The left panel plots relative work per unknown, the right relative time per unknown. Each panel carries four curves with open circular markers at those four contrasts: blue for FMG and orange for GAMG, solid for the smooth SolKz viscosity and dashed for the concentrated band. Reading the left panel, FMG smooth runs 1.0, 1.3, 1.6, 1.8; FMG band runs 1.0, 1.9, 2.1, 2.5; GAMG smooth runs 2.2, 3.3, 4.0, 4.0. The dashed orange GAMG band curve leaves the others behind — 2.2, 8.1, 28.1 — and then stops after 10^4, with the text "does not converge beyond this point" beside its last marker. In the right panel the first three curves are packed into a narrow span between 1.0 and 1.7, while GAMG band again separates, running 1.2, 2.7, 7.7 before stopping at the same place. All four curves meet at the left-hand edge, because at contrast 1 the two viscosity distributions are the same problem.
 
 Cost against viscosity contrast for the two viscosity distributions, at 11 727
 unknowns. FMG is almost indifferent to the change. GAMG is not: on the band its
@@ -267,17 +267,16 @@ times the cell count, GAMG's disadvantage against FMG on the band grows from
 The geometric hierarchy is indifferent to the coefficients because it never
 consults them. That is the case for keeping a hierarchy when you can.
 
-:::{note} What this comparison does not settle
+:::{note} What this comparison does not address
 The solver tolerance is held fixed as the mesh refines. That is the usual way
-to show a multigrid scaling, and it is a choice: a finer mesh has a smaller
+to show a multigrid scaling, but a finer mesh has a smaller
 discretisation error, so an argument can be made for tightening the solver
 tolerance alongside it, which would make the work per unknown grow. The table
-answers "what does it cost to solve this system", not "what does it cost to
+should be read as "what does it cost to solve this system", not "what does it cost to
 reach the accuracy the mesh can support".
 
 Both preconditioners are also run in serial, on one machine. GAMG's coarsening
-is the part of it that changes most under parallel decomposition, and none of
-that is measured here.
+is the part of it that changes most under parallel decomposition and is not measured here.
 :::
 
 ## Using it
