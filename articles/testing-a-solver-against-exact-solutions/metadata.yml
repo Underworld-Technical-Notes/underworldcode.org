@@ -2,7 +2,7 @@
 # `pixi run validate` checks this and the cross-file invariants a schema cannot
 # express -- that the article file is named <slug>.md, that canonical_path
 # matches the slug, and that no legacy DOI is ever paired with a new registrant.
-id: UWTN 2026-012
+id: UWTN 2026-015
 slug: testing-a-solver-against-exact-solutions
 title: Testing a solver against exact solutions
 article_type: technical-note

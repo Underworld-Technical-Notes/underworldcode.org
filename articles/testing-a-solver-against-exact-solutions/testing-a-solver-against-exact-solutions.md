@@ -24,7 +24,7 @@ exports:
     origin_url: https://www.underworldcode.org/testing-a-solver-against-exact-solutions/
     template: ../../templates/pdf
     output: testing-a-solver-against-exact-solutions.pdf
-    article_id: UWTN 2026-012
+    article_id: UWTN 2026-015
     article_version: 1.0.0
     software_version: underworld3 0.0.0
 ---
