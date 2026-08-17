@@ -264,6 +264,13 @@ in the note rather than asserted.
   condition that has to evolve in time — a Dirichlet-to-traction ramp — still
   wants Nitsche.
 
+**Where this note came from, and it should say so.** The rotated boundary
+conditions were not built to tidy up free slip on an annulus — they were built
+because the free surface needs an accurate surface traction, and that is the
+one quantity a weakly imposed constraint gets wrong. Leading with that gives
+the note a reason to exist beyond completeness, and it ties it to S1/S2, which
+should be written near it (see the free-surface section).
+
 **The hard part of this note is that the three usually agree.** Solve a
 convection model with any of them and the velocity field is the same to
 plotting accuracy; a `1e-3` leak in `v.n` is invisible in anything that
@@ -423,7 +430,21 @@ should be acknowledged as such.
 ## Free surface
 
 Its own development, and it needs discussion before it is written. Two notes,
-and the split matters:
+and the split matters.
+
+**Write these near R1.** The free surface is *why* the rotated boundary
+conditions were implemented: the surface evolves under the traction it carries,
+so the wall-normal stress stops being a diagnostic and becomes the thing that
+drives the model. That is the strongest possible case for a constraint whose
+reaction is `sigma_nn` exactly rather than recovered from an approximately
+satisfied condition, and it is the motivation R1 should lead with rather than
+arriving at.
+
+The dependency runs one way — R1 is the machinery, S1 and S2 are what it was
+built for — so R1 either goes first or they go out together. **M1 and G1 are
+the cautionary example**: they were meant to publish together, went four days
+apart, and now owe a v2 for a cross-link that could have been in v1. Decide
+which of the two patterns this pair follows before drafting, not after.
 
 ### S1. The algorithm
 
