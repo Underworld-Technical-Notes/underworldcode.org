@@ -317,3 +317,8 @@ introducing-the-technical-notes:
   article_type: news
   subjects: []
   methods: []
+
+testing-a-solver-against-exact-solutions:
+  article_type: technical-note
+  subjects: []
+  methods: [benchmarks-validation, solvers, symbolic-codegen]
