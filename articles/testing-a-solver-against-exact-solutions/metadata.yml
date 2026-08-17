@@ -15,7 +15,7 @@ authors:
     orcid: 0000-0001-9394-4104
     affiliation: Monash University
 publication_date: 2026-08-17
-version: 1.1.0
+version: 1.0.0
 # The deposit writes archive_doi and repository_record_id when the note is
 # published; leave them out until then. `doi` and `doi_registrant` were here
 # once and are not fields the schema knows -- every note made from this
