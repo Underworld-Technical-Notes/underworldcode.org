@@ -244,6 +244,30 @@ answer, which is the spine of the note:
   precision, and correct on curved, tilted and deformed boundaries because the
   normal is taken per node.
 
+  **This is the classical answer, not a new one** — it goes back to the early
+  finite-element texts, and Engelman, Sani & Gresho were already reviewing the
+  alternatives in 1982. The note should present it as the textbook method
+  recovered, and then explain why it is nonetheless the least used of the three.
+
+  **The reason is structural, not numerical.** Rotating the degrees of freedom
+  leaves the discrete vector in a *mixed basis*: interior nodes hold
+  `(v_x, v_y)`, constrained boundary nodes hold `(v_n, v_t)`, and every piece
+  of machinery downstream has to know which is which. That is a solver-wide
+  obligation, and it is where the cost actually lands. Ours, concretely:
+
+  - the multigrid prolongation has to be rotated too, which is why the rotated
+    path cannot use the DM-coupled hierarchy at all and needs custom-P
+    transfers;
+  - the rotated solve builds its own KSP under a per-solve prefix, so
+    `stokes.petsc_options` does not reach it — a trap that has cost us time
+    more than once;
+  - the Schur block and the preconditioner both had to be revisited for the
+    rotated operator.
+
+  None of that is an argument against the method. It is an argument for
+  knowing what you are taking on, and it is the honest reason a weakly imposed
+  condition survives in codes that could do this instead.
+
 The leak numbers are the argument for the ordering, and they should be measured
 in the note rather than asserted.
 - **Which normal, which is subtler than it looks.** A node-averaged normal
@@ -352,14 +376,22 @@ Still to find: a modern treatment of Nitsche for *slip* specifically (as
 opposed to no-slip), and whatever the geodynamics codes cite for free slip on a
 spherical shell.
 
-**Deliberately out of scope: working in a coordinate system that already
-contains the normal.** Solving in spherical or cylindrical components makes the
-wall-normal direction a coordinate direction again, and the constraint goes back
-to being "hold one component". It is a real answer for a sphere or an annulus
-and it is not this note's, because it does nothing for topography, a deformed
-mesh, or a tilted internal surface — which is the general case the note is
-about. Say so once, plainly, so its absence reads as a choice rather than an
-oversight.
+**Formulating in another coordinate system is the same idea, globally.**
+Solving in spherical or cylindrical components makes the wall-normal direction
+a coordinate direction again, so the constraint returns to being "hold one
+component" — which is rotating the degrees of freedom, imposed once for the
+whole domain instead of node by node. Worth saying explicitly, because it
+explains why it is attractive: applied globally there is no mixed basis and
+none of the structural cost above.
+
+It does not generalise, and that is the whole point. It works exactly when the
+boundary lies along a coordinate surface — a sphere, an annulus, a cylinder —
+and does nothing for topography, a deformed mesh, or a tilted internal surface.
+The per-node rotation is what you are left with once the geometry stops
+cooperating, and paying its structural price is what buys the generality.
+
+Treat it as the third approach's special case rather than a fourth approach,
+and do not develop it further than that.
 
 Curved boundaries under *refinement* are G1's, not this note's: the snapping
 callback that keeps a refined boundary on the true surface is already written
