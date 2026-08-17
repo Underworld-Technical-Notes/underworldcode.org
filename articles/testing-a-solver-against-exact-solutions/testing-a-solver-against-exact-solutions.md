@@ -13,6 +13,7 @@ authors:
     affiliations:
       - Australian National University
 license: CC-BY-4.0
+banner: figures/banner.png
 keywords:
   - Underworld Code
   - benchmarks
@@ -26,8 +27,10 @@ exports:
     output: testing-a-solver-against-exact-solutions.pdf
     article_id: UWTN 2026-015
     article_version: 1.0.0
-    software_version: underworld3 0.0.0
+    software_version: underworld3 development @ 0addec15
 ---
+<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
+
 A geodynamics solver is hard to test because the thing it computes is the thing
 you do not know. Grid refinement tells you a calculation is converging, but not
 what it is converging to. Comparing two codes tells you they agree, which is

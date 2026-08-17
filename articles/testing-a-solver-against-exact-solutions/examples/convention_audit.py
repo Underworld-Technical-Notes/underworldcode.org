@@ -12,7 +12,10 @@ an assertion that small numbers are small.
 
     pixi run -e amr-dev python convention_audit.py
 
-Underworld3 0.0.0 (development, 2026-08).
+Run against underworld3 `development` at commit `0addec15`
+(0addec1595f8d7a59b99e15b42455267a73dab86, 2026-08-15). `uw.__version__`
+reports 0.0.0 for every build, so the commit is the only thing that
+identifies what these numbers came from.
 """
 
 import numpy as np
