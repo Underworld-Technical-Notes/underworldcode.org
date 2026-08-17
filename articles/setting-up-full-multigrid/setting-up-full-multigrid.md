@@ -239,11 +239,9 @@ busy; GAMG's are denser and more regular and run closer to peak. How those
 trade off is a property of the machine, so time both on yours and use whichever
 wins.
 
-## When the viscosity structure is concentrated
-
-SolKz spreads its viscosity variation across the whole box, and smoothly varying
-coefficients are what algebraic coarsening reads best. So the second test puts
-the same total contrast into a band a twentieth of the box thick,
+So far the viscosity has varied smoothly across the whole box, which is the
+distribution algebraic coarsening reads best. The second test puts the same
+total contrast into a band a twentieth of the box thick,
 
 $$\eta(z) = 1 + (\eta_0 - 1)\,e^{-\left((z - 1/2)/w\right)^2}, \qquad w = 0.05$$
 
