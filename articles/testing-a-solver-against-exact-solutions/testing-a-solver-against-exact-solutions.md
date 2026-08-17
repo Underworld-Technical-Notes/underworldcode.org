@@ -5,13 +5,18 @@ description: >-
   differentiating each one against the momentum balance rather than by
   comparing it to the kernel it came from. Doing it that way found four
   defects, two of them in published sources that have been vendored and
-  reused for twenty years.
+  reused for twenty years, and settled a contradiction between two printed
+  equations in a third.
 date: 2026-08-16
 authors:
   - name: Louis Moresi
     orcid: 0000-0003-3685-174X
     affiliations:
       - Australian National University
+  - name: Thyagarajulu Gollapalli
+    orcid: 0000-0001-9394-4104
+    affiliations:
+      - Monash University
 license: CC-BY-4.0
 banner: figures/banner.png
 keywords:
@@ -51,7 +56,8 @@ transcription came from, not the solver being tested. Each one is formed from
 the solution's own symbolic fields by differentiation. That decision found four
 defects. Two of them are in sources that have been vendored, copied and reused
 since the 1990s, and one of those is invisible at the parameter value everyone
-runs.
+runs. The same method settles a place where a published appendix contradicts
+itself, without anyone having to decide what the printed sign was meant to be.
 
 ## An exact solution is only as good as the check you apply to it
 
@@ -131,7 +137,7 @@ largest term being cancelled. The generating script is
 | solution | source stress | $\mathrm{tr}\,\sigma + d\,p$ | $\sigma + p\mathbf I - 2\eta\dot\varepsilon$ | momentum $+\mathbf f$ | momentum $-\mathbf f$ | $\nabla\!\cdot\!\mathbf u$ | $\dot\varepsilon$ vs $\nabla\mathbf u$ |
 |---|---|---|---|---|---|---|---|
 | EllipticalInclusion | total | 1.1e-15 | 0 | 3.6e-15 | 3.6e-15 † | 1.7e-16 | 0 |
-| SolA | total | 0 | 0 | 6.0e-17 | **2.0** | 0 | 0 |
+| SolA ‡ | total | 0 | 0 | 6.0e-17 | **2.0** | 0 | 0 |
 | SolB | total | 2.1e-16 | 0 | 8.7e-15 | **2.0** | 4.8e-14 | 1.7e-14 |
 | SolC | total | 0 | 0 | 4.1e-16 | **1.8** | 2.8e-17 | 5.9e-16 |
 | SolCx | total | 3.3e-16 | 1.0e-16 | 2.3e-16 | **1.7** | 3.5e-17 | 4.0e-15 |
@@ -148,6 +154,11 @@ largest term being cancelled. The generating script is
 force, so negating the body force is a no-op and the control cannot fire. That
 is a property of the problem rather than a gap in the check — there is no
 body-force sign to certify.
+
+‡ SolA's row is clean because `uw.analytic` carries the correction described
+below. There is an erratum in the published kernel, and it is not repaired
+there — anyone reading `solA.c` still has it. What the row certifies is the
+transcription, which is consistent.
 
 The momentum $-\mathbf f$ column is the load-bearing one. It re-measures the
 momentum residual with the body force negated, and it moves from $10^{-16}$ to
@@ -282,6 +293,49 @@ Worth recording why this one escaped for as long as it did: the elliptical
 inclusion is the only solution in the family that assigns its stress, pressure
 and strain rate directly instead of going through `set_fields`, which is the one
 place the stress–pressure relationship is applied.
+
+## An erratum settled without adjudicating the paper
+
+The four above are in the Velic family. The same method settles a question in a
+different solution, and settles it in the way this note is arguing for: by
+mathematics rather than by deciding what a scanned minus sign was meant to say.
+
+Barr & Houseman (1996, *GJI* **125**, 473–490) give, in their Appendix, a linear
+plane-strain solution for a fault terminating inside a viscous medium — an
+internal boundary carrying zero shear traction, with the tip in the interior.
+It is a genuine absolute standard for a fault calculation, which otherwise has
+only other discretisations to be measured against.
+
+The half-integer sine terms of $u_\theta$ appear with **one sign in the paper's
+boundary datum (A8b) and the opposite sign in its solution (A9b)**, and the same
+mismatch appears in the plane-stress pair, (A12b) against (A13b). Two printed
+equations disagree, and no amount of reading them more carefully will say which
+is right.
+
+Incompressibility does. For $u_r = A\sqrt{R}\,f(\theta)$ and
+$u_\theta = \sqrt{R}\,g(\theta)$, requiring $\nabla\cdot\mathbf u = 0$ forces
+
+$$g'(\theta) = -\tfrac{3}{2} A f(\theta),$$
+
+which integrates to (A8b)'s sign. The negative control is the same shape as the
+one in the table above: flip the sign back and the divergence becomes
+$(0.75\cos(\theta/2) + 2.25\cos(3\theta/2))/\sqrt{r}$ — non-zero purely in the
+half-integer terms, which are the fault's own modes. Nothing here reads the
+paper's intent.
+
+Two further things about this solution are conventions rather than errors, and
+both matter to anyone comparing against it. Its pressure is **extension
+positive**, so its force balance is $\partial_j\tau_{ij} + \partial_i p = 0$;
+negate to compare against a compression-positive solver such as ours. And only
+the plane-strain solution is a Stokes benchmark — the thin-viscous-sheet
+solution of (A10)–(A13) has non-zero in-plane divergence, which is a different
+equation set.
+
+The transcription is in review as
+[underworld3#550](https://github.com/underworldcode/underworld3/pull/550) and
+follows the implementation Thyagarajulu Gollapalli has been using for fault
+benchmarking; a second independent implementation is the strongest check
+available on a solution of this kind.
 
 ## A transcription can be right about the source and wrong about the array
 
