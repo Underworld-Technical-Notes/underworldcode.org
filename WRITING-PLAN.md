@@ -264,6 +264,52 @@ in the note rather than asserted.
   condition that has to evolve in time — a Dirichlet-to-traction ramp — still
   wants Nitsche.
 
+**This one needs the mathematics written out**, unlike the measurement-led
+notes. The three approaches differ in their weak forms, and the differences are
+the argument — a reader cannot be asked to take "consistent only in the limit"
+on trust. What has to appear:
+
+- The Stokes weak form and where the boundary term `int_G (sigma.n).w` comes
+  from, because every method below is a statement about that term.
+- That free slip is *two* conditions — `v.n = 0` and zero tangential traction —
+  and the second is natural, which is why it is the one people forget.
+- **Direct penalty**: add `(gamma/h) int_G (v.n)(w.n)`. The discrete problem is
+  a perturbed problem, and the perturbation is what the leak is.
+- **Nitsche**: the consistency term and the adjoint-consistency term alongside
+  the penalty, and that `gamma` has a threshold set by an inverse inequality
+  rather than being a free dial. This is the part that most needs writing out,
+  because "add two more terms and it becomes consistent" is not believable
+  without seeing them.
+- **Rotated**: the per-node `Q`, solving in `(v_n, v_t)`, constraining `v_n`
+  strongly, and the reaction falling out as `sigma_nn`.
+- **The normal on a faceted boundary**: the assembled constraint is an integral
+  over straight facets, so the node normal consistent with it is the one
+  weighted by facet measure. This is where our own #560 landed, and it is worth
+  deriving rather than asserting.
+
+**Starting bibliography.** Verified references, not a reading list yet:
+
+- Engelman, Sani & Gresho, *The implementation of normal and/or tangential
+  boundary conditions in finite element codes for incompressible fluid flow*,
+  Int. J. Numer. Methods Fluids **2** (1982) 225-238. The classic statement of
+  the rotated-degrees-of-freedom approach; reviews the alternatives and uses
+  global mass conservation to choose between them. Our rotated BCs are this
+  idea, and the note should say so rather than presenting it as new.
+- Behr, *On the application of slip boundary condition on curved boundaries*,
+  Int. J. Numer. Methods Fluids **45** (2004) 43-51. Directly the "which
+  normal" question on a discretised curved boundary. ⚠️ Bibliographic details
+  confirmed, contents NOT yet read — whether it reaches the same
+  measure-weighted normal we did is exactly what to check, and if it does, #560
+  was a rediscovery and should be described as one.
+- Nitsche, *Über ein Variationsprinzip zur Lösung von Dirichlet-Problemen bei
+  Verwendung von Teilräumen, die keinen Randbedingungen unterworfen sind*,
+  Abh. Math. Semin. Univ. Hamburg **36** (1971) 9-15,
+  `10.1007/BF02995904`. The original.
+
+Still to find: a modern treatment of Nitsche for *slip* specifically (as
+opposed to no-slip), and whatever the geodynamics codes cite for free slip on a
+spherical shell.
+
 **Deliberately out of scope: working in a coordinate system that already
 contains the normal.** Solving in spherical or cylindrical components makes the
 wall-normal direction a coordinate direction again, and the constraint goes back
