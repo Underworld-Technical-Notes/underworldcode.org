@@ -35,7 +35,7 @@ Three consequences worth stating, because they change how a note is written:
 
 ---
 
-## Published (9)
+## Published (11)
 
 | # | Note | Date | DOI |
 |---|------|------|-----|
@@ -48,14 +48,16 @@ Three consequences worth stating, because they change how a note is written:
 | 7 | [Symbolic Time Derivatives in Underworld3](https://www.underworldcode.org/symbolic-time-derivatives-in-underworld3/) | 2026-04-16 | `10.6084/m9.figshare.33193596` |
 | 12 | [Particles in Underworld3](https://www.underworldcode.org/particles-in-underworld3/) | 2026-06-03 | `10.6084/m9.figshare.33193599` |
 | 11 | [Finding Particles in a Distributed, Unstructured Mesh](https://www.underworldcode.org/finding-particles-in-a-distributed-unstructured-mesh/) | 2026-06-04 | `10.6084/m9.figshare.33193611` |
+| M1 | [Moving the Mesh Without Remaking It](https://www.underworldcode.org/moving-the-mesh-without-remaking-it/) (UWTN 2026-011) | 2026-08-13 | `10.6084/m9.figshare.33241170` |
+| G1 | [Setting Up Full Multigrid](https://www.underworldcode.org/setting-up-full-multigrid/) (UWTN 2026-014) | 2026-08-17 | deposit not yet run |
 
 Numbers refer to the original plan below, which is kept so that cross-references
 in older notes and branches still resolve. Five of these (5, 7, 9, 11, 20) sat
 in this file as "not started" for months after they went live.
 
-None of the nine yet carries an `examples/` directory. Adding them is a new
-version of each deposit rather than an edit -- worth doing as a batch once the
-first note ships with examples and the pattern is settled.
+None of the first nine carries an `examples/` directory. M1 and G1 both do, so
+the pattern is now settled and that batch re-version is available: adding them
+is a new version of each deposit rather than an edit.
 
 ---
 
@@ -66,13 +68,12 @@ they are the first candidate paper.
 
 ### M1. MMPDE as an optimal-transport style mover
 
-Status: **drafted** — UWTN 2026-011, *Moving the Mesh Without Remaking It*,
-at `review` on `note/moving-the-mesh-without-remaking-it`.
+Status: **published** 2026-08-13 as UWTN 2026-011, *Moving the Mesh Without
+Remaking It*, DOI `10.6084/m9.figshare.33241170`.
 
-**Publish alongside G1.** The note's central claim is that the multigrid
-hierarchy survives node movement, and it is worth much less to a reader who
-has not been told what that hierarchy is worth. G1 is that note; the two
-should go out together rather than months apart.
+**G1 has now published too** (2026-08-17), four days later rather than
+alongside. So the v2 this entry has been waiting for is due: M1 defers to G1
+in prose for what the multigrid hierarchy is worth, and can now link it.
 
 **Forward-refers to M2 and M4, which do not exist yet**, so those references
 are unlinked prose. Not a reason to delay the deposit — this is not a journal
@@ -217,25 +218,50 @@ This is the note that most likely becomes the paper.
 Two standalone notes. Each stands on its own; if a third arrives they are the
 beginning of a solvers paper, but neither is being written to fit one.
 
-### R1. Rotated boundary conditions
+### R1. Boundary conditions on non-planar boundaries
 
-Status: not started. **One post**, not a series.
+Status: not started. **One post**, not a series. Rescoped 2026-08-17: rotated
+boundary conditions are the answer, but the *question* is the better frame, and
+it is the one a reader arrives with.
 
-Imposing `v·n̂ = 0` by rotating the degrees of freedom at each node rather than
-penalising the constraint. Enforced to machine precision where Nitsche and
-penalty leak; correct on curved, tilted and deformed boundaries because the
-normal is taken per node; transparent to the tangent, so it works inside the
-nonlinear SNES and with geometric multigrid. The constraint reaction is the
-boundary normal traction, which is where dynamic topography comes from — that
-is the payoff and it should not be buried at the end.
+On a box, "no flow through this wall" is a component of the velocity and you
+constrain it. On an annulus, a sphere, a boundary with topography, or any mesh
+that has been moved, it is not a component of anything — and that is the whole
+difficulty. The note is about what you can do instead, and what each choice
+costs:
 
-Also worth saying plainly when *not* to use it: a hard constraint cannot morph,
-so a boundary condition that has to evolve in time still wants Nitsche.
+- **Penalty and Nitsche.** What they enforce, and that they leak — order `1e-3`
+  where a strong constraint holds to machine precision.
+- **Rotating the degrees of freedom.** A per-node rotation `Q` and a strong
+  `v_n = 0`. Exact, and correct on curved, tilted and deformed boundaries
+  because the normal is taken per node.
+- **Which normal, which is subtler than it looks.** A node-averaged normal
+  weighted by facet measure matches the straight-facet integral the assembler
+  actually evaluates; an analytic normal is exact for the *geometry* and
+  therefore inconsistent with the *discretisation*. The parallel half of this
+  is the larger trap — a rank-local sum gives a different normal on a
+  partition boundary (#560, #561, #568).
+- **What it composes with.** Inside the nonlinear SNES, with transverse
+  isotropy where Nitsche does not, and with geometric multigrid: the constraint
+  never has to be re-imposed on a coarse mesh, because the coarse operators are
+  Galerkin products through the rotated prolongation and every level sees only
+  a restricted residual. That last point pairs directly with G1.
+- **The payoff, said early.** The constraint reaction *is* the boundary normal
+  traction `sigma_nn`, so dynamic topography comes out of the solve rather than
+  out of a separate recovery step, with no augmented-Lagrangian splitting.
+- **When not to use it.** A hard constraint cannot morph, so a boundary
+  condition that has to evolve in time — a Dirichlet-to-traction ramp — still
+  wants Nitsche.
+
+Curved boundaries under *refinement* are G1's, not this note's: the snapping
+callback that keeps a refined boundary on the true surface is already written
+up there, and this note should link rather than repeat it.
 
 ### G1. Setting up full multigrid
 
-Status: not started. **One post.** **Paired with M1** — see the note there;
-M1 is drafted and waiting on this one so the two can publish together.
+Status: **published** 2026-08-17 as UWTN 2026-014. Deposit not yet run, so it
+has no DOI. Both bullets below were written, and the efficiency comparison grew
+into the substance of the note.
 
 How to actually set FMG up, which is the part nobody writes down. Two things
 make it more than a recipe:
@@ -417,7 +443,7 @@ Listed as candidates, not commitments.
 
 | Order | Note | Why |
 |-------|------|-----|
-| 1 | M1 MMPDE mover | Drafted (UWTN 2026-011); anchors the meshing paper |
+| ✓ | M1 MMPDE mover | Published 2026-08-13 (UWTN 2026-011); anchors the meshing paper |
 | 2 | M2 Stacking resolution | Reads as the answer to M1's limitation |
 | 3 | M3 Stack-on-top for faults | Bridges the two papers — settle the F3 overlap first |
 | 4 | F1 The problem and the options | The frame the rest of the fault cluster hangs on |
@@ -425,6 +451,6 @@ Listed as candidates, not commitments.
 | 6 | F5 The comparison | Last, with Thyagarajulu's benchmarks as its evidence |
 | 7 | S1, S2 free surface | After the discussion about how to split it |
 | — | C1 Launching from any repository | Standalone; the capability is live and undocumented |
-| — | R1 Rotated BCs | Standalone; write whenever it suits |
-| — | G1 Setting up FMG | Standalone; pairs with M1 if a solvers paper forms |
+| — | R1 BCs on non-planar boundaries | Standalone; write whenever it suits. Much of the evidence exists — see the rescoped entry |
+| ✓ | G1 Setting up FMG | Published 2026-08-17 (UWTN 2026-014) |
 | 8 | #1 Release announcement | Written last; links to everything |
