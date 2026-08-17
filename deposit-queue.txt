@@ -12,3 +12,4 @@
 # when, and the workflow skips anything that already has a record, so a stale
 # line is inert.
 moving-the-mesh-without-remaking-it
+setting-up-full-multigrid
