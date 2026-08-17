@@ -137,6 +137,7 @@ largest term being cancelled. The generating script is
 | solution | source stress | $\mathrm{tr}\,\sigma + d\,p$ | $\sigma + p\mathbf I - 2\eta\dot\varepsilon$ | momentum $+\mathbf f$ | momentum $-\mathbf f$ | $\nabla\!\cdot\!\mathbf u$ | $\dot\varepsilon$ vs $\nabla\mathbf u$ |
 |---|---|---|---|---|---|---|---|
 | EllipticalInclusion | total | 1.1e-15 | 0 | 3.6e-15 | 3.6e-15 † | 1.7e-16 | 0 |
+| FaultedMedium | total | 2.6e-16 | 0 | 3.3e-16 | 3.3e-16 † | 1.3e-15 | 5.1e-16 |
 | SolA ‡ | total | 0 | 0 | 6.0e-17 | **2.0** | 0 | 0 |
 | SolB | total | 2.1e-16 | 0 | 8.7e-15 | **2.0** | 4.8e-14 | 1.7e-14 |
 | SolC | total | 0 | 0 | 4.1e-16 | **1.8** | 2.8e-17 | 5.9e-16 |
@@ -150,10 +151,12 @@ largest term being cancelled. The generating script is
 | SolM | deviatoric | 0 | 0 | 1.7e-16 | **2.0** | 0 | 0 |
 | SolNL | deviatoric | 0 | 0 | 4.7e-16 | **2.0** | 0 | 0 |
 
-† EllipticalInclusion is driven entirely through its boundary and has no body
-force, so negating the body force is a no-op and the control cannot fire. That
-is a property of the problem rather than a gap in the check — there is no
-body-force sign to certify.
+† EllipticalInclusion and FaultedMedium are driven entirely through their
+boundaries and have no body force, so negating the body force is a no-op and the
+control cannot fire. That is a property of the problem rather than a gap in the
+check — there is no body-force sign to certify. For FaultedMedium the momentum
+residual carries the whole weight, which is what makes the pressure-sign
+measurement below worth stating separately.
 
 ‡ SolA's row is clean because `uw.analytic` carries the correction described
 below. There is an erratum in the published kernel, and it is not repaired
@@ -323,6 +326,13 @@ $(0.75\cos(\theta/2) + 2.25\cos(3\theta/2))/\sqrt{r}$ — non-zero purely in the
 half-integer terms, which are the fault's own modes. Nothing here reads the
 paper's intent.
 
+Printed (A9b) carries a second defect, of a kind mathematics settles just as
+cleanly. It has $\cos(3\theta/2)$ where $\sin(3\theta/2)$ belongs. The form we
+implement reproduces (A8b) exactly at $r = R_0$, is divergence-free, and
+satisfies both momentum components symbolically with $U_0$, $R_0$ and $\eta$
+left free; printed (A9b) fails boundary matching and incompressibility together.
+Neither reading of it is an alternative convention.
+
 Two further things about this solution are conventions rather than errors, and
 both matter to anyone comparing against it. Its pressure is **extension
 positive**, so its force balance is $\partial_j\tau_{ij} + \partial_i p = 0$;
@@ -331,11 +341,23 @@ the plane-strain solution is a Stokes benchmark — the thin-viscous-sheet
 solution of (A10)–(A13) has non-zero in-plane divergence, which is a different
 equation set.
 
-The transcription is in review as
-[underworld3#550](https://github.com/underworldcode/underworld3/pull/550) and
-follows the implementation Thyagarajulu Gollapalli has been using for fault
-benchmarking; a second independent implementation is the strongest check
-available on a solution of this kind.
+The pressure sign is the one place where a convention and an error look alike
+from a single run, and a resolution sweep tells them apart. Measured on a
+Underworld3 Stokes solve over a Gmsh slit disc, against the negated pressure the
+error falls with the mesh — 13.1%, 6.9% and 3.3% at $h = 0.20$, $0.10$ and
+$0.05$ — and against the paper's own sign it sits at about 199% at every
+resolution. An error that does not move under refinement is not a discretisation
+error. Differentiating the transcription says the same thing without a solver at
+all: the momentum residual is 3.6e-16 with the sign negated and 1.06 with it as
+printed.
+
+The transcription is
+[underworld3#550](https://github.com/underworldcode/underworld3/pull/550),
+merged, and it follows the implementation Thyagarajulu Gollapalli has been using
+for fault benchmarking. Both typos and the resolution sweep above are his; a
+second independent implementation is the strongest check available on a solution
+of this kind, and it is what turned a suspected convention into a measured
+erratum.
 
 ## A transcription can be right about the source and wrong about the array
 
