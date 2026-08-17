@@ -264,6 +264,41 @@ in the note rather than asserted.
   condition that has to evolve in time — a Dirichlet-to-traction ramp — still
   wants Nitsche.
 
+**The hard part of this note is that the three usually agree.** Solve a
+convection model with any of them and the velocity field is the same to
+plotting accuracy; a `1e-3` leak in `v.n` is invisible in anything that
+consumes the velocity, which is most of what a model does. A note that compares
+three methods on a problem where they agree has no argument, and a reader who
+suspects the comparison was staged is right to.
+
+So the note is organised around **where the difference is actually visible**,
+and the clearest case is **surface stress**. When the wall-normal traction is
+the answer rather than a by-product — dynamic topography, plate-boundary force
+balance, anything compared against a geoid or a gravity field — the three stop
+agreeing:
+
+- Under a penalty or Nitsche condition the constraint is approximate, so the
+  traction recovered from it inherits the approximation. You are differentiating
+  a field that was never made to satisfy the condition exactly.
+- Under the rotated constraint the reaction **is** `sigma_nn`. It is not
+  recovered, post-processed or split off — it is the multiplier the solve
+  already computed, available through `boundary_normal_traction` /
+  `dynamic_topography`.
+
+That contrast is the note's worked example and it should be measured, not
+described: same model, three boundary treatments, compare the surface traction
+against a case with a known answer.
+
+Secondary discriminators, worth a paragraph each rather than a section: a
+boundary that is genuinely curved or has been deformed, where the leak is not
+merely small but geometrically inconsistent; composition with transverse
+isotropy, which the rotated constraint survives and Nitsche does not; and
+conditioning as the penalty parameter is driven down.
+
+And say plainly, early, that for a model which only consumes the velocity
+field, the simplest thing that works is the right choice. The note is more
+useful if it tells the reader when they can stop reading.
+
 **This one needs the mathematics written out**, unlike the measurement-led
 notes. The three approaches differ in their weak forms, and the differences are
 the argument — a reader cannot be asked to take "consistent only in the limit"
