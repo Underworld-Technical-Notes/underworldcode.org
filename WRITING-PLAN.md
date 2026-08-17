@@ -227,14 +227,25 @@ it is the one a reader arrives with.
 On a box, "no flow through this wall" is a component of the velocity and you
 constrain it. On an annulus, a sphere, a boundary with topography, or any mesh
 that has been moved, it is not a component of anything — and that is the whole
-difficulty. The note is about what you can do instead, and what each choice
-costs:
+difficulty. **Three approaches, in that order** — each is the previous one's
+answer, which is the spine of the note:
 
-- **Penalty and Nitsche.** What they enforce, and that they leak — order `1e-3`
-  where a strong constraint holds to machine precision.
-- **Rotating the degrees of freedom.** A per-node rotation `Q` and a strong
-  `v_n = 0`. Exact, and correct on curved, tilted and deformed boundaries
-  because the normal is taken per node.
+- **Direct penalty.** Add a term to the weak form that punishes `v.n != 0`.
+  One line, works anywhere, and never quite holds: the leak is set by the
+  penalty parameter, and driving it down to close the leak conditions the
+  operator badly. You are trading one error for another.
+- **Nitsche.** The consistent version of the same idea. Carrying the boundary
+  traction terms as well as the penalty makes the discrete problem consistent
+  for any stabilisation above a threshold, rather than only in the limit — so
+  it converges at the optimal order without the conditioning price. It is still
+  a weak imposition and still leaks, order `1e-3` in what we measure.
+- **Rotating the degrees of freedom.** Stop asking for the constraint and
+  impose it: a per-node rotation `Q` and a strong `v_n = 0`. Exact to machine
+  precision, and correct on curved, tilted and deformed boundaries because the
+  normal is taken per node.
+
+The leak numbers are the argument for the ordering, and they should be measured
+in the note rather than asserted.
 - **Which normal, which is subtler than it looks.** A node-averaged normal
   weighted by facet measure matches the straight-facet integral the assembler
   actually evaluates; an analytic normal is exact for the *geometry* and
@@ -252,6 +263,15 @@ costs:
 - **When not to use it.** A hard constraint cannot morph, so a boundary
   condition that has to evolve in time — a Dirichlet-to-traction ramp — still
   wants Nitsche.
+
+**Deliberately out of scope: working in a coordinate system that already
+contains the normal.** Solving in spherical or cylindrical components makes the
+wall-normal direction a coordinate direction again, and the constraint goes back
+to being "hold one component". It is a real answer for a sphere or an annulus
+and it is not this note's, because it does nothing for topography, a deformed
+mesh, or a tilted internal surface — which is the general case the note is
+about. Say so once, plainly, so its absence reads as a choice rather than an
+oversight.
 
 Curved boundaries under *refinement* are G1's, not this note's: the snapping
 callback that keeps a refined boundary on the true surface is already written
