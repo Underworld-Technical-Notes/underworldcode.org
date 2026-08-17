@@ -317,3 +317,8 @@ introducing-the-technical-notes:
   article_type: news
   subjects: []
   methods: []
+
+setting-up-full-multigrid:
+  article_type: technical-note
+  subjects: [mantle-convection]
+  methods: [solvers, meshing, parallel-hpc]
