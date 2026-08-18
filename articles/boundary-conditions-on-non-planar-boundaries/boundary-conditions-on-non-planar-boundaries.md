@@ -119,7 +119,9 @@ rather than being a dial you turn up until the answer looks right.
 
 This is a real improvement and it is still a weak imposition. The constraint
 holds to the accuracy of the discretisation, not to the accuracy of the
-arithmetic.
+arithmetic — measured below, it leaks a few parts in a thousand on a mesh of
+the resolution people actually run, and the leak falls with the mesh rather
+than with the machine.
 
 ### Rotating the degrees of freedom
 
@@ -238,11 +240,42 @@ multiplier the solve has already computed, and it comes out of
 `boundary_normal_traction` without a recovery step or an augmented-Lagrangian
 splitting.
 
-:::{warning} This section is not yet measured
-The argument above is structural and we believe it, which is not the same as
-having shown it. The note needs one experiment: the same model under all three
-boundary treatments, with the surface traction compared against a case whose
-answer is known. Until that table is here, this section is a claim.
+### The leak, measured
+
+An annulus, no slip on the inner radius, the treatment under test on the outer,
+driven by a degree-four radial density anomaly. The number is the largest
+normal velocity on the outer boundary, taken against the true radial direction
+and divided by the flow speed, so it reads as the fraction of the flow that
+goes through a boundary nothing should pass through.
+
+| cell size | Nitsche | rotated |
+|---|---|---|
+| 0.150 | 4.6 × 10⁻³ | 7.3 × 10⁻¹¹ |
+| 0.100 | 2.2 × 10⁻³ | 6.5 × 10⁻¹¹ |
+| 0.075 | 1.7 × 10⁻³ | 1.0 × 10⁻¹⁰ |
+| 0.050 | 5.8 × 10⁻⁴ | 8.4 × 10⁻¹¹ |
+
+The refinement is what separates them, and a single resolution would not have.
+Nitsche's leak falls as about $h^{1.9}$ — it is limited by the discretisation,
+which is what "consistent" buys and all that it buys. The rotated constraint
+does not move: it is at the solver's floor at every resolution, because the
+mesh has nothing to do with it.
+
+The control matters here more than the result. With the outer boundary left
+free, the same measurement reads **0.98** — nearly all the boundary flow is
+normal — so the metric can see a leak when there is one.
+
+:::{note} What is measured, and what is still inferred
+Two honest limits. Underworld exposes no separate direct-penalty condition, so
+the first row of the table above has no measured counterpart here; the argument
+for it is the standard one and it is not ours to demonstrate.
+
+And this measures the *constraint*, not the traction. That a traction recovered
+from a constraint satisfied to $10^{-3}$ inherits that error, while the rotated
+reaction is exact because it is the multiplier itself, follows from how each is
+computed — but the surface-stress comparison against a known answer has not
+been run, and until it is, the last two paragraphs of this section are
+reasoning rather than measurement.
 :::
 
 ## Using it
