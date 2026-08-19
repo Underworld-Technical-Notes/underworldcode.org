@@ -106,7 +106,7 @@ stokes.add_natural_bc(1.0e4 * G.dot(v.sym) * G, "Upper")
 The reason the penalty is only accurate in the limit is that it is not
 *consistent*: substituting the true solution does not leave the equation
 satisfied, because the true solution is subject to a boundary traction the
-penalty form ignores. Nitsche's method [@10.1007/BF02995904] restores
+penalty form ignores. Nitsche's method [@Nitsche_1971] restores
 consistency by carrying that traction explicitly:
 
 $$
@@ -198,7 +198,7 @@ and the wall-normal row of $\hat{A}$ is struck out. The constraint then holds to
 machine precision, because it is not being solved for at all.
 
 **This is the classical answer**, not a new one. It is in the early
-finite-element literature, and @10.1002/fld.1650020302 were already reviewing
+finite-element literature, and @Engelman_1982 were already reviewing
 the alternatives and choosing between them on grounds of global mass
 conservation in 1982. What is worth explaining is not the idea but why, given
 that it is exact and the others are not, it is the least used of the three.
@@ -265,7 +265,7 @@ sharper edge, because a normal accumulated rank-locally is wrong at a partition
 boundary, where a node's facets are split across ranks and no rank sees them
 all.
 
-The consistent normal is not the end of the matter. @10.1002/fld.663 takes it as
+The consistent normal is not the end of the matter. @Behr_2004 takes it as
 the starting point — "preferred from the point of view of conservation" — and
 reports that in sloshing problems it still does not guarantee a good discrete
 slip condition, with non-physical recirculation appearing at curved walls; the
@@ -391,7 +391,7 @@ are getting worse throughout.
 The leak says how well each treatment holds the boundary. Whether the answer is
 right is a different question, and it needs an exact answer to compare against.
 
-Kramer, Davies and Wilson [@10.5194/gmd-14-1899-2021] give exact Stokes
+Kramer, Davies and Wilson [@Kramer_2021] give exact Stokes
 solutions in a cylindrical annulus, and their `assess` package publishes the
 radial stress itself rather than leaving it to be recovered from a velocity
 field. Underworld wraps it as `uw.analytic.CylindricalStokes`. The case here is
