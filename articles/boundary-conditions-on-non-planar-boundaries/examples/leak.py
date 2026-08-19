@@ -38,7 +38,7 @@ CELL = 0.075
 GAMMA = 10.0
 
 
-def build(mode, cell=CELL):
+def build(mode, cell=CELL, penalty=1.0e4, gamma=GAMMA):
     mesh = uw.meshing.Annulus(radiusInner=0.5, radiusOuter=1.0, cellSize=cell)
     x, y = mesh.X
     r = sympy.sqrt(x**2 + y**2)
@@ -68,19 +68,27 @@ def build(mode, cell=CELL):
         if mode == "rotated":
             stokes.add_rotated_freeslip_bc(0.0, boundary)
         elif mode == "nitsche":
-            stokes.add_nitsche_bc(0.0, boundary, gamma=GAMMA, theta=1)
+            stokes.add_nitsche_bc(0.0, boundary, gamma=gamma, theta=1)
         elif mode == "penalty":
-            # A DIRECT penalty: a boundary traction opposing any normal flow,
-            # and nothing else. No consistency term, which is exactly what
-            # makes it consistent only in the limit.
-            # both boundary_normal and v.sym are (1, dim) row matrices, so the
-            # normal component is a dot product and the traction is a row again
-            n = mesh.boundary_normal(boundary)
-            un = v.sym.dot(n)
-            stokes.add_natural_bc(-(GAMMA / cell) * un * n, boundary)
+            # A DIRECT penalty: a boundary traction opposing normal flow, and
+            # nothing else -- no consistency term, which is exactly what leaves
+            # it consistent only in the limit. The documented form, from
+            # docs/advanced/curved-boundary-conditions.md, uses the
+            # quadrature-point facet normal mesh.Gamma and a POSITIVE
+            # coefficient. A negative one is anti-damping and the linear solve
+            # fails immediately, which is how this was got wrong the first time.
+            G = mesh.Gamma
+            stokes.add_natural_bc(penalty * G.dot(v.sym) * G, boundary)
         else:
             raise ValueError(mode)
     return mesh, stokes, v
+
+
+def converged(stokes):
+    """A diverged solve still leaves numbers in the array, and they look like
+    measurements. Two runs in the first parameter sweep here had failed the
+    line search and were about to be tabulated."""
+    return stokes.snes.getConvergedReason() > 0
 
 
 def leaks(mesh, v):
@@ -103,7 +111,8 @@ def leaks(mesh, v):
     return leak_true, on_outer.sum(), speed
 
 
-def sweep(cells=(0.15, 0.10, 0.075, 0.05), modes=("nitsche", "rotated")):
+def sweep(cells=(0.15, 0.10, 0.075, 0.05),
+          modes=("penalty", "nitsche", "rotated")):
     """Does the leak fall with the mesh, or is it already at round-off?
 
     A weakly imposed constraint is satisfied to the accuracy of the
@@ -119,14 +128,45 @@ def sweep(cells=(0.15, 0.10, 0.075, 0.05), modes=("nitsche", "rotated")):
         for mode in modes:
             mesh, stokes, v = build(mode, cell=cell)
             stokes.solve()
-            lk, _, _ = leaks(mesh, v)
-            row.append("%.2e" % lk)
+            row.append(("%.2e" % leaks(mesh, v)[0]) if converged(stokes)
+                       else "diverged")
         print("| %.3f | %s |" % (cell, " | ".join(row)))
+
+
+def parameter_sweep():
+    """The distinction between a direct penalty and Nitsche, measured.
+
+    A penalty holds the constraint only in proportion to how hard it pushes, so
+    its leak should track 1/penalty and it has to be tuned. Nitsche's penalty
+    term is there for STABILITY, not accuracy -- the consistency terms carry
+    the accuracy -- so its leak should barely move with gamma above the
+    stability threshold. That is the practical difference between them and it
+    is why gamma is documented as mesh- and problem-independent.
+    """
+    print("\ndirect penalty: leak against penalty magnitude")
+    print("\n| penalty | leak/|u| |")
+    print("|---|---|")
+    for pen in (1.0e2, 1.0e3, 1.0e4, 1.0e5, 1.0e6):
+        mesh, stokes, v = build("penalty", penalty=pen)
+        stokes.solve()
+        cell = ("%.2e" % leaks(mesh, v)[0]) if converged(stokes) else "diverged"
+        print("| %.0e | %s |" % (pen, cell))
+
+    print("\nNitsche: leak against gamma")
+    print("\n| gamma | leak/|u| |")
+    print("|---|---|")
+    for g in (1.0, 10.0, 100.0, 1000.0):
+        mesh, stokes, v = build("nitsche", gamma=g)
+        stokes.solve()
+        cell = ("%.2e" % leaks(mesh, v)[0]) if converged(stokes) else "diverged"
+        print("| %g | %s |" % (g, cell))
 
 
 if __name__ == "__main__":
     if sys.argv[1:2] == ["sweep"]:
         sweep()
+    elif sys.argv[1:2] == ["params"]:
+        parameter_sweep()
     else:
         modes = sys.argv[1:] or ["free", "nitsche", "rotated"]
         print("%-9s %10s %10s %8s" % ("mode", "leak/|u|", "|u|max", "nodes"))

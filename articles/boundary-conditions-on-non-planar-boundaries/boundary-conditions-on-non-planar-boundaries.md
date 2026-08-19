@@ -82,13 +82,23 @@ $$
 \; \mathrm{d}S .
 $$
 
-One line, no new machinery, and it works on any geometry. What you are solving
-is a perturbed problem, though, and it is perturbed by exactly the amount the
-constraint is violated: the discrete solution sits where the penalty term
-balances the traction it is fighting, which leaves $\mathbf{u}\cdot\hat{\mathbf{n}}$
-small but not zero. Making it smaller means raising $\gamma$, and raising
-$\gamma$ conditions the operator worse. The error is traded against the
-conditioning, and neither can be driven away.
+One line, no new machinery, and it works on any geometry. It is still in a
+good many working scripts, and deservedly. What you are solving is a perturbed
+problem, though, and it is perturbed by exactly the amount the constraint is
+violated: the discrete solution sits where the penalty term balances the
+traction it is fighting, which leaves $\mathbf{u}\cdot\hat{\mathbf{n}}$ small
+but not zero. Making it smaller means pushing harder, and pushing harder
+conditions the operator worse. The error is traded against the conditioning,
+and measured below, that trade runs out: past $10^4$ the leak stops improving,
+and by $10^6$ the solve fails.
+
+Underworld spells it as a boundary traction opposing normal flow, using the
+facet normal at the quadrature points:
+
+```python
+G = mesh.Gamma
+stokes.add_natural_bc(1.0e4 * G.dot(v.sym) * G, "Upper")
+```
 
 ### Nitsche
 
@@ -245,36 +255,57 @@ splitting.
 An annulus, no slip on the inner radius, the treatment under test on the outer,
 driven by a degree-four radial density anomaly. The number is the largest
 normal velocity on the outer boundary, taken against the true radial direction
-and divided by the flow speed, so it reads as the fraction of the flow that
-goes through a boundary nothing should pass through.
+and divided by the flow speed: the fraction of the flow going through a
+boundary nothing should pass through. Penalty at $10^4$, Nitsche at
+$\gamma = 10$.
 
-| cell size | Nitsche | rotated |
-|---|---|---|
-| 0.150 | 4.6 × 10⁻³ | 7.3 × 10⁻¹¹ |
-| 0.100 | 2.2 × 10⁻³ | 6.5 × 10⁻¹¹ |
-| 0.075 | 1.7 × 10⁻³ | 1.0 × 10⁻¹⁰ |
-| 0.050 | 5.8 × 10⁻⁴ | 8.4 × 10⁻¹¹ |
+| cell size | direct penalty | Nitsche | rotated |
+|---|---|---|---|
+| 0.150 | 4.5 × 10⁻³ | 4.6 × 10⁻³ | 7.3 × 10⁻¹¹ |
+| 0.100 | 2.5 × 10⁻³ | 2.2 × 10⁻³ | 6.5 × 10⁻¹¹ |
+| 0.075 | 8.5 × 10⁻⁴ | 1.7 × 10⁻³ | 1.0 × 10⁻¹⁰ |
+| 0.050 | 9.5 × 10⁻⁴ | 5.8 × 10⁻⁴ | 8.4 × 10⁻¹¹ |
 
 The refinement is what separates them, and a single resolution would not have.
-Nitsche's leak falls as about $h^{1.9}$ — it is limited by the discretisation,
-which is what "consistent" buys and all that it buys. The rotated constraint
-does not move: it is at the solver's floor at every resolution, because the
-mesh has nothing to do with it.
+Both weak forms leak parts in a thousand and improve as the mesh improves. The
+rotated constraint does not move: it sits at the solver's floor at every
+resolution, because the mesh has nothing to do with it.
 
-The control matters here more than the result. With the outer boundary left
-free, the same measurement reads **0.98** — nearly all the boundary flow is
-normal — so the metric can see a leak when there is one.
+The control matters more than the result. With the outer boundary left free the
+same measurement reads **0.98** — nearly all the boundary flow is normal — so
+the metric can see a leak when there is one.
 
-:::{note} What is measured, and what is still inferred
-Two honest limits. Underworld exposes no separate direct-penalty condition, so
-the first row of the table above has no measured counterpart here; the argument
-for it is the standard one and it is not ours to demonstrate.
+### What each parameter buys
 
-And this measures the *constraint*, not the traction. That a traction recovered
-from a constraint satisfied to $10^{-3}$ inherits that error, while the rotated
-reaction is exact because it is the multiplier itself, follows from how each is
-computed — but the surface-stress comparison against a known answer has not
-been run, and until it is, the last two paragraphs of this section are
+The two weak methods look alike in that table. They are not alike, and their
+own parameters are what tells them apart.
+
+| penalty | leak | | $\gamma$ (Nitsche) | leak |
+|---|---|---|---|---|
+| 10² | 2.6 × 10⁻¹ | | 1 | diverged |
+| 10³ | 2.3 × 10⁻² | | 10 | 1.7 × 10⁻³ |
+| 10⁴ | 8.5 × 10⁻⁴ | | 100 | 2.7 × 10⁻⁴ |
+| 10⁵ | 9.6 × 10⁻⁴ | | 1000 | 3.0 × 10⁻⁵ |
+| 10⁶ | diverged | | | |
+
+The direct penalty improves in proportion to how hard it pushes, until it
+stops: between $10^4$ and $10^5$ the leak does not fall, and at $10^6$ the
+solve fails. That is the conditioning catching up, and it is the reason a
+penalty has to be tuned — the useful range is bounded at both ends, and where
+the ceiling sits depends on the problem.
+
+Nitsche fails at $\gamma = 1$ and improves steadily above it. The failure is the
+stability threshold: below it the form is not coercive and there is nothing to
+tune your way out of. Above it the method keeps improving without the
+conditioning wall, which is what makes $\gamma = 10$ a documented default rather
+than a number to fit each time.
+
+:::{note} What is measured here, and what is not
+This measures the *constraint*. The claim that follows — that a traction
+recovered from a constraint good to $10^{-3}$ inherits that error, while the
+rotated reaction is exact because it is the multiplier itself — follows from
+how each is computed, and the surface-stress comparison against a known answer
+has not been run. Until it is, the two paragraphs above this section are
 reasoning rather than measurement.
 :::
 
