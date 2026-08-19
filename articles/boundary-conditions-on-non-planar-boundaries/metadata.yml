@@ -30,7 +30,7 @@ methods:
   - meshing
 ghost_tags:
   - Underworld Code
-figures: 2
+figures: 3
 # Rendered from the model rather than a stock photograph, so there is nobody to
 # credit. `figures` counts the figures in the body; the banner is not one.
 banner: figures/banner.png

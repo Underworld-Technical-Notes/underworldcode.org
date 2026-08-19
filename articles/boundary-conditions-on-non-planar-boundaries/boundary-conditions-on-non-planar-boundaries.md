@@ -537,19 +537,27 @@ No exact solution has both a curved boundary and a laterally varying viscosity,
 so the case where weak constraints are most often reported to give trouble is a
 separate test with a trivial geometry. SolCx is that test: the unit box, free
 slip on all four walls, viscosity 1 to the left of $x = 0.5$ and $\eta_B$ to the
-right, and `uw.analytic.SolCx` publishes the exact surface stress. Three walls
-carry the ordinary component condition and the treatment under test is on the
-top wall alone.
+right. `uw.analytic.SolCx` publishes the exact dynamic topography on the top
+wall, so this one can be drawn rather than tabulated. Three walls carry the
+ordinary component condition and the treatment under test is on the top wall
+alone.
 
-On a box every treatment here reduces to holding one velocity component, so
-nothing in it is about normals. What it can say is whether a weak imposition
-holds the traction it was given when the viscosity beside it jumps.
+On a box every treatment reduces to holding one velocity component, so nothing
+here is about normals. What it can say is whether a weak imposition holds the
+traction it was given when the viscosity beside it jumps.
 
-Relative $l_2$ error of $\sigma_{zz}$ along the top wall, mean removed, at
-32 × 32 elements. Each entry is the whole wall and then the wall with two
-elements trimmed from each end; the corners are where the treatment under test
-meets the side walls, and the difference between the two numbers is what
-happens there. Nitsche at $\gamma = 10$, penalty at $10^4$.
+```{figure} figures/topography.png
+:alt: Two line plots of surface topography along the top wall from x=0 to x=1, mean removed, at viscosity contrasts of 100 and a million. In both, the exact answer is a thick grey curve falling from +0.29 at the left, flattening near +0.21, jumping down sharply at the viscosity step at x=0.5 and continuing down to -0.38 at the right. At a contrast of 100 every treatment lies on the grey curve, apart from the rotated constraint which spikes to -0.50 and +0.27 in the last two nodes at x=1. At a contrast of a million the picture separates: the component Dirichlet, the rotated reaction and the corrected multiplier still lie on the exact curve; Nitsche at gamma=10 leaves the panel entirely and peaks at 4.09 against a signal of 0.38; and the multiplier as the API returns it is a nearly flat line near zero, reaching only 0.04, having lost almost all of the traction to the augmented-Lagrangian term. Adding that term back, drawn as a dotted blue line, puts it on the exact curve again.
+
+Predicted against computed, for each treatment. Every curve is mean-removed,
+because the box is enclosed and the level of the topography is a gauge. At a
+contrast of 100 the treatments agree with each other and with the exact answer;
+at a million, three of the five have something wrong with them, and each is
+wrong in a different way.
+```
+
+Relative $l_2$ error along the wall, at 32 × 32 elements, over the whole wall
+and then with two elements trimmed from each end:
 
 | $\eta_B/\eta_A$ | component Dirichlet | penalty | Nitsche | multiplier | rotated |
 |---|---|---|---|---|---|
@@ -557,46 +565,56 @@ happens there. Nitsche at $\gamma = 10$, penalty at $10^4$.
 | 10² | 0.072 / 0.081 | 0.056 / 0.060 | 0.073 / 0.081 | 0.072 / 0.081 | 0.343 / 0.083 |
 | 10³ | 0.075 / 0.084 | diverged | 0.076 / 0.085 | 0.075 / 0.084 | 0.345 / 0.086 |
 | 10⁴ | 0.076 / 0.085 | diverged | 0.087 / 0.095 | 0.076 / 0.085 | 0.345 / 0.086 |
-| 10⁶ | 0.076 / 0.085 | diverged | **2.77 / 2.14** | 0.075 / 0.084 | 0.345 / 0.086 |
+| 10⁶ | 0.076 / 0.085 | diverged | **2.77 / 2.14** | **1.04** | 0.345 / 0.086 |
 
-**Read the first column first.** The component Dirichlet condition is exact,
-has no parameter, and its velocity error is 8.8 × 10⁻⁶ at a contrast of $10^6$.
-It still reads 0.085. That number is the recovery's error and not a boundary
+**Read the first column first.** The component Dirichlet condition is exact, has
+no parameter, and its velocity error is 8.8 × 10⁻⁶ at a contrast of $10^6$. It
+still reads 0.085. That number is the recovery's error and not a boundary
 condition's: on the stiff half the recovered $\sigma_{zz}$ is a difference
 between the pressure and $2\eta\,\partial_z u_z$ with $\eta = 10^6$, so a
 relative velocity error of $10^{-5}$ arrives in the stress at the size of the
-signal. No treatment can be called worse than the reference unless it is worse
-than that, and at contrasts up to $10^4$ none of them is by more than about a
-tenth.
+signal. Nothing here can be called worse than the reference unless it is worse
+than that, and up to a contrast of $10^4$ nothing is by more than about a tenth.
 
 **Nitsche fails at $10^6$ and the leak does not show it.** At $\gamma = 10$ the
-recovered surface stress is 2.77 — nearly three times the signal — while the
-constraint is held to 3.2 × 10⁻⁴ on the soft half of the wall and
-1.5 × 10⁻⁷ on the stiff half. Raising $\gamma$ fixes it: 0.16 at $\gamma = 100$
-and 0.079 at $\gamma = 1000$, which is the reference floor. So the stabilisation
-parameter has to be raised with the viscosity contrast, and the quantity that
-says whether it is high enough is the stress rather than the leak. This is the
-same shape as the curved-boundary result, arrived at from the other side: the
-constraint being satisfied is not evidence that the traction is right.
+recovered topography peaks at 4.09 against a signal of 0.38, while the
+constraint is held to 3.2 × 10⁻⁴ on the soft half of the wall and 1.5 × 10⁻⁷ on
+the stiff half. Raising $\gamma$ fixes it — 0.16 at $\gamma = 100$, 0.079 at
+$\gamma = 1000$, which is the reference floor — so the stabilisation parameter
+has to be raised with the viscosity contrast, and the quantity that says whether
+it is high enough is the stress rather than the leak. That is the same shape as
+the curved-boundary result arrived at from the other side.
 
-The two exact treatments carry no such parameter and sit at the reference floor
-at every contrast.
+**The multiplier loses the traction to the augmentation.** At a contrast of
+$10^6$ the multiplier field as `multiplier()` returns it peaks at 0.042 against
+an exact 0.383, and it is anti-correlated with the right answer (−0.53) — the
+flat blue line in the figure. The solve is not at fault: the same run's velocity
+error is 8.8 × 10⁻⁶ and its recovered stress is as good as the reference. The
+default augmentation is $r = 10^4\mu(x)$, which the viscosity step makes $10^{10}$
+on the stiff half, and the momentum row carries
+$h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)$. Almost all of the traction is in
+the second term. Adding it back gives 0.047 — better than every other route in
+this test, including the recovery — and it is the dotted curve lying on the
+exact one. Turning $r$ down instead is not available: at this contrast both
+$r = 0$ and $r = 10^2$ fail to solve. This is the same defect as in the annulus,
+underworld3#607, and the contrast is what makes it severe.
+
+**The rotated constraint disagrees at the corner and nowhere else.** Trimmed, it
+matches the reference at every contrast; untrimmed it is six times worse, and
+the whole of that is two nodes — the spike at $x = 1$ in both panels of the
+figure. Against the Dirichlet run at a contrast of 10, the pressure differs by
+0.23 at the corner node and 0.12 at its neighbour, while everything below the
+top row agrees to 4 × 10⁻⁴ rms. The corner is a node the rotated constraint and
+the side wall's component condition both hold, and both runs pin the same two
+velocity components there, so the difference is in how the corner row is
+assembled rather than in what is asked of it. This is underworld3#608.
 
 **The penalty needs a coefficient matched to the local viscosity, and we could
 not write one that solves.** A constant $10^4$ manages a contrast of $10^2$ and
-then fails the line search. Multiplying the coefficient by the piecewise
-viscosity is the obviously right thing to want, and it fails at every magnitude
-we tried, from $\mu$ to $10^3\mu$, against both normals.
+then fails the line search. Multiplying by the piecewise viscosity is the
+obviously right thing to want, and it fails at every magnitude we tried, from
+$\mu$ to $10^3\mu$, against both normals.
 
-**The rotated constraint disagrees at the corner and nowhere else.** Trimmed, it
-matches the reference. Untrimmed it is six times worse, and the whole of that
-difference is two nodes: against the Dirichlet run at a contrast of 10, the
-pressure differs by 0.23 at the corner node and 0.12 at its neighbour along the
-top, while everything below the top row agrees to 4 × 10⁻⁴ rms. The corner is a
-node the rotated constraint and the side wall's component condition both hold.
-Both runs pin the same two velocity components there, so the difference is in
-how the corner row is assembled rather than in what is being asked of it. This
-is underworld3 issue #608.
 
 ## Using it
 
