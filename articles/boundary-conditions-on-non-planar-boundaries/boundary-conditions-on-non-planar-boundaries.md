@@ -70,7 +70,7 @@ directions — free *everything*, not free slip. Free slip keeps the tangential
 half of that and replaces the normal half with the constraint. How you do the
 replacing is the choice.
 
-## Three ways, in order
+## Four ways, in order
 
 ### A direct penalty
 
@@ -133,6 +133,46 @@ holds to the accuracy of the discretisation, not to the accuracy of the
 arithmetic — measured below, it leaks a few parts in a thousand on a mesh of
 the resolution people actually run, and the leak falls with the mesh rather
 than with the machine.
+
+### A constraint equation, with a multiplier
+
+The two above add a *term* to an equation. This one adds an *equation*.
+
+Carry a scalar field $h$ on the boundary and require, as a row of the system in
+its own right,
+
+$$
+\int_{\partial\Omega} (\mathbf{u}\cdot\hat{\mathbf{n}} - g)\, q
+\; \mathrm{d}S = 0 \quad \text{for all } q ,
+$$
+
+with $h$ entering the momentum row as the traction $h\hat{\mathbf{n}}$ that holds
+the constraint. It is a Lagrange multiplier, and the system becomes a larger
+saddle point: velocity, pressure, and now $h$.
+
+Nothing is being traded here. The constraint row is exact, so unlike a penalty
+there is no parameter whose size decides how well it holds. Two practical
+things do have to be dealt with, and they are where the approximation enters:
+
+- The multiplier is only defined on the boundary, so its interior degrees of
+  freedom are singular. Underworld screens them with a small $\varepsilon$
+  (default $10^{-6}$), which is the one place the constraint is relaxed.
+- The $[p, h]$ Schur complement is poorly conditioned on its own, so an
+  augmented-Lagrangian term $r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)\hat{\mathbf{n}}$
+  is added to the momentum row. This conditions the block **without biasing the
+  multiplier**, because the $h$ row still carries the exact constraint — so
+  unlike a penalty, the accuracy does not depend on $r$.
+
+```python
+stokes = uw.systems.Stokes_Constrained(mesh, velocityField=v, pressureField=p)
+h = stokes.add_constraint_bc(0.0, "Upper")
+stokes.solve()
+```
+
+And the reason to care about it beyond the constraint: **at convergence, $h$ on
+the boundary is the normal traction.** It is not recovered from the velocity
+field afterwards — it is an unknown the solve returned, available through
+`multiplier` and, divided by $\Delta\rho g$, through `topography`.
 
 ### Rotating the degrees of freedom
 
@@ -260,17 +300,21 @@ and divided by the flow speed: the fraction of the flow going through a
 boundary nothing should pass through. Penalty at $10^4$, Nitsche at
 $\gamma = 10$.
 
-| cell size | direct penalty | Nitsche | rotated |
-|---|---|---|---|
-| 0.150 | 4.5 × 10⁻³ | 4.6 × 10⁻³ | 7.3 × 10⁻¹¹ |
-| 0.100 | 2.5 × 10⁻³ | 2.2 × 10⁻³ | 6.5 × 10⁻¹¹ |
-| 0.075 | 8.5 × 10⁻⁴ | 1.7 × 10⁻³ | 1.0 × 10⁻¹⁰ |
-| 0.050 | 9.5 × 10⁻⁴ | 5.8 × 10⁻⁴ | 8.4 × 10⁻¹¹ |
+| cell size | direct penalty | Nitsche | multiplier | rotated |
+|---|---|---|---|---|
+| 0.150 | 4.5 × 10⁻³ | 4.6 × 10⁻³ | 8.3 × 10⁻⁴ | 7.3 × 10⁻¹¹ |
+| 0.100 | 2.5 × 10⁻³ | 2.2 × 10⁻³ | 1.6 × 10⁻⁴ | 6.5 × 10⁻¹¹ |
+| 0.075 | 8.5 × 10⁻⁴ | 1.7 × 10⁻³ | 5.6 × 10⁻⁵ | 1.0 × 10⁻¹⁰ |
+| 0.050 | 9.5 × 10⁻⁴ | 5.8 × 10⁻⁴ | 1.2 × 10⁻⁵ | 8.4 × 10⁻¹¹ |
 
 The refinement is what separates them, and a single resolution would not have.
-Both weak forms leak parts in a thousand and improve as the mesh improves. The
-rotated constraint does not move: it sits at the solver's floor at every
-resolution, because the mesh has nothing to do with it.
+The two weak forms leak parts in a thousand and improve roughly as $h^{1.9}$ —
+the rate consistency buys. The multiplier starts an order of magnitude better
+and falls much faster, near $h^{3.9}$, because its only approximation is the
+screening of the interior multiplier degrees of freedom rather than the
+enforcement itself. The rotated constraint does not move at all: it sits at the
+solver's floor at every resolution, because the mesh has nothing to do with
+it.
 
 The control matters more than the result. With the outer boundary left free the
 same measurement reads **0.98** — nearly all the boundary flow is normal — so

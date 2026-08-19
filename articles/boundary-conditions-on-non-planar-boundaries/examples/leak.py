@@ -45,7 +45,9 @@ def build(mode, cell=CELL, penalty=1.0e4, gamma=GAMMA):
 
     v = uw.discretisation.MeshVariable("U", mesh, mesh.dim, degree=2)
     p = uw.discretisation.MeshVariable("P", mesh, 1, degree=1)
-    stokes = uw.systems.Stokes(mesh, velocityField=v, pressureField=p)
+    solver_class = (uw.systems.Stokes_Constrained if mode == "constraint"
+                    else uw.systems.Stokes)
+    stokes = solver_class(mesh, velocityField=v, pressureField=p)
     stokes.constitutive_model = uw.constitutive_models.ViscousFlowModel
     stokes.constitutive_model.Parameters.shear_viscosity_0 = 1.0
 
@@ -65,7 +67,13 @@ def build(mode, cell=CELL, penalty=1.0e4, gamma=GAMMA):
     for boundary in ("Upper",):
         if mode == "free":
             continue          # the control: outer boundary left natural
-        if mode == "rotated":
+        if mode == "constraint":
+            # A multiplier field h coupled into the saddle-point system, so the
+            # constraint is a ROW of the system rather than a term added to
+            # one. At convergence h on the boundary is the normal traction,
+            # which is why this one is also a way of getting the stress.
+            stokes.add_constraint_bc(0.0, boundary)
+        elif mode == "rotated":
             stokes.add_rotated_freeslip_bc(0.0, boundary)
         elif mode == "nitsche":
             stokes.add_nitsche_bc(0.0, boundary, gamma=gamma, theta=1)
@@ -112,7 +120,7 @@ def leaks(mesh, v):
 
 
 def sweep(cells=(0.15, 0.10, 0.075, 0.05),
-          modes=("penalty", "nitsche", "rotated")):
+          modes=("penalty", "nitsche", "constraint", "rotated")):
     """Does the leak fall with the mesh, or is it already at round-off?
 
     A weakly imposed constraint is satisfied to the accuracy of the
@@ -169,7 +177,8 @@ if __name__ == "__main__":
     elif sys.argv[1:2] == ["params"]:
         parameter_sweep()
     else:
-        modes = sys.argv[1:] or ["free", "nitsche", "rotated"]
+        modes = sys.argv[1:] or ["free", "penalty", "nitsche",
+                                 "constraint", "rotated"]
         print("%-9s %10s %10s %8s" % ("mode", "leak/|u|", "|u|max", "nodes"))
         for mode in modes:
             mesh, stokes, v = build(mode)
