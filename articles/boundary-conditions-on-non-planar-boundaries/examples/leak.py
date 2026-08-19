@@ -136,12 +136,13 @@ def sweep(cells=(0.15, 0.10, 0.075, 0.05),
 def parameter_sweep():
     """The distinction between a direct penalty and Nitsche, measured.
 
-    A penalty holds the constraint only in proportion to how hard it pushes, so
-    its leak should track 1/penalty and it has to be tuned. Nitsche's penalty
-    term is there for STABILITY, not accuracy -- the consistency terms carry
-    the accuracy -- so its leak should barely move with gamma above the
-    stability threshold. That is the practical difference between them and it
-    is why gamma is documented as mesh- and problem-independent.
+    Both are bounded above by conditioning: the penalty stops improving past
+    1e4 and fails at 1e6, and Nitsche's line search fails from gamma = 1e4.
+    Neither escapes tuning. What differs is the floor each reaches first --
+    1e-3 for the penalty, 3e-5 for Nitsche -- and that Nitsche is ALSO bounded
+    below, at gamma = 1, where the form stops being coercive. Its usable window
+    has a threshold at each end, and gamma = 10 sits in the middle of it on any
+    mesh because gamma is dimensionless and the term already carries mu/h.
     """
     print("\ndirect penalty: leak against penalty magnitude")
     print("\n| penalty | leak/|u| |")
@@ -155,7 +156,7 @@ def parameter_sweep():
     print("\nNitsche: leak against gamma")
     print("\n| gamma | leak/|u| |")
     print("|---|---|")
-    for g in (1.0, 10.0, 100.0, 1000.0):
+    for g in (1.0, 10.0, 100.0, 1000.0, 1.0e4, 1.0e5):
         mesh, stokes, v = build("nitsche", gamma=g)
         stokes.solve()
         cell = ("%.2e" % leaks(mesh, v)[0]) if converged(stokes) else "diverged"

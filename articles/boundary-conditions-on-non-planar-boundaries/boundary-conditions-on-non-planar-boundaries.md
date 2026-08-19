@@ -90,7 +90,8 @@ traction it is fighting, which leaves $\mathbf{u}\cdot\hat{\mathbf{n}}$ small
 but not zero. Making it smaller means pushing harder, and pushing harder
 conditions the operator worse. The error is traded against the conditioning,
 and measured below, that trade runs out: past $10^4$ the leak stops improving,
-and by $10^6$ the solve fails.
+and by $10^6$ the solve fails. Nitsche moves the floor down rather than
+removing it — it fails too, at its own threshold.
 
 Underworld spells it as a boundary traction opposing normal flow, using the
 facet normal at the quadrature points:
@@ -286,19 +287,27 @@ own parameters are what tells them apart.
 | 10³ | 2.3 × 10⁻² | | 10 | 1.7 × 10⁻³ |
 | 10⁴ | 8.5 × 10⁻⁴ | | 100 | 2.7 × 10⁻⁴ |
 | 10⁵ | 9.6 × 10⁻⁴ | | 1000 | 3.0 × 10⁻⁵ |
-| 10⁶ | diverged | | | |
+| 10⁶ | diverged | | 10⁴ and above | diverged |
 
-The direct penalty improves in proportion to how hard it pushes, until it
-stops: between $10^4$ and $10^5$ the leak does not fall, and at $10^6$ the
-solve fails. That is the conditioning catching up, and it is the reason a
-penalty has to be tuned — the useful range is bounded at both ends, and where
-the ceiling sits depends on the problem.
+**Both have a wall, and neither escapes tuning.** The direct penalty improves in
+proportion to how hard it pushes until the conditioning catches up: no gain
+from $10^4$ to $10^5$, and failure at $10^6$. Nitsche improves further and then
+fails outright — at $\gamma = 10^4$ the line search stops converging, and the
+figures above that are from solves that did not finish.
 
-Nitsche fails at $\gamma = 1$ and improves steadily above it. The failure is the
-stability threshold: below it the form is not coercive and there is nothing to
-tune your way out of. Above it the method keeps improving without the
-conditioning wall, which is what makes $\gamma = 10$ a documented default rather
-than a number to fit each time.
+What differs is how far down each gets before it fails. The penalty bottoms out
+near $10^{-3}$; Nitsche reaches $3 \times 10^{-5}$, better by more than an order
+of magnitude. That is what consistency buys — a smaller floor, not an
+unbounded parameter.
+
+Nitsche also fails *below* $\gamma = 1$, and for the opposite reason: the form
+is no longer coercive, and no amount of tuning recovers it. So its usable range
+is bounded at both ends, with the stability threshold underneath and the
+conditioning above. The virtue of $\gamma = 10$ is that it sits in the middle of
+that window on any mesh, because $\gamma$ is dimensionless and the term it
+scales already carries $\mu / h$. The penalty coefficient carries no such
+scaling, which is why the value that works is a property of the problem rather
+than a default.
 
 :::{note} What is measured here, and what is not
 This measures the *constraint*. The claim that follows — that a traction
