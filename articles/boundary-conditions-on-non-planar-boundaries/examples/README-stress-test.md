@@ -52,10 +52,32 @@ Two things to watch, both already known:
   only up to a constant, so the comparison is of the *deviation*, which is what
   topography is anyway.
 
-## The supplementary check: SolCx
+## SolCx is not the weaker test, it is the other one
 
-SolCx is a Cartesian box, so it cannot test anything about curved boundaries and
-all four treatments degenerate to the same component constraint there. It is
-still a fair test of whether a **penalty or Nitsche form constrains the normal
-degrees of freedom it is given**, with the geometry factored out and an exact
-answer available. Worth having for that alone.
+No analytic solution has both a curved boundary and a laterally varying
+viscosity, so no single test covers the case that actually hurts.
+
+| solution | curved boundary | viscosity |
+|---|---|---|
+| `assess` cylindrical / spherical (Kramer et al. 2021) | yes | **constant** — `nu` is a scalar |
+| `Zhong2008` | yes | radial layers only (`viscosity_interfaces`) |
+| SolCx | no, Cartesian box | **lateral jump** |
+
+That splits the work in two, and both halves are needed:
+
+- **Geometry, with the rheology trivial.** Kramer or Zhong. Tests whether the
+  treatment copes with a boundary whose normal turns, which is what this note
+  is about.
+- **Rheology, with the geometry trivial.** SolCx. On a box every treatment
+  reduces to the same component constraint, so nothing here is about normals —
+  but a lateral viscosity jump is where a weakly imposed constraint is most
+  likely to fail to hold the normal degrees of freedom it was given, and there
+  is an exact answer to check against.
+
+The second is not a consolation prize. Lateral viscosity contrast is the
+condition under which these methods are known to give trouble, and it is the
+only one of the two where an oracle exists for it at all.
+
+A shell with a laterally varying viscosity has no exact solution, so if the
+note wants that case it needs a different kind of evidence — self-consistency
+between methods, or convergence under refinement — and it should say which.
