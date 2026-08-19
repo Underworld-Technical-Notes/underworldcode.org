@@ -1,0 +1,27 @@
+% Pinned here rather than fetched at build time, following the convention in the
+% MMPDE note: a build that depends on doi.org answering can publish a note with a
+% broken citation, and a deposited PDF cannot be repaired afterwards.
+%
+% This one has a second reason. The DOI contains parentheses,
+% 10.1016/0031-9201(93)90078-N, and MyST's inline DOI citation form stops at the
+% first "(" -- the build reported: Could not find DOI "10.1016/0031-9201". A
+% bibtex key sidesteps that.
+%
+% Do not write an at-sign in these comments. The bibtex reader scans for one
+% wherever it appears and then expects an entry: an at-sign inside a comment
+% here failed the whole file with "expected lbrace, got label".
+
+@article{Zhong_1993,
+  title   = {Accurate determination of surface normal stress in viscous flow from a consistent boundary flux method},
+  volume  = {78},
+  ISSN    = {0031-9201},
+  url     = {http://dx.doi.org/10.1016/0031-9201(93)90078-N},
+  DOI     = {10.1016/0031-9201(93)90078-n},
+  number  = {1-2},
+  journal = {Physics of the Earth and Planetary Interiors},
+  publisher = {Elsevier BV},
+  author  = {Zhong, Shijie and Gurnis, Michael and Hulbert, Gregory},
+  year    = {1993},
+  month   = jun,
+  pages   = {1--8}
+}

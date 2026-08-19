@@ -150,18 +150,20 @@ with $h$ entering the momentum row as the traction $h\hat{\mathbf{n}}$ that hold
 the constraint. It is a Lagrange multiplier, and the system becomes a larger
 saddle point: velocity, pressure, and now $h$.
 
-Nothing is being traded here. The constraint row is exact, so unlike a penalty
-there is no parameter whose size decides how well it holds. Two practical
-things do have to be dealt with, and they are where the approximation enters:
+The constraint row is exact, so unlike a penalty there is no parameter whose
+size decides how well it holds. Two practical things do have to be dealt with.
 
-- The multiplier is only defined on the boundary, so its interior degrees of
-  freedom are singular. Underworld screens them with a small $\varepsilon$
-  (default $10^{-6}$), which is the one place the constraint is relaxed.
+- $h$ is carried as a full-domain field but only its boundary trace means
+  anything, so the interior degrees of freedom are constrained out of the global
+  system in the section before the solve sees it. They are not solved for and
+  they do not enlarge the $[p, h]$ block. The interior rows are the screening
+  block alone, so the interior multiplier is determined by the boundary trace and
+  carries no independent signal.
 - The $[p, h]$ Schur complement is poorly conditioned on its own, so an
   augmented-Lagrangian term $r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)\hat{\mathbf{n}}$
-  is added to the momentum row. This conditions the block **without biasing the
-  multiplier**, because the $h$ row still carries the exact constraint — so
-  unlike a penalty, the accuracy does not depend on $r$.
+  is added to the momentum row. It does not change what the constraint enforces,
+  because the $h$ row still carries the exact constraint. It does change what $h$
+  *is*, which is the subject of a section below.
 
 ```python
 stokes = uw.systems.Stokes_Constrained(mesh, velocityField=v, pressureField=p)
@@ -169,10 +171,12 @@ h = stokes.add_constraint_bc(0.0, "Upper")
 stokes.solve()
 ```
 
-And the reason to care about it beyond the constraint: **at convergence, $h$ on
-the boundary is the normal traction.** It is not recovered from the velocity
-field afterwards — it is an unknown the solve returned, available through
-`multiplier` and, divided by $\Delta\rho g$, through `topography`.
+And the reason to care about it beyond the constraint: **at convergence the
+momentum row's boundary term is the normal traction.** It is not recovered from
+the velocity field afterwards — it is an unknown the solve returned, available
+through `multiplier` and, divided by $\Delta\rho g$, through `topography`. With
+an augmentation in place that term is $h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)$
+rather than $h$, and the difference between the two is measured below.
 
 ### Rotating the degrees of freedom
 
@@ -333,8 +337,8 @@ what Nitsche and the rotated constraint use by default.
 
 Nitsche leaks parts in a thousand and improves roughly as $h^{1.9}$ — the rate
 consistency buys. The multiplier starts an order of magnitude better and falls
-much faster, near $h^{3.9}$, because its only approximation is the screening of
-the interior multiplier degrees of freedom rather than the enforcement itself.
+much faster, near $h^{3.9}$, because the constraint row is an equation rather
+than a term whose weight has to be chosen.
 The rotated constraint does not move at all: it sits at the solver's floor at
 every resolution, because the mesh has nothing to do with it. The penalty
 against the node normal does not improve with the mesh either, and for the
@@ -531,6 +535,43 @@ multiplier does depend on $r$, which the method's own documentation says it does
 not, and the note said so too. What does not depend on $r$ is the traction, once
 both of its parts are added up. This is underworld3 issue #607.
 
+### The multiplier and the consistent boundary flux are the same object
+
+The correction above is not a patch. Write the momentum row's boundary term out
+and the identity is immediate: the assembled load is
+$M_\Gamma\,(h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g))$, and at convergence it
+balances the volume residual restricted to the boundary, which is precisely the
+nodal load the consistent boundary flux back-calculation reads
+[@Zhong_1993]. So
+
+$$
+h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)
+  = -M_\Gamma^{-1} \left. (A\mathbf{u} - \mathbf{b}) \right|_\Gamma ,
+$$
+
+the CBF traction de-smeared with the boundary mass. The multiplier is not a
+second, independent estimate of the surface stress: it is the same computation
+the rotated constraint's reaction performs, arrived at by carrying the traction
+as an unknown instead of reading it out of the residual afterwards. Dropping the
+$r$ term is dropping part of the load, which is why it fails exactly where $r$ is
+large.
+
+Measured across the two solves — they are different discrete problems, so this
+is agreement rather than an identity check — the corrected multiplier and the
+rotated reaction differ by 3.2% at a contrast of 100 and 4.9% at $10^6$, both
+inside each route's own error against the exact answer (5 to 9%). We could not
+compare them within a single solve: `boundary_flux`, which is the CBF primitive,
+returns values of order $10^{12}$ on `Stokes_Constrained` while reading the exact
+topography to 8% on an ordinary solve. That is underworld3#614.
+
+This also settles a question the free-surface work left open. That work used
+SolCx the same way, to choose among topography recoveries, and landed on a
+rotated free-slip lid with the CBF reaction and a continuous pressure — corr
+0.999, relative $l_2$ 0.04 — while rejecting the multiplier. Both conclusions
+were right about what was in front of them: the multiplier *as returned* is
+missing the augmentation share, and the CBF reaction is the same quantity with
+nothing missing.
+
 ### The other half: a lateral viscosity contrast
 
 No exact solution has both a curved boundary and a laterally varying viscosity,
@@ -599,15 +640,26 @@ exact one. Turning $r$ down instead is not available: at this contrast both
 $r = 0$ and $r = 10^2$ fail to solve. This is the same defect as in the annulus,
 underworld3#607, and the contrast is what makes it severe.
 
-**The rotated constraint disagrees at the corner and nowhere else.** Trimmed, it
-matches the reference at every contrast; untrimmed it is six times worse, and
-the whole of that is two nodes — the spike at $x = 1$ in both panels of the
-figure. Against the Dirichlet run at a contrast of 10, the pressure differs by
-0.23 at the corner node and 0.12 at its neighbour, while everything below the
-top row agrees to 4 × 10⁻⁴ rms. The corner is a node the rotated constraint and
-the side wall's component condition both hold, and both runs pin the same two
-velocity components there, so the difference is in how the corner row is
-assembled rather than in what is asked of it. This is underworld3#608.
+**The rotated constraint's spike at $x = 1$ is the corner, and the corner is a
+known one.** Trimmed by two elements at each end it matches the reference at
+every contrast; untrimmed it is six times worse, and the whole of that is the
+two end nodes. A node where a rotated wall meets a wall held by an ordinary
+component condition is constrained by both. Its velocity degrees of freedom are
+constrained out of the global vector, the rotation drops it, and the reaction
+recovery still reports a value there — the reaction of the *essential*
+constraint, which is not the wall's traction. Underworld's own implementation
+notes say so. The same recovery on a lid held by the component condition alone
+has no spike at all: the consistent boundary flux there reads the exact
+topography to 8% with a peak of 0.381 against an exact 0.379, where the rotated
+run peaks at 0.497.
+
+So this is a thing to know rather than a thing to fix in the solve: leave the
+corner out of the rotation, or drop it from the recovered trace. It is also why
+the free-surface work that used SolCx to choose a topography recovery never saw
+it. The remaining difference is small and real — at a contrast of 10 the
+pressure differs from the Dirichlet run by 0.23 at the corner node and 0.12 at
+its neighbour, while everything below the top row agrees to 4 × 10⁻⁴ rms —
+which is underworld3#608.
 
 **The penalty needs a coefficient matched to the local viscosity, and we could
 not write one that solves.** A constant $10^4$ manages a contrast of $10^2$ and
