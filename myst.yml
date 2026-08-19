@@ -2,10 +2,10 @@ version: 1
 
 project:
   id: underworld-technical-notes
-  title: Underworld Technical Notes
+  title: Underworld Geodynamics
   description: >-
-    Methods, implementation notes, benchmarks and worked examples from the
-    Underworld geodynamics code.
+    The Underworld geodynamics code: what it is, how to run it, and the
+    Technical Notes series of methods, benchmarks and worked examples.
   github: https://github.com/underworld-technical-notes/underworldcode.org
   license:
     content: CC-BY-4.0
@@ -146,7 +146,7 @@ project:
 
 site:
   template: book-theme
-  title: Underworld Technical Notes
+  title: Underworld Geodynamics
   # BEGIN GENERATED NAV
   nav:
     - title: "About"
@@ -177,7 +177,7 @@ site:
           url: /submit
   # END GENERATED NAV
   options:
-    logo_text: Underworld Technical Notes
+    logo_text: Underworld Geodynamics
     # The bat-and-globe, which is what a reader recognises in a row of tabs.
     # MyST ships its own otherwise, so the site looked like a MyST demo. It
     # belongs under `options`, not beside `title` -- MyST says so, once per
