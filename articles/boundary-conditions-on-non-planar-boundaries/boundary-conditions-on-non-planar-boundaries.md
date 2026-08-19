@@ -72,6 +72,16 @@ replacing is the choice.
 
 ## Four ways, in order
 
+They fall into two pairs, and the pairing is the useful way to hold them. Two
+impose the constraint **weakly**, by adding a term to the momentum equation and
+letting the solution satisfy the condition to within the accuracy of that term: a
+direct penalty, and Nitsche's method, which differ in whether the term is
+consistent. Two impose it **exactly**: by construction, changing the basis so
+that the constraint is a component that can be struck out, or by a Lagrange
+multiplier, adding an equation that enforces it. The weak pair have a parameter
+to choose and a floor they cannot go below. The exact pair have neither, and both
+return the boundary traction as part of the answer.
+
 ### A direct penalty
 
 Add a term that punishes any flow through the boundary:
@@ -174,9 +184,15 @@ stokes.solve()
 And the reason to care about it beyond the constraint: **at convergence the
 momentum row's boundary term is the normal traction.** It is not recovered from
 the velocity field afterwards — it is an unknown the solve returned, available
-through `multiplier` and, divided by $\Delta\rho g$, through `topography`. With
-an augmentation in place that term is $h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)$
-rather than $h$, and the difference between the two is measured below.
+through `traction` and, divided by $\Delta\rho g$, through `topography`.
+
+That term is the whole boundary load, $h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)$,
+and not the multiplier alone. The second part vanishes only where the constraint
+row is satisfied exactly; discretely it is satisfied to the solver's tolerance and
+$r$ multiplies that residual back into the traction. With a viscosity-weighted
+$r$ and a lateral viscosity contrast it is most of the answer, so the two parts
+are not separable in practice — which is the first hint that this traction and
+the rotated constraint's reaction are the same object.
 
 ### Rotating the degrees of freedom
 
@@ -519,43 +535,6 @@ sufficient check: at a coefficient of $10^3$ the facet-normal penalty leaks
 leaks 1 × 10⁻⁷ and is 26% wrong. Over that range the constraint improves by five
 orders of magnitude and the answer gets steadily worse.
 
-### The multiplier was not the whole traction
-
-The multiplier column of the table above used to sit near 3 × 10⁻² for three
-resolutions and then drop, which is not a convergence rate. The cause was the
-augmented-Lagrangian term, and it was a defect rather than a property of the
-method.
-
-The momentum row carries both the multiplier and the augmentation,
-$(h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g))\hat{\mathbf{n}}$, so the traction
-holding the boundary is $h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)$ and not $h$
-alone. The second term vanishes only where the constraint row is satisfied
-exactly. Discretely it is satisfied to the solver's tolerance, and $r$ multiplies
-that residual straight back into the traction. Underworld returned $h$.
-
-On the annulus, with a uniform viscosity and the default $r = 10^4\mu$, the
-omitted share is a few per cent. On SolCx it is nearly everything, because the
-default $r$ is viscosity-weighted and the step takes it to $10^{10}$ on the stiff
-half. At a contrast of $10^6$, against an exact surface topography whose
-deviation peaks at 0.381:
-
-| read | peak | correlation with the exact | relative $l_2$ |
-|---|---|---|---|
-| the multiplier $h$ | 0.042 | **−0.52** | 0.96 |
-| $h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)$ | 0.382 | +0.999 | 0.084 |
-
-An order of magnitude low and pointing the wrong way, on a solve whose velocity
-error is 8.8 × 10⁻⁶. Underworld3 issue #607: `traction()` now returns the sum and
-`topography()` is built on it, so the tables here are the corrected read and a
-caller who asks for topography gets it.
-
-Worth saying how it survived. The method's own validation scored a *correlation*
-of 0.9999 between the multiplier and the recovered normal stress. A correlation
-is scale-free, so it cannot see a systematic amplitude deficit — which is exactly
-what a missing share of the load is. The replacement guard scores a relative
-$l_2$ against an exact answer and carries the bare multiplier as its negative
-control.
-
 ### The multiplier and the consistent boundary flux are the same object
 
 The correction above is not a patch. Write the momentum row's boundary term out
@@ -580,13 +559,12 @@ large.
 Measured across the two solves — they are different discrete problems, so this
 is agreement rather than an identity check — the corrected multiplier and the
 rotated reaction differ by 3.2% at a contrast of 100 and 4.9% at $10^6$, both
-inside each route's own error against the exact answer (5 to 9%). They cannot be compared within a single solve, and the reason is the identity
-itself: on a multiplier-constrained boundary the constraint enters the row it
-constrains, so the assembled residual there is balanced at convergence and the
-CBF back-calculation reads zero (measured: rms 4 × 10⁻¹³ against a traction of
-0.37). There is no reaction left to read because the multiplier is holding it.
-`boundary_flux` now says so instead of returning that zero quietly
-(underworld3#614).
+inside each route's own error against the exact answer (5 to 9%). The identity also says why the two cannot be read off a single solve. On a
+multiplier-constrained boundary the constraint enters the row it constrains, so
+the assembled residual there is balanced at convergence and the back-calculation
+reads zero — measured, rms 4 × 10⁻¹³ against a traction of 0.37. There is no
+reaction left in the residual because the multiplier is holding it. The two
+routes are alternatives, not a cross-check available at the same time.
 
 This also settles a question the free-surface work left open. That work used
 SolCx the same way, to choose among topography recoveries, and landed on a
@@ -656,52 +634,46 @@ stress error is 25 at $\gamma = 10$, 1.2 at $100$ and 0.17 at $1000$, while the
 constraint is held to $10^{-3}$ or better throughout. We are not confident enough
 in that configuration to put a column of numbers behind it.
 
-:::{note} A measurement we withdrew
-An earlier draft of this section carried a Nitsche column and different numbers
-throughout. They were taken while several runs shared one mesh-cache file:
-`StructuredQuadBox` keys its cache on the box corners and not on the element
-resolution, so concurrent runs at different resolutions silently swap meshes
-(underworld3#618). A marginal solve then flips between converged and diverged for
-reasons that look like the method. Every number in this section was re-measured
-sequentially, on a cleared cache, with nothing else running.
-:::
 
 
 ### What each one costs
 
-Accuracy is half the choice. Seconds on the annulus, median of three timed
-repeats after an untimed warm-up, run sequentially — the solve, and then the
-recovery of the surface traction by whatever route that treatment has.
+Seconds on the annulus, uniform viscosity, one core, direct solver: the solve,
+and then the recovery of the surface traction by whatever route that treatment
+has. Median of three timed repeats after an untimed warm-up, run sequentially.
+The smaller meshes are here for the scaling; at ten thousand nodes the four
+treatments are separated by less than the run-to-run spread and only the largest
+row is worth reading.
 
 | cell size | velocity nodes | penalty | Nitsche | multiplier | rotated |
 |---|---|---|---|---|---|
-| 0.075 | 2 174 | 0.01 / 0.153 | 0.01 / 0.037 | 0.02 / 0.001 | 0.01 / 0.003 |
-| 0.050 | 4 802 | 0.03 / 0.058 | 0.03 / 0.060 | 0.04 / 0.002 | 0.03 / 0.004 |
-| 0.035 | 9 406 | 0.06 / 0.095 | 0.06 / 0.099 | 0.08 / 0.004 | 0.05 / 0.006 |
+| 0.050 | 4 802 | 0.03 / 0.073 | 0.03 / 0.060 | 0.04 / 0.002 | 0.03 / 0.004 |
+| 0.030 | 12 852 | 0.08 / 0.128 | 0.08 / 0.131 | 0.12 / 0.005 | 0.07 / 0.007 |
+| 0.020 | 28 338 | 0.18 / 0.257 | 0.18 / 0.268 | 0.26 / 0.011 | 0.17 / 0.010 |
+| 0.013 | 71 424 | 0.45 / 0.626 | 0.47 / 0.652 | 0.67 / 0.027 | 0.43 / 0.016 |
 
-**The solve costs the same whichever you choose.** Within the spread, all four
-are the same number at every size — 0.06 s at 9 400 nodes. The multiplier is the
-one that carries a visible premium, about 30%, which is the extra field and the
-larger saddle point; its interior degrees of freedom are constrained out of the
-global system, so what is left is the boundary trace.
+Two things separate, and both are structural rather than incidental.
 
-**The recovery is where they differ, by a factor of 15 to 25.** Projecting
-$\hat{\mathbf{n}}\cdot\boldsymbol{\sigma}\hat{\mathbf{n}}$ is a second solve, and
-it costs more than the Stokes solve did at the coarser sizes. The reaction and
-the multiplier are arithmetic on the boundary trace: 4 to 6 ms where the
-projection takes 95 to 99.
+**The multiplier's solve costs about 50% more**, consistently across the sweep —
+0.67 s against 0.43 s at 71 000 nodes. That is the extra field and the larger
+saddle point. The other three are the same solve to within the spread; rotating
+the degrees of freedom costs nothing measurable here, because the rotation is a
+sparse orthogonal transform applied to a boundary's worth of rows.
 
-That ratio is the practical argument, and it points the same way the accuracy
-did. The route that does not differentiate the answer is both the more accurate
-one and the cheaper one, and on a time-dependent model it is paid at every step.
+**The recovery differs by a factor of 25 to 40, and it is the larger number.**
+Projecting $\hat{\mathbf{n}}\cdot\boldsymbol{\sigma}\hat{\mathbf{n}}$ out of the
+solution is a second solve, and at every size in this table it costs *more than
+the Stokes solve did* — 0.63 s against 0.45 s at the largest. The two exact
+routes read their traction off the state the solve already returned: 27 ms for
+the multiplier, 16 ms for the rotated reaction. On a time-dependent model with a
+free surface that difference is paid at every step.
 
 :::{note} What these timings are not
-Two-dimensional problems of ten thousand nodes, on one core, with a direct
-solver. They separate a recovery solve from boundary arithmetic, which is a
-structural difference and will survive scaling. They say nothing about how the
-four compare on a large parallel spherical shell, where the rotated velocity
-block's multigrid and the multiplier's larger Schur complement are the terms that
-matter and neither is exercised here.
+Two-dimensional, one core, direct solver. What they measure is the difference
+between a recovery *solve* and boundary arithmetic, which is structural and will
+survive scaling. They say nothing about a large parallel spherical shell, where
+the rotated velocity block's multigrid and the multiplier's larger Schur
+complement are the terms that matter and neither is exercised here.
 :::
 
 ### Which one to use
@@ -720,7 +692,7 @@ When the wall-normal traction is the answer:
 - **The multiplier is its equal on accuracy** and returns the same object by a
   different route; take it when you want the traction as an unknown of the
   system, or when the constrained problem's conditioning suits you better. It
-  costs about 30% more to solve.
+  costs about 50% more to solve.
 - **Nitsche is the one to reach for when the boundary condition must change
   during the model** — a wall that begins as a prescribed velocity and relaxes to
   a prescribed traction is a Nitsche problem, because a hard constraint cannot

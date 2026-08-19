@@ -36,7 +36,9 @@ import underworld3 as uw
 import stress as S
 
 REPEATS = 3
-CELLS = (0.075, 0.05, 0.035)
+# Big enough that a solve is seconds rather than hundredths: at 10k nodes the
+# four treatments were separated by less than the run-to-run spread.
+CELLS = (0.05, 0.03, 0.02, 0.0125)
 MODES = ("penalty_node", "nitsche", "constraint", "rotated")
 
 
@@ -81,7 +83,7 @@ def recovery_cost(mesh, stokes, mode):
 def table(cells=CELLS, modes=MODES):
     print("seconds, median of %d timed repeats after one untimed warm-up" % REPEATS)
     print()
-    print("| cell size | nodes | " + " | ".join(
+    print("| cell size | velocity nodes | " + " | ".join(
         "%s: solve / recover" % m for m in modes) + " |")
     print("|---" * (len(modes) + 2) + "|")
     for cell in cells:
