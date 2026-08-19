@@ -35,7 +35,8 @@ The metrics
     python3 solcx.py params       # the penalty coefficient, both halves
     python3 solcx.py control      # the top wall left free
 
-Run against underworld3 `development` at commit `8b7c8b9e`.
+Run against underworld3 `bugfix/multiplier-traction` (PR #617); the
+constrained solver's `traction()` is the fix this note prompted.
 """
 import sys
 
@@ -131,10 +132,19 @@ def recovered_traction(mesh, stokes):
 
 
 def reaction_traction(stokes, mode):
+    """The traction the solve returned, for the two methods that return one."""
     if mode == "rotated":
         return stokes.boundary_normal_traction("Top")
     if mode == "constraint":
-        return trace(stokes, 2, stokes.multiplier("Top"))
+        # `traction()` is h + r(u.n - g), the WHOLE boundary term. Reading the
+        # multiplier alone here was wrong by an order of magnitude and a sign at
+        # a 1e6 viscosity contrast, because the default r is viscosity-weighted
+        # (underworld3#607, fixed in #617). The box is flat, so evaluating the
+        # expression at the trace nodes is safe -- on a convex curved boundary it
+        # would extrapolate (#605), which is why stress.py reads arrays instead.
+        coords, _h = trace(stokes, 2, stokes.multiplier("Top"))
+        return coords, np.asarray(
+            uw.function.evaluate(stokes.traction("Top"), coords)).reshape(-1)
     return None
 
 

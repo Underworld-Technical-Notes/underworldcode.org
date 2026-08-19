@@ -50,7 +50,8 @@ convention stays visible.
     python3 stress.py locking     # the facet normal does not converge
     python3 stress.py control     # the metric fires when the BC is removed
 
-Run against underworld3 `development` at commit `8b7c8b9e`.
+Run against underworld3 `bugfix/multiplier-traction` (PR #617); the
+constrained solver's `traction()` is the fix this note prompted.
 """
 import sys
 
@@ -189,14 +190,39 @@ def recovered_traction(mesh, stokes):
     return trace(projection, 0, field)
 
 
-def reaction_traction(stokes, mode):
+# The augmented-Lagrangian parameter this problem gets by default: the base
+# (1e4) times the local viscosity, which is 1 here.
+AUGMENTATION = 1.0e4
+
+
+def multiplier_traction(stokes, v, boundary="Upper"):
+    """The WHOLE traction a multiplier constraint holds the boundary with.
+
+    The momentum row carries `h + r(u.n - g)`, so `h` alone is short by `r` times
+    the discrete constraint residual. `stokes.traction(boundary)` is that sum as
+    an expression; this reads it off the node arrays instead, because evaluating
+    an expression at points sitting exactly on a convex curved boundary
+    extrapolates from the containing cell (underworld3#605) and that error would
+    land on top of the measurement.
+
+    `u.n` is taken against the true radial direction rather than the constraint's
+    node normal. The two differ at O(h^2) and they multiply a term that is itself
+    a correction.
+    """
+    coords, h = trace(stokes, 2, stokes.multiplier(boundary))
+    tree = uw.kdtree.KDTree(np.ascontiguousarray(v.coords))
+    index = np.asarray(tree.query(np.ascontiguousarray(coords), 1)[1]).flatten()
+    u = np.squeeze(np.asarray(v.array))[index]
+    normal = coords / np.linalg.norm(coords, axis=1)[:, None]
+    return coords, np.asarray(h) + AUGMENTATION * (u * normal).sum(axis=1)
+
+
+def reaction_traction(stokes, mode, v=None):
     """The constraint reaction, for the two methods that return one."""
     if mode == "rotated":
         return stokes.boundary_normal_traction("Upper")
     if mode == "constraint":
-        multiplier = stokes.multiplier("Upper")
-        # field 2 of the constrained saddle point: velocity, pressure, multiplier
-        return trace(stokes, 2, multiplier)
+        return multiplier_traction(stokes, v)
     return None
 
 
@@ -242,7 +268,7 @@ def measure(mode, cell=CELL, **kwargs):
     }
     coords, values = recovered_traction(mesh, stokes)
     out["recovered"], out["sign"] = amplitude_error(coords, values, reference)
-    read = reaction_traction(stokes, mode)
+    read = reaction_traction(stokes, mode, v=v)
     if read is not None:
         coords, values = read
         out["reaction"], out["reaction_sign"] = amplitude_error(coords, values, reference)

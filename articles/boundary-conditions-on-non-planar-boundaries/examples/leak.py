@@ -25,7 +25,8 @@ Reproduces the table in the note:
     python3 leak.py sweep      # the resolution table
     python3 leak.py free       # the control: outer boundary left natural
 
-Run against underworld3 `development` at commit `8b7c8b9e`.
+Run against underworld3 `bugfix/multiplier-traction` (PR #617); the
+constrained solver's `traction()` is the fix this note prompted.
 """
 import sys
 

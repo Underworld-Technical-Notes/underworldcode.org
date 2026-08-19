@@ -12,7 +12,8 @@ Writes:
 
     python3 generate-locking-figure.py
 
-Run against underworld3 `development` at commit `8b7c8b9e`.
+Run against underworld3 `bugfix/multiplier-traction` (PR #617); the
+constrained solver's `traction()` is the fix this note prompted.
 """
 import pathlib
 

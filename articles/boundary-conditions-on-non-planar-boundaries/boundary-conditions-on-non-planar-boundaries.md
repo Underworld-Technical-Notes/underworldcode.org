@@ -237,7 +237,6 @@ the null space, which is a property only the constrained problem has.
 None of this is an argument against the method. It is an argument for knowing
 what is being taken on, and it is the honest reason a weakly imposed condition
 survives in codes that could do this instead.
-
 ## Which normal
 
 A question with a less obvious answer than it looks, and the measurements
@@ -431,10 +430,10 @@ compared unsigned.
 
 | cell size | penalty, facet | penalty, node | Nitsche | constraint | rotated | rotated, reaction | multiplier field |
 |---|---|---|---|---|---|---|---|
-| 0.150 | 1.5 × 10⁻¹ | 2.5 × 10⁻² | 5.9 × 10⁻² | 2.4 × 10⁻² | 2.4 × 10⁻² | 6.8 × 10⁻³ | 3.3 × 10⁻² |
-| 0.100 | 1.3 × 10⁻¹ | 1.1 × 10⁻² | 2.4 × 10⁻² | 1.0 × 10⁻² | 1.0 × 10⁻² | 3.3 × 10⁻³ | 2.9 × 10⁻² |
-| 0.075 | 1.1 × 10⁻¹ | 7.2 × 10⁻³ | 1.5 × 10⁻² | 6.3 × 10⁻³ | 6.2 × 10⁻³ | 2.1 × 10⁻³ | 2.5 × 10⁻² |
-| 0.050 | 6.3 × 10⁻² | 3.6 × 10⁻³ | 6.3 × 10⁻³ | 2.7 × 10⁻³ | 2.7 × 10⁻³ | 1.1 × 10⁻³ | 1.5 × 10⁻³ |
+| 0.150 | 1.5 × 10⁻¹ | 2.5 × 10⁻² | 5.9 × 10⁻² | 2.4 × 10⁻² | 2.4 × 10⁻² | 6.8 × 10⁻³ | 8.6 × 10⁻³ |
+| 0.100 | 1.3 × 10⁻¹ | 1.1 × 10⁻² | 2.4 × 10⁻² | 1.0 × 10⁻² | 1.0 × 10⁻² | 3.3 × 10⁻³ | 8.5 × 10⁻⁴ |
+| 0.075 | 1.1 × 10⁻¹ | 7.2 × 10⁻³ | 1.5 × 10⁻² | 6.3 × 10⁻³ | 6.2 × 10⁻³ | 2.1 × 10⁻³ | 1.7 × 10⁻³ |
+| 0.050 | 6.3 × 10⁻² | 3.6 × 10⁻³ | 6.3 × 10⁻³ | 2.7 × 10⁻³ | 2.7 × 10⁻³ | 1.1 × 10⁻³ | 1.4 × 10⁻³ |
 
 The first five columns are all the recovered stress, so they differ only by
 which boundary condition produced the field. The last two are the reaction and
@@ -456,8 +455,15 @@ them share.
 
 **The reaction is about three times better than the recovery, on the same
 solve.** 2.1 × 10⁻³ against 6.2 × 10⁻³ at cell 0.075, and it converges at the
-same rate rather than a better one. It costs nothing: it is the residual the
-solve has already assembled, and no field is differentiated to get it.
+same rate rather than a better one. It costs nothing — it is the residual the
+solve has already assembled, and no field is differentiated to get it — and the
+timings below put a number on "nothing".
+
+The multiplier's traction is the same story from the other side, and lands in the
+same place: 8.5 × 10⁻⁴ to 1.7 × 10⁻³ over the three finer meshes. Its column does
+not fall smoothly with $h$, because part of what it reports is the augmentation
+times the constraint residual, and how far a particular solve drove that residual
+is not a function of the mesh.
 
 **The parameter that was enough for the leak is not enough for the stress.**
 Nitsche at $\gamma = 10$ leaks 1.2 × 10⁻³ in this problem and gets the stress
@@ -513,27 +519,42 @@ sufficient check: at a coefficient of $10^3$ the facet-normal penalty leaks
 leaks 1 × 10⁻⁷ and is 26% wrong. Over that range the constraint improves by five
 orders of magnitude and the answer gets steadily worse.
 
-### The multiplier is not quite the whole traction
+### The multiplier was not the whole traction
 
-The multiplier column above sits near 3 × 10⁻² for three resolutions and then
-drops to 1.5 × 10⁻³, which is not a convergence rate. The cause is the
-augmented-Lagrangian term.
+The multiplier column of the table above used to sit near 3 × 10⁻² for three
+resolutions and then drop, which is not a convergence rate. The cause was the
+augmented-Lagrangian term, and it was a defect rather than a property of the
+method.
 
 The momentum row carries both the multiplier and the augmentation,
 $(h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g))\hat{\mathbf{n}}$, so the traction
-holding the boundary is $h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)$ and not
-$h$ alone. The second term vanishes only where the constraint row is satisfied
-exactly. Discretely it is satisfied to the solver's tolerance, and with the
-default $r = 10^4\mu$ the residual $\mathbf{u}\cdot\hat{\mathbf{n}} \approx
-5 \times 10^{-7}$ multiplies up to a few per cent of a surface traction of 0.15.
+holding the boundary is $h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)$ and not $h$
+alone. The second term vanishes only where the constraint row is satisfied
+exactly. Discretely it is satisfied to the solver's tolerance, and $r$ multiplies
+that residual straight back into the traction. Underworld returned $h$.
 
-Adding the augmentation share back gives, at cell 0.075, 1.7 × 10⁻³ instead of
-2.5 × 10⁻², and at cell 0.100, 8.5 × 10⁻⁴ instead of 2.9 × 10⁻². Lowering $r$ to
-$10^2\mu$ has the same effect without the correction — 2.6 × 10⁻³ — because it
-shrinks the term rather than accounting for it. So the accuracy of the reported
-multiplier does depend on $r$, which the method's own documentation says it does
-not, and the note said so too. What does not depend on $r$ is the traction, once
-both of its parts are added up. This is underworld3 issue #607.
+On the annulus, with a uniform viscosity and the default $r = 10^4\mu$, the
+omitted share is a few per cent. On SolCx it is nearly everything, because the
+default $r$ is viscosity-weighted and the step takes it to $10^{10}$ on the stiff
+half. At a contrast of $10^6$, against an exact surface topography whose
+deviation peaks at 0.381:
+
+| read | peak | correlation with the exact | relative $l_2$ |
+|---|---|---|---|
+| the multiplier $h$ | 0.042 | **−0.52** | 0.96 |
+| $h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)$ | 0.382 | +0.999 | 0.084 |
+
+An order of magnitude low and pointing the wrong way, on a solve whose velocity
+error is 8.8 × 10⁻⁶. Underworld3 issue #607: `traction()` now returns the sum and
+`topography()` is built on it, so the tables here are the corrected read and a
+caller who asks for topography gets it.
+
+Worth saying how it survived. The method's own validation scored a *correlation*
+of 0.9999 between the multiplier and the recovered normal stress. A correlation
+is scale-free, so it cannot see a systematic amplitude deficit — which is exactly
+what a missing share of the load is. The replacement guard scores a relative
+$l_2$ against an exact answer and carries the bare multiplier as its negative
+control.
 
 ### The multiplier and the consistent boundary flux are the same object
 
@@ -559,10 +580,13 @@ large.
 Measured across the two solves — they are different discrete problems, so this
 is agreement rather than an identity check — the corrected multiplier and the
 rotated reaction differ by 3.2% at a contrast of 100 and 4.9% at $10^6$, both
-inside each route's own error against the exact answer (5 to 9%). We could not
-compare them within a single solve: `boundary_flux`, which is the CBF primitive,
-returns values of order $10^{12}$ on `Stokes_Constrained` while reading the exact
-topography to 8% on an ordinary solve. That is underworld3#614.
+inside each route's own error against the exact answer (5 to 9%). They cannot be compared within a single solve, and the reason is the identity
+itself: on a multiplier-constrained boundary the constraint enters the row it
+constrains, so the assembled residual there is balanced at convergence and the
+CBF back-calculation reads zero (measured: rms 4 × 10⁻¹³ against a traction of
+0.37). There is no reaction left to read because the multiplier is holding it.
+`boundary_flux` now says so instead of returning that zero quietly
+(underworld3#614).
 
 This also settles a question the free-surface work left open. That work used
 SolCx the same way, to choose among topography recoveries, and landed on a
@@ -579,93 +603,132 @@ so the case where weak constraints are most often reported to give trouble is a
 separate test with a trivial geometry. SolCx is that test: the unit box, free
 slip on all four walls, viscosity 1 to the left of $x = 0.5$ and $\eta_B$ to the
 right. `uw.analytic.SolCx` publishes the exact dynamic topography on the top
-wall, so this one can be drawn rather than tabulated. Three walls carry the
-ordinary component condition and the treatment under test is on the top wall
-alone.
+wall. Three walls carry the ordinary component condition and the treatment under
+test is on the top wall alone.
 
 On a box every treatment reduces to holding one velocity component, so nothing
-here is about normals. What it can say is whether a weak imposition holds the
-traction it was given when the viscosity beside it jumps.
+here is about normals. What it can say is whether a treatment holds the traction
+it was given when the viscosity beside it jumps.
 
-```{figure} figures/topography.png
-:alt: Two line plots of surface topography along the top wall from x=0 to x=1, mean removed, at viscosity contrasts of 100 and a million. In both, the exact answer is a thick grey curve falling from +0.29 at the left, flattening near +0.21, jumping down sharply at the viscosity step at x=0.5 and continuing down to -0.38 at the right. At a contrast of 100 every treatment lies on the grey curve, apart from the rotated constraint which spikes to -0.50 and +0.27 in the last two nodes at x=1. At a contrast of a million the picture separates: the component Dirichlet, the rotated reaction and the corrected multiplier still lie on the exact curve; Nitsche at gamma=10 leaves the panel entirely and peaks at 4.09 against a signal of 0.38; and the multiplier as the API returns it is a nearly flat line near zero, reaching only 0.04, having lost almost all of the traction to the augmented-Lagrangian term. Adding that term back, drawn as a dotted blue line, puts it on the exact curve again.
+Relative $l_2$ error of the surface topography along the top wall, mean removed,
+at 32 × 32 elements. Each entry is the whole wall and then the wall with two
+elements trimmed from each end.
 
-Predicted against computed, for each treatment. Every curve is mean-removed,
-because the box is enclosed and the level of the topography is a gauge. At a
-contrast of 100 the treatments agree with each other and with the exact answer;
-at a million, three of the five have something wrong with them, and each is
-wrong in a different way.
-```
+| $\eta_B/\eta_A$ | component Dirichlet | penalty, $10^4$ | multiplier | rotated |
+|---|---|---|---|---|
+| 10 | 0.048 / 0.054 | 0.045 / 0.051 | 0.048 / 0.054 | 0.048 / 0.054 |
+| 10² | 0.072 / 0.081 | 0.056 / 0.060 | 0.072 / 0.081 | 0.072 / 0.081 |
+| 10³ | 0.075 / 0.084 | 0.234 / 0.230 | 0.075 / 0.084 | 0.075 / 0.084 |
+| 10⁴ | 0.076 / 0.085 | 0.698 / 0.697 | 0.076 / 0.085 | 0.076 / 0.085 |
+| 10⁶ | 0.076 / 0.085 | 0.992 / 1.000 | 0.075 / 0.084 | 0.076 / 0.085 |
 
-Relative $l_2$ error along the wall, at 32 × 32 elements, over the whole wall
-and then with two elements trimmed from each end:
+**The three exact treatments agree to three figures at every contrast**, whole
+wall and trimmed alike. That is the result to take from this half, and it took
+two fixes to get: the multiplier had to report the whole traction rather than
+$h$, and the rotated constraint had to hold the corner where it meets the side
+walls. Before them the rotated column read 0.322 at a contrast of 10 — six times
+the reference, all of it two nodes — and the multiplier column was an order of
+magnitude out at $10^6$.
 
-| $\eta_B/\eta_A$ | component Dirichlet | penalty | Nitsche | multiplier | rotated |
+**Read the first column as the floor.** The component Dirichlet condition is
+exact and has no parameter, and its velocity error is 8.8 × 10⁻⁶ at a contrast of
+$10^6$. It still reads 0.085. That number is the recovery's error, not a boundary
+condition's: on the stiff half the recovered $\sigma_{zz}$ is a difference between
+the pressure and $2\eta\,\partial_z u_z$ with $\eta = 10^6$, so a relative velocity
+error of $10^{-5}$ arrives in the stress at the size of the signal. Nothing here
+is worse than the reference except the penalty.
+
+**A bare penalty coefficient cannot serve both halves.** At $10^4$ it is the best
+column in the table at low contrast — the constraint is weak enough not to fight
+the recovery — and by $10^6$ it is useless: 0.992, which is to say the recovered
+topography carries none of the signal. Scaling the coefficient by the local
+viscosity is the obviously right thing to want, and it does not solve here at any
+magnitude we tried, from $\mu$ to $10^3\mu$ (a `Piecewise` viscosity inside the
+boundary term fails the line search). This is the same lesson as $\gamma$'s window
+on the annulus, in a place where the window closes entirely.
+
+**Nitsche is missing from this table**, and honestly so. Our configuration of it
+on this box converges at a contrast of $10^6$ and fails the line search at $10$ —
+the opposite way round from every expectation — at 16 × 16 and 32 × 32 alike and
+at $\gamma = 10$, $100$ and $1000$. Where it does converge, $\gamma$ has to rise
+with the contrast exactly as the annulus said: at $10^6$ and 16 × 16 the surface
+stress error is 25 at $\gamma = 10$, 1.2 at $100$ and 0.17 at $1000$, while the
+constraint is held to $10^{-3}$ or better throughout. We are not confident enough
+in that configuration to put a column of numbers behind it.
+
+:::{note} A measurement we withdrew
+An earlier draft of this section carried a Nitsche column and different numbers
+throughout. They were taken while several runs shared one mesh-cache file:
+`StructuredQuadBox` keys its cache on the box corners and not on the element
+resolution, so concurrent runs at different resolutions silently swap meshes
+(underworld3#618). A marginal solve then flips between converged and diverged for
+reasons that look like the method. Every number in this section was re-measured
+sequentially, on a cleared cache, with nothing else running.
+:::
+
+
+### What each one costs
+
+Accuracy is half the choice. Seconds on the annulus, median of three timed
+repeats after an untimed warm-up, run sequentially — the solve, and then the
+recovery of the surface traction by whatever route that treatment has.
+
+| cell size | velocity nodes | penalty | Nitsche | multiplier | rotated |
 |---|---|---|---|---|---|
-| 10 | 0.048 / 0.054 | 0.045 / 0.051 | 0.048 / 0.054 | 0.048 / 0.054 | 0.322 / 0.056 |
-| 10² | 0.072 / 0.081 | 0.056 / 0.060 | 0.073 / 0.081 | 0.072 / 0.081 | 0.343 / 0.083 |
-| 10³ | 0.075 / 0.084 | diverged | 0.076 / 0.085 | 0.075 / 0.084 | 0.345 / 0.086 |
-| 10⁴ | 0.076 / 0.085 | diverged | 0.087 / 0.095 | 0.076 / 0.085 | 0.345 / 0.086 |
-| 10⁶ | 0.076 / 0.085 | diverged | **2.77 / 2.14** | **1.04** | 0.345 / 0.086 |
+| 0.075 | 2 174 | 0.01 / 0.153 | 0.01 / 0.037 | 0.02 / 0.001 | 0.01 / 0.003 |
+| 0.050 | 4 802 | 0.03 / 0.058 | 0.03 / 0.060 | 0.04 / 0.002 | 0.03 / 0.004 |
+| 0.035 | 9 406 | 0.06 / 0.095 | 0.06 / 0.099 | 0.08 / 0.004 | 0.05 / 0.006 |
 
-**Read the first column first.** The component Dirichlet condition is exact, has
-no parameter, and its velocity error is 8.8 × 10⁻⁶ at a contrast of $10^6$. It
-still reads 0.085. That number is the recovery's error and not a boundary
-condition's: on the stiff half the recovered $\sigma_{zz}$ is a difference
-between the pressure and $2\eta\,\partial_z u_z$ with $\eta = 10^6$, so a
-relative velocity error of $10^{-5}$ arrives in the stress at the size of the
-signal. Nothing here can be called worse than the reference unless it is worse
-than that, and up to a contrast of $10^4$ nothing is by more than about a tenth.
+**The solve costs the same whichever you choose.** Within the spread, all four
+are the same number at every size — 0.06 s at 9 400 nodes. The multiplier is the
+one that carries a visible premium, about 30%, which is the extra field and the
+larger saddle point; its interior degrees of freedom are constrained out of the
+global system, so what is left is the boundary trace.
 
-**Nitsche fails at $10^6$ and the leak does not show it.** At $\gamma = 10$ the
-recovered topography peaks at 4.09 against a signal of 0.38, while the
-constraint is held to 3.2 × 10⁻⁴ on the soft half of the wall and 1.5 × 10⁻⁷ on
-the stiff half. Raising $\gamma$ fixes it — 0.16 at $\gamma = 100$, 0.079 at
-$\gamma = 1000$, which is the reference floor — so the stabilisation parameter
-has to be raised with the viscosity contrast, and the quantity that says whether
-it is high enough is the stress rather than the leak. That is the same shape as
-the curved-boundary result arrived at from the other side.
+**The recovery is where they differ, by a factor of 15 to 25.** Projecting
+$\hat{\mathbf{n}}\cdot\boldsymbol{\sigma}\hat{\mathbf{n}}$ is a second solve, and
+it costs more than the Stokes solve did at the coarser sizes. The reaction and
+the multiplier are arithmetic on the boundary trace: 4 to 6 ms where the
+projection takes 95 to 99.
 
-**The multiplier loses the traction to the augmentation.** At a contrast of
-$10^6$ the multiplier field as `multiplier()` returns it peaks at 0.042 against
-an exact 0.383, and it is anti-correlated with the right answer (−0.53) — the
-flat blue line in the figure. The solve is not at fault: the same run's velocity
-error is 8.8 × 10⁻⁶ and its recovered stress is as good as the reference. The
-default augmentation is $r = 10^4\mu(x)$, which the viscosity step makes $10^{10}$
-on the stiff half, and the momentum row carries
-$h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)$. Almost all of the traction is in
-the second term. Adding it back gives 0.047 — better than every other route in
-this test, including the recovery — and it is the dotted curve lying on the
-exact one. Turning $r$ down instead is not available: at this contrast both
-$r = 0$ and $r = 10^2$ fail to solve. This is the same defect as in the annulus,
-underworld3#607, and the contrast is what makes it severe.
+That ratio is the practical argument, and it points the same way the accuracy
+did. The route that does not differentiate the answer is both the more accurate
+one and the cheaper one, and on a time-dependent model it is paid at every step.
 
-**The rotated constraint's spike at $x = 1$ is the corner, and the corner is a
-known one.** Trimmed by two elements at each end it matches the reference at
-every contrast; untrimmed it is six times worse, and the whole of that is the
-two end nodes. A node where a rotated wall meets a wall held by an ordinary
-component condition is constrained by both. Its velocity degrees of freedom are
-constrained out of the global vector, the rotation drops it, and the reaction
-recovery still reports a value there — the reaction of the *essential*
-constraint, which is not the wall's traction. Underworld's own implementation
-notes say so. The same recovery on a lid held by the component condition alone
-has no spike at all: the consistent boundary flux there reads the exact
-topography to 8% with a peak of 0.381 against an exact 0.379, where the rotated
-run peaks at 0.497.
+:::{note} What these timings are not
+Two-dimensional problems of ten thousand nodes, on one core, with a direct
+solver. They separate a recovery solve from boundary arithmetic, which is a
+structural difference and will survive scaling. They say nothing about how the
+four compare on a large parallel spherical shell, where the rotated velocity
+block's multigrid and the multiplier's larger Schur complement are the terms that
+matter and neither is exercised here.
+:::
 
-So this is a thing to know rather than a thing to fix in the solve: leave the
-corner out of the rotation, or drop it from the recovered trace. It is also why
-the free-surface work that used SolCx to choose a topography recovery never saw
-it. The remaining difference is small and real — at a contrast of 10 the
-pressure differs from the Dirichlet run by 0.23 at the corner node and 0.12 at
-its neighbour, while everything below the top row agrees to 4 × 10⁻⁴ rms —
-which is underworld3#608.
+### Which one to use
 
-**The penalty needs a coefficient matched to the local viscosity, and we could
-not write one that solves.** A constant $10^4$ manages a contrast of $10^2$ and
-then fails the line search. Multiplying by the piecewise viscosity is the
-obviously right thing to want, and it fails at every magnitude we tried, from
-$\mu$ to $10^3\mu$, against both normals.
+For a model that consumes the velocity and nothing else, all four are the same to
+plotting accuracy — provided the constraint is written against the node normal.
+That proviso is the only one that can spoil the velocity, and it costs one line.
+
+When the wall-normal traction is the answer:
+
+- **Rotated free slip is the default.** It holds the constraint to machine
+  precision rather than to the discretisation, its reaction is the most accurate
+  surface stress measured here, and that reaction is nearly free. The price is
+  structural — a mixed basis that the multigrid has to carry — and it is paid
+  once, inside the solver, rather than by the person setting up the model.
+- **The multiplier is its equal on accuracy** and returns the same object by a
+  different route; take it when you want the traction as an unknown of the
+  system, or when the constrained problem's conditioning suits you better. It
+  costs about 30% more to solve.
+- **Nitsche is the one to reach for when the boundary condition must change
+  during the model** — a wall that begins as a prescribed velocity and relaxes to
+  a prescribed traction is a Nitsche problem, because a hard constraint cannot
+  morph. Budget for tuning $\gamma$ against the stress and not against the leak,
+  and expect the window to move with the viscosity contrast.
+- **A direct penalty is fine for a velocity-only model** and needs the node
+  normal, a coefficient chosen per problem, and a check on something physical
+  before the answer is believed.
 
 
 ## Using it
