@@ -25,7 +25,7 @@ Reproduces the table in the note:
     python3 leak.py sweep      # the resolution table
     python3 leak.py free       # the control: outer boundary left natural
 
-Run against underworld3 `development` at commit `0addec15`.
+Run against underworld3 `development` at commit `8b7c8b9e`.
 """
 import sys
 
@@ -85,7 +85,22 @@ def build(mode, cell=CELL, penalty=1.0e4, gamma=GAMMA):
             # quadrature-point facet normal mesh.Gamma and a POSITIVE
             # coefficient. A negative one is anti-damping and the linear solve
             # fails immediately, which is how this was got wrong the first time.
+            #
+            # READ THIS COLUMN WITH stress.py BESIDE IT. Imposed facet by facet
+            # on a curved boundary, this constraint LOCKS: the leak falls
+            # because the boundary is being frozen, not because the condition is
+            # being satisfied in the way that was meant. At cell 0.075 the
+            # velocity field here differs from the rotated one by 20% in l2 at
+            # a coefficient of 1e4, and stress.py measures the same thing
+            # against an exact answer.
             G = mesh.Gamma
+            stokes.add_natural_bc(penalty * G.dot(v.sym) * G, boundary)
+        elif mode == "penalty_node":
+            # The same penalty against the measure-weighted NODE normal, which
+            # is one direction per node rather than one per facet, and does not
+            # lock. The only difference between this and the line above is which
+            # normal.
+            G = mesh.boundary_normal(boundary)
             stokes.add_natural_bc(penalty * G.dot(v.sym) * G, boundary)
         else:
             raise ValueError(mode)
@@ -120,7 +135,7 @@ def leaks(mesh, v):
 
 
 def sweep(cells=(0.15, 0.10, 0.075, 0.05),
-          modes=("penalty", "nitsche", "constraint", "rotated")):
+          modes=("penalty", "penalty_node", "nitsche", "constraint", "rotated")):
     """Does the leak fall with the mesh, or is it already at round-off?
 
     A weakly imposed constraint is satisfied to the accuracy of the
@@ -152,11 +167,20 @@ def parameter_sweep():
     has a threshold at each end, and gamma = 10 sits in the middle of it on any
     mesh because gamma is dimensionless and the term already carries mu/h.
     """
-    print("\ndirect penalty: leak against penalty magnitude")
+    print("\ndirect penalty (FACET normal): leak against penalty magnitude")
     print("\n| penalty | leak/|u| |")
     print("|---|---|")
     for pen in (1.0e2, 1.0e3, 1.0e4, 1.0e5, 1.0e6):
         mesh, stokes, v = build("penalty", penalty=pen)
+        stokes.solve()
+        cell = ("%.2e" % leaks(mesh, v)[0]) if converged(stokes) else "diverged"
+        print("| %.0e | %s |" % (pen, cell))
+
+    print("\ndirect penalty (NODE normal): leak against penalty magnitude")
+    print("\n| penalty | leak/|u| |")
+    print("|---|---|")
+    for pen in (1.0e2, 1.0e3, 1.0e4, 1.0e5, 1.0e6):
+        mesh, stokes, v = build("penalty_node", penalty=pen)
         stokes.solve()
         cell = ("%.2e" % leaks(mesh, v)[0]) if converged(stokes) else "diverged"
         print("| %.0e | %s |" % (pen, cell))
@@ -177,7 +201,7 @@ if __name__ == "__main__":
     elif sys.argv[1:2] == ["params"]:
         parameter_sweep()
     else:
-        modes = sys.argv[1:] or ["free", "penalty", "nitsche",
+        modes = sys.argv[1:] or ["free", "penalty", "penalty_node", "nitsche",
                                  "constraint", "rotated"]
         print("%-9s %10s %10s %8s" % ("mode", "leak/|u|", "|u|max", "nodes"))
         for mode in modes:
