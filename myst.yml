@@ -34,6 +34,8 @@ project:
         - file: notes.md
         - title: "2026"
           children:
+            - file: articles/setting-up-full-multigrid/setting-up-full-multigrid.md
+            - file: articles/moving-the-mesh-without-remaking-it/moving-the-mesh-without-remaking-it.md
             - file: articles/running-underworld-in-a-browser/running-underworld-in-a-browser.md
             - file: articles/finding-particles-in-a-distributed-unstructured-mesh/finding-particles-in-a-distributed-unstructured-mesh.md
             - file: articles/particles-in-underworld3/particles-in-underworld3.md
@@ -87,6 +89,9 @@ project:
         - file: pages/submit.md
     - title: "News & guides"
       children:
+        - title: "2026"
+          children:
+            - file: articles/introducing-the-technical-notes/introducing-the-technical-notes.md
         - title: "2025"
           children:
             - file: articles/underworld3-published-in-journal-of-open-source-software/underworld3-published-in-journal-of-open-source-software.md
@@ -130,6 +135,7 @@ project:
     - file: topics/topics.md
       children:
         - file: topics/topic-benchmarks-validation.md
+        - file: topics/topic-earthquakes-faults.md
         - file: topics/topic-finite-elements.md
         - file: topics/topic-mantle-convection.md
         - file: topics/topic-meshing.md
@@ -151,7 +157,7 @@ site:
   nav:
     - title: "About"
       children:
-        - title: "About"
+        - title: "Who we are"
           url: /ugcomm
         - title: "Credits"
           url: /credits
