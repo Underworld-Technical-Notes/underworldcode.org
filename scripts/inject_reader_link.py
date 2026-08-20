@@ -29,17 +29,21 @@ MARKER = "uwtn-reader-link"
 
 SCRIPT = """<script id="%s">
 (function () {
-  function slugOf() {
-    var parts = window.location.pathname.split("/").filter(Boolean);
-    return parts.length ? parts[parts.length - 1] : "";
+  function readerHref() {
+    // Built from the CURRENT path, not from "/" + slug: the preview site serves
+    // the whole site from a hashed subdirectory, and an absolute path would walk
+    // out of it to the domain root.
+    var path = window.location.pathname.replace(/\/+$/, "");
+    if (!path || /\/read$/.test(path)) return null;
+    return path + "/read/";
   }
 
   function retarget() {
-    var slug = slugOf();
-    if (!slug || slug === "read") return;
-    var links = document.querySelectorAll('a[href^="/build/"][href$=".pdf"]');
+    var href = readerHref();
+    if (!href) return;
+    var links = document.querySelectorAll('a[href*="/build/"][href$=".pdf"]');
     for (var i = 0; i < links.length; i++) {
-      links[i].setAttribute("href", "/" + slug + "/read/");
+      links[i].setAttribute("href", href);
       links[i].removeAttribute("download");     // it is a page now, not a file
     }
   }

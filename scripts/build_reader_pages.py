@@ -8,7 +8,9 @@ offers the two things a reader actually asks for next -- the file itself, and th
 markdown the article is written from.
 
 Written at ``/<slug>/read/``, so it sits under the article's own URL and travels
-with it. Standalone HTML rather than a MyST page: it carries an embedded PDF and
+with it. Every link on it is RELATIVE (``../<slug>.pdf``, ``../``): the preview
+site serves the whole thing from a hashed subdirectory, and an absolute path
+would walk out of it to the domain root. Standalone HTML rather than a MyST page: it carries an embedded PDF and
 nothing else, it must not enter the toc, and generating it here keeps it out of
 the theme's client-side router (where a hydrated document would reconcile the
 embed away).
@@ -77,7 +79,7 @@ PAGE = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%(title)s — Underworld Geodynamics</title>
 <meta name="robots" content="noindex">
-<link rel="canonical" href="/%(slug)s/">
+<link rel="canonical" href="../">
 <style>%(style)s</style>
 </head>
 <body>
@@ -86,17 +88,17 @@ PAGE = """<!doctype html>
   <h1>%(title)s</h1>
   <div class="meta">%(meta)s</div>
   <div class="actions">
-    <a class="primary" href="/%(slug)s/%(slug)s.pdf" download>Download PDF</a>
-    <a href="/%(slug)s/%(slug)s.md" download>Markdown source</a>
-    <a href="/%(slug)s/">Read on the site</a>
+    <a class="primary" href="../%(slug)s.pdf" download>Download PDF</a>
+    <a href="../%(slug)s.md" download>Markdown source</a>
+    <a href="../">Read on the site</a>
   </div>
 </div></header>
 <div class="reader">
-  <object data="/%(slug)s/%(slug)s.pdf#view=FitH" type="application/pdf">
+  <object data="../%(slug)s.pdf#view=FitH" type="application/pdf">
     <div class="fallback">
       <p>This browser will not display a PDF here — most phones will not.</p>
-      <p><a href="/%(slug)s/%(slug)s.pdf">Open the PDF</a> or
-         <a href="/%(slug)s/">read the article on the site</a>.</p>
+      <p><a href="../%(slug)s.pdf">Open the PDF</a> or
+         <a href="../">read the article on the site</a>.</p>
     </div>
   </object>
 </div>

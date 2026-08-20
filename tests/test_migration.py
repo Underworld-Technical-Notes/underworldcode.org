@@ -2085,11 +2085,14 @@ def test_reader_page_offers_the_pdf_and_the_source():
         "slug": "a-note", "title": "A Note", "kicker": "UWTN 2026-001",
         "meta": "Someone", "style": "",
     }
-    assert 'href="/a-note/a-note.pdf" download' in page
-    assert 'href="/a-note/a-note.md" download' in page
-    assert 'href="/a-note/"' in page                      # back to the article
+    assert 'href="../a-note.pdf" download' in page
+    assert 'href="../a-note.md" download' in page
+    assert 'href="../"' in page                           # back to the article
     assert 'type="application/pdf"' in page               # embedded, not linked
     assert 'name="robots" content="noindex"' in page      # the article is canonical
+    # RELATIVE throughout: the preview site serves everything from a hashed
+    # subdirectory, and an absolute path walks out of it to the domain root.
+    assert 'href="/a-note' not in page and 'data="/a-note' not in page
 
 
 def test_reader_meta_line_links_the_doi():
