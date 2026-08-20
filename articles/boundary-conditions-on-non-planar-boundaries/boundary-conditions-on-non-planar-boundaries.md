@@ -1,5 +1,5 @@
 ---
-title: Boundary conditions on non-planar boundaries
+title: Free-Slip boundary conditions on curved boundaries
 description: >-
   "No flow through this wall" is a single velocity component on a box and is
   not a component of anything on a sphere, a deformed mesh, or a surface with
@@ -28,90 +28,106 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 development @ 8b7c8b9e
 ---
-A free surface moves under the traction it carries. That makes the wall-normal
-stress the quantity driving the model rather than something read off at the
-end, and it is the reason we went back to how the boundary condition underneath
-it is imposed.
-
-The condition itself is ordinary. Free slip is no flow through the boundary and
-no tangential drag along it,
+Free-slip boundary conditions are used to simplify the physical behaviour at a domain boundary. 
+It may be a free-surface where the boundary deforms slightly in response to the internal flow, or it may 
+be an interface where the boundary layer thickness is so small that it cannot be resolved at the same time 
+time as the interior flow. The simplifying assumption: ignore the changes in shape, ignore the thin boundary layer,
+treat the surface as impenetrable, and the tangential stresses as vanishingly small. 
 
 $$
 \mathbf{u}\cdot\hat{\mathbf{n}} = 0
 \qquad\text{and}\qquad
-\hat{\mathbf{t}}\cdot\boldsymbol{\sigma}\hat{\mathbf{n}} = 0 .
-$$
+\hat{\mathbf{t}}\cdot\boldsymbol{\sigma}\cdot\hat{\mathbf{n}} = 0 .
+$$ (eq-free-slip)
 
-On a box the first of those is a single velocity component. You hold $u_x$ on a
-vertical wall, the solver removes a row, and there is nothing further to
-discuss. On a sphere, an annulus, a mesh that has been moved, or a surface with
-topography, $\mathbf{u}\cdot\hat{\mathbf{n}}$ is not a component of anything.
-That is the whole difficulty, and everything below is a way around it.
-
-The second condition is worth naming because it is the one people forget. Zero
-tangential traction is *natural*: it is what you get by leaving the boundary
-term out of the weak form. Nothing has to be done to impose it, and something
-has to be done to avoid imposing it accidentally.
-
-## Where the boundary term comes from
-
-Every method below is a statement about one term. Multiplying the momentum
+In the weak form, boundary tractions appear as surface integrals. Multiplying the momentum
 balance by a test function $\mathbf{w}$ and integrating by parts gives
 
 $$
 \int_\Omega \boldsymbol{\sigma} : \nabla\mathbf{w} \; \mathrm{d}V
-- \int_{\partial\Omega} (\boldsymbol{\sigma}\hat{\mathbf{n}})\cdot\mathbf{w}
+- \int_{\partial\Omega} (\boldsymbol{\sigma}\cdot\hat{\mathbf{n}})\cdot\mathbf{w}
   \; \mathrm{d}S
 = \int_\Omega \mathbf{f}\cdot\mathbf{w} \; \mathrm{d}V .
+
 $$
 
-Drop the surface integral and you have imposed zero traction in both
-directions — free *everything*, not free slip. Free slip keeps the tangential
-half of that and replaces the normal half with the constraint. How you do the
-replacing is the choice.
+Drop the surface integral and you have imposed zero traction in all
+directions — free *everything* (a free surface), not free slip. Constrain the surface-normal degrees of freedom
+and the surface integral only addresses the tangential traction terms. 
 
-## Four ways, in order
+On a Cartesian box, the first expression in  {eq}`eq-free-slip`  constrains a single velocity component. If you hold $u_x$ fixed on a
+vertical wall, the solver removes a row of unknowns, and there is nothing further to
+discuss. On a sphere, an annulus, a mesh that does not align with the coordinates, or a surface with
+topography, $\mathbf{u}\cdot\hat{\mathbf{n}}$ is not a single component of the unknown — it constrains a combination of unknowns at 
+each point, and leaves other combinations free. That has the potential to make a simplifying
+assumption complicated to implement. 
 
-They fall into two pairs, and the pairing is the useful way to hold them. Two
+Let's assume, for a moment, we confine ourselves to simple domains such as an annulus, or a spherical shell, 
+which are commonly used for planetary modelling. For each of these cases, there are 
+coordinate systems, and well known forms of the differential operators that do restore the boundary condition
+to being a constraint in a single direction. Admittedly this requires reformulating all the equations, but for 
+a symbolic-first code such as underworld, this is possible. This is the strategy used by CITCOMS [Zhong et al].
+But not every domain boundary has a convenient
+coordinate system to follow. Even accounting for slight ellipticity introduces significant complexity in all the differential
+operators; anything more complicated will not have any useful coordinate reformulation.
+
+The second condition is also worth noting. We don't think about this when we constrain a degree of freedom, 
+the other one/s, left unconstrained are *natural* to the problem. They fall out as traction-free surface conditions
+automatically in a finite element weak form. If we cannot simply eliminate one degree of freedom at each point,
+how **do** we satisfy all the parts of {eq}`eq-free-slip` ?
+
+## Four possibilities
+
+We outline four possible approaches (four you can try out in Underworld3). 
+They fall into two pairs: two
 impose the constraint **weakly**, by adding a term to the momentum equation and
 letting the solution satisfy the condition to within the accuracy of that term: a
 direct penalty, and Nitsche's method, which differ in whether the term is
 consistent. Two impose it **exactly**: by construction, changing the basis so
 that the constraint is a component that can be struck out, or by a Lagrange
 multiplier, adding an equation that enforces it. The weak pair have a parameter
-to choose and a floor they cannot go below. The exact pair have neither, and both
-return the boundary traction as part of the answer.
+to select that may need to be tuned for each problem and a floor
+ they cannot go below. The exact pair are not tuneable, and they both
+return the boundary traction as a side-effect of the solution.
 
-### A direct penalty
+### 1. A direct penalty
 
-Add a term that punishes any flow through the boundary:
+This could not be more simple, conceptually. We are working in a variational
+environment, so we just add into our equation system, a term that punishes any flow through the boundary:
 
 $$
-\dots + \frac{\gamma}{h}\int_{\partial\Omega}
+\dots + \kappa\int_{\partial\Omega}
 (\mathbf{u}\cdot\hat{\mathbf{n}})(\mathbf{w}\cdot\hat{\mathbf{n}})
 \; \mathrm{d}S .
+
 $$
+
+$\kappa$ is a bare number, with none of the $\mu/h$ that Nitsche's parameter
+carries below. It has to absorb the scale of the problem itself, which is why
+the value that works is a property of the model rather than a default.
 
 One line, no new machinery, and it works on any geometry. It is still in a
 good many working scripts, and deservedly. What you are solving is a perturbed
 problem, though, and it is perturbed by exactly the amount the constraint is
 violated: the discrete solution sits where the penalty term balances the
-traction it is fighting, which leaves $\mathbf{u}\cdot\hat{\mathbf{n}}$ small
-but not zero. Making it smaller means pushing harder, and pushing harder
-conditions the operator worse. The error is traded against the conditioning,
-and measured below, that trade runs out: past $10^4$ the leak stops improving,
-and by $10^6$ the solve fails. Nitsche moves the floor down rather than
-removing it — it fails too, at its own threshold.
+traction it is fighting and this leaves $\mathbf{u}\cdot\hat{\mathbf{n}}$ small but not zero. 
+
+Making it smaller means pushing harder, and pushing harder
+degrades the condition-number of the operator. The error is traded against the conditioning,
+and (see the table below), this trade-off eventually stops returning any benefit: 
+past $10^4$ the boundary constraint stops improving (the surface is leaky),
+and by $10^6$ the solve fails. 
 
 Underworld spells it as a boundary traction opposing normal flow, using the
-facet normal at the quadrature points:
+surface normal at the quadrature points ($\Gamma$) provided by PETSc:
 
 ```python
 G = mesh.Gamma
-stokes.add_natural_bc(1.0e4 * G.dot(v.sym) * G, "Upper")
+penalty = 10000
+stokes.add_natural_bc(penalty * G.dot(v.sym) * G, "Upper")
 ```
 
-### Nitsche
+### Nitsche's method
 
 The reason the penalty is only accurate in the limit is that it is not
 *consistent*: substituting the true solution does not leave the equation
@@ -128,56 +144,61 @@ $$
 + \frac{\gamma}{h}\int_{\partial\Omega}
   (\mathbf{u}\cdot\hat{\mathbf{n}})(\mathbf{w}\cdot\hat{\mathbf{n}})
   \; \mathrm{d}S .
+
 $$
 
 The first of the three is the consistency term: it is the boundary traction the
-integration by parts produced, and putting it back is what makes the true
+integration by parts produced, and including this makes the true
 solution satisfy the discrete equations exactly. The second is its transpose,
 which keeps the form symmetric and buys optimal convergence in $L^2$. The third
 is the penalty again, and it is still needed — but now for *stability* rather
 than for accuracy, and $\gamma$ has a threshold set by an inverse inequality
 rather than being a dial you turn up until the answer looks right.
 
-This is a real improvement and it is still a weak imposition. The constraint
+This is a real improvement and it is still done through a weak imposition. The constraint
 holds to the accuracy of the discretisation, not to the accuracy of the
-arithmetic — measured below, it leaks a few parts in a thousand on a mesh of
-the resolution people actually run, and the leak falls with the mesh rather
-than with the machine.
+arithmetic — measured below, it leaks a few parts in a thousand on a typical mesh,
+ and the leak falls with increasing mesh resolution.
 
 ### A constraint equation, with a multiplier
 
-The two above add a *term* to an equation. This one adds an *equation*.
+The two above add a *term* to the weak form of the equation. This one adds an *equation*.
 
-Carry a scalar field $h$ on the boundary and require, as a row of the system in
-its own right,
+Carry a scalar field $\lambda$ on the boundary and require, as a row of the
+system in its own right,
 
 $$
-\int_{\partial\Omega} (\mathbf{u}\cdot\hat{\mathbf{n}} - g)\, q
+\int_{\partial\Omega} (\mathbf{u}\cdot\hat{\mathbf{n}} - \tilde{u}_n)\, q
 \; \mathrm{d}S = 0 \quad \text{for all } q ,
+
 $$
 
-with $h$ entering the momentum row as the traction $h\hat{\mathbf{n}}$ that holds
-the constraint. It is a Lagrange multiplier, and the system becomes a larger
-saddle point: velocity, pressure, and now $h$.
+where $\tilde{u}_n$ is the prescribed wall-normal velocity — zero for free slip,
+and a datum if the wall is being driven — and $\lambda$ enters the momentum row
+as the traction $\lambda\hat{\mathbf{n}}$ that holds the constraint. It is a
+Lagrange multiplier, and the system becomes a larger saddle point: velocity,
+pressure, and now $\lambda$.
+
+$\lambda$ has units of stress. At convergence it *is* $\sigma_{nn}$ on that
+boundary, so dividing by $\Delta\rho\,g$ — density contrast times gravity, no
+relation to the constraint datum — turns it into a dynamic topography.
 
 The constraint row is exact, so unlike a penalty there is no parameter whose
 size decides how well it holds. Two practical things do have to be dealt with.
 
-- $h$ is carried as a full-domain field but only its boundary trace means
+- $\lambda$ is carried as a full-domain field but only its boundary trace means
   anything, so the interior degrees of freedom are constrained out of the global
   system in the section before the solve sees it. They are not solved for and
-  they do not enlarge the $[p, h]$ block. The interior rows are the screening
-  block alone, so the interior multiplier is determined by the boundary trace and
-  carries no independent signal.
-- The $[p, h]$ Schur complement is poorly conditioned on its own, so an
-  augmented-Lagrangian term $r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)\hat{\mathbf{n}}$
-  is added to the momentum row. It does not change what the constraint enforces,
-  because the $h$ row still carries the exact constraint. It does change what $h$
-  *is*, which is the subject of a section below.
+  they do not enlarge the $[p, \lambda]$ block.
+- The $[p, \lambda]$ Schur complement is poorly conditioned on its own, so an
+  augmented-Lagrangian term
+  $r(\mathbf{u}\cdot\hat{\mathbf{n}} - \tilde{u}_n)\hat{\mathbf{n}}$ is added to
+  the momentum row. It does not change what the constraint enforces, because the
+  $\lambda$ row still carries the exact constraint.
 
 ```python
 stokes = uw.systems.Stokes_Constrained(mesh, velocityField=v, pressureField=p)
-h = stokes.add_constraint_bc(0.0, "Upper")
+lam = stokes.add_constraint_bc(0.0, "Upper")
 stokes.solve()
 ```
 
@@ -186,18 +207,19 @@ momentum row's boundary term is the normal traction.** It is not recovered from
 the velocity field afterwards — it is an unknown the solve returned, available
 through `traction` and, divided by $\Delta\rho g$, through `topography`.
 
-That term is the whole boundary load, $h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)$,
-and not the multiplier alone. The second part vanishes only where the constraint
-row is satisfied exactly; discretely it is satisfied to the solver's tolerance and
-$r$ multiplies that residual back into the traction. With a viscosity-weighted
-$r$ and a lateral viscosity contrast it is most of the answer, so the two parts
-are not separable in practice — which is the first hint that this traction and
-the rotated constraint's reaction are the same object.
+That term is the whole boundary load,
+$\lambda + r(\mathbf{u}\cdot\hat{\mathbf{n}} - \tilde{u}_n)$, and not the
+multiplier alone. The second part vanishes only where the constraint row is
+satisfied exactly; discretely it is satisfied to the solver's tolerance, and $r$
+multiplies that residual back into the traction. With a viscosity-weighted $r$
+and a lateral viscosity contrast it is most of the answer, so the two parts are
+not separable in practice.
 
 ### Rotating the degrees of freedom
 
-Stop asking for the constraint and impose it. At each constrained node, change
-the basis in which the velocity unknowns are expressed, from the global
+In this approach, we stop *"asking for"* the constraint and just impose it. 
+At each constrained node, we change
+the coordinate basis in which the velocity unknowns are expressed, from the global
 Cartesian frame to the local $(\hat{\mathbf{n}}, \hat{\mathbf{t}})$ frame. In
 that basis "no flow through the boundary" is again a single component, and it
 is removed the same way it would be on a box.
@@ -208,22 +230,23 @@ at every node that is not constrained. The rotated system is
 $$
 \hat{A} = Q^{T} A Q, \qquad \hat{\mathbf{b}} = Q^{T}\mathbf{b},
 \qquad \mathbf{u} = Q\hat{\mathbf{u}} ,
+
 $$
 
 and the wall-normal row of $\hat{A}$ is struck out. The constraint then holds to
 machine precision, because it is not being solved for at all.
 
-**This is the classical answer**, not a new one. It is in the early
+**This is the classical strategy**. It is in the early
 finite-element literature, and @Engelman_1982 were already reviewing
 the alternatives and choosing between them on grounds of global mass
 conservation in 1982. What is worth explaining is not the idea but why, given
 that it is exact and the others are not, it is the least used of the three.
 
-## What it costs, and the cost is structural
+## Trade-offs
 
 Rotating the degrees of freedom leaves the discrete problem in a **mixed
 basis**. Interior nodes hold $(u_x, u_y)$; constrained nodes hold
-$(u_n, u_t)$. Nothing about that is difficult in itself, and everything
+$(u_n, u_t)$. Nothing about that is difficult in itself, but everything
 downstream has to agree about which nodes are which.
 
 ```{figure} figures/rotated-basis.svg
@@ -239,21 +262,16 @@ boundary between them and feeds both.
 Four things carry $Q$: the operator, the right-hand side, the solution on the
 way out, and the multigrid prolongation. The coarse operators inherit it
 through the Galerkin triple product rather than being rotated separately, and
-the coarse solve then has to be an SVD, because a Galerkin-coarsened rotated
-operator inherits the rigid-rotation null space of the constrained problem and
-a redundant LU factorisation meets a zero pivot in it.
+the coarse solve should be an SVD, because a Galerkin-coarsened rotated
+operator inherits any rigid-rotation null space of the constrained problem 
+(the exact constraint makes the null space of the sphere and the annulus a dominant
+feature of the solve).
 
-That last point is worth dwelling on, because it is the one that surprises. The
-constraint never has to be re-imposed on a coarse mesh — which is fortunate,
-since we install no discretisation there and could not impose it if we wanted
-to. It arrives anyway, algebraically, through $P^{T}\hat{A}P$ with a rotated
-$P$. The evidence that it really arrives is that the coarse operator inherits
-the null space, which is a property only the constrained problem has.
+We do not know the cost of the addtional complexity on the solver and setup times, 
+or on the accuracy of the solution but this can be measured and will differ from problem 
+to problem.
 
-None of this is an argument against the method. It is an argument for knowing
-what is being taken on, and it is the honest reason a weakly imposed condition
-survives in codes that could do this instead.
-## Which normal
+## Choice of the surface normal
 
 A question with a less obvious answer than it looks, and the measurements
 further down say it is the most consequential choice in the note. The boundary of a
@@ -273,13 +291,48 @@ here.
 
 Using the analytic normal is exact for the geometry and therefore inconsistent
 with the discretisation, which is the wrong way round: the solver is not solving
-on the sphere, it is solving on the polyhedron. Using the facet normal is
-consistent with each facet separately and over-constrains the nodes between
-them, which is the failure measured in "A constraint that is satisfied, and
-wrong" below. In parallel the same argument has a
-sharper edge, because a normal accumulated rank-locally is wrong at a partition
-boundary, where a node's facets are split across ranks and no rank sees them
-all.
+on the sphere, it is solving on the polyhedron. In parallel the same argument has
+a sharper edge, because a normal accumulated rank-locally is wrong at a partition
+boundary, where a node's facets are split across ranks and no rank sees them all.
+
+Using the **facet** normal is worse than inconsistent, and this is the one place
+in the note where a choice does real damage. Imposing
+$\mathbf{u}\cdot\hat{\mathbf{n}} = 0$ facet by facet asks a node shared by two
+facets to satisfy two different constraints, and two independent constraints on a
+two-component velocity leave nothing. Push the coefficient up and the vertex
+velocities go to zero: the flow is being asked to stay inside a polygon rather
+than a circle, and the discrete limit is a different problem from the smooth one.
+Refining the mesh does not approach the smooth answer, because it is not
+converging to it.
+
+A direct penalty at $\kappa = 10^6$, on the annulus of the next section, against
+each normal in turn:
+
+| cell size | facet normal: leak / velocity error / stress error | node normal: leak / velocity / stress |
+|---|---|---|
+| 0.150 | 8.9 × 10⁻⁶ / 0.60 / 0.21 | 4.6 × 10⁻⁵ / 1.0 × 10⁻² / 2.4 × 10⁻² |
+| 0.075 | 1.1 × 10⁻⁵ / 0.61 / 0.25 | 3.7 × 10⁻⁵ / 2.4 × 10⁻³ / 6.3 × 10⁻³ |
+| 0.050 | 1.9 × 10⁻⁵ / 0.60 / 0.26 | 3.1 × 10⁻⁵ / 1.0 × 10⁻³ / 2.7 × 10⁻³ |
+| 0.035 | 2.3 × 10⁻⁵ / 0.59 / 0.26 | 3.1 × 10⁻⁵ / 4.9 × 10⁻⁴ / 1.4 × 10⁻³ |
+
+The facet-normal column is stuck: the velocity is 60% wrong and the stress 26%
+wrong, and refining changes neither. Note what the leak does — it is *excellent*,
+better than the node normal's, because a frozen boundary passes no flow. A metric
+that only asks whether the constraint is satisfied cannot tell a locked solution
+from a good one.
+
+```{figure} figures/locking.png
+:alt: Three annuli side by side on one colour scale from zero to 5.0e-3, blue for slow and red for fast, with the triangular mesh drawn over each. The left panel is the exact solution: two deep red patches of fast flow sit against the outer boundary on the left and right of the annulus, with a blue slow ring inside them. The middle panel is the same problem solved with a direct penalty against the facet normal: the red patches at the outer boundary are gone and the whole outer half is blue, the peak speed having fallen from 5.0e-3 to 3.8e-3, while a pale ring survives near the inner boundary. The right panel is the same penalty against the measure-weighted node normal and is indistinguishable from the exact panel, with a peak speed of 5.0e-3.
+
+The same problem, the same coefficient, the same colour scale. Against the facet
+normal the flow along the outer boundary is suppressed — the peak speed falls by
+a quarter and the two fast lobes at the boundary are gone. Against the
+measure-weighted node normal it is the exact solution.
+```
+
+Everything that follows uses the node normal, which is what `add_nitsche_bc` and
+`add_rotated_freeslip_bc` take by default and what `mesh.boundary_normal` returns.
+The facet normal does not appear again.
 
 The consistent normal is not the end of the matter. @Behr_2004 takes it as
 the starting point — "preferred from the point of view of conservation" — and
@@ -290,184 +343,130 @@ We have read the abstract rather than the paper, and have not looked for that
 recirculation in our own cases. It is the obvious thing to test next for anyone
 running free slip on a strongly curved wall.
 
-## The option this note leaves out
-
-Solving in spherical or cylindrical components makes the wall-normal direction
-a coordinate direction again, and the constraint returns to being "hold one
-component". That is the same rotation as above, applied once for the whole
-domain instead of node by node, and applied that way it costs nothing
-structurally: there is no mixed basis, because every node is in the same basis.
-
-It works exactly when the boundary lies along a coordinate surface. A sphere, an
-annulus, a cylinder. It does nothing for topography, for a mesh that has been
-deformed, or for a tilted internal surface, which is the general case this note
-is about. The per-node rotation is what remains once the geometry stops
-cooperating, and its structural price is what buys the generality.
-
 ## When the choice matters
 
-Here is the awkward part. Solve a convection model with any of these and the
+Solve a convection model with any of these approaches, and the
 velocity field is the same to plotting accuracy, as long as each is set up
-properly. A leak of order $10^{-3}$ in $\mathbf{u}\cdot\hat{\mathbf{n}}$ is
-invisible to anything that consumes the velocity, and consuming the velocity is
-most of what a model does. If that is your situation, use the simplest thing
-that works — and read the section on which normal before you do, because that
-is the choice that can spoil the velocity as well.
+correctly. Generally speaking, a leak of order $10^{-3}$ or  $10^{-4}$ in $\mathbf{u}\cdot\hat{\mathbf{n}}$ is
+within the expected accuracy of the solution on the mesh and the main 
+driver of which method to choose should be solver efficiency (wall time).
 
-The difference appears when the wall-normal traction is the answer rather than
-a by-product: dynamic topography, a plate-boundary force balance, anything
-compared against a geoid or a gravity field. That is what the two sections after
-the leak measure, against an exact surface stress, and the answer is not the one
-we expected. The treatments that impose the constraint properly all recover the
-same surface stress at a given mesh, because the recovery sets the floor rather
-than the boundary condition; what the rotated constraint buys is a route to the
-traction that does not go through a recovery at all, and it is three times
-better on the same solve.
+The difference in the methods appears when the wall-normal traction is a 
+required output of the model: dynamic topography, geoid, gravity, 
+or a plate-boundary force balance require accurate integration of boundary stresses.
+Here the choice becomes more subtle, 
+and the methods have quite different accuracies, and different efficiencies. 
 
-Under the rotated constraint the reaction *is* $\sigma_{nn}$: it is the
-multiplier the solve has already computed, and it comes out of
-`boundary_normal_traction` without differentiating the answer.
-
-### The leak, measured
+### The surface permeability question
 
 An annulus, no slip on the inner radius, the treatment under test on the outer,
 driven by a degree-four radial density anomaly. The number is the largest
 normal velocity on the outer boundary, taken against the true radial direction
 and divided by the flow speed: the fraction of the flow going through a
 boundary nothing should pass through. Penalty at $10^4$, Nitsche at
-$\gamma = 10$.
+$\gamma = 10$. [REFERENCE TO ANALYTIC MODULE]
 
-The penalty appears twice, because the normal it is written against turns out
-to matter more than the method it is written into. One column uses the
-quadrature-point facet normal `mesh.Gamma`, which is the documented form; the
-other uses the measure-weighted node normal `mesh.boundary_normal`, which is
-what Nitsche and the rotated constraint use by default.
-
-| cell size | penalty, facet normal | penalty, node normal | Nitsche | multiplier | rotated |
-|---|---|---|---|---|---|
-| 0.150 | 4.5 × 10⁻³ | 3.3 × 10⁻³ | 4.6 × 10⁻³ | 8.3 × 10⁻⁴ | 7.3 × 10⁻¹¹ |
-| 0.100 | 2.5 × 10⁻³ | 2.7 × 10⁻³ | 2.2 × 10⁻³ | 1.6 × 10⁻⁴ | 6.5 × 10⁻¹¹ |
-| 0.075 | 8.5 × 10⁻⁴ | 2.6 × 10⁻³ | 1.7 × 10⁻³ | 5.6 × 10⁻⁵ | 1.0 × 10⁻¹⁰ |
-| 0.050 | 9.5 × 10⁻⁴ | 2.6 × 10⁻³ | 5.8 × 10⁻⁴ | 1.2 × 10⁻⁵ | 8.4 × 10⁻¹¹ |
+| cell size | penalty | Nitsche | multiplier | rotated |
+|---|---|---|---|---|
+| 0.150 | 3.3 × 10⁻³ | 4.6 × 10⁻³ | 8.3 × 10⁻⁴ | 7.3 × 10⁻¹¹ |
+| 0.100 | 2.7 × 10⁻³ | 2.2 × 10⁻³ | 1.6 × 10⁻⁴ | 6.5 × 10⁻¹¹ |
+| 0.075 | 2.6 × 10⁻³ | 1.7 × 10⁻³ | 5.6 × 10⁻⁵ | 1.0 × 10⁻¹⁰ |
+| 0.050 | 2.6 × 10⁻³ | 5.8 × 10⁻⁴ | 1.2 × 10⁻⁵ | 8.4 × 10⁻¹¹ |
 
 Nitsche leaks parts in a thousand and improves roughly as $h^{1.9}$ — the rate
 consistency buys. The multiplier starts an order of magnitude better and falls
-much faster, near $h^{3.9}$, because the constraint row is an equation rather
-than a term whose weight has to be chosen.
-The rotated constraint does not move at all: it sits at the solver's floor at
+much faster, near $h^{3.9}$. The rotated constraint does not move at all: it sits at the solver's floor at
 every resolution, because the mesh has nothing to do with it. The penalty
-against the node normal does not improve with the mesh either, and for the
-opposite reason: at a fixed coefficient its leak is set by the coefficient.
-
-The control matters more than the result. With the outer boundary left free the
-same measurement reads **0.98** — nearly all the boundary flow is normal — so
-the metric can see a leak when there is one.
-
-The first column is the one to be careful with. Its leak falls with the mesh,
-which reads as the method working, and it is not: the surface stress measured
-further down says that solve is 60% wrong in the velocity and 26% wrong in the
-stress, and refining it does not help. The leak is small because the boundary
-is being frozen. A metric that only asks whether the constraint is satisfied
-cannot tell those apart.
+does not improve with the mesh either, and for the opposite reason: its leak is
+set by the coefficient, not by the discretisation.
 
 ### What each parameter buys
 
 The two weak methods look alike in that table. They are not alike, and their
 own parameters are what tells them apart.
 
-| penalty, facet | leak | | penalty, node | leak | | $\gamma$ (Nitsche) | leak |
-|---|---|---|---|---|---|---|---|
-| 10² | 2.6 × 10⁻¹ | | 10² | 2.6 × 10⁻¹ | | 1 | diverged |
-| 10³ | 2.3 × 10⁻² | | 10³ | 2.6 × 10⁻² | | 10 | 1.7 × 10⁻³ |
-| 10⁴ | 8.5 × 10⁻⁴ | | 10⁴ | 2.6 × 10⁻³ | | 100 | 2.7 × 10⁻⁴ |
-| 10⁵ | 9.6 × 10⁻⁴ | | 10⁵ | 3.0 × 10⁻⁴ | | 1000 | 3.0 × 10⁻⁵ |
-| 10⁶ | diverged | | 10⁶ | 4.5 × 10⁻⁵ | | 10⁴ and above | diverged |
+| $\kappa$ (penalty) | leak | | $\gamma$ (Nitsche) | leak |
+|---|---|---|---|---|
+| 10² | 2.6 × 10⁻¹ | | 1 | diverged |
+| 10³ | 2.6 × 10⁻² | | 10 | 1.7 × 10⁻³ |
+| 10⁴ | 2.6 × 10⁻³ | | 100 | 2.7 × 10⁻⁴ |
+| 10⁵ | 3.0 × 10⁻⁴ | | 1000 | 3.0 × 10⁻⁵ |
+| 10⁶ | 4.5 × 10⁻⁵ | | 10⁴ and above | diverged |
 
-Nitsche is bounded at both ends. Below $\gamma = 1$ the form is no longer
-coercive and no amount of tuning recovers it; from $\gamma = 10^4$ in this
-problem the line search stops converging. The virtue of $\gamma = 10$ is that it
-sits in the middle of that window on any mesh, because $\gamma$ is dimensionless
-and the term it scales already carries $\mu / h$. The penalty coefficient
-carries no such scaling, which is why the value that works is a property of the
-problem rather than a default — and, on the second half of this note's test, of
-the local viscosity as well.
+Nitsche is bounded at both ends. Below $\gamma \sim 1$ the form is no longer
+coercive and no amount of solver tuning recovers it; from $\gamma \sim 10^4$ in this
+problem, the line search stops converging. The virtue of $\gamma \sim 10$ is that it
+sits within that window on any mesh, because $\gamma$ is dimensionless
+and the term it scales already carries $\mu / h$. 
 
-The two penalty columns are the same method against different normals, and they
-behave differently in a way the leak alone does not explain. Against the node
-normal the leak keeps falling, a decade of coefficient for a decade of leak, all
-the way to $10^6$. Against the facet normal it stops improving after $10^4$ and
-the solve fails at $10^6$. That looks like the conditioning wall a penalty is
-expected to have. It is not: what stalls is the leak, because by $10^4$ the
-boundary is nearly frozen and there is little normal flow left to remove. The
-stress section below measures the same runs against an exact answer, and they
-are getting worse throughout.
+The penalty coefficient scales differently because it directly penalises the
+value of the velocity across the boundary. It should therefore scale with the 
+characteristic velocity which is best estimated from the magnitude of the forcing
+terms and the resisting viscosity. 
+
+Written against the node normal, the penalty simply trades: a decade of
+coefficient for a decade of leak, all the way to $10^6$, with no wall in this
+problem. What it does not do is converge — the leak is bought with the parameter
+rather than with the mesh — so the coefficient has to be re-chosen whenever the
+forcing or the viscosity changes.
 
 ### The stress, measured
 
-The leak says how well each treatment holds the boundary. Whether the answer is
-right is a different question, and it needs an exact answer to compare against.
+The leak says how well each treatment satisfied the free-slip requirement at the boundary. 
+But we still need to measure whether the method converges to the correct solution. 
 
 Kramer, Davies and Wilson [@Kramer_2021] give exact Stokes
-solutions in a cylindrical annulus, and their `assess` package publishes the
-radial stress itself rather than leaving it to be recovered from a velocity
-field. Underworld wraps it as `uw.analytic.CylindricalStokes`. The case here is
+solutions in a cylindrical annulus, and their `assess` package also publishes the
+radial stress. Underworld wraps it as `uw.analytic.CylindricalStokes`. 
+The case here is
 the smooth one: a density anomaly $(r/r_o)^k \cos n\theta$ with $n = 2$ and
 $k = 3$, viscosity 1, free slip on both radii. On the outer boundary the exact
 radial stress is a single harmonic,
 
 $$
 \sigma_{rr}(r_o, \theta) = 0.1506696\,\cos 2\theta ,
+
 $$
 
 fitted to a residual of $10^{-16}$, so the whole of the surface stress is that
-one amplitude and the metric is its relative error.
-
-The inner boundary carries the exact velocity as a Dirichlet condition instead
-of a free-slip treatment of its own. The exact solution satisfies both, so the
-problem is unchanged, and the treatment under test is then the only free-slip
-condition in the model.
+one amplitude and the metric is its relative error. The inner boundary carries
+the exact analytic velocity as a Dirichlet condition instead
+of a free-slip treatment of its own. 
 
 There are two routes to the surface stress and the difference between them is
 the point of the section:
 
-- **recovered** — project $\hat{\mathbf{n}}\cdot\boldsymbol{\sigma}\hat{\mathbf{n}}$
-  out of the solved velocity and pressure. Every treatment can do this, and it
+- **recovered** — project $\hat{\mathbf{n}}\cdot\boldsymbol{\sigma}\cdot \hat{\mathbf{n}}$
+  out of the solved velocity and pressure. Every approach offers this, but it
   is the only route the weak ones have.
-- **reaction** — `boundary_normal_traction` for the rotated constraint, and the
-  multiplier field for the constraint method. Not recovered from the solution:
-  an unknown the solve returned.
+- **reaction** — compute the boundary-normal traction for the rotated constraint, and use the
+  multiplier field for the constraint method. This is not recovered from the stress field but from the 
+  surface reaction to the stress field. 
 
-Both are taken against the true radial direction, which is also the direction
-the oracle publishes, so no treatment is scored against its own normal. The
-reaction and the multiplier come back with the opposite sign to $\sigma_{rr}$ —
-they are the traction holding the boundary rather than the traction the fluid
-exerts, and `dynamic_topography` carries the sign back — so amplitudes are
-compared unsigned.
+Both are computed against the analytic radial direction, which is also the direction
+the oracle publishes, so no treatment is scored against its own normal. 
 
-| cell size | penalty, facet | penalty, node | Nitsche | constraint | rotated | rotated, reaction | multiplier field |
-|---|---|---|---|---|---|---|---|
-| 0.150 | 1.5 × 10⁻¹ | 2.5 × 10⁻² | 5.9 × 10⁻² | 2.4 × 10⁻² | 2.4 × 10⁻² | 6.8 × 10⁻³ | 8.6 × 10⁻³ |
-| 0.100 | 1.3 × 10⁻¹ | 1.1 × 10⁻² | 2.4 × 10⁻² | 1.0 × 10⁻² | 1.0 × 10⁻² | 3.3 × 10⁻³ | 8.5 × 10⁻⁴ |
-| 0.075 | 1.1 × 10⁻¹ | 7.2 × 10⁻³ | 1.5 × 10⁻² | 6.3 × 10⁻³ | 6.2 × 10⁻³ | 2.1 × 10⁻³ | 1.7 × 10⁻³ |
-| 0.050 | 6.3 × 10⁻² | 3.6 × 10⁻³ | 6.3 × 10⁻³ | 2.7 × 10⁻³ | 2.7 × 10⁻³ | 1.1 × 10⁻³ | 1.4 × 10⁻³ |
+| cell size | penalty | Nitsche | multiplier | rotated | rotated, reaction | multiplier, reaction |
+|---|---|---|---|---|---|---|
+| 0.150 | 2.5 × 10⁻² | 5.9 × 10⁻² | 2.4 × 10⁻² | 2.4 × 10⁻² | 6.8 × 10⁻³ | 8.6 × 10⁻³ |
+| 0.100 | 1.1 × 10⁻² | 2.4 × 10⁻² | 1.0 × 10⁻² | 1.0 × 10⁻² | 3.3 × 10⁻³ | 8.5 × 10⁻⁴ |
+| 0.075 | 7.2 × 10⁻³ | 1.5 × 10⁻² | 6.3 × 10⁻³ | 6.2 × 10⁻³ | 2.1 × 10⁻³ | 1.7 × 10⁻³ |
+| 0.050 | 3.6 × 10⁻³ | 6.3 × 10⁻³ | 2.7 × 10⁻³ | 2.7 × 10⁻³ | 1.1 × 10⁻³ | 1.4 × 10⁻³ |
 
 The first five columns are all the recovered stress, so they differ only by
 which boundary condition produced the field. The last two are the reaction and
 the multiplier on the same solves. Penalties at $10^4$, Nitsche at
-$\gamma = 10$, which are the values the leak table used. With the outer
-boundary left free the same measurement reads 1.0 — the surface stress is
-gone — so the metric can see the condition being removed.
+$\gamma = 10$, which are the values the leak table used. 
 
-**Once the constraint is imposed against the node normal, which treatment
-imposed it stops mattering to the recovered stress.** At cell 0.075 the rotated
+**Which treatment imposed the constraint stops mattering to the recovered
+stress.** At cell 0.075 the rotated
 constraint gives 6.2 × 10⁻³, the multiplier 6.3 × 10⁻³, the penalty at $10^5$
-6.3 × 10⁻³ and Nitsche at $\gamma = 100$ 6.6 × 10⁻³. Those are the same number.
+6.3 × 10⁻³ and Nitsche at $\gamma = 100$ is 6.6 × 10⁻³. Those are the same number.
 What sets it is the recovery — a projection of a stress differentiated out of a
 piecewise-quadratic velocity — and not the boundary condition underneath. The
 reasoning this note began with — that a traction recovered from an approximate
-constraint inherits the approximation — is not what the measurement shows once
-the constraint is written against the right normal. It shows a floor that all of
-them share.
+constraint inherits the approximation — is not what the measurement shows. It
+shows a floor that all of them share.
 
 **The reaction is about three times better than the recovery, on the same
 solve.** 2.1 × 10⁻³ against 6.2 × 10⁻³ at cell 0.075, and it converges at the
@@ -488,65 +487,19 @@ forty and the stress by a factor of two, to the recovery floor, where more
 $\gamma$ buys nothing. Reading the leak alone would have said $\gamma = 10$ was
 converged.
 
-### A constraint that is satisfied, and wrong
-
-The facet-normal penalty column does not converge. That is not a slow rate; the
-error grows slightly as the mesh is refined, and the leak is excellent
-throughout.
-
-| cell size | leak | velocity error | stress error |
-|---|---|---|---|
-| 0.150 | 8.9 × 10⁻⁶ | 0.60 | 0.21 |
-| 0.100 | 8.2 × 10⁻⁶ | 0.61 | 0.24 |
-| 0.075 | 1.1 × 10⁻⁵ | 0.61 | 0.25 |
-| 0.050 | 1.9 × 10⁻⁵ | 0.60 | 0.26 |
-| 0.035 | 2.3 × 10⁻⁵ | 0.59 | 0.26 |
-
-```{figure} figures/locking.png
-:alt: Three annuli side by side on one colour scale from zero to 5.0e-3, blue for slow and red for fast, with the triangular mesh drawn over each. The left panel is the exact solution: two deep red patches of fast flow sit against the outer boundary on the left and right of the annulus, with a blue slow ring inside them. The middle panel is the same problem solved with a direct penalty against the facet normal: the red patches at the outer boundary are gone and the whole outer half is blue, the peak speed having fallen from 5.0e-3 to 3.8e-3, while a pale ring survives near the inner boundary. The right panel is the same penalty against the measure-weighted node normal and is indistinguishable from the exact panel, with a peak speed of 5.0e-3.
-
-The same problem, the same coefficient of $10^6$, the same colour scale, and the
-only difference between the middle and right panels is which normal the penalty
-is written against. Against the facet normal the flow along the outer boundary
-is suppressed: the peak speed falls by a quarter and the two fast lobes at the
-boundary are gone. Refining the mesh does not bring them back.
-```
-
-The coefficient is $10^6$ and the normal is `mesh.Gamma`, the facet normal at
-the quadrature points. The same coefficient against the measure-weighted node
-normal, on the same meshes, gives velocity errors of 1.0 × 10⁻², 2.4 × 10⁻³,
-1.0 × 10⁻³ and 4.9 × 10⁻⁴ and stress errors of 2.4 × 10⁻², 6.3 × 10⁻³,
-2.7 × 10⁻³ and 1.4 × 10⁻³. One difference, one line of code, and one method
-converges while the other does not.
-
-The mechanism is old and well understood. Imposing
-$\mathbf{u}\cdot\hat{\mathbf{n}} = 0$ facet by facet asks a node shared by two
-facets to satisfy two different constraints, and two independent constraints on
-a two-component velocity leave nothing. Push the coefficient up and the vertex
-velocities go to zero: the flow is being asked to stay inside a polygon rather
-than a circle, and the polygon is not a good enough approximation of the circle
-for that particular question. The discrete limit is a different problem from
-the smooth one, so refining the mesh does not approach the smooth answer.
-
-Two things follow for practice. A direct penalty is a perfectly good method,
-but it has to be written against the node normal. And the leak is not a
-sufficient check: at a coefficient of $10^3$ the facet-normal penalty leaks
-3 × 10⁻² and gets the stress amplitude right to 1.9 × 10⁻³, while at $10^8$ it
-leaks 1 × 10⁻⁷ and is 26% wrong. Over that range the constraint improves by five
-orders of magnitude and the answer gets steadily worse.
-
 ### The multiplier and the consistent boundary flux are the same object
 
 The correction above is not a patch. Write the momentum row's boundary term out
 and the identity is immediate: the assembled load is
-$M_\Gamma\,(h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g))$, and at convergence it
+$M_\Gamma\,(\lambda + r(\mathbf{u}\cdot\hat{\mathbf{n}} - \tilde{u}_n))$, and at convergence it
 balances the volume residual restricted to the boundary, which is precisely the
 nodal load the consistent boundary flux back-calculation reads
 [@Zhong_1993]. So
 
 $$
-h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)
+\lambda + r(\mathbf{u}\cdot\hat{\mathbf{n}} - \tilde{u}_n)
   = -M_\Gamma^{-1} \left. (A\mathbf{u} - \mathbf{b}) \right|_\Gamma ,
+
 $$
 
 the CBF traction de-smeared with the boundary mass. The multiplier is not a
@@ -602,11 +555,8 @@ elements trimmed from each end.
 
 **The three exact treatments agree to three figures at every contrast**, whole
 wall and trimmed alike. That is the result to take from this half, and it took
-two fixes to get: the multiplier had to report the whole traction rather than
-$h$, and the rotated constraint had to hold the corner where it meets the side
-walls. Before them the rotated column read 0.322 at a contrast of 10 — six times
-the reference, all of it two nodes — and the multiplier column was an order of
-magnitude out at $10^6$.
+the multiplier reporting the whole traction rather than $\lambda$ alone, and the
+rotated constraint holding the corner where it meets the side walls.
 
 **Read the first column as the floor.** The component Dirichlet condition is
 exact and has no parameter, and its velocity error is 8.8 × 10⁻⁶ at a contrast of
@@ -650,8 +600,8 @@ run-to-run spread and there is nothing to read.
 | 71 424 | 0.45 / 0.631 | 0.47 / 0.657 | 0.67 / — | 0.43 / 0.016 |
 
 The dash is not a missing measurement. **The multiplier has nothing to recover**:
-$h$ is a finite element field in its own right, so its nodal values are the
-traction, pointwise, and $h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)$ is an
+$\lambda$ is a finite element field in its own right, so its nodal values are the
+traction, pointwise, and $\lambda + r(\mathbf{u}\cdot\hat{\mathbf{n}} - \tilde{u}_n)$ is an
 expression evaluated where it is wanted. Reading it costs whatever reading a
 field costs — a few milliseconds of array indexing at this size, and nothing that
 belongs in a column beside a solve.
@@ -700,7 +650,7 @@ An error of 1.00 is the metric reporting that nothing was recovered. A reaction
 exists in the residual only where a row has been *constrained*; a weak condition
 supplies its traction as a term inside the row it acts on, so the residual there
 is balanced at convergence and there is nothing left to read. The multiplier does
-the same thing, and gets away with it because the term it supplies, $h$, is the
+the same thing, and gets away with it because the term it supplies, $\lambda$, is the
 traction as a field. Nitsche's term is written in terms of
 $\boldsymbol{\sigma}(\mathbf{u})$, so reading it back still means differentiating
 the answer.
