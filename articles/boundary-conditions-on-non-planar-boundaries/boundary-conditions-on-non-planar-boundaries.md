@@ -751,6 +751,38 @@ When the wall-normal traction is the answer:
   normal, a coefficient chosen per problem, and a check on something physical
   before the answer is believed.
 
+### Which is to say, a free surface
+
+This note began with a free surface, and that is where the argument lands. A free
+surface needs $\sigma_{nn}$ *every step*: the surface moves under the traction it
+carries, so the recovery is not something done once at the end of a run but part
+of the timestep, alongside the Stokes solve it follows.
+
+Everything above then reads differently. The projection that costs more than the
+Stokes solve is paid at every step, and doubles the model. The differentiation it
+performs is applied to a velocity field that a weak condition never made satisfy
+$\mathbf{u}\cdot\hat{\mathbf{n}} = 0$ exactly, on a boundary that is moving. And
+the surface stress recovered that way has failure modes of its own that have
+nothing to do with the boundary condition — a continuous pressure checkerboards
+at a viscosity jump, a discontinuous one puts a node-to-node zigzag into the
+reaction on a simplex boundary — so the recovery has to be tuned against the
+element types as well.
+
+The two exact treatments hand the traction over as part of the answer, which is
+the property a free surface wants. Between them:
+
+- **the rotated constraint** gives the reaction, and on the 3-D P2 triangular
+  trace a deforming spherical surface actually uses, de-smearing it is a
+  consistent-mass solve that Underworld gathers to one rank. That is a real
+  serial step inside a parallel timestep;
+- **the multiplier** gives a field, so there is nothing to de-smear at all —
+  in 2-D or in 3-D. It costs about 50% more in the solve.
+
+We have not measured that trade on a large parallel shell, and it is the
+measurement worth doing next: the multiplier's premium is a fixed fraction of a
+solve, while the gather is a serial section, and which one wins is a question of
+rank count rather than of method.
+
 
 ## Using it
 
