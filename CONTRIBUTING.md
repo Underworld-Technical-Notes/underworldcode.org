@@ -108,6 +108,41 @@ Every paragraph introduces itself. The cost is a few repeated words; the benefit
 is that any section can be entered at any point, which is how a technical note
 is actually read.
 
+### The example code is part of the note
+
+A note's `examples/` scripts are read, not only run, so they are held to the same
+standard as the prose. Underworld3's own guides are the authority and should not
+be restated here — the
+[Style Charter](https://github.com/underworldcode/underworld3/blob/development/docs/developer/UW3_STYLE_CHARTER.md)
+and the
+[notebook style guide](https://github.com/underworldcode/underworld3/blob/development/docs/developer/guides/notebook-style-guide.md)
+— but four of their clauses decide most of what a reviewer will ask for.
+
+**Write the plain version.** The Charter's founding rule is that any working
+geodynamicist must be able to read the code and understand it, and that it
+applies to the scripts and notebooks as much as to the library. A clever
+construction that saves ten lines and costs the reader a detour has made the
+script worse.
+
+**Use Underworld's own machinery rather than hand-rolled equivalents.**
+`uw.Params` for options — notebook-editable defaults, units aware, with
+`-uw_name value` overrides — not `argparse` and not a config dict at the top of
+the file. `uw.print` and `uw.timing` rather than bare prints and stopwatches.
+A reader should never meet an MPI call in a note's example.
+
+**Name the parameters, once, at the top.** A number a reader has to hunt for in
+the middle of a loop is a number they cannot change with any confidence. This is
+also what makes a figure reproducible: the script that made it carries the
+settings that made it.
+
+**Comments carry intent, not mechanics.** Why this term is in the weak form, why
+this tolerance, why this ordering — not `# loop over cells`. Delete
+commented-out code and debugging scaffolding before the note is published; git
+remembers, and the reader should not have to.
+
+The tone matches too: direct, unshowy, and not congratulatory. We report how
+something works, not how hard it was to make work.
+
 ### The other standing conventions
 
 - **Plain declarative prose, first person plural.** We measured, we found, we
