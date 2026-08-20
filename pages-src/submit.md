@@ -101,10 +101,17 @@ reference and builds the list for you:
 ... as others have found [@10.21105/joss.07831].
 ```
 
-That needs no bibliography file. For a note with many references, or work
-without a DOI, add a `references.bib` beside the article, name it in the front
-matter as `bibliography: [references.bib]`, and cite by key — `@farrington2014`
-or `[@farrington2014]`. The two styles mix freely.
+That needs no bibliography file, and it is fine while you are drafting. Before a
+note is published, **pin its references**: add a `references.bib` beside the
+article, name it in the front matter as `bibliography: [references.bib]`, and
+cite by key in one form, `[@farrington2014]`.
+
+Pinning is not tidiness. A citation given as a bare DOI is fetched from doi.org
+at build time, so the build depends on doi.org answering — one note resolved
+fine locally and failed on CI with *Citation data was not available or
+malformed*, which would have published a broken reference. A DOI containing
+parentheses fails a second way: the inline form stops at the first bracket.
+Neither can be repaired in a PDF that has already been deposited.
 
 This is worth insisting on because the alternative is not merely untidy. A
 hand-written list whose entries are links gets read as citations, and the note

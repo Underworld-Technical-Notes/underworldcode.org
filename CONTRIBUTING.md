@@ -72,6 +72,60 @@ pixi run test      # metadata validation + the DOI URL test
 pixi run myst start
 ```
 
+## How the notes read
+
+### A heading is a summary, not a first sentence
+
+This is the correction that gets made most often, and it is worth knowing why.
+A heading is read as a label for what follows — a thing to skim, or to skip. It
+is not read as the opening words of the paragraph under it. So a paragraph that
+continues from its heading arrives, for the reader, with its first sentence
+missing.
+
+The test is to cover the heading and read the first sentence alone. If it leans
+on the heading for its subject, for a pronoun's referent, or for the verb it
+never got, rewrite it.
+
+```markdown
+### The leak, measured
+
+An annulus, no slip on the inner radius, the treatment under test on the
+outer, driven by a degree-four density anomaly.
+```
+
+Covered up, that is a list of parts with nothing to attach them to. It reads as
+though the heading were the start of the sentence, which is how it was written
+and not how it is read.
+
+```markdown
+### The leak, measured
+
+The leak is measured on an annulus, with no slip on the inner radius and the
+treatment under test on the outer, driven by a degree-four density anomaly.
+```
+
+Every paragraph introduces itself. The cost is a few repeated words; the benefit
+is that any section can be entered at any point, which is how a technical note
+is actually read.
+
+### The other standing conventions
+
+- **Plain declarative prose, first person plural.** We measured, we found, we
+  were wrong. No antithesis pairs, no aphoristic closing line.
+- **A published note carries results, not the route to them.** False steps,
+  bugs found on the way and issue numbers belong in the tracker. What survives
+  is the method and the measurement.
+- **Every figure and table ships the script that made it**, in the note's
+  `examples/`. A number a reader cannot regenerate is an assertion.
+- **Alt text describes what the image shows, including the numbers.** It is read
+  by people who never see the figure, and by anyone reading the markdown.
+- **Citations are pinned** in the note's `references.bib` and cited in one form,
+  `[@Key]`. Letting the build fetch citation data means a page can publish with a
+  broken reference on the day doi.org is slow — and a deposited PDF cannot be
+  repaired afterwards.
+- **Say which quantity, on which mesh, against what.** "Converges" and "agrees
+  well" are not measurements.
+
 ## Things that are load-bearing
 
 - **The article file must be named `<slug>.md`.** MyST takes a page's URL from
