@@ -2054,3 +2054,131 @@ def test_no_page_repeats_the_name_of_its_own_group():
                if page.get("group") and page.get("title")
                and page["group"].lower() == page["title"].lower()]
     assert not clashes, "page titled the same as its group: %s" % ", ".join(clashes)
+
+
+def test_examples_carry_no_absolute_paths():
+    """An example must not hard-code a path from the machine it was written on.
+
+    It breaks on every other machine, and it publishes a home directory —
+    someone's username — into a repository that is public and archived. One
+    figure script shipped with `/Users/<name>/+Simulations/...` in it before this
+    test existed.
+
+    Written against the whole repository rather than one directory: the next one
+    will be somewhere else.
+    """
+    import re
+
+    root = pathlib.Path(__file__).resolve().parent.parent
+    pattern = re.compile(r"(/Users/[A-Za-z0-9._-]+|/home/[A-Za-z0-9._-]+)")
+    # `/home/jovyan` is the Docker image's own path, quoted in prose as such.
+    allowed = {"/home/jovyan"}
+    offenders = []
+    for path in sorted(root.glob("articles/*/examples/*.py")) + \
+            sorted(root.glob("scripts/*.py")):
+        for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            for hit in pattern.findall(line):
+                if hit not in allowed:
+                    offenders.append(f"{path.relative_to(root)}:{number}: {hit}")
+    assert not offenders, "absolute home paths in shipped code:\n" + "\n".join(offenders)
+
+# --------------------------------------------------------------------------- #
+# the reader page: /<slug>/read/
+# --------------------------------------------------------------------------- #
+def test_reader_page_is_built_after_the_files_it_links_to():
+    """`build_reader_pages` only writes where the PDF is already staged.
+
+    Order matters and is easy to lose in a one-line task: run it before
+    `stage_downloads.py` and every reader page silently disappears, because the
+    generator skips any article whose PDF is not in the build yet.
+    """
+    root = pathlib.Path(__file__).resolve().parent.parent
+    task = (root / "pixi.toml").read_text(encoding="utf-8")
+    line = next(l for l in task.splitlines() if l.startswith("build-html ="))
+    assert line.index("stage_downloads.py") < line.index("build_reader_pages.py")
+    # the retarget script rewrites links in built pages, so it comes after them
+    assert line.index("build_reader_pages.py") < line.index("inject_reader_link.py")
+
+    preview = (root / "scripts" / "preview_build.py").read_text(encoding="utf-8")
+    for step in ("build_reader_pages.py", "inject_reader_link.py"):
+        assert step in preview, f"the preview path does not run {step}"
+
+
+def test_reader_page_offers_the_pdf_and_the_source():
+    """The page a reader lands on carries both downloads and a way back."""
+    reader = load("build_reader_pages")
+    page = reader.PAGE % {
+        "slug": "a-note", "title": "A Note", "kicker": "UWTN 2026-001",
+        "meta": "Someone", "style": "",
+    }
+    assert 'href="../a-note.pdf" download' in page
+    assert 'href="../a-note.md" download' in page
+    assert 'href="../"' in page                           # back to the article
+    assert 'type="application/pdf"' in page               # embedded, not linked
+    assert 'name="robots" content="noindex"' in page      # the article is canonical
+    # RELATIVE throughout: the preview site serves everything from a hashed
+    # subdirectory, and an absolute path walks out of it to the domain root.
+    assert 'href="/a-note' not in page and 'data="/a-note' not in page
+
+
+def test_reader_meta_line_links_the_doi():
+    reader = load("build_reader_pages")
+    line = reader.meta_line({
+        "authors": [{"name": "A Person"}, {"name": "B Person"}],
+        "publication_date": "2026-08-11",
+        "archive_doi": "10.6084/m9.figshare.1",
+    })
+    assert "A Person and B Person" in line
+    assert 'href="https://doi.org/10.6084/m9.figshare.1"' in line
+    assert reader.meta_line({}) == ""
+
+
+def test_theme_downloads_menu_is_dropped():
+    """One route to the PDF, not two.
+
+    The reader page carries both files, so the theme's Downloads menu is a
+    quieter second way to the same two things. It is removed at both ends: the
+    `exports` array the theme renders it from, and the button MyST already put
+    in the static HTML.
+    """
+    inject = load("inject_reader_link")
+    payload = '{"title":"x","exports":[{"format":"typst","url":"/build/a.pdf"}],"y":1}'
+    assert inject.EXPORTS.sub('"exports":[]', payload) == \
+        '{"title":"x","exports":[],"y":1}'
+    # an already-empty array is left alone rather than matched again
+    assert inject.EXPORTS.sub('"exports":[]', '{"exports":[],"y":1}') == \
+        '{"exports":[],"y":1}'
+
+    button = ('<div class="row"><button id="gen" aria-haspopup="menu">'
+              '<span class="sr-only">Downloads</span><svg><path/></svg>'
+              '</button></div>')
+    stripped, dropped = inject.drop_downloads_button(button)
+    assert dropped and stripped == '<div class="row"></div>'
+    assert inject.drop_downloads_button("<p>no menu</p>") == ("<p>no menu</p>", False)
+
+
+def test_reader_link_is_visible_and_click_safe():
+    """A reader must be able to see the way to the PDF, and clicking must work.
+
+    The theme's only route is an entry inside the Downloads menu, which it
+    renders from its hydration payload when the menu OPENS -- so there is no
+    anchor to rewrite beforehand, and a rewrite that waits for one races the
+    reader's next click. The injected script therefore does two things: adds a
+    visible link to the frontmatter badge row, and catches the click in the
+    capture phase.
+    """
+    inject = load("inject_reader_link")
+    script = inject.SCRIPT
+    assert ".myst-fm-block-badges" in script          # somewhere visible to put it
+    assert "uwtn-pdf-link" in script
+    assert 'addEventListener("click"' in script and ", true)" in script   # capture
+    assert "preventDefault" in script
+    # Relative, so the preview subdirectory survives: the href is built from the
+    # current path. (Asserting the absence of an absolute form matched the
+    # COMMENT explaining why we do not use one, which is why this asserts the
+    # positive instead.)
+    assert "window.location.pathname" in script
+
+    style = (pathlib.Path(__file__).resolve().parent.parent
+             / "static" / "uwtn.css").read_text(encoding="utf-8")
+    assert ".uwtn-pdf-link" in style, "the injected link has no style"

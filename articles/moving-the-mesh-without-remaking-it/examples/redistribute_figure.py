@@ -8,6 +8,8 @@ counts are printed to prove it.
 The metric is built the idiomatic way, from the gradient of a field, which is
 the code the note itself shows.
 """
+import pathlib
+
 import numpy as np
 import sympy
 import underworld3 as uw
@@ -80,6 +82,9 @@ for col, (pvm, title) in enumerate(
     pl.enable_parallel_projection()
     pl.view_xy()
     pl.reset_camera(bounds=(-0.01, 1.01, -0.01, 1.08, -0.05, 0.05))
-out = "/Users/lmoresi/+Simulations/mmpde-note-figure/redistribute-before-after.png"
-pl.screenshot(out)
+# Beside the article, not beside the author: an absolute path here breaks on any
+# other machine and puts a home directory into a published repository.
+out = pathlib.Path(__file__).resolve().parent.parent / "figures" / "redistribute-before-after.png"
+out.parent.mkdir(exist_ok=True)
+pl.screenshot(str(out))
 print("wrote", out, flush=True)

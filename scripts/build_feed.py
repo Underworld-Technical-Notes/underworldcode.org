@@ -43,9 +43,11 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 ARTICLES = ROOT / "articles"
 sys.path.insert(0, str(ROOT / "scripts"))
 
-TITLE = "Underworld Technical Notes"
-SUBTITLE = ("Methods, worked examples, benchmarks and design rationale for the "
-            "Underworld geodynamics code.")
+# The site's title, not the note series': this feed carries every published
+# article, the news and release announcements among them.
+TITLE = "Underworld Geodynamics"
+SUBTITLE = ("News, methods, worked examples, benchmarks and design rationale "
+            "for the Underworld geodynamics code.")
 
 
 def first_paragraph(directory, slug):
