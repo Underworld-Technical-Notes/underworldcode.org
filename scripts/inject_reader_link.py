@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
-"""Point the theme's PDF download at the reader page.
+"""Put a visible PDF link on an article, and send the theme's download to it.
 
-The article page carries the theme's own Downloads menu, whose PDF entry links
-straight at the fingerprinted export under ``/build/``. Clicking it hands the
-reader a file. The site has somewhere better to send them -- ``/<slug>/read/``,
-which shows the PDF embedded and offers the download and the markdown source as
-buttons -- so the entry is rewritten to go there.
+Two things, because the theme gives a reader only one way to the PDF and it is
+not a visible one: an entry inside the Downloads menu behind the icon in the
+frontmatter row. Both now lead to ``/<slug>/read/``, which shows the PDF embedded
+and offers the file and the markdown source as buttons.
+
+* **A "PDF" link is added to the frontmatter badge row**, beside the licence
+  badge, so there is something to click without opening a menu first.
+* **The menu entry is intercepted at click time.** The theme renders that menu
+  from its hydration payload only when it is opened, so the anchor does not
+  exist to be rewritten until then; a rewrite watching for it races the reader's
+  second click. Catching the click instead has no such race.
 
 Rewritten in the browser rather than in the HTML, for the same reason as the
 comments (see ``inject_comments.py``): the theme calls ``hydrateRoot(document,
@@ -29,6 +35,8 @@ MARKER = "uwtn-reader-link"
 
 SCRIPT = """<script id="%s">
 (function () {
+  var CLASS = "uwtn-pdf-link";
+
   function readerHref() {
     // Built from the CURRENT path, not from "/" + slug: the preview site serves
     // the whole site from a hashed subdirectory, and an absolute path would walk
@@ -38,28 +46,46 @@ SCRIPT = """<script id="%s">
     return path + "/read/";
   }
 
-  function retarget() {
+  // 1. A visible link in the frontmatter badge row, beside the licence badge.
+  function addBadge() {
     var href = readerHref();
     if (!href) return;
-    var links = document.querySelectorAll('a[href*="/build/"][href$=".pdf"]');
-    for (var i = 0; i < links.length; i++) {
-      links[i].setAttribute("href", href);
-      links[i].removeAttribute("download");     // it is a page now, not a file
-    }
+    var row = document.querySelector(".myst-fm-block-badges");
+    if (!row) return;                                  // not an article page
+    var existing = row.querySelector("." + CLASS);
+    if (existing) { existing.setAttribute("href", href); return; }
+    var link = document.createElement("a");
+    link.className = CLASS;
+    link.setAttribute("href", href);
+    link.setAttribute("aria-label", "Read the archival PDF");
+    link.textContent = "PDF";
+    row.insertBefore(link, row.firstChild);
   }
 
+  // 2. The theme's Downloads menu. Its entries are rendered from the hydration
+  //    payload only when the menu opens, so there is nothing to rewrite until
+  //    then -- and a rewrite that waits for them races the reader's next click.
+  //    Catching the click is exact.
+  document.addEventListener("click", function (event) {
+    var anchor = event.target && event.target.closest
+      ? event.target.closest('a[href*="/build/"][href$=".pdf"]') : null;
+    if (!anchor) return;
+    var href = readerHref();
+    if (!href) return;
+    event.preventDefault();
+    window.location.href = href;
+  }, true);                                            // capture: before the theme
+
   // After hydration, like the comments bootstrap: anything done earlier is undone.
-  function start() { window.setTimeout(retarget, 0); }
+  function start() { window.setTimeout(addBadge, 0); }
   if (document.readyState === "complete") start();
   else window.addEventListener("load", start);
 
-  // The menu renders when it is opened, and the theme routes on the client, so
-  // the links appear and change without a reload. Debounced: retarget mutates
-  // the DOM itself.
+  // The theme routes on the client, so a new article never reloads the page.
   var pending = null;
   new MutationObserver(function () {
     if (pending) return;
-    pending = window.setTimeout(function () { pending = null; retarget(); }, 120);
+    pending = window.setTimeout(function () { pending = null; addBadge(); }, 120);
   }).observe(document.body, { childList: true, subtree: true });
 })();
 </script>""" % MARKER

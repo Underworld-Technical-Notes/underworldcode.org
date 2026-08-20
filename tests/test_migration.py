@@ -2105,3 +2105,30 @@ def test_reader_meta_line_links_the_doi():
     assert "A Person and B Person" in line
     assert 'href="https://doi.org/10.6084/m9.figshare.1"' in line
     assert reader.meta_line({}) == ""
+
+
+def test_reader_link_is_visible_and_click_safe():
+    """A reader must be able to see the way to the PDF, and clicking must work.
+
+    The theme's only route is an entry inside the Downloads menu, which it
+    renders from its hydration payload when the menu OPENS -- so there is no
+    anchor to rewrite beforehand, and a rewrite that waits for one races the
+    reader's next click. The injected script therefore does two things: adds a
+    visible link to the frontmatter badge row, and catches the click in the
+    capture phase.
+    """
+    inject = load("inject_reader_link")
+    script = inject.SCRIPT
+    assert ".myst-fm-block-badges" in script          # somewhere visible to put it
+    assert "uwtn-pdf-link" in script
+    assert 'addEventListener("click"' in script and ", true)" in script   # capture
+    assert "preventDefault" in script
+    # Relative, so the preview subdirectory survives: the href is built from the
+    # current path. (Asserting the absence of an absolute form matched the
+    # COMMENT explaining why we do not use one, which is why this asserts the
+    # positive instead.)
+    assert "window.location.pathname" in script
+
+    style = (pathlib.Path(__file__).resolve().parent.parent
+             / "static" / "uwtn.css").read_text(encoding="utf-8")
+    assert ".uwtn-pdf-link" in style, "the injected link has no style"
