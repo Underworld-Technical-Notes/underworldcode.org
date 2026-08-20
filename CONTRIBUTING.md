@@ -150,6 +150,13 @@ something works, not how hard it was to make work.
 - **A published note carries results, not the route to them.** False steps,
   bugs found on the way and issue numbers belong in the tracker. What survives
   is the method and the measurement.
+- **A note stands on what is published.** Do not motivate it with a method of
+  ours that has not been written up yet, and do not lean on a note that is still
+  to come: a reader can follow neither. Where a machinery of our own is the
+  reason the question matters — a particular free-surface scheme, say — that is
+  the reason to write *that* note, not to reference it from this one. Say the
+  general thing the reader can check, and leave the specific one to its own
+  note.
 - **Every figure and table ships the script that made it**, in the note's
   `examples/`. A number a reader cannot regenerate is an assertion.
 - **Alt text describes what the image shows, including the numbers.** It is read
