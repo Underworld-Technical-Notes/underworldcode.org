@@ -45,7 +45,7 @@ MARKER = "uwtn-reader-link"
 # payload. Emptied rather than deleted: the key is what the theme reads.
 EXPORTS = re.compile(r'"exports":\[(?!\])(?:[^][]|\[[^]]*\])*?\](?=[,}])')
 
-SCRIPT = """<script id="%s">
+SCRIPT = r"""<script id="%s">
 (function () {
   var CLASS = "uwtn-pdf-link";
 
