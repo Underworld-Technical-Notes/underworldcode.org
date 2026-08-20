@@ -495,6 +495,18 @@ elements trimmed from each end.
 | 10⁴ | 0.076 / 0.085 | 0.698 / 0.697 | 0.076 / 0.085 | 0.076 / 0.085 |
 | 10⁶ | 0.076 / 0.085 | 0.992 / 1.000 | 0.075 / 0.084 | 0.076 / 0.085 |
 
+```{figure} figures/topography.png
+:alt: Two line plots of surface topography along the top wall from x=0 to x=1, mean removed, at viscosity contrasts of 100 and a million. In both, the exact answer is a thick grey curve falling from +0.29 at the left, flattening near +0.21, dropping sharply at the viscosity step at x=0.5 and continuing down to -0.38 at the right. At a contrast of 100 every curve lies on the grey one. At a contrast of a million they separate: the component Dirichlet, the rotated reaction and the traction lambda + r(u.n - u_n) still lie on the exact curve, while the multiplier field lambda alone is a nearly flat line near zero reaching only 0.04, and the penalty at 1e4 is a second nearly flat line near zero. Nitsche does not solve at either contrast and is absent.
+
+Surface topography along the top wall, against the exact answer. At a contrast of
+100 nothing distinguishes the treatments. At $10^6$ the multiplier field
+$\lambda$ carries almost none of the traction on its own — the augmentation
+holds the rest — while $\lambda + r(\mathbf{u}\cdot\hat{\mathbf{n}} -
+\tilde{u}_n)$, which is what `traction()` returns, lies on the exact curve. The
+penalty has failed by this contrast: its coefficient is a bare number and cannot
+be large against $10^6$ and moderate against 1 at the same time.
+```
+
 **The three exact treatments agree to three figures at every contrast**, whole
 wall and trimmed alike. That is the result to take from this half, and it took
 the multiplier reporting the whole traction rather than $\lambda$ alone, and the
