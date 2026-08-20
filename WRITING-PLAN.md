@@ -227,14 +227,49 @@ it is the one a reader arrives with.
 On a box, "no flow through this wall" is a component of the velocity and you
 constrain it. On an annulus, a sphere, a boundary with topography, or any mesh
 that has been moved, it is not a component of anything — and that is the whole
-difficulty. The note is about what you can do instead, and what each choice
-costs:
+difficulty. **Three approaches, in that order** — each is the previous one's
+answer, which is the spine of the note:
 
-- **Penalty and Nitsche.** What they enforce, and that they leak — order `1e-3`
-  where a strong constraint holds to machine precision.
-- **Rotating the degrees of freedom.** A per-node rotation `Q` and a strong
-  `v_n = 0`. Exact, and correct on curved, tilted and deformed boundaries
-  because the normal is taken per node.
+- **Direct penalty.** Add a term to the weak form that punishes `v.n != 0`.
+  One line, works anywhere, and never quite holds: the leak is set by the
+  penalty parameter, and driving it down to close the leak conditions the
+  operator badly. You are trading one error for another.
+- **Nitsche.** The consistent version of the same idea. Carrying the boundary
+  traction terms as well as the penalty makes the discrete problem consistent
+  for any stabilisation above a threshold, rather than only in the limit — so
+  it converges at the optimal order without the conditioning price. It is still
+  a weak imposition and still leaks, order `1e-3` in what we measure.
+- **Rotating the degrees of freedom.** Stop asking for the constraint and
+  impose it: a per-node rotation `Q` and a strong `v_n = 0`. Exact to machine
+  precision, and correct on curved, tilted and deformed boundaries because the
+  normal is taken per node.
+
+  **This is the classical answer, not a new one** — it goes back to the early
+  finite-element texts, and Engelman, Sani & Gresho were already reviewing the
+  alternatives in 1982. The note should present it as the textbook method
+  recovered, and then explain why it is nonetheless the least used of the three.
+
+  **The reason is structural, not numerical.** Rotating the degrees of freedom
+  leaves the discrete vector in a *mixed basis*: interior nodes hold
+  `(v_x, v_y)`, constrained boundary nodes hold `(v_n, v_t)`, and every piece
+  of machinery downstream has to know which is which. That is a solver-wide
+  obligation, and it is where the cost actually lands. Ours, concretely:
+
+  - the multigrid prolongation has to be rotated too, which is why the rotated
+    path cannot use the DM-coupled hierarchy at all and needs custom-P
+    transfers;
+  - the rotated solve builds its own KSP under a per-solve prefix, so
+    `stokes.petsc_options` does not reach it — a trap that has cost us time
+    more than once;
+  - the Schur block and the preconditioner both had to be revisited for the
+    rotated operator.
+
+  None of that is an argument against the method. It is an argument for
+  knowing what you are taking on, and it is the honest reason a weakly imposed
+  condition survives in codes that could do this instead.
+
+The leak numbers are the argument for the ordering, and they should be measured
+in the note rather than asserted.
 - **Which normal, which is subtler than it looks.** A node-averaged normal
   weighted by facet measure matches the straight-facet integral the assembler
   actually evaluates; an analytic normal is exact for the *geometry* and
@@ -252,6 +287,111 @@ costs:
 - **When not to use it.** A hard constraint cannot morph, so a boundary
   condition that has to evolve in time — a Dirichlet-to-traction ramp — still
   wants Nitsche.
+
+**Where this note came from, and it should say so.** The rotated boundary
+conditions were not built to tidy up free slip on an annulus — they were built
+because the free surface needs an accurate surface traction, and that is the
+one quantity a weakly imposed constraint gets wrong. Leading with that gives
+the note a reason to exist beyond completeness, and it ties it to S1/S2, which
+should be written near it (see the free-surface section).
+
+**The hard part of this note is that the three usually agree.** Solve a
+convection model with any of them and the velocity field is the same to
+plotting accuracy; a `1e-3` leak in `v.n` is invisible in anything that
+consumes the velocity, which is most of what a model does. A note that compares
+three methods on a problem where they agree has no argument, and a reader who
+suspects the comparison was staged is right to.
+
+So the note is organised around **where the difference is actually visible**,
+and the clearest case is **surface stress**. When the wall-normal traction is
+the answer rather than a by-product — dynamic topography, plate-boundary force
+balance, anything compared against a geoid or a gravity field — the three stop
+agreeing:
+
+- Under a penalty or Nitsche condition the constraint is approximate, so the
+  traction recovered from it inherits the approximation. You are differentiating
+  a field that was never made to satisfy the condition exactly.
+- Under the rotated constraint the reaction **is** `sigma_nn`. It is not
+  recovered, post-processed or split off — it is the multiplier the solve
+  already computed, available through `boundary_normal_traction` /
+  `dynamic_topography`.
+
+That contrast is the note's worked example and it should be measured, not
+described: same model, three boundary treatments, compare the surface traction
+against a case with a known answer.
+
+Secondary discriminators, worth a paragraph each rather than a section: a
+boundary that is genuinely curved or has been deformed, where the leak is not
+merely small but geometrically inconsistent; composition with transverse
+isotropy, which the rotated constraint survives and Nitsche does not; and
+conditioning as the penalty parameter is driven down.
+
+And say plainly, early, that for a model which only consumes the velocity
+field, the simplest thing that works is the right choice. The note is more
+useful if it tells the reader when they can stop reading.
+
+**This one needs the mathematics written out**, unlike the measurement-led
+notes. The three approaches differ in their weak forms, and the differences are
+the argument — a reader cannot be asked to take "consistent only in the limit"
+on trust. What has to appear:
+
+- The Stokes weak form and where the boundary term `int_G (sigma.n).w` comes
+  from, because every method below is a statement about that term.
+- That free slip is *two* conditions — `v.n = 0` and zero tangential traction —
+  and the second is natural, which is why it is the one people forget.
+- **Direct penalty**: add `(gamma/h) int_G (v.n)(w.n)`. The discrete problem is
+  a perturbed problem, and the perturbation is what the leak is.
+- **Nitsche**: the consistency term and the adjoint-consistency term alongside
+  the penalty, and that `gamma` has a threshold set by an inverse inequality
+  rather than being a free dial. This is the part that most needs writing out,
+  because "add two more terms and it becomes consistent" is not believable
+  without seeing them.
+- **Rotated**: the per-node `Q`, solving in `(v_n, v_t)`, constraining `v_n`
+  strongly, and the reaction falling out as `sigma_nn`.
+- **The normal on a faceted boundary**: the assembled constraint is an integral
+  over straight facets, so the node normal consistent with it is the one
+  weighted by facet measure. This is where our own #560 landed, and it is worth
+  deriving rather than asserting.
+
+**Starting bibliography.** Verified references, not a reading list yet:
+
+- Engelman, Sani & Gresho, *The implementation of normal and/or tangential
+  boundary conditions in finite element codes for incompressible fluid flow*,
+  Int. J. Numer. Methods Fluids **2** (1982) 225-238. The classic statement of
+  the rotated-degrees-of-freedom approach; reviews the alternatives and uses
+  global mass conservation to choose between them. Our rotated BCs are this
+  idea, and the note should say so rather than presenting it as new.
+- Behr, *On the application of slip boundary condition on curved boundaries*,
+  Int. J. Numer. Methods Fluids **45** (2004) 43-51. Directly the "which
+  normal" question on a discretised curved boundary. ⚠️ Bibliographic details
+  confirmed, contents NOT yet read — whether it reaches the same
+  measure-weighted normal we did is exactly what to check, and if it does, #560
+  was a rediscovery and should be described as one.
+- Nitsche, *Über ein Variationsprinzip zur Lösung von Dirichlet-Problemen bei
+  Verwendung von Teilräumen, die keinen Randbedingungen unterworfen sind*,
+  Abh. Math. Semin. Univ. Hamburg **36** (1971) 9-15,
+  `10.1007/BF02995904`. The original.
+
+Still to find: a modern treatment of Nitsche for *slip* specifically (as
+opposed to no-slip), and whatever the geodynamics codes cite for free slip on a
+spherical shell.
+
+**Formulating in another coordinate system is the same idea, globally.**
+Solving in spherical or cylindrical components makes the wall-normal direction
+a coordinate direction again, so the constraint returns to being "hold one
+component" — which is rotating the degrees of freedom, imposed once for the
+whole domain instead of node by node. Worth saying explicitly, because it
+explains why it is attractive: applied globally there is no mixed basis and
+none of the structural cost above.
+
+It does not generalise, and that is the whole point. It works exactly when the
+boundary lies along a coordinate surface — a sphere, an annulus, a cylinder —
+and does nothing for topography, a deformed mesh, or a tilted internal surface.
+The per-node rotation is what you are left with once the geometry stops
+cooperating, and paying its structural price is what buys the generality.
+
+Treat it as the third approach's special case rather than a fourth approach,
+and do not develop it further than that.
 
 Curved boundaries under *refinement* are G1's, not this note's: the snapping
 callback that keeps a refined boundary on the true surface is already written
@@ -322,7 +462,21 @@ should be acknowledged as such.
 ## Free surface
 
 Its own development, and it needs discussion before it is written. Two notes,
-and the split matters:
+and the split matters.
+
+**Write these near R1.** The free surface is *why* the rotated boundary
+conditions were implemented: the surface evolves under the traction it carries,
+so the wall-normal stress stops being a diagnostic and becomes the thing that
+drives the model. That is the strongest possible case for a constraint whose
+reaction is `sigma_nn` exactly rather than recovered from an approximately
+satisfied condition, and it is the motivation R1 should lead with rather than
+arriving at.
+
+The dependency runs one way — R1 is the machinery, S1 and S2 are what it was
+built for — so R1 either goes first or they go out together. **M1 and G1 are
+the cautionary example**: they were meant to publish together, went four days
+apart, and now owe a v2 for a cross-link that could have been in v1. Decide
+which of the two patterns this pair follows before drafting, not after.
 
 ### S1. The algorithm
 
