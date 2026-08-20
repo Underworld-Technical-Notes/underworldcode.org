@@ -296,7 +296,42 @@ def measure(mode, cell=CELL, **kwargs):
     return out
 
 
-MODES = ("penalty", "penalty_node", "nitsche", "constraint", "rotated")
+MODES = ("penalty_node", "nitsche", "constraint", "rotated")
+
+
+def both(cells=(0.15, 0.10, 0.075, 0.05), modes=MODES):
+    """The constraint and the stress, from the SAME solves.
+
+    The two questions -- does the boundary hold, and is the answer right -- are
+    one experiment. Reporting them from separate runs invited the reader to
+    compare numbers that came from different problems.
+    """
+    exact, _residual = exact_amplitude(build("free", cell=0.2)[3])
+    print("exact sigma_rr on r = %.2f: %.10f cos(%d.theta)" % (R_O, exact, N))
+    print()
+    print("leak / stress error, from one solve each")
+    print()
+    print("| cell size | " + " | ".join(modes) + " |")
+    print("|---" * (len(modes) + 1) + "|")
+    for cell in cells:
+        row = []
+        for mode in modes:
+            got = measure(mode, cell=cell)
+            row.append("diverged" if got is None
+                       else "%.1e / %.1e" % (got["leak"], got["recovered"]))
+        print("| %.3f | %s |" % (cell, " | ".join(row)), flush=True)
+    print()
+    print("the reaction routes, same solves")
+    print()
+    print("| cell size | rotated reaction | multiplier traction |")
+    print("|---|---|---|")
+    for cell in cells:
+        entries = []
+        for mode in ("rotated", "constraint"):
+            got = measure(mode, cell=cell)
+            entries.append("-" if not got or "reaction" not in got
+                           else "%.1e" % got["reaction"])
+        print("| %.3f | %s |" % (cell, " | ".join(entries)), flush=True)
 
 
 def sweep(cells=(0.15, 0.10, 0.075, 0.05), modes=MODES):
@@ -383,5 +418,5 @@ def control(cell=CELL):
 
 if __name__ == "__main__":
     command = sys.argv[1:2] or ["sweep"]
-    {"sweep": sweep, "params": parameters,
+    {"sweep": sweep, "both": both, "params": parameters,
      "locking": locking, "control": control}[command[0]]()
