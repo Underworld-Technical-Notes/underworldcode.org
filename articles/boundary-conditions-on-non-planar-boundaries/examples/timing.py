@@ -38,7 +38,7 @@ import stress as S
 REPEATS = 3
 # Big enough that a solve is seconds rather than hundredths: at 10k nodes the
 # four treatments were separated by less than the run-to-run spread.
-CELLS = (0.05, 0.03, 0.02, 0.0125)
+CELLS = (0.02, 0.0125)
 MODES = ("penalty_node", "nitsche", "constraint", "rotated")
 
 

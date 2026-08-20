@@ -209,12 +209,30 @@ def multiplier_traction(stokes, v, boundary="Upper"):
     node normal. The two differ at O(h^2) and they multiply a term that is itself
     a correction.
     """
-    coords, h = trace(stokes, 2, stokes.multiplier(boundary))
-    tree = uw.kdtree.KDTree(np.ascontiguousarray(v.coords))
-    index = np.asarray(tree.query(np.ascontiguousarray(coords), 1)[1]).flatten()
+    nodes, *_ = _boundary_field_nodes(stokes, boundary, 2)
+    coords = np.array([node[2] for node in nodes])
+    # The multiplier is carried at the VELOCITY degree, so h and u share a node
+    # set and one lookup serves both. Building it is the only part of this that
+    # is not arithmetic, and it depends on the mesh rather than on the solution:
+    # a time-stepping consumer builds it once and reuses it every step.
+    index = _trace_index(v, coords)
+    h = np.squeeze(np.asarray(stokes.multiplier(boundary).array))[index]
     u = np.squeeze(np.asarray(v.array))[index]
     normal = coords / np.linalg.norm(coords, axis=1)[:, None]
-    return coords, np.asarray(h) + AUGMENTATION * (u * normal).sum(axis=1)
+    return coords, h + AUGMENTATION * (u * normal).sum(axis=1)
+
+
+_TRACE_INDEX = {}
+
+
+def _trace_index(var, coords):
+    """Row of `var`'s arrays for each trace coordinate, cached per (mesh, trace)."""
+    key = (id(var), coords.shape[0], float(coords.sum()))
+    if key not in _TRACE_INDEX:
+        tree = uw.kdtree.KDTree(np.ascontiguousarray(var.coords))
+        _TRACE_INDEX[key] = np.asarray(
+            tree.query(np.ascontiguousarray(coords), 1)[1]).flatten()
+    return _TRACE_INDEX[key]
 
 
 def reaction_traction(stokes, mode, v=None):

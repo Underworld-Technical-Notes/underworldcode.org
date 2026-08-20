@@ -639,39 +639,38 @@ in that configuration to put a column of numbers behind it.
 ### What each one costs
 
 Seconds on the annulus, uniform viscosity, one core, direct solver: the solve,
-and then the recovery of the surface traction by whatever route that treatment
-has. Median of three timed repeats after an untimed warm-up, run sequentially.
-The smaller meshes are here for the scaling; at ten thousand nodes the four
-treatments are separated by less than the run-to-run spread and only the largest
-row is worth reading.
+and then the surface traction by whatever route that treatment has. Median of
+three timed repeats after an untimed warm-up, run sequentially. Two sizes,
+because below about ten thousand nodes the four are separated by less than the
+run-to-run spread and there is nothing to read.
 
-| cell size | velocity nodes | penalty | Nitsche | multiplier | rotated |
-|---|---|---|---|---|---|
-| 0.050 | 4 802 | 0.03 / 0.073 | 0.03 / 0.060 | 0.04 / 0.002 | 0.03 / 0.004 |
-| 0.030 | 12 852 | 0.08 / 0.128 | 0.08 / 0.131 | 0.12 / 0.005 | 0.07 / 0.007 |
-| 0.020 | 28 338 | 0.18 / 0.257 | 0.18 / 0.268 | 0.26 / 0.011 | 0.17 / 0.010 |
-| 0.013 | 71 424 | 0.45 / 0.626 | 0.47 / 0.652 | 0.67 / 0.027 | 0.43 / 0.016 |
+| velocity nodes | penalty | Nitsche | multiplier | rotated |
+|---|---|---|---|---|
+| 28 338 | 0.17 / 0.273 | 0.18 / 0.267 | 0.26 / 0.004 | 0.16 / 0.010 |
+| 71 424 | 0.45 / 0.631 | 0.47 / 0.657 | 0.67 / 0.009 | 0.43 / 0.016 |
 
-Two things separate, and both are structural rather than incidental.
+**The multiplier's solve costs about 50% more**, consistently — 0.67 s against
+0.43 s at 71 000 nodes. That is the extra field and the larger saddle point.
+Rotating the degrees of freedom costs nothing measurable against the weak forms:
+the rotation is a sparse orthogonal transform on a boundary's worth of rows.
 
-**The multiplier's solve costs about 50% more**, consistently across the sweep —
-0.67 s against 0.43 s at 71 000 nodes. That is the extra field and the larger
-saddle point. The other three are the same solve to within the spread; rotating
-the degrees of freedom costs nothing measurable here, because the rotation is a
-sparse orthogonal transform applied to a boundary's worth of rows.
+**Neither exact route solves for its traction.** The multiplier's is
+$h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)$ evaluated on the boundary trace; the
+rotated constraint's is its nodal reaction divided by the lumped boundary mass.
+Both are arithmetic over the ~1 000 nodes of the trace, which is why they cost
+milliseconds and why the two are within a factor of two of each other.
 
-**The recovery differs by a factor of 25 to 40, and it is the larger number.**
-Projecting $\hat{\mathbf{n}}\cdot\boldsymbol{\sigma}\hat{\mathbf{n}}$ out of the
-solution is a second solve, and at every size in this table it costs *more than
-the Stokes solve did* — 0.63 s against 0.45 s at the largest. The two exact
-routes read their traction off the state the solve already returned: 27 ms for
-the multiplier, 16 ms for the rotated reaction. On a time-dependent model with a
-free surface that difference is paid at every step.
+**The weak forms have to recover theirs, and that is a second solve.** Projecting
+$\hat{\mathbf{n}}\cdot\boldsymbol{\sigma}\hat{\mathbf{n}}$ out of the solution
+costs *more than the Stokes solve did* — 0.63 s against 0.45 s — so asking a
+penalty or Nitsche model for its surface stress roughly doubles the cost of the
+timestep. Against 9 to 16 ms for the exact routes, that is a factor of forty to
+seventy, and on a free-surface model it is paid at every step.
 
 :::{note} What these timings are not
 Two-dimensional, one core, direct solver. What they measure is the difference
-between a recovery *solve* and boundary arithmetic, which is structural and will
-survive scaling. They say nothing about a large parallel spherical shell, where
+between a recovery *solve* and boundary arithmetic, which is structural and
+survives scaling. They say nothing about a large parallel spherical shell, where
 the rotated velocity block's multigrid and the multiplier's larger Schur
 complement are the terms that matter and neither is exercised here.
 :::
