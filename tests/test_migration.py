@@ -183,12 +183,44 @@ def test_line_breaks_inside_prose_are_kept():
 
 
 def test_display_maths_delimiters_are_balanced_in_every_article():
+    """Every display-maths block opens and closes.
+
+    A closing delimiter may carry a label -- `$$ (eq-my-equation)` -- which is how
+    MyST names an equation so `{eq}` can reference it, and it must be on that
+    line: on a line of its own it is not a label, it is a paragraph of literal
+    text, the equation is never labelled, and the reference has no target. HTML
+    tolerates that and Typst does not, so the article builds and the archival PDF
+    does not. Counting only bare `$$` lines would call the labelled form
+    unbalanced and push authors back to the broken one.
+    """
     import re
     for path in sorted((ROOT / "articles").glob("*/*.md")):
         body = re.sub(r"^---\n.*?\n---\n", "", path.read_text(encoding="utf-8"), flags=re.S)
         body = re.sub(r"```.*?```", "", body, flags=re.S)
-        count = len(re.findall(r"(?m)^\$\$\s*$", body))
+        count = len(re.findall(r"(?m)^\$\$(?:\s*\([^)\s]+\))?\s*$", body))
         assert count % 2 == 0, "%s has %d lone $$ delimiters" % (path.parent.name, count)
+
+
+def test_a_labelled_equation_is_referenceable():
+    """An `{eq}` reference must name a label that some equation actually carries.
+
+    This is the check the build cannot make for you in time: an unresolved
+    reference is a warning in HTML and a hard error in `typst compile`, so it
+    lands as a failed PDF export rather than as a bad article.
+    """
+    import re
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        body = path.read_text(encoding="utf-8")
+        # Two forms label an equation in this corpus, and both are valid MyST:
+        # `$$ ... $$ (label)`, and amsmath's \label{} inside \begin{equation}.
+        # A \label{} inside a plain $$ block is NEITHER -- that is LaTeX the
+        # renderer never sees, and it is the mistake this test exists to catch.
+        labels = set(re.findall(r"(?m)^\$\$\s*\(([^)\s]+)\)\s*$", body))
+        labels |= set(re.findall(r"\\begin\{equation\}\s*\\label\{([^}]+)\}", body))
+        referenced = set(re.findall(r"\{eq\}`([^`]+)`", body))
+        missing = referenced - labels
+        assert not missing, (
+            "%s references %s, which no equation labels" % (path.parent.name, sorted(missing)))
 
 
 # --------------------------------------------------------------------------
