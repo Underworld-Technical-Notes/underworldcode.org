@@ -617,3 +617,27 @@ a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); 
   .uwtn-landing-banner,
   .uwtn-landing-banner img { max-height: 180px; }
 }
+
+/* The archival PDF, as a visible link in the article's frontmatter badge row.
+   The theme's own route to it is an entry inside the Downloads menu, which a
+   reader has to know is there; this sits beside the licence badge and goes to
+   /<slug>/read/, where the PDF is embedded with the file and the markdown
+   source as buttons. Sized and faded to sit with the badges rather than
+   compete with them. */
+.uwtn-pdf-link {
+  font-family: var(--uwtn-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  color: var(--uwtn-muted);
+  border: 1px solid var(--uwtn-rule);
+  border-radius: 3px;
+  padding: 0.05rem 0.4rem;
+  margin-right: 0.55rem;
+  opacity: 0.75;
+}
+.uwtn-pdf-link:hover {
+  opacity: 1;
+  color: var(--uwtn-accent);
+  border-color: var(--uwtn-accent);
+}
