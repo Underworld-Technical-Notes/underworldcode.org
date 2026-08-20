@@ -63,8 +63,8 @@ LABEL = {
     "dirichlet": "component Dirichlet",
     "penalty": "penalty, $10^4$",
     "nitsche": r"Nitsche, $\gamma = 10$",
-    "constraint": "multiplier, as returned",
-    "constraint+r": r"multiplier $+\;r(\mathbf{u}\cdot\hat{\mathbf{n}})$",
+    "constraint": r"multiplier field $\lambda$",
+    "constraint+r": r"traction $\lambda + r(\mathbf{u}\cdot\hat{\mathbf{n}} - \tilde{u}_n)$",
     "rotated": "rotated (reaction)",
 }
 STYLE = {"dirichlet": (0, (4, 2)), "penalty": "-", "nitsche": "-",
@@ -95,17 +95,21 @@ def profile(mode, eta_B):
         curves = {mode: -np.asarray(values)}      # h = -sigma_zz
     else:
         coords, values = read
-        curves = {mode: np.asarray(values)}       # the reaction already carries it
+        curves = {mode: np.asarray(values)}
     if mode == "constraint":
-        # r is the default augmentation: augmentation_base (1e4) times the local
-        # viscosity, so 1e4 on the soft half and 1e4.eta_B on the stiff one. On a
-        # flat top wall u.n is u_y.
-        import underworld3 as uw
-        tree = uw.kdtree.KDTree(np.ascontiguousarray(v.coords))
-        index = np.asarray(tree.query(np.ascontiguousarray(coords), 1)[1]).flatten()
-        u_n = np.squeeze(np.asarray(v.array))[index][:, 1]
-        r = 1.0e4 * np.where(coords[:, 0] < 0.5, 1.0, eta_B)
-        curves["constraint+r"] = curves[mode] + r * u_n
+        # BOTH curves come from the solver, and neither is assembled here. That
+        # matters: this script used to add r(u.n) to what `reaction_traction`
+        # returned, which was right while that returned the bare multiplier and
+        # became a DOUBLE COUNT the moment it returned `traction()` instead --
+        # the corrected curve drew at twice its augmentation share and left the
+        # panel. Two copies of one expression, one of them stale. There is now
+        # one copy, and it lives in the solver.
+        #   multiplier()  -> lambda, the field
+        #   traction()    -> lambda + r(u.n - u~_n), the whole boundary load
+        curves["constraint+r"] = curves[mode]                    # traction(), as read
+        coords_bare, bare = C.trace(stokes, 2, stokes.multiplier("Top"))
+        assert np.allclose(coords_bare, coords), "the two traces disagree"
+        curves[mode] = np.asarray(bare)                          # the multiplier alone
 
     order = np.argsort(coords[:, 0])
     x = coords[order, 0]

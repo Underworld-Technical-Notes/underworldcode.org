@@ -30,7 +30,7 @@ NY = 4          # rows, surface included
 
 
 def surface_y(x):
-    """A free surface: rises on the left, falls on the right, with an
+    """A deformed surface: rises on the left, falls on the right, with an
     inflection between, so the normal swings through a wide range and the
     curvature changes sign. No global rotation straightens this out, which is
     the reason the figure exists."""

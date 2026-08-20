@@ -37,7 +37,7 @@
   let hair = rgb("#d0d0d0")
 
   // ======================================================================
-  // LEFT: a free surface, meshed. Geometry (nodes, Delaunay triangles,
+  // LEFT: a deformed surface, meshed. Geometry (nodes, Delaunay triangles,
   // surface frames) comes from generate-rotated-basis.py via JSON -- the
   // skill's rule, and the reason every node is now in the triangulation.
   // An earlier version joined nodes by a distance threshold and left some out.
@@ -98,7 +98,7 @@
   }
 
   content((0, 3.05), text(weight: "bold", size: 10pt, fill: ink,
-    "A free surface has no preferred direction"))
+    "A deformed surface has no preferred direction"))
 
   circle((-3.3, -3.55), radius: 0.13, fill: rot-fg, stroke: (paint: rot-fg))
   content((-3.05, -3.55), anchor: "west",
