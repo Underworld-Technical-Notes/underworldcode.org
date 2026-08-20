@@ -204,12 +204,13 @@ lam = stokes.add_constraint_bc(0.0, "Upper")
 stokes.solve()
 ```
 
-**Note**: **at convergence, the
-momentum row's boundary term is the normal traction.** It does not need to be recovered from
-the velocity field after the fact. It is an unknown the solve returns, available (on the solver)
-through `traction` and, divided by $\Delta\rho g$, through `topography`.
+:::{note} The boundary traction is an unknown of the solve, not a post-processing step
+At convergence the momentum row's boundary term *is* the normal traction, so there is
+nothing to recover from the velocity field afterwards. The solver returns it through
+`traction` and, divided by $\Delta\rho g$, through `topography`.
+:::
 
-That term is the whole boundary load,
+That boundary term is the whole boundary load,
 $\lambda + r(\mathbf{u}\cdot\hat{\mathbf{n}} - \tilde{u}_n)$, not the
 multiplier alone. The second part vanishes only where the constraint row is
 satisfied exactly; discretely it is satisfied to the solver's tolerance, and $r$
@@ -526,14 +527,11 @@ topography carries none of the signal. Scaling the coefficient by the local
 viscosity is the obviously right thing to want, but the solver does not converge here at any
 magnitude we tried, from $\eta$ to $10^3\eta$.
 
-**Nitsche is missing from this table**. Our configuration of it
-on this box converges at a contrast of $10^6$ and fails the line search at $10$ —
-the opposite way round from every expectation — at 16 × 16 and 32 × 32 alike and
-at $\gamma = 10$, $100$ and $1000$. Where it does converge, $\gamma$ has to rise
-with the contrast exactly as the annulus said: at $10^6$ and 16 × 16 the surface
-stress error is 25 at $\gamma = 10$, 1.2 at $100$ and 0.17 at $1000$, while the
-constraint is held to $10^{-3}$ or better throughout. We are not confident enough
-in that configuration to put a column of numbers behind it.
+**Nitsche has no column in this table.** In our implementation it is unreliable on a
+boundary that mixes essential patches with Nitsche patches, which is what this test
+asks for: the top wall weak, the other three held strongly. We could not reach a
+converged solution for this example at any penalty we tried. Imposed weakly on all
+four walls it converges, so it is the mixture we cannot solve rather than the method.
 
 ### What each one costs
 
