@@ -42,12 +42,14 @@ $$ (eq-free-slip)
 
 In the weak form, boundary tractions appear as surface integrals. Multiplying the momentum
 balance by a test function $\mathbf{w}$ and integrating by parts gives
+
 $$
 \int_\Omega \boldsymbol{\sigma} : \nabla\mathbf{w} \; \mathrm{d}V
 - \int_{\partial\Omega} (\boldsymbol{\sigma}\cdot\hat{\mathbf{n}})\cdot\mathbf{w}
   \; \mathrm{d}S
   = \int_\Omega \mathbf{f}\cdot\mathbf{w} \; \mathrm{d}V .
 $$
+
 Drop the surface integral and you have imposed zero traction in all
 directions — free *everything* (a free surface), not free slip. Constrain the surface-normal degrees of freedom
 and the surface integral only addresses the tangential traction terms. 
@@ -95,11 +97,13 @@ return the boundary traction as a side-effect of the solution.
 
 This could not be more simple, conceptually. We are working in a variational
 environment, so we just add into our equation system, a term that punishes any flow through the boundary:
+
 $$
 \dots + \kappa\int_{\partial\Omega}
 (\mathbf{u}\cdot\hat{\mathbf{n}})(\mathbf{w}\cdot\hat{\mathbf{n}})
 \; \mathrm{d}S .
 $$
+
 $\kappa$ is a single scalar. It has to absorb the scale of the problem itself, which is why
 the value that works is a property of the model rather than a default.
 
