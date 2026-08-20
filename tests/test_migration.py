@@ -2054,3 +2054,51 @@ def test_no_page_repeats_the_name_of_its_own_group():
                if page.get("group") and page.get("title")
                and page["group"].lower() == page["title"].lower()]
     assert not clashes, "page titled the same as its group: %s" % ", ".join(clashes)
+
+
+# --------------------------------------------------------------------------- #
+# the reader page: /<slug>/read/
+# --------------------------------------------------------------------------- #
+def test_reader_page_is_built_after_the_files_it_links_to():
+    """`build_reader_pages` only writes where the PDF is already staged.
+
+    Order matters and is easy to lose in a one-line task: run it before
+    `stage_downloads.py` and every reader page silently disappears, because the
+    generator skips any article whose PDF is not in the build yet.
+    """
+    root = pathlib.Path(__file__).resolve().parent.parent
+    task = (root / "pixi.toml").read_text(encoding="utf-8")
+    line = next(l for l in task.splitlines() if l.startswith("build-html ="))
+    assert line.index("stage_downloads.py") < line.index("build_reader_pages.py")
+    # the retarget script rewrites links in built pages, so it comes after them
+    assert line.index("build_reader_pages.py") < line.index("inject_reader_link.py")
+
+    preview = (root / "scripts" / "preview_build.py").read_text(encoding="utf-8")
+    for step in ("build_reader_pages.py", "inject_reader_link.py"):
+        assert step in preview, f"the preview path does not run {step}"
+
+
+def test_reader_page_offers_the_pdf_and_the_source():
+    """The page a reader lands on carries both downloads and a way back."""
+    reader = load("build_reader_pages")
+    page = reader.PAGE % {
+        "slug": "a-note", "title": "A Note", "kicker": "UWTN 2026-001",
+        "meta": "Someone", "style": "",
+    }
+    assert 'href="/a-note/a-note.pdf" download' in page
+    assert 'href="/a-note/a-note.md" download' in page
+    assert 'href="/a-note/"' in page                      # back to the article
+    assert 'type="application/pdf"' in page               # embedded, not linked
+    assert 'name="robots" content="noindex"' in page      # the article is canonical
+
+
+def test_reader_meta_line_links_the_doi():
+    reader = load("build_reader_pages")
+    line = reader.meta_line({
+        "authors": [{"name": "A Person"}, {"name": "B Person"}],
+        "publication_date": "2026-08-11",
+        "archive_doi": "10.6084/m9.figshare.1",
+    })
+    assert "A Person and B Person" in line
+    assert 'href="https://doi.org/10.6084/m9.figshare.1"' in line
+    assert reader.meta_line({}) == ""

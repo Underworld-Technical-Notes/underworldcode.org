@@ -54,6 +54,8 @@ def build(slugs, base_url, whole_site=False):
             [sys.executable, "scripts/fix_slugs.py"],
             [sys.executable, "scripts/inject_style.py"],
             [sys.executable, "scripts/stage_downloads.py"],
+            [sys.executable, "scripts/build_reader_pages.py"],
+            [sys.executable, "scripts/inject_reader_link.py"],
         ]
     for step in steps:
         if subprocess.call(step, cwd=ROOT, env=env) != 0:
