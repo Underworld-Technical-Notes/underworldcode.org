@@ -657,7 +657,9 @@ field costs — a few milliseconds of array indexing at this size, and nothing t
 belongs in a column beside a solve.
 
 **The rotated constraint's reaction does need one step**, and it is worth being
-precise about which. The reaction is an *integrated* nodal load,
+precise about which. (The 10 to 16 ms in the table is the reaction the solve
+already stashed; `boundary_flux` re-assembles the residual from scratch and costs
+0.2 s, which is the 0.206 s in the comparison above.) The reaction is an *integrated* nodal load,
 $\int_\Gamma \sigma_{nn}\,\phi_i\,\mathrm{d}S$, which is $M_\Gamma$ times the
 pointwise traction. Turning it into a pointwise value means undoing that boundary
 mass. On a 2-D trace, and on 3-D P1 triangles, the lumped mass is diagonal and
@@ -676,12 +678,44 @@ gives it as a load that still has to be divided by a mass.
 Rotating the degrees of freedom costs nothing measurable against the weak forms:
 the rotation is a sparse orthogonal transform on a boundary's worth of rows.
 
-**The weak forms have to recover theirs, and that is a second solve.** Projecting
-$\hat{\mathbf{n}}\cdot\boldsymbol{\sigma}\hat{\mathbf{n}}$ out of the solution
-costs *more than the Stokes solve did* — 0.63 s against 0.45 s — so asking a
-penalty or Nitsche model for its surface stress roughly doubles the cost of the
-timestep. Against 9 to 16 ms for the exact routes, that is a factor of forty to
-seventy, and on a free-surface model it is paid at every step.
+**The weak forms have to recover theirs by differentiating the solution**, and
+the projection that does it costs *more than the Stokes solve did* — 0.63 s
+against 0.45 s — so asking a penalty or Nitsche model for its surface stress
+roughly doubles the timestep.
+
+The obvious question is whether that is the method's cost or the recovery's. A
+global $L^2$ projection to get values on a thousand boundary nodes is plainly
+more work than the job requires, and the consistent boundary flux is right there,
+reading the assembled residual rather than differentiating anything. **It does
+not work for a weakly imposed condition**, and the reason is the same one that
+makes it unavailable to the multiplier:
+
+| cell 0.0125 | projection | CBF back-calculation |
+|---|---|---|
+| penalty, node normal | 0.651 s, error 1.1 × 10⁻³ | 0.224 s, **error 1.00** |
+| Nitsche | 0.666 s, error 3.6 × 10⁻⁴ | 0.230 s, **error 1.00** |
+| rotated | 0.602 s, error 1.6 × 10⁻⁴ | 0.206 s, error 1.6 × 10⁻⁴ |
+
+An error of 1.00 is the metric reporting that nothing was recovered. A reaction
+exists in the residual only where a row has been *constrained*; a weak condition
+supplies its traction as a term inside the row it acts on, so the residual there
+is balanced at convergence and there is nothing left to read. The multiplier does
+the same thing, and gets away with it because the term it supplies, $h$, is the
+traction as a field. Nitsche's term is written in terms of
+$\boldsymbol{\sigma}(\mathbf{u})$, so reading it back still means differentiating
+the answer.
+
+That is the structural statement the timings are really making, and it follows
+the two pairs exactly:
+
+| how the constraint is imposed | the traction is | to read it |
+|---|---|---|
+| weakly, by a term (penalty, Nitsche) | a by-product | differentiate the solution |
+| exactly, by construction (rotated) | the constraint reaction | de-smear the nodal load |
+| exactly, by a multiplier | an unknown of the system | read the field |
+
+The cost of the first row is negotiable — a recovery restricted to the boundary
+would be cheaper than a global projection — but the differentiation is not.
 
 :::{note} What these timings are not
 Two-dimensional, one core, direct solver. What they measure is the difference
