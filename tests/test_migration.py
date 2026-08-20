@@ -2107,6 +2107,30 @@ def test_reader_meta_line_links_the_doi():
     assert reader.meta_line({}) == ""
 
 
+def test_theme_downloads_menu_is_dropped():
+    """One route to the PDF, not two.
+
+    The reader page carries both files, so the theme's Downloads menu is a
+    quieter second way to the same two things. It is removed at both ends: the
+    `exports` array the theme renders it from, and the button MyST already put
+    in the static HTML.
+    """
+    inject = load("inject_reader_link")
+    payload = '{"title":"x","exports":[{"format":"typst","url":"/build/a.pdf"}],"y":1}'
+    assert inject.EXPORTS.sub('"exports":[]', payload) == \
+        '{"title":"x","exports":[],"y":1}'
+    # an already-empty array is left alone rather than matched again
+    assert inject.EXPORTS.sub('"exports":[]', '{"exports":[],"y":1}') == \
+        '{"exports":[],"y":1}'
+
+    button = ('<div class="row"><button id="gen" aria-haspopup="menu">'
+              '<span class="sr-only">Downloads</span><svg><path/></svg>'
+              '</button></div>')
+    stripped, dropped = inject.drop_downloads_button(button)
+    assert dropped and stripped == '<div class="row"></div>'
+    assert inject.drop_downloads_button("<p>no menu</p>") == ("<p>no menu</p>", False)
+
+
 def test_reader_link_is_visible_and_click_safe():
     """A reader must be able to see the way to the PDF, and clicking must work.
 
