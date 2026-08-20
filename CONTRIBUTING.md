@@ -72,6 +72,95 @@ pixi run test      # metadata validation + the DOI URL test
 pixi run myst start
 ```
 
+## How the notes read
+
+### A heading is a summary, not a first sentence
+
+This is the correction that gets made most often, and it is worth knowing why.
+A heading is read as a label for what follows — a thing to skim, or to skip. It
+is not read as the opening words of the paragraph under it. So a paragraph that
+continues from its heading arrives, for the reader, with its first sentence
+missing.
+
+The test is to cover the heading and read the first sentence alone. If it leans
+on the heading for its subject, for a pronoun's referent, or for the verb it
+never got, rewrite it.
+
+```markdown
+### The leak, measured
+
+An annulus, no slip on the inner radius, the treatment under test on the
+outer, driven by a degree-four density anomaly.
+```
+
+Covered up, that is a list of parts with nothing to attach them to. It reads as
+though the heading were the start of the sentence, which is how it was written
+and not how it is read.
+
+```markdown
+### The leak, measured
+
+The leak is measured on an annulus, with no slip on the inner radius and the
+treatment under test on the outer, driven by a degree-four density anomaly.
+```
+
+Every paragraph introduces itself. The cost is a few repeated words; the benefit
+is that any section can be entered at any point, which is how a technical note
+is actually read.
+
+### The example code is part of the note
+
+A note's `examples/` scripts are read, not only run, so they are held to the same
+standard as the prose. Underworld3's own guides are the authority and should not
+be restated here — the
+[Style Charter](https://github.com/underworldcode/underworld3/blob/development/docs/developer/UW3_STYLE_CHARTER.md)
+and the
+[notebook style guide](https://github.com/underworldcode/underworld3/blob/development/docs/developer/guides/notebook-style-guide.md)
+— but four of their clauses decide most of what a reviewer will ask for.
+
+**Write the plain version.** The Charter's founding rule is that any working
+geodynamicist must be able to read the code and understand it, and that it
+applies to the scripts and notebooks as much as to the library. A clever
+construction that saves ten lines and costs the reader a detour has made the
+script worse.
+
+**Use Underworld's own machinery rather than hand-rolled equivalents.**
+`uw.Params` for options — notebook-editable defaults, units aware, with
+`-uw_name value` overrides — not `argparse` and not a config dict at the top of
+the file. `uw.print` and `uw.timing` rather than bare prints and stopwatches.
+A reader should never meet an MPI call in a note's example.
+
+**Name the parameters, once, at the top.** A number a reader has to hunt for in
+the middle of a loop is a number they cannot change with any confidence. This is
+also what makes a figure reproducible: the script that made it carries the
+settings that made it.
+
+**Comments carry intent, not mechanics.** Why this term is in the weak form, why
+this tolerance, why this ordering — not `# loop over cells`. Delete
+commented-out code and debugging scaffolding before the note is published; git
+remembers, and the reader should not have to.
+
+The tone matches too: direct, unshowy, and not congratulatory. We report how
+something works, not how hard it was to make work.
+
+### The other standing conventions
+
+- **Plain declarative prose, first person plural.** We measured, we found, we
+  were wrong. No antithesis pairs, no aphoristic closing line.
+- **A published note carries results, not the route to them.** False steps,
+  bugs found on the way and issue numbers belong in the tracker. What survives
+  is the method and the measurement.
+- **Every figure and table ships the script that made it**, in the note's
+  `examples/`. A number a reader cannot regenerate is an assertion.
+- **Alt text describes what the image shows, including the numbers.** It is read
+  by people who never see the figure, and by anyone reading the markdown.
+- **Citations are pinned** in the note's `references.bib` and cited in one form,
+  `[@Key]`. Letting the build fetch citation data means a page can publish with a
+  broken reference on the day doi.org is slow — and a deposited PDF cannot be
+  repaired afterwards.
+- **Say which quantity, on which mesh, against what.** "Converges" and "agrees
+  well" are not measurements.
+
 ## Things that are load-bearing
 
 - **The article file must be named `<slug>.md`.** MyST takes a page's URL from
