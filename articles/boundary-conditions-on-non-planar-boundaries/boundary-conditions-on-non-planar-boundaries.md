@@ -38,8 +38,7 @@ $$
 \mathbf{u}\cdot\hat{\mathbf{n}} = 0
 \qquad\text{and}\qquad
 \hat{\mathbf{t}}\cdot\boldsymbol{\sigma}\cdot\hat{\mathbf{n}} = 0.
-$$
-(eq-free-slip)
+$$ (eq-free-slip)
 
 In the weak form, boundary tractions appear as surface integrals. Multiplying the momentum
 balance by a test function $\mathbf{w}$ and integrating by parts gives
