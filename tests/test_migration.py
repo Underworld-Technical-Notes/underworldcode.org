@@ -2056,6 +2056,32 @@ def test_no_page_repeats_the_name_of_its_own_group():
     assert not clashes, "page titled the same as its group: %s" % ", ".join(clashes)
 
 
+def test_examples_carry_no_absolute_paths():
+    """An example must not hard-code a path from the machine it was written on.
+
+    It breaks on every other machine, and it publishes a home directory —
+    someone's username — into a repository that is public and archived. One
+    figure script shipped with `/Users/<name>/+Simulations/...` in it before this
+    test existed.
+
+    Written against the whole repository rather than one directory: the next one
+    will be somewhere else.
+    """
+    import re
+
+    root = pathlib.Path(__file__).resolve().parent.parent
+    pattern = re.compile(r"(/Users/[A-Za-z0-9._-]+|/home/[A-Za-z0-9._-]+)")
+    # `/home/jovyan` is the Docker image's own path, quoted in prose as such.
+    allowed = {"/home/jovyan"}
+    offenders = []
+    for path in sorted(root.glob("articles/*/examples/*.py")) + \
+            sorted(root.glob("scripts/*.py")):
+        for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            for hit in pattern.findall(line):
+                if hit not in allowed:
+                    offenders.append(f"{path.relative_to(root)}:{number}: {hit}")
+    assert not offenders, "absolute home paths in shipped code:\n" + "\n".join(offenders)
+
 # --------------------------------------------------------------------------- #
 # the reader page: /<slug>/read/
 # --------------------------------------------------------------------------- #
