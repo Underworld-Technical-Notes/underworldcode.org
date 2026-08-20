@@ -42,12 +42,14 @@ $$ (eq-free-slip)
 
 In the weak form, boundary tractions appear as surface integrals. Multiplying the momentum
 balance by a test function $\mathbf{w}$ and integrating by parts gives
+
 $$
 \int_\Omega \boldsymbol{\sigma} : \nabla\mathbf{w} \; \mathrm{d}V
 - \int_{\partial\Omega} (\boldsymbol{\sigma}\cdot\hat{\mathbf{n}})\cdot\mathbf{w}
   \; \mathrm{d}S
   = \int_\Omega \mathbf{f}\cdot\mathbf{w} \; \mathrm{d}V .
 $$
+
 Drop the surface integral and you have imposed zero traction in all
 directions — free *everything* (a free surface), not free slip. Constrain the surface-normal degrees of freedom
 and the surface integral only addresses the tangential traction terms. 
@@ -95,11 +97,13 @@ return the boundary traction as a side-effect of the solution.
 
 This could not be more simple, conceptually. We are working in a variational
 environment, so we just add into our equation system, a term that punishes any flow through the boundary:
+
 $$
 \dots + \kappa\int_{\partial\Omega}
 (\mathbf{u}\cdot\hat{\mathbf{n}})(\mathbf{w}\cdot\hat{\mathbf{n}})
 \; \mathrm{d}S .
 $$
+
 $\kappa$ is a single scalar. It has to absorb the scale of the problem itself, which is why
 the value that works is a property of the model rather than a default.
 
@@ -129,6 +133,7 @@ The reason the penalty is only accurate in the limit is that it is not
 because the true solution is subject to a separate boundary traction the
 penalty form ignores. Nitsche's method [@Nitsche_1971] restores
 consistency by carrying that traction explicitly:
+
 $$
 \dots
 - \int_{\partial\Omega} (\hat{\mathbf{n}}\cdot\boldsymbol{\sigma}(\mathbf{u})
@@ -139,6 +144,7 @@ $$
   (\mathbf{u}\cdot\hat{\mathbf{n}})(\mathbf{w}\cdot\hat{\mathbf{n}})
   \; \mathrm{d}S .
 $$
+
 The first of the three is the consistency term: it is the boundary traction the
 integration by parts produced, and including this makes the true
 solution satisfy the discrete equations exactly. The second is its transpose,
@@ -164,10 +170,12 @@ This approach adds an *equation*.
 
 Carry a scalar field $\lambda$ on the boundary and require, as a row of the
 system in its own right,
+
 $$
 \int_{\partial\Omega} (\mathbf{u}\cdot\hat{\mathbf{n}} - \tilde{u}_n)\, q
 \; \mathrm{d}S = 0 \quad \text{for all } q ,
 $$
+
 where $\tilde{u}_n$ is the prescribed wall-normal velocity — zero for free slip,
 and a datum if the wall is being driven — and $\lambda$ enters the momentum row
 as the traction $\lambda\hat{\mathbf{n}}$ that holds the constraint. It is a
@@ -220,10 +228,12 @@ is removed the same way it would be on a box.
 
 Collect the per-node rotations into a block-diagonal $Q$, equal to the identity
 at every node that is not constrained. The rotated system is
+
 $$
 \hat{A} = Q^{T} A Q, \qquad \hat{\mathbf{b}} = Q^{T}\mathbf{b},
 \qquad \mathbf{u} = Q\hat{\mathbf{u}} ,
 $$
+
 and the wall-normal row of $\hat{A}$ is struck out. The constraint then holds to
 machine precision, because it is not being solved for at all.
 
@@ -237,11 +247,13 @@ that it is exact and the others are not, it is the least used of the three.
 **The topography** is the reaction of that struck row — the force the constraint
 had to supply — de-smeared by the boundary mass to turn an integrated nodal load
 into a pointwise stress,
+
 $$
 \sigma_{nn} = -M_\Gamma^{-1}\left.(A\mathbf{u} - \mathbf{b})\right|_\Gamma,
 \qquad
 h = -\frac{\sigma_{nn} - \overline{\sigma_{nn}}}{\Delta\rho\,g} ,
 $$
+
 which is the consistent boundary flux of Zhong, Gurnis and Hulbert
 [@Zhong_1993]. In Underworld3, the solver's `boundary_normal_traction()` and `dynamic_topography()` return
 these. Nothing is differentiated and nothing is solved: in two dimensions
@@ -342,9 +354,11 @@ than only for the flow. Underworld wraps it as `uw.analytic.CylindricalStokes`.
 The case used throughout is the smooth one: a density anomaly
 $(r/r_o)^k \cos n\theta$ with $n = 2$ and $k = 3$, viscosity 1, free slip on both
 radii. On the outer boundary the exact radial stress is a single harmonic,
+
 $$
 \sigma_{rr}(r_o, \theta) = 0.1506696\,\cos 2\theta ,
 $$
+
 fitted to a residual of $10^{-16}$, so the whole of the surface stress is that one
 amplitude and the error in it is one number. The treatment under test is on the
 outer radius; the inner carries the exact analytic velocity as a Dirichlet
@@ -444,6 +458,7 @@ and at convergence it
 balances the volume residual restricted to the boundary, which is precisely the
 nodal load the consistent boundary flux back-calculation reads
 [@Zhong_1993]. So
+
 $$
 \lambda + r(\mathbf{u}\cdot\hat{\mathbf{n}} - \tilde{u}_n)
   = -M_\Gamma^{-1} \left. (A\mathbf{u} - \mathbf{b}) \right|_\Gamma ,
