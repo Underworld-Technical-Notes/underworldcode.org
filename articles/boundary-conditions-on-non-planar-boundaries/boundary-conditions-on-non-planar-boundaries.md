@@ -646,19 +646,35 @@ run-to-run spread and there is nothing to read.
 
 | velocity nodes | penalty | Nitsche | multiplier | rotated |
 |---|---|---|---|---|
-| 28 338 | 0.17 / 0.273 | 0.18 / 0.267 | 0.26 / 0.004 | 0.16 / 0.010 |
-| 71 424 | 0.45 / 0.631 | 0.47 / 0.657 | 0.67 / 0.009 | 0.43 / 0.016 |
+| 28 338 | 0.17 / 0.273 | 0.18 / 0.267 | 0.26 / — | 0.16 / 0.010 |
+| 71 424 | 0.45 / 0.631 | 0.47 / 0.657 | 0.67 / — | 0.43 / 0.016 |
+
+The dash is not a missing measurement. **The multiplier has nothing to recover**:
+$h$ is a finite element field in its own right, so its nodal values are the
+traction, pointwise, and $h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)$ is an
+expression evaluated where it is wanted. Reading it costs whatever reading a
+field costs — a few milliseconds of array indexing at this size, and nothing that
+belongs in a column beside a solve.
+
+**The rotated constraint's reaction does need one step**, and it is worth being
+precise about which. The reaction is an *integrated* nodal load,
+$\int_\Gamma \sigma_{nn}\,\phi_i\,\mathrm{d}S$, which is $M_\Gamma$ times the
+pointwise traction. Turning it into a pointwise value means undoing that boundary
+mass. On a 2-D trace, and on 3-D P1 triangles, the lumped mass is diagonal and
+undoing it is a division — the 10 to 16 ms above. On **3-D P2 triangles it is a
+genuine solve**: the lumped row sums vanish at the vertices, so the consistent
+trace mass has to be assembled and solved, and Underworld gathers the trace to
+one rank to do it. That is the one place the CBF route pays for being a
+back-calculation, and it is the case a spherical free surface runs in.
+
+So the conceptual difference the timings expose is not speed but *what each
+method hands you*: the multiplier gives the traction as a field, and the reaction
+gives it as a load that still has to be divided by a mass.
 
 **The multiplier's solve costs about 50% more**, consistently — 0.67 s against
 0.43 s at 71 000 nodes. That is the extra field and the larger saddle point.
 Rotating the degrees of freedom costs nothing measurable against the weak forms:
 the rotation is a sparse orthogonal transform on a boundary's worth of rows.
-
-**Neither exact route solves for its traction.** The multiplier's is
-$h + r(\mathbf{u}\cdot\hat{\mathbf{n}} - g)$ evaluated on the boundary trace; the
-rotated constraint's is its nodal reaction divided by the lumped boundary mass.
-Both are arithmetic over the ~1 000 nodes of the trace, which is why they cost
-milliseconds and why the two are within a factor of two of each other.
 
 **The weak forms have to recover theirs, and that is a second solve.** Projecting
 $\hat{\mathbf{n}}\cdot\boldsymbol{\sigma}\hat{\mathbf{n}}$ out of the solution
