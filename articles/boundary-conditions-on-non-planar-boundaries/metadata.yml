@@ -31,8 +31,9 @@ methods:
 ghost_tags:
   - Underworld Code
 figures: 3
-# Rendered from the model rather than a stock photograph, so there is nobody to
-# credit. `figures` counts the figures in the body; the banner is not one.
-banner: figures/banner.png
-banner_credit: null
+# `figures` counts the figures in the body; the banner is not one. Unsplash's
+# licence asks for the credit wherever the photograph appears, so it lives here
+# and is rebuilt into the page with the banner.
+banner: figures/banner.jpg
+banner_credit: "Photo by <a href=\"https://unsplash.com/@thefirmhtx?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Alexander Londoño</a> / <a href=\"https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit\">Unsplash</a>"
 source: native

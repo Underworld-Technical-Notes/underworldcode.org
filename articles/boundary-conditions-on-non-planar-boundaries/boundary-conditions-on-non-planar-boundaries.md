@@ -13,6 +13,7 @@ authors:
     affiliations:
       - Australian National University
 license: CC-BY-4.0
+banner: figures/banner.jpg
 keywords:
   - Underworld Code
   - Tricks of the Trade
@@ -28,6 +29,8 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 development @ 8b7c8b9e
 ---
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@thefirmhtx?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Alexander Londoño</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
+
 Free-slip boundary conditions are used to simplify the physical behaviour at a domain boundary. 
 It may be a free-surface where the boundary deforms slightly in response to the internal flow, or it may 
 be an interface where the boundary layer thickness is so small that it cannot be resolved at the same time 
