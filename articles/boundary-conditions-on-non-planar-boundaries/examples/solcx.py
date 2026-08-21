@@ -131,8 +131,28 @@ def recovered_traction(mesh, stokes):
     return trace(projection, 0, field)
 
 
-def reaction_traction(stokes, mode):
-    """The traction the solve returned, for the two methods that return one."""
+def penalty_traction(stokes, v, kappa):
+    """The traction a direct penalty holds the wall with.
+
+    The penalty term IS that traction, so sigma_zz is -kappa (u.n) on the top
+    wall, where n = (0, 1). Returned with the sign of a reaction, as the other
+    two routes are, so `measure` negates all three alike.
+    """
+    coords = np.asarray(v.coords)
+    top = np.abs(coords[:, 1] - 1.0) < 1.0e-9
+    u = np.squeeze(np.asarray(v.array))
+    return coords[top], kappa * u[top, 1]
+
+
+def reaction_traction(stokes, mode, v=None, penalty=PENALTY):
+    """The traction the solve returned, for the three methods that return one.
+
+    Nitsche is the exception: its term is written in sigma(u), so reading it
+    back means differentiating the velocity, which is what
+    `recovered_traction` does.
+    """
+    if mode == "penalty":
+        return penalty_traction(stokes, v, penalty)
     if mode == "rotated":
         return stokes.boundary_normal_traction("Top")
     if mode == "constraint":
@@ -199,7 +219,7 @@ def measure(mode, **kwargs):
     coords, values = recovered_traction(mesh, stokes)
     out["recovered"] = stress_error(coords, values, exact)
     out["trimmed"] = stress_error(coords, values, exact, trim=2.0 / kwargs.get("res", RES))
-    read = reaction_traction(stokes, mode)
+    read = reaction_traction(stokes, mode, v=v, penalty=kwargs.get("penalty", PENALTY))
     if read is not None:
         coords, values = read
         # The reaction is the traction holding the wall, opposite in sign to

@@ -235,12 +235,38 @@ def _trace_index(var, coords):
     return _TRACE_INDEX[key]
 
 
+def penalty_traction(stokes, v, kappa=PENALTY, boundary="Upper"):
+    """The traction a direct penalty holds the boundary with.
+
+    The term the weak form carries IS that traction, so sigma_nn is
+    -kappa (u.n) on the boundary and there is nothing to recover. Read at the
+    boundary nodes against the TRUE radial direction, as `recovered_traction`
+    is, so the comparison does not depend on the solver's normal.
+
+    It is only as good as the constraint it holds: the leak and this number are
+    the same quantity scaled by kappa.
+    """
+    nodes, *_ = _boundary_field_nodes(stokes, boundary, 0)
+    coords = np.array([node[2] for node in nodes])
+    index = _trace_index(v, coords)
+    u = np.squeeze(np.asarray(v.array))[index]
+    normal = coords / np.linalg.norm(coords, axis=1)[:, None]
+    return coords, -kappa * (u * normal).sum(axis=1)
+
+
 def reaction_traction(stokes, mode, v=None):
-    """The constraint reaction, for the two methods that return one."""
+    """The traction each treatment returns without recovering one.
+
+    Three of the four do. Nitsche is the exception: its term is written in
+    sigma(u), so reading it back means differentiating the velocity, which is
+    what `recovered_traction` does.
+    """
     if mode == "rotated":
         return stokes.boundary_normal_traction("Upper")
     if mode == "constraint":
         return multiplier_traction(stokes, v)
+    if mode in ("penalty", "penalty_node"):
+        return penalty_traction(stokes, v)
     return None
 
 
@@ -323,11 +349,11 @@ def both(cells=(0.15, 0.10, 0.075, 0.05), modes=MODES):
     print()
     print("the reaction routes, same solves")
     print()
-    print("| cell size | rotated reaction | multiplier traction |")
-    print("|---|---|---|")
+    print("| cell size | rotated reaction | multiplier traction | penalty term |")
+    print("|---|---|---|---|")
     for cell in cells:
         entries = []
-        for mode in ("rotated", "constraint"):
+        for mode in ("rotated", "constraint", "penalty_node"):
             got = measure(mode, cell=cell)
             entries.append("-" if not got or "reaction" not in got
                            else "%.1e" % got["reaction"])

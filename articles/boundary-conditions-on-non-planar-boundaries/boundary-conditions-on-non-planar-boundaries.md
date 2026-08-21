@@ -93,8 +93,9 @@ consistent. Two impose it **exactly**: by construction, changing the basis so
 that the constraint is a component that can be struck out, or by a Lagrange
 multiplier, adding an equation that enforces it. The weak pair have a parameter
 to select that may need to be tuned for each problem and a floor
- they cannot go below. The exact pair are not tuneable, and they both
-return the boundary traction as a side-effect of the solution.
+ they cannot go below. The exact pair are not tuneable, and they return the
+boundary traction as a side-effect of the solution. So does the direct penalty;
+Nitsche is the one that does not.
 
 ### 1. A direct penalty
 
@@ -129,6 +130,27 @@ penalty = 10000
 stokes.add_natural_bc(penalty * G.dot(v.sym) * G, "Upper")
 ```
 
+**The topography** is the penalty term itself. That term is the traction the
+condition holds the wall with, so on the boundary
+
+$$
+\sigma_{nn} = -\kappa\,(\mathbf{u}\cdot\hat{\mathbf{n}}),
+\qquad
+h = -\frac{\sigma_{nn} - \overline{\sigma_{nn}}}{\Delta\rho\,g} ,
+$$
+
+which is arithmetic on values the solve already returned — nothing is
+differentiated and nothing is solved.
+
+```python
+n = mesh.boundary_normal("Upper")
+sigma_nn = -penalty * n.dot(v.sym)
+```
+
+That is a saving in cost and not in accuracy. The leak and the traction are the
+same quantity scaled by $\kappa$, so a coefficient too small to hold the
+boundary reports a traction that is short in the same proportion.
+
 ### Nitsche's method
 
 The reason the penalty is only accurate in the limit is that it is not
@@ -161,10 +183,12 @@ holds to the accuracy of the discretisation, not to the accuracy of the
 arithmetic — measured below, it leaks a few parts in a thousand on a typical mesh,
  and the leak falls with increasing mesh resolution.
 
-**The topography** comes the same way as the penalty's, and for the same reason:
-the consistency term supplies the traction inside the momentum row, so there is
-no reaction left in the residual to read. Recover $\sigma_{nn}$ from the solved
-fields and divide by $\Delta\rho\,g$.
+**The topography** has to be recovered from the solved fields, which is where
+Nitsche parts company with the direct penalty. Its boundary term is the penalty
+part *less* the consistency terms, and those are written in
+$\boldsymbol{\sigma}(\mathbf{u})$, so the traction cannot be read off without
+differentiating the velocity. Recover $\sigma_{nn}$ that way and divide by
+$\Delta\rho\,g$.
 
 ### A constraint equation, with a multiplier
 
@@ -409,20 +433,25 @@ buys nothing.
 
 ### The traction the solve already has
 
-The two exact treatments do not have to recover anything, and the difference
-shows up against the same exact answer:
+Three of the four treatments do not have to recover anything. The two exact ones
+carry the traction as a constraint reaction or as an unknown, and the direct
+penalty carries it as the term it adds. Against the same exact answer:
 
-| cell size | rotated, reaction | multiplier, traction | either, recovered by projection |
-|---|---|---|---|
-| 0.150 | 6.8 × 10⁻³ | 8.6 × 10⁻³ | 2.4 × 10⁻² |
-| 0.100 | 3.3 × 10⁻³ | 8.5 × 10⁻⁴ | 1.0 × 10⁻² |
-| 0.075 | 2.1 × 10⁻³ | 1.7 × 10⁻³ | 6.3 × 10⁻³ |
-| 0.050 | 1.1 × 10⁻³ | 1.4 × 10⁻³ | 2.7 × 10⁻³ |
+| cell size | rotated, reaction | multiplier, traction | penalty, $\kappa(\mathbf{u}\cdot\hat{\mathbf{n}})$ | recovered by projection |
+|---|---|---|---|---|
+| 0.150 | 6.8 × 10⁻³ | 8.6 × 10⁻³ | 9.0 × 10⁻³ | 2.4 × 10⁻² |
+| 0.100 | 3.3 × 10⁻³ | 8.5 × 10⁻⁴ | 1.2 × 10⁻³ | 1.0 × 10⁻² |
+| 0.075 | 2.1 × 10⁻³ | 1.7 × 10⁻³ | 2.3 × 10⁻³ | 6.3 × 10⁻³ |
+| 0.050 | 1.1 × 10⁻³ | 1.4 × 10⁻³ | 2.2 × 10⁻³ | 2.7 × 10⁻³ |
 
-Three to five times better than the projection on the same solve, at every
-resolution, using the expressions given with each method above. Neither column
-falls smoothly with $h$: part of what they report is the constraint residual, and
-how far a particular solve drove that is not a function of the mesh.
+Better than the projection on the same solve at every resolution, using the
+expressions given with each method above — by an order of magnitude at best, and
+by very little where the penalty's coefficient sets its floor. None of the
+three falls smoothly with $h$: part of what they report is the constraint
+residual, and how far a particular solve drove that is not a function of the
+mesh. For the penalty that is the whole story below cell 0.10 — its leak is
+3 × 10⁻³ at every resolution here, set by $\kappa$, and the traction it reports
+cannot be better than the constraint it holds.
 
 ### What each parameter buys
 
@@ -526,7 +555,11 @@ error of $10^{-5}$ appears in the stress.
 **A bare penalty coefficient cannot serve both halves.** At $10^4$ it is the best
 column in the table at low contrast — the constraint is weak enough not to fight
 the recovery — and by $10^6$ it is meaningless: 0.992, which is to say the recovered
-topography carries none of the signal. Scaling the coefficient by the local
+topography carries none of the signal. Reading $\kappa(\mathbf{u}\cdot\hat{\mathbf{n}})$
+instead of recovering anything gives the same numbers to three figures, here and
+at every coefficient tried, which is the point made above from the other side: the
+term is the traction, so it inherits the error in the constraint rather than
+curing it. Scaling the coefficient by the local
 viscosity is the obviously right thing to want, but the solver does not converge here at any
 magnitude we tried, from $\eta$ to $10^3\eta$.
 
@@ -571,10 +604,11 @@ back-calculation, and it is the case a spherical free surface runs in.
 Rotating the degrees of freedom costs nothing measurable against the weak forms:
 the rotation is a sparse orthogonal transform on a boundary's worth of rows.
 
-**The weak constraints have to recover surface stress by differentiating the solution**, and
+**Nitsche has to recover surface stress by differentiating the solution**, and
 the projection that does it costs *more than the Stokes solve did* — 0.63 s
-against 0.45 s — so asking a penalty or Nitsche model for its surface stress
-roughly doubles the timestep.
+against 0.45 s — so asking a Nitsche model for its surface stress roughly
+doubles the timestep. The direct penalty need not pay that: its own term is the
+traction, read as arithmetic on the boundary nodes.
 
 The obvious question is whether that is the method's cost or the recovery's. A
 global $L^2$ projection to get values on a thousand boundary nodes is plainly
@@ -592,9 +626,11 @@ makes it unavailable to the multiplier:
 An error of 1.00 is the metric reporting that nothing was recovered. A reaction
 exists in the residual only where a row has been *constrained*; a weak condition
 supplies its traction as a term inside the row it acts on, so the residual there
-is balanced at convergence and there is nothing left to read. The multiplier does
-the same thing, and gets away with it because the term it supplies, $\lambda$, is the
-traction as a field. Nitsche's term is written in terms of
+is balanced at convergence and there is nothing left to read. What rescues a weak
+condition is not the residual but its own term: the multiplier supplies $\lambda$,
+which is the traction as a field, and the penalty supplies
+$\kappa(\mathbf{u}\cdot\hat{\mathbf{n}})$, which is the traction as boundary
+arithmetic. Nitsche's term is written in terms of
 $\boldsymbol{\sigma}(\mathbf{u})$, so reading it back still requires differentiating
 the answer.
 
@@ -603,12 +639,14 @@ the two pairs exactly:
 
 | how the constraint is imposed | the traction is | to read it |
 |---|---|---|
-| weakly, by a term (penalty, Nitsche) | a by-product | differentiate the solution |
+| weakly, by a penalty term | the term itself | evaluate $\kappa(\mathbf{u}\cdot\hat{\mathbf{n}})$ |
+| weakly, by Nitsche | inside a term written in $\boldsymbol{\sigma}(\mathbf{u})$ | differentiate the solution |
 | exactly, by construction (rotated) | the constraint reaction | de-smear the nodal load |
 | exactly, by a multiplier | an unknown of the system | read the field |
 
-The cost of the first row is negotiable — a recovery restricted to the boundary
-would be cheaper than a global projection — but the differentiation is not.
+Only the second row pays. Its cost is negotiable — a recovery restricted to the
+boundary would be cheaper than a global projection — but the differentiation is
+not.
 
 :::{note} What these timings are not
 Two-dimensional, one core, direct solver. What they measure is the difference
@@ -644,7 +682,9 @@ When the wall-normal traction is needed:
   if you choose Nitsche.
 - **A direct penalty is fine for a velocity-only model** and needs the node
   normal, a coefficient chosen per problem, and a check on something physical
-  before the answer is believed. It has the advantage that this is pure, direct penalty
+  before the answer is believed. It will also hand back the traction it holds
+  the wall with, at no cost, and that reading is worth no more than the
+  coefficient behind it. It has the advantage that this is pure, direct penalty
   on the weak form and can be used for many things beyond simply boundary conditions. 
   Good for a first pass on a very general idea. 
 

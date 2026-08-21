@@ -10,14 +10,18 @@ pressure and with it the level of sigma_zz is fixed only up to a constant, and
 the deviation is the part that is determined and the part topography is built
 from.
 
-Two routes are drawn, and they are not the same measurement:
+Three routes are drawn, and they are not the same measurement:
 
   * the recovered traction, projected out of the solved velocity and pressure,
-    which is the only route the weak treatments have;
+    which is the only route Nitsche has;
   * the constraint reaction -- `boundary_normal_traction` for the rotated
     constraint and the multiplier field for the constraint method -- which the
     solve returns as an unknown. Its sign convention is the traction holding the
-    wall, which is the topography's sign directly.
+    wall, which is the topography's sign directly;
+  * the penalty's own term, kappa (u.n), which is the traction that condition
+    holds the wall with. Drawn rather than the projection off the same solve
+    because it is what the note recommends reading; the two agree to about one
+    per cent, which is invisible here.
 
 Colour carries the treatment and the exact answer is a thick grey line behind
 everything, so no curve is identified by colour alone against the reference.
@@ -89,7 +93,7 @@ def profile(mode, eta_B):
     if not C.converged(stokes):
         print("%-10s eta_B %.0e  diverged" % (mode, eta_B), flush=True)
         return None
-    read = C.reaction_traction(stokes, mode)
+    read = C.reaction_traction(stokes, mode, v=v)
     if read is None:
         coords, values = C.recovered_traction(mesh, stokes)
         curves = {mode: -np.asarray(values)}      # h = -sigma_zz
