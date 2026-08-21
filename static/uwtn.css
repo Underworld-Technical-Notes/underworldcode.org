@@ -273,6 +273,7 @@ article.content figcaption p {
   height: 100%;
   max-height: 260px;
   object-fit: cover;
+  margin: 0;
   /* Decorative, so it should not compete with the words. */
   filter: saturate(0.82);
   transition: filter 0.25s ease, transform 0.4s ease;
@@ -297,6 +298,11 @@ article.content figcaption p {
   width: 100%;
   max-height: 300px;
   object-fit: cover;
+  /* The theme's prose rule gives every image that is not inside a <figure>
+     `margin: 2em 0`. Inside the banner's frame that reads as a white band
+     above and below the picture -- invisible on a banner with a white
+     background, obvious on a photograph. */
+  margin: 0;
 }
 
 @media (max-width: 720px) {
