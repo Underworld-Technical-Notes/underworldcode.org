@@ -49,9 +49,13 @@ STYLE = """
   }
 }
 * { box-sizing: border-box; }
+/* height, not just min-height: a percentage height inside a flex column needs
+   a DEFINITE container, and without it the viewer below fell back to its
+   min-height (512px) however tall the window was -- a letterbox showing a
+   few lines of a page scaled to the full window width. */
 body { margin: 0; background: var(--uwtn-paper); color: var(--uwtn-ink);
        font-family: var(--uwtn-sans); font-size: 16px; line-height: 1.5;
-       display: flex; flex-direction: column; min-height: 100vh; }
+       display: flex; flex-direction: column; height: 100vh; min-height: 100vh; }
 header { border-bottom: 1px solid var(--uwtn-rule); padding: 1.1rem 1.4rem; }
 .wrap { max-width: 68rem; margin: 0 auto; width: 100%; }
 .kicker { font-size: .78rem; letter-spacing: .09em; text-transform: uppercase;
@@ -66,9 +70,11 @@ h1 { font-size: 1.25rem; margin: .25rem 0 .35rem; font-weight: 600; }
 .actions a:hover { border-color: var(--uwtn-accent); color: var(--uwtn-accent); }
 .actions a.primary { background: var(--uwtn-accent); border-color: var(--uwtn-accent);
                      color: #fff; }
-.reader { flex: 1 1 auto; min-height: 32rem; }
-.reader object, .reader iframe { display: block; width: 100%; height: 100%;
-                                 min-height: 32rem; border: 0; }
+/* min-height: 0 lets a flex item shrink below its content; without it the
+   viewer cannot give the window's height back and the page scrolls instead. */
+.reader { flex: 1 1 auto; min-height: 0; display: flex; }
+.reader object, .reader iframe { flex: 1 1 auto; display: block; width: 100%;
+                                 height: 100%; min-height: 20rem; border: 0; }
 .fallback { padding: 2rem 1.4rem; color: var(--uwtn-muted); }
 """
 
@@ -94,7 +100,7 @@ PAGE = """<!doctype html>
   </div>
 </div></header>
 <div class="reader">
-  <object data="../%(slug)s.pdf#view=FitH" type="application/pdf">
+  <object data="../%(slug)s.pdf#view=Fit" type="application/pdf">
     <div class="fallback">
       <p>This browser will not display a PDF here — most phones will not.</p>
       <p><a href="../%(slug)s.pdf">Open the PDF</a> or
