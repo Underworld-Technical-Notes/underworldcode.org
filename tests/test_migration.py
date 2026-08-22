@@ -2214,3 +2214,66 @@ def test_reader_link_is_visible_and_click_safe():
     style = (pathlib.Path(__file__).resolve().parent.parent
              / "static" / "uwtn.css").read_text(encoding="utf-8")
     assert ".uwtn-pdf-link" in style, "the injected link has no style"
+
+
+def test_every_eq_reference_has_a_labelled_equation():
+    """`{eq}`name`` needs `$$ (name)` on the CLOSING delimiter line.
+
+    A label written on a line of its own renders as literal text, the reference
+    resolves to nothing, and `myst build --typst` fails the article outright
+    with "label does not exist" -- an HTML-only check would pass it. That is
+    how it reached a pushed branch once already.
+    """
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        text = path.read_text(encoding="utf-8")
+        # [ \t]* and not \s*: \s crosses newlines, so the very form this test
+        # exists to catch -- the label on its own line -- would match.
+        labels = set(re.findall(r"^\$\$[ \t]*\(([^)]+)\)[ \t]*$", text, re.M))
+        labels |= set(re.findall(r"^\s*:label:\s*(\S+)\s*$", text, re.M))
+        labels |= set(re.findall(r"\\label\{([^}]+)\}", text))
+        for name in set(re.findall(r"\{eq\}`([^`]+)`", text)):
+            assert name in labels, (
+                "%s references {eq}`%s` but no equation carries that label. "
+                "The label belongs on the closing $$ line: `$$ (%s)`."
+                % (path.name, name, name))
+
+
+# A line inside display math that markdown would claim for itself if the block
+# is not a block of its own: a list bullet, a heading, a quote, a fence.
+_MARKDOWN_LINE = re.compile(r"^\s*([-+*>#]|\d+[.)])(\s|$)")
+
+
+def test_display_math_that_needs_a_blank_line_has_one():
+    """`$$` opening on the line after a paragraph is a lazy continuation.
+
+    For one-line arithmetic that renders anyway, which is why the corpus has
+    examples of it. It breaks when a line INSIDE the block is something
+    markdown wants: `- \\int ...` opens a list, the paragraph ends, the math
+    never closes, and the page shows raw LaTeX with half the equation in a
+    bullet. `myst build` reports nothing at all -- no warning, exit 0 -- so
+    this test is the only guard. It cost the boundary-conditions note a
+    published-looking draft once.
+    """
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        lines = path.read_text(encoding="utf-8").split("\n")
+        in_code = False
+        opened = None
+        for i, line in enumerate(lines):
+            if line.startswith("```"):
+                in_code = not in_code
+                continue
+            if in_code:
+                continue
+            if opened is None:
+                if line.rstrip() == "$$":
+                    opened = i
+            elif line.startswith("$$"):
+                body = lines[opened + 1:i]
+                risky = [b for b in body if _MARKDOWN_LINE.match(b)]
+                if risky and opened > 0 and lines[opened - 1].strip():
+                    raise AssertionError(
+                        "%s line %d: display math opens straight after text and "
+                        "contains %r, which markdown will take for itself. Put a "
+                        "blank line before the `$$`."
+                        % (path.name, opened + 1, risky[0].strip()[:40]))
+                opened = None

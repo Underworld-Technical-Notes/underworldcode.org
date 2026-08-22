@@ -322,3 +322,7 @@ setting-up-full-multigrid:
   article_type: technical-note
   subjects: [mantle-convection]
   methods: [solvers, meshing, parallel-hpc]
+boundary-conditions-on-non-planar-boundaries:
+  article_type: technical-note
+  subjects: [surface-processes]
+  methods: [solvers, finite-elements, meshing]
