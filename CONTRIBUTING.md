@@ -167,6 +167,27 @@ something works, not how hard it was to make work.
   repaired afterwards.
 - **Say which quantity, on which mesh, against what.** "Converges" and "agrees
   well" are not measurements.
+- **Write display maths as a `math` directive, not as `$$`.** Both build, but
+  the fenced form survives an editor that is not a MyST editor — Typora, which
+  several of these notes are written in, rewrites a `$$ ... $$ (label)` block
+  and moves the label onto a line of its own, which silently breaks it. A fence
+  is left alone.
+
+  ````
+  ```{math}
+  :label: eq-free-slip
+  \mathbf{u}\cdot\hat{\mathbf{n}} = 0
+  ```
+  ````
+
+  With `$$`, two things are then load-bearing and neither is reported by the
+  build. The label belongs on the CLOSING delimiter — `$$ (eq-free-slip)` — and
+  on its own line it renders as literal text while every `{eq}` reference to it
+  fails the Typst build. And a `$$` block that opens on the line straight after
+  a paragraph is a lazy continuation: fine for one-line arithmetic, but a line
+  inside it beginning `-`, `*`, `>` or `#` is claimed by markdown, the maths
+  never closes, and the page publishes raw LaTeX with half an equation in a
+  bullet. `pixi run test-unit` guards both.
 
 ## Things that are load-bearing
 

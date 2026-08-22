@@ -26,12 +26,18 @@ but not this corner of Underworld.
 
 ## A section
 
-Maths is plain LaTeX, inline as $\nabla \cdot \boldsymbol{\sigma} = 0$ or
-displayed:
+Maths is plain LaTeX, inline as $\nabla \cdot \boldsymbol{\sigma} = 0$. Display
+maths goes in a `math` directive rather than a `$$` block: both build, but the
+fence survives an editor that is not a MyST editor, and it takes a label
+without the two traps `$$` has (see CONTRIBUTING.md).
 
-$$
+```{math}
+:label: eq-momentum
 -\nabla \cdot \boldsymbol{\sigma}(u, \nabla u) - \mathbf{f}(u, \nabla u) = 0
-$$
+```
+
+Refer to it as {eq}`eq-momentum`. Drop the `:label:` line if nothing refers to
+the equation.
 
 Code blocks are fenced and language-tagged. Keep lines under ~84 characters:
 that is the 95th percentile of this corpus and it is what fits the PDF measure
