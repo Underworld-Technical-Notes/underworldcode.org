@@ -231,6 +231,11 @@ lam = stokes.add_constraint_bc(0.0, "Upper")
 stokes.solve()
 ```
 
+The `Stokes_Constrained` solver carries three fields in PETSc — velocity, pressure and
+$\lambda$ — and splits them two ways: velocity against the pair, with the volume
+constraint (incompressibility) and the boundary constraint grouped into a single Schur
+block. The boundary constraint applies to surface nodes only.
+
 :::{note} The boundary traction is an unknown of the solve, not a post-processing step
 At convergence the momentum row's boundary term *is* the normal traction, so there is
 nothing to recover from the velocity field afterwards. The solver returns it through
@@ -431,7 +436,7 @@ $\gamma = 100$ the leak improves by a factor of nearly forty and the stress by a
 factor of two, onto the same floor as everything else, after which more $\gamma$
 buys nothing. 
 
-### The traction the solve already has
+### Traction extraction v. Stress recovery
 
 Three of the four treatments do not have to recover anything. The two exact ones
 carry the traction as a constraint reaction or as an unknown, and the direct
@@ -453,7 +458,7 @@ mesh. For the penalty that is the whole story below cell 0.10 — its leak is
 3 × 10⁻³ at every resolution here, set by $\kappa$, and the traction it reports
 cannot be better than the constraint it holds.
 
-### What each parameter buys
+### Influence of penalty parameters
 
 The two weak methods look alike in the comparison above, but this is for a fixed, tuned penalty parameter. 
 
@@ -482,7 +487,7 @@ problem. What it does not do is converge with resolution — the leak is bought 
 rather than with the mesh resolution — so the coefficient has to be re-chosen whenever the
 forcing or the viscosity changes.
 
-### The multiplier and the consistent boundary flux are the same
+### Multiplier and CBF equivalence
 
 The two expressions given above for computing topography from the boundary reaction are exactly equivalent. 
 Write the momentum row's boundary term out and the identity is immediate: the assembled
@@ -502,21 +507,28 @@ mass. The multiplier is not a second, independent estimate of the surface stress
 it is the same computation, arrived at by carrying the traction as an unknown
 instead of reading it out of the residual afterwards. 
 
-### The other half: a lateral viscosity contrast
+### Lateral viscosity contrast case
 
-No exact solution has both a curved boundary and a laterally varying viscosity,
+No published solution has both a curved boundary and a laterally varying viscosity,
 so the case where weak constraints are most often reported to give trouble is a
-separate test with a trivial geometry. SolCx is that test: the unit box, free
+separate test with a simple geometry. SolCx is a good example: unit box, free
 slip on all four walls, viscosity 1 to the left of $x = 0.5$ and $\eta_B$ to the
 right. `uw.analytic.SolCx` publishes the exact dynamic topography on the top
 wall. Three walls carry the ordinary component condition and the treatment under
 test is on the top wall alone.
 
-On a box every treatment reduces to holding one velocity component, so nothing
-here is about normals. What it can say is whether a treatment holds the traction
-it was given when the viscosity beside it jumps.
+On a box every treatment reduces to holding one velocity component. 
+What it can say is whether a treatment holds the traction
+it was given when the viscosity beside it jumps. However, on a box the rotated constraint's per-node rotation is the identity, so the
+table below exercises none of the rotation machinery. We check that separately on an
+equivalent problem: the domain, the gravity vector and the exact solution all turned by
+45$^\circ$, with every wall then carrying the rotated constraint, because a component
+condition cannot express $\mathbf{u}\cdot\hat{\mathbf{n}} = 0$ on a tilted wall. Turned,
+the constraint still holds to machine precision and the velocity error is unchanged at
+8.8 × 10⁻⁶; imposing the un-turned condition on those same walls instead lets 71% of the
+flow through the boundary.
 
-Relative $l_2$ error of the surface topography along the top wall, mean removed,
+In the table below, we show the relative $l_2$ error of the surface topography along the top wall, mean removed,
 at 32 × 32 elements. Each entry is the whole wall and then the wall with two
 elements trimmed from each end.
 
@@ -545,7 +557,7 @@ wall and trimmed alike. That is the result to take from this half, and it took
 the multiplier reporting the whole traction rather than $\lambda$ alone, and the
 rotated constraint holding the corner where it meets the side walls.
 
-**Read the first column as the floor.** The component Dirichlet condition is
+**Read the first column as the reference.** The component Dirichlet condition is
 exact and has no parameter, and its velocity error is 8.8 × 10⁻⁶ at a contrast of
 $10^6$. It still reads 0.085. That number is the recovery's error, not a boundary
 condition's: on the stiff half the recovered $\sigma_{zz}$ is a difference between
@@ -553,10 +565,10 @@ the pressure and $2\eta\,\partial_z u_z$ with $\eta = 10^6$, so a relative veloc
 error of $10^{-5}$ appears in the stress. 
 
 **A bare penalty coefficient cannot serve both halves.** At $10^4$ it is the best
-column in the table at low contrast — the constraint is weak enough not to fight
-the recovery — and by $10^6$ it is meaningless: 0.992, which is to say the recovered
+column in the table at low contrast (the constraint is weak enough not to fight
+the recovery) but by $10^6$ it is meaningless: 0.992, which is to say the recovered
 topography carries none of the signal. Reading $\kappa(\mathbf{u}\cdot\hat{\mathbf{n}})$
-instead of recovering anything gives the same numbers to three figures, here and
+instead of recovering the stress gives the same numbers to three figures, here and
 at every coefficient tried, which is the point made above from the other side: the
 term is the traction, so it inherits the error in the constraint rather than
 curing it. Scaling the coefficient by the local
@@ -566,10 +578,10 @@ magnitude we tried, from $\eta$ to $10^3\eta$.
 **Nitsche has no column in this table.** In our implementation it is unreliable on a
 boundary that mixes essential patches with Nitsche patches, which is what this test
 asks for: the top wall weak, the other three held strongly. We could not reach a
-converged solution for this example at any penalty we tried. Imposed weakly on all
-four walls it converges, so it is the mixture we cannot solve rather than the method.
+converged solution for this example at any penalty. Imposed weakly on all
+four walls does converge, but that is a different problem.
 
-### What each one costs
+### Solver timing
 
 Seconds on the annulus, uniform viscosity, one core, direct solver: the solve,
 and then the surface traction by whatever route that treatment has. Median of
@@ -579,17 +591,17 @@ run-to-run spread and there is nothing to read.
 
 | velocity nodes | penalty | Nitsche | multiplier | rotated |
 |---|---|---|---|---|
-| 28 338 | 0.17 / 0.273 | 0.18 / 0.267 | 0.26 / — | 0.16 / 0.010 |
-| 71 424 | 0.45 / 0.631 | 0.47 / 0.657 | 0.67 / — | 0.43 / 0.016 |
+| 28 338 | 0.17 / — | 0.18 / 0.267 | 0.26 / — | 0.16 / 0.010 |
+| 71 424 | 0.45 / — | 0.47 / 0.657 | 0.67 / — | 0.43 / 0.016 |
 
-The dash indicates that the multiplier does not require any additional *solver* —
+The dash indicates that the multiplier and the penalty do not require any additional *solver* —
 $\lambda$ is a finite element field in its own right, so its nodal values are the
 traction, pointwise, and $\lambda + r(\mathbf{u}\cdot\hat{\mathbf{n}} - \tilde{u}_n)$ is an
-expression evaluated where it is wanted. 
+expression evaluated where it is wanted. The penalty traction is recovered similarly as the penalty scaling
+the leakage velocity.
 
-**The rotated constraint's reaction does need one step**. (The 10 to 16 ms in the table is the reaction the solve
-already stashed; `boundary_flux` re-assembles the residual from scratch and costs
-0.2 s, which is the 0.206 s in the comparison above.) The reaction is an *integrated* nodal load,
+**The rotated constraint's reaction does need one step**.  
+The reaction is an *integrated* nodal load,
 $\int_\Gamma \sigma_{nn}\,\phi_i\,\mathrm{d}S$, which is $M_\Gamma$ times the
 pointwise traction. Turning it into a pointwise value means undoing that boundary
 mass. On a 2-D trace, and on 3-D P1 triangles, the lumped mass is diagonal and
@@ -597,7 +609,7 @@ undoing it is a division — the 10 to 16 ms above. On **3-D P2 triangles it is 
 true solve**: the lumped row sums vanish at the vertices, so the consistent
 trace mass has to be assembled and solved. That is the one place the CBF
 route pays for being a
-back-calculation, and it is the case a spherical free surface runs in.
+back-calculation.
 
 **The multiplier's solve costs about 50% more**, consistently — 0.67 s against
 0.43 s at 71 000 nodes. That is the extra field and the larger saddle point.
