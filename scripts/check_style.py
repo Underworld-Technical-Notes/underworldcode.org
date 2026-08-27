@@ -18,6 +18,7 @@ Usage:
 """
 
 import argparse
+import collections
 import pathlib
 import re
 import sys
@@ -74,7 +75,12 @@ HEADING = re.compile(r"^(#{1,6})\s+(.*?)\s*$")
 LABEL_PREFIX = re.compile(
     r"^(UWTN\s*[\d-]+|Part\s+\w+|Appendix\s*\w*|Stage\s+\d+|"
     r"Step\s+\d+|Table\s*\d*|Figure\s*\d*|\d+|"
-    r"(A\s+\w+\s+)?Examples?|[A-Z][a-z0-9_]*)\s*$")
+    r"(A\s+\w+\s+)?Examples?)\s*$", re.I)
+# A one-word prefix used by SEVERAL headings is a series label -- "Gadi:",
+# "Magnus:", one per machine -- and is exempt for that reason rather than for
+# being one word. Exempting every one-word prefix let "Underworld: what it
+# really does" through, which is the construction the check exists for.
+SERIES_MIN = 2
 # at least a third of the headings, and at least this many, before it is a
 # habit rather than a heading
 COLON_HEADING_SHARE = 1 / 3
@@ -89,8 +95,11 @@ def prose(text):
     """
     lines = text.splitlines()
     out, in_front, in_code = [], False, False
+    # the front matter opens on the first NON-BLANK line; a file that begins
+    # with a blank line otherwise has its whole header read as prose
+    first = next((i for i, l in enumerate(lines, 1) if l.strip()), None)
     for i, line in enumerate(lines, 1):
-        if i == 1 and line.strip() == "---":
+        if i == first and line.strip() == "---":
             in_front = True
             out.append((i, ""))
             continue
@@ -134,7 +143,8 @@ def check(path):
                 # label. Neither is "name it, then reveal the point".
                 if after.strip() and not LABEL_PREFIX.match(
                         before.strip().strip("*_`")):
-                    colon_headings.append((lineno, title))
+                    colon_headings.append(
+                        (lineno, title, before.strip().strip("*_`")))
             continue
         for rule, pat, note in (
             ("announcing", ANNOUNCING,
@@ -151,12 +161,18 @@ def check(path):
     # the objection is to the HABIT, not to any one heading: a contents list
     # where every entry names a thing and then reveals the point reads as
     # though each section is about to surprise you
-    if (len(colon_headings) >= COLON_HEADING_MIN and headings
-            and len(colon_headings) / len(headings) >= COLON_HEADING_SHARE):
-        add("heading-habit", colon_headings[0][0],
-            f"{len(colon_headings)} of {len(headings)} headings are "
+    series = collections.Counter(
+        b.split()[0].lower() for _l, _t, b in colon_headings
+        if len(b.split()) == 1)
+    argued = [(l, t) for l, t, b in colon_headings
+              if not (len(b.split()) == 1
+                      and series[b.split()[0].lower()] >= SERIES_MIN)]
+    if (len(argued) >= COLON_HEADING_MIN and headings
+            and len(argued) / len(headings) >= COLON_HEADING_SHARE):
+        add("heading-habit", argued[0][0],
+            f"{len(argued)} of {len(headings)} headings are "
             f"\"name: then the point\"",
-            "e.g. " + "; ".join(t for _l, t in colon_headings[:3])
+            "e.g. " + "; ".join(t for _l, t in argued[:3])
             + " — does the text after each colon NAME something, or assert "
               "it?")
 

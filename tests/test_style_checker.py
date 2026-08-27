@@ -77,3 +77,30 @@ def test_densities_need_a_long_enough_document(tmp_path):
     """Short documents get no density hints: the ratio is meaningless."""
     assert "second-person" not in _check(
         tmp_path, "You should note that you can do this yourself.\n")
+
+
+def test_a_one_word_subject_does_not_escape(tmp_path):
+    """`Gadi:` is exempt because it is a series label, not because it is one
+    word. A one-off one-word subject is the same construction as any other."""
+    argued = "\n".join([
+        "## Underworld: what it really does", "Text.",
+        "## Binder: not what you think", "Text.",
+        "## Containers: the surprise", "Text.",
+    ])
+    assert "heading-habit" in _check(tmp_path, argued)
+
+
+def test_a_repeated_one_word_prefix_is_a_series_label(tmp_path):
+    """The negative control for the rule above: one heading per machine."""
+    series = "\n".join([
+        "## Gadi: weak scaling, Q1", "Text.",
+        "## Gadi: weak scaling, Q2", "Text.",
+        "## Magnus: weak scaling, Q1", "Text.",
+        "## Magnus: weak scaling, Q2", "Text.",
+    ])
+    assert "heading-habit" not in _check(tmp_path, series)
+
+
+def test_front_matter_may_start_after_a_blank_line(tmp_path):
+    body = '\n---\ntitle: "X"\ndescription: to be honest, a note\n---\n\nText.\n'
+    assert _check(tmp_path, body) == set()
