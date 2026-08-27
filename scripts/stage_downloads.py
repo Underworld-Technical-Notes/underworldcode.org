@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Place each article's archival PDF beside its page in the built site.
+"""Place each article's archival PDF and markdown source beside its page.
 
 MyST writes the PDF next to the article source, not into the site, so without
 this the download link on every page and on the front page is a 404. The PDF is
@@ -44,6 +44,12 @@ def main():
             continue
         shutil.copy2(pdf, target_dir / pdf.name)
         staged.append((slug, pdf.stat().st_size))
+        # The markdown the article is written from, at /<slug>/<slug>.md. The
+        # reader page offers it beside the PDF: it is what someone reusing a
+        # figure, a table or an equation actually wants, and it is already here.
+        source = directory / ("%s.md" % slug)
+        if source.exists():
+            shutil.copy2(source, target_dir / source.name)
 
     for slug, size in staged:
         print("  staged %-56s %5dKB" % (slug[:56], size / 1024))

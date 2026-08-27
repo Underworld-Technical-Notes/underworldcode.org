@@ -173,7 +173,11 @@ def entry_html(meta, description, has_pdf, banner=None, lead=False):
 
     links = ['<a class="uwtn-read" href="/%s/">Read</a>' % slug]
     if has_pdf:
-        links.append('<a href="/%s/%s.pdf">PDF</a>' % (slug, slug))
+        # The reader page rather than the file: it shows the PDF embedded and
+        # offers the download and the markdown source as buttons. A reader who
+        # wants the bytes is one click away; a reader who wanted to look at it
+        # is no clicks away.
+        links.append('<a href="/%s/read/">PDF</a>' % slug)
     # The archival DOI is the one to circulate; until a note is deposited, the
     # legacy DOI is all there is.
     doi = meta.get("archive_doi") or meta.get("legacy_doi")

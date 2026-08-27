@@ -183,12 +183,44 @@ def test_line_breaks_inside_prose_are_kept():
 
 
 def test_display_maths_delimiters_are_balanced_in_every_article():
+    """Every display-maths block opens and closes.
+
+    A closing delimiter may carry a label -- `$$ (eq-my-equation)` -- which is how
+    MyST names an equation so `{eq}` can reference it, and it must be on that
+    line: on a line of its own it is not a label, it is a paragraph of literal
+    text, the equation is never labelled, and the reference has no target. HTML
+    tolerates that and Typst does not, so the article builds and the archival PDF
+    does not. Counting only bare `$$` lines would call the labelled form
+    unbalanced and push authors back to the broken one.
+    """
     import re
     for path in sorted((ROOT / "articles").glob("*/*.md")):
         body = re.sub(r"^---\n.*?\n---\n", "", path.read_text(encoding="utf-8"), flags=re.S)
         body = re.sub(r"```.*?```", "", body, flags=re.S)
-        count = len(re.findall(r"(?m)^\$\$\s*$", body))
+        count = len(re.findall(r"(?m)^\$\$(?:\s*\([^)\s]+\))?\s*$", body))
         assert count % 2 == 0, "%s has %d lone $$ delimiters" % (path.parent.name, count)
+
+
+def test_a_labelled_equation_is_referenceable():
+    """An `{eq}` reference must name a label that some equation actually carries.
+
+    This is the check the build cannot make for you in time: an unresolved
+    reference is a warning in HTML and a hard error in `typst compile`, so it
+    lands as a failed PDF export rather than as a bad article.
+    """
+    import re
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        body = path.read_text(encoding="utf-8")
+        # Two forms label an equation in this corpus, and both are valid MyST:
+        # `$$ ... $$ (label)`, and amsmath's \label{} inside \begin{equation}.
+        # A \label{} inside a plain $$ block is NEITHER -- that is LaTeX the
+        # renderer never sees, and it is the mistake this test exists to catch.
+        labels = set(re.findall(r"(?m)^\$\$\s*\(([^)\s]+)\)\s*$", body))
+        labels |= set(re.findall(r"\\begin\{equation\}\s*\\label\{([^}]+)\}", body))
+        referenced = set(re.findall(r"\{eq\}`([^`]+)`", body))
+        missing = referenced - labels
+        assert not missing, (
+            "%s references %s, which no equation labels" % (path.parent.name, sorted(missing)))
 
 
 # --------------------------------------------------------------------------
@@ -2081,3 +2113,167 @@ def test_examples_carry_no_absolute_paths():
                 if hit not in allowed:
                     offenders.append(f"{path.relative_to(root)}:{number}: {hit}")
     assert not offenders, "absolute home paths in shipped code:\n" + "\n".join(offenders)
+
+# --------------------------------------------------------------------------- #
+# the reader page: /<slug>/read/
+# --------------------------------------------------------------------------- #
+def test_reader_page_is_built_after_the_files_it_links_to():
+    """`build_reader_pages` only writes where the PDF is already staged.
+
+    Order matters and is easy to lose in a one-line task: run it before
+    `stage_downloads.py` and every reader page silently disappears, because the
+    generator skips any article whose PDF is not in the build yet.
+    """
+    root = pathlib.Path(__file__).resolve().parent.parent
+    task = (root / "pixi.toml").read_text(encoding="utf-8")
+    line = next(l for l in task.splitlines() if l.startswith("build-html ="))
+    assert line.index("stage_downloads.py") < line.index("build_reader_pages.py")
+    # the retarget script rewrites links in built pages, so it comes after them
+    assert line.index("build_reader_pages.py") < line.index("inject_reader_link.py")
+
+    preview = (root / "scripts" / "preview_build.py").read_text(encoding="utf-8")
+    for step in ("build_reader_pages.py", "inject_reader_link.py"):
+        assert step in preview, f"the preview path does not run {step}"
+
+
+def test_reader_page_offers_the_pdf_and_the_source():
+    """The page a reader lands on carries both downloads and a way back."""
+    reader = load("build_reader_pages")
+    page = reader.PAGE % {
+        "slug": "a-note", "title": "A Note", "kicker": "UWTN 2026-001",
+        "meta": "Someone", "style": "",
+    }
+    assert 'href="../a-note.pdf" download' in page
+    assert 'href="../a-note.md" download' in page
+    assert 'href="../"' in page                           # back to the article
+    assert 'type="application/pdf"' in page               # embedded, not linked
+    assert 'name="robots" content="noindex"' in page      # the article is canonical
+    # RELATIVE throughout: the preview site serves everything from a hashed
+    # subdirectory, and an absolute path walks out of it to the domain root.
+    assert 'href="/a-note' not in page and 'data="/a-note' not in page
+
+
+def test_reader_meta_line_links_the_doi():
+    reader = load("build_reader_pages")
+    line = reader.meta_line({
+        "authors": [{"name": "A Person"}, {"name": "B Person"}],
+        "publication_date": "2026-08-11",
+        "archive_doi": "10.6084/m9.figshare.1",
+    })
+    assert "A Person and B Person" in line
+    assert 'href="https://doi.org/10.6084/m9.figshare.1"' in line
+    assert reader.meta_line({}) == ""
+
+
+def test_theme_downloads_menu_is_dropped():
+    """One route to the PDF, not two.
+
+    The reader page carries both files, so the theme's Downloads menu is a
+    quieter second way to the same two things. It is removed at both ends: the
+    `exports` array the theme renders it from, and the button MyST already put
+    in the static HTML.
+    """
+    inject = load("inject_reader_link")
+    payload = '{"title":"x","exports":[{"format":"typst","url":"/build/a.pdf"}],"y":1}'
+    assert inject.EXPORTS.sub('"exports":[]', payload) == \
+        '{"title":"x","exports":[],"y":1}'
+    # an already-empty array is left alone rather than matched again
+    assert inject.EXPORTS.sub('"exports":[]', '{"exports":[],"y":1}') == \
+        '{"exports":[],"y":1}'
+
+    button = ('<div class="row"><button id="gen" aria-haspopup="menu">'
+              '<span class="sr-only">Downloads</span><svg><path/></svg>'
+              '</button></div>')
+    stripped, dropped = inject.drop_downloads_button(button)
+    assert dropped and stripped == '<div class="row"></div>'
+    assert inject.drop_downloads_button("<p>no menu</p>") == ("<p>no menu</p>", False)
+
+
+def test_reader_link_is_visible_and_click_safe():
+    """A reader must be able to see the way to the PDF, and clicking must work.
+
+    The theme's only route is an entry inside the Downloads menu, which it
+    renders from its hydration payload when the menu OPENS -- so there is no
+    anchor to rewrite beforehand, and a rewrite that waits for one races the
+    reader's next click. The injected script therefore does two things: adds a
+    visible link to the frontmatter badge row, and catches the click in the
+    capture phase.
+    """
+    inject = load("inject_reader_link")
+    script = inject.SCRIPT
+    assert ".myst-fm-block-badges" in script          # somewhere visible to put it
+    assert "uwtn-pdf-link" in script
+    assert 'addEventListener("click"' in script and ", true)" in script   # capture
+    assert "preventDefault" in script
+    # Relative, so the preview subdirectory survives: the href is built from the
+    # current path. (Asserting the absence of an absolute form matched the
+    # COMMENT explaining why we do not use one, which is why this asserts the
+    # positive instead.)
+    assert "window.location.pathname" in script
+
+    style = (pathlib.Path(__file__).resolve().parent.parent
+             / "static" / "uwtn.css").read_text(encoding="utf-8")
+    assert ".uwtn-pdf-link" in style, "the injected link has no style"
+
+
+def test_every_eq_reference_has_a_labelled_equation():
+    """`{eq}`name`` needs `$$ (name)` on the CLOSING delimiter line.
+
+    A label written on a line of its own renders as literal text, the reference
+    resolves to nothing, and `myst build --typst` fails the article outright
+    with "label does not exist" -- an HTML-only check would pass it. That is
+    how it reached a pushed branch once already.
+    """
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        text = path.read_text(encoding="utf-8")
+        # [ \t]* and not \s*: \s crosses newlines, so the very form this test
+        # exists to catch -- the label on its own line -- would match.
+        labels = set(re.findall(r"^\$\$[ \t]*\(([^)]+)\)[ \t]*$", text, re.M))
+        labels |= set(re.findall(r"^\s*:label:\s*(\S+)\s*$", text, re.M))
+        labels |= set(re.findall(r"\\label\{([^}]+)\}", text))
+        for name in set(re.findall(r"\{eq\}`([^`]+)`", text)):
+            assert name in labels, (
+                "%s references {eq}`%s` but no equation carries that label. "
+                "The label belongs on the closing $$ line: `$$ (%s)`."
+                % (path.name, name, name))
+
+
+# A line inside display math that markdown would claim for itself if the block
+# is not a block of its own: a list bullet, a heading, a quote, a fence.
+_MARKDOWN_LINE = re.compile(r"^\s*([-+*>#]|\d+[.)])(\s|$)")
+
+
+def test_display_math_that_needs_a_blank_line_has_one():
+    """`$$` opening on the line after a paragraph is a lazy continuation.
+
+    For one-line arithmetic that renders anyway, which is why the corpus has
+    examples of it. It breaks when a line INSIDE the block is something
+    markdown wants: `- \\int ...` opens a list, the paragraph ends, the math
+    never closes, and the page shows raw LaTeX with half the equation in a
+    bullet. `myst build` reports nothing at all -- no warning, exit 0 -- so
+    this test is the only guard. It cost the boundary-conditions note a
+    published-looking draft once.
+    """
+    for path in sorted((ROOT / "articles").glob("*/*.md")):
+        lines = path.read_text(encoding="utf-8").split("\n")
+        in_code = False
+        opened = None
+        for i, line in enumerate(lines):
+            if line.startswith("```"):
+                in_code = not in_code
+                continue
+            if in_code:
+                continue
+            if opened is None:
+                if line.rstrip() == "$$":
+                    opened = i
+            elif line.startswith("$$"):
+                body = lines[opened + 1:i]
+                risky = [b for b in body if _MARKDOWN_LINE.match(b)]
+                if risky and opened > 0 and lines[opened - 1].strip():
+                    raise AssertionError(
+                        "%s line %d: display math opens straight after text and "
+                        "contains %r, which markdown will take for itself. Put a "
+                        "blank line before the `$$`."
+                        % (path.name, opened + 1, risky[0].strip()[:40]))
+                opened = None
