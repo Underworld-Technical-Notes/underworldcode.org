@@ -63,8 +63,12 @@ def bootstrap(config):
     if (document.querySelector('script[data-cf-beacon]')) return;
     var script = document.createElement("script");
     script.src = %s;
-    script.defer = true;
-    // set BEFORE append: the beacon reads its own tag as it executes
+    // Cloudflare's own snippet is type=module. The script they serve today is
+    // a bundled IIFE that would run either way, but matching the snippet they
+    // test means a future real module does not silently stop reporting.
+    script.type = "module";
+    // set BEFORE append: the beacon reads its configuration from its own tag,
+    // via document.currentScript or a script[data-cf-beacon] lookup
     script.setAttribute("data-cf-beacon", JSON.stringify({token: TOKEN}));
     document.body.appendChild(script);
   }

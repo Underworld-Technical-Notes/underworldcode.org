@@ -7,6 +7,7 @@ and the beacon is confined to the production hostname so that previews
 and the dev server do not report into the live figures.
 """
 import pathlib
+import re
 import sys
 
 import pytest
@@ -19,12 +20,23 @@ CONFIG = {"enabled": "true", "token": "abc123",
           "hostname": "www.underworldcode.org"}
 
 
-def test_the_shipped_config_is_off_until_a_token_exists():
-    """A repository checkout must not report to anybody's account."""
+def test_the_shipped_config_is_well_formed():
+    """The token is a 32-character hex site identifier, and the hostname is
+    the one the site actually serves -- the apex redirects to www, so a
+    guard naming the apex would drop every visit."""
     config = inject_analytics.load_config()
-    assert config["enabled"] == "false"
-    assert config["token"] == ""
-    assert config["hostname"] == "www.underworldcode.org"
+    assert config["enabled"] in ("true", "false")
+    if config["enabled"] == "true":
+        assert re.fullmatch(r"[0-9a-f]{32}", config["token"]), config["token"]
+    assert config["hostname"] == \
+        pathlib.Path("CNAME").read_text().strip()
+
+
+def test_the_beacon_matches_cloudflares_own_snippet():
+    """Their snippet is type=module; ours must be too, or a future real
+    module would fail to parse as a classic script and stop reporting."""
+    payload = inject_analytics.bootstrap(CONFIG)
+    assert 'script.type = "module"' in payload
 
 
 def test_nothing_is_placed_statically():

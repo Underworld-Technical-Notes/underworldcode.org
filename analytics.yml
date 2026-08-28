@@ -10,8 +10,8 @@
 # of the JS snippet in "Manage site", put it below, and set enabled to true.
 # The token is not a secret -- it appears in the page source of every visitor's
 # browser -- so it belongs in the repository like any other site setting.
-enabled: false
-token: ""
+enabled: true
+token: "b01cd97667bf423dae55b77bae29fbeb"
 # The beacon loads on this hostname only, so preview builds and `pixi run
 # start` do not report. Change it if the site moves.
 hostname: www.underworldcode.org
