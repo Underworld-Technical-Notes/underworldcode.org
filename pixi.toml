@@ -82,6 +82,11 @@ test-dois = "python3 scripts/test_doi_urls.py"
 test-assets = "python3 scripts/check_build_assets.py"
 test-links = "python3 scripts/check_links.py"
 test-unit = "pytest -q tests/"
+# House-style hints for a draft (CONTRIBUTING.md, "How the notes read").
+# Advisory, and deliberately NOT part of `test`: several of its checks are
+# densities whose right value depends on what the document is, and that is
+# the author's call rather than the build's.
+check-style = "python3 scripts/check_style.py"
 test = { depends-on = ["test-unit", "validate", "test-dois", "test-assets"] }
 
 # Stage 0 migration tooling. Read-only against the live Ghost site.
