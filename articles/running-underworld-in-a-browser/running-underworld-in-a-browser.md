@@ -4,8 +4,8 @@ description: >-
   One link opens Underworld in a browser, with any public repository pulled in
   beside it and any released version underneath. Nothing is installed, and
   nothing has to be added to the repository being launched. We use it for
-  teaching, and for anyone who would rather run the model from a paper than
-  read about it.
+  teaching, for workshops, and for anyone who would rather run the model from
+  a paper than read about it.
 date: 2026-08-11
 authors:
   - name: Louis Moresi
