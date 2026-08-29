@@ -166,20 +166,26 @@ and instructions about what the reader ought to find interesting.
   that "we".
 - **"we"** is the author and the reader, together, working through something:
   *we can now measure the leak directly*.
-- **"you"** breaks the fourth wall and addresses the reader. Use it sparingly.
+- **"you"** addresses the reader directly. Right where the note is telling
+  someone how to do something; out of place where it is reporting a result.
 
 The two senses of "we" collide in a co-authored note, so if a sentence could be
 read either way, name who did the work.
 
-Second person earns its place in genuine step-by-step instructions — an install
-guide is full of "you" for good reason. It is out of place in a note that is
-reporting a result. `pixi run check-style` reports the density rather than
-setting a limit, because which of the two a document is is the author's call.
+**Do not strip second person out of instructions.** An earlier version of this
+section said to use "you" sparingly, full stop, and that was wrong: applied to
+a note that is half how-to, it took the second person down to 2.5 per thousand
+words where the 2020 cloud note — the register several of these notes are
+aiming at — sits at 5.6. Across the corpus the notes run 0–8 per thousand and
+the install guides reach 25–62, correctly. A note that is partly instruction
+belongs between those, and the sentence that reads naturally with "you" should
+keep it.
 
 `pixi run check-style` reports the habits above that a regular expression can
 find — it names the convention, quotes the line, and leaves the judgement to
-you. It is not part of `pixi run test`, because several of its checks are
-densities whose right value depends on what the document is.
+the author. Second person it reports as a density rather than a limit, for the
+reason just given, and it is not part of `pixi run test`, because several of
+its checks are densities whose right value depends on what the document is.
 
 ### The example code is part of the note
 
