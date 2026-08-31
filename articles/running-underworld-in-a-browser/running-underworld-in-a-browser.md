@@ -19,7 +19,7 @@ keywords:
   - Python/Jupyter
 exports:
   - format: typst
-    archived: "2026-08-12T06:09:48Z"
+    archived: "2026-08-31T17:36:06Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/running-underworld-in-a-browser/
