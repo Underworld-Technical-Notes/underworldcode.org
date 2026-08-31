@@ -1,11 +1,11 @@
 ---
 title: "Running Underworld in a Browser: Any Repository, Any Version"
 description: >-
-  A notebook written against one version of Underworld should still run against
-  that version in five years, on a machine that has nothing installed. Here is
-  the machinery that makes that true: a compact container, a nearly empty
-  launcher repository, and two GitHub workflows that make a release and its
-  launcher in the same breath.
+  One link opens Underworld in a browser, with any public repository pulled in
+  beside it and any released version underneath. Nothing is installed, and
+  nothing has to be added to the repository being launched. We use it for
+  teaching, for workshops, and for anyone who would rather run the model from
+  a paper than read about it.
 date: 2026-08-11
 authors:
   - name: Louis Moresi
