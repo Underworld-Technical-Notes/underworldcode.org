@@ -43,7 +43,7 @@ pages = "python3 scripts/build_pages.py"
 # duration of the Typst run -- and pixi runs independent tasks concurrently. Run
 # in parallel they raced: the HTML was built from banner-stripped sources, and
 # the blocks were missing from the tree afterwards.
-build-html = { cmd = "myst build --html && python3 scripts/fix_slugs.py && python3 scripts/inject_style.py && python3 scripts/stage_downloads.py && python3 scripts/build_reader_pages.py && python3 scripts/inject_comments.py && python3 scripts/inject_reader_link.py && python3 scripts/build_feed.py", depends-on = ["build-pdf"] }
+build-html = { cmd = "myst build --html && python3 scripts/fix_slugs.py && python3 scripts/inject_style.py && python3 scripts/stage_downloads.py && python3 scripts/build_reader_pages.py && python3 scripts/inject_comments.py && python3 scripts/inject_reader_link.py && python3 scripts/inject_analytics.py && python3 scripts/build_feed.py", depends-on = ["build-pdf"] }
 # The banner belongs on the web, not on page one of an archival PDF. It is
 # derived from the `banner:` front matter, so it can be taken out for the Typst
 # build and put back after; both directions are idempotent.
@@ -82,6 +82,11 @@ test-dois = "python3 scripts/test_doi_urls.py"
 test-assets = "python3 scripts/check_build_assets.py"
 test-links = "python3 scripts/check_links.py"
 test-unit = "pytest -q tests/"
+# House-style hints for a draft (CONTRIBUTING.md, "How the notes read").
+# Advisory, and deliberately NOT part of `test`: several of its checks are
+# densities whose right value depends on what the document is, and that is
+# the author's call rather than the build's.
+check-style = "python3 scripts/check_style.py"
 test = { depends-on = ["test-unit", "validate", "test-dois", "test-assets"] }
 
 # Stage 0 migration tooling. Read-only against the live Ghost site.

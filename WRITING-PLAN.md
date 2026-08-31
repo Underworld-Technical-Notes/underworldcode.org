@@ -220,9 +220,9 @@ beginning of a solvers paper, but neither is being written to fit one.
 
 ### R1. Boundary conditions on non-planar boundaries
 
-Status: not started. **One post**, not a series. Rescoped 2026-08-17: rotated
-boundary conditions are the answer, but the *question* is the better frame, and
-it is the one a reader arrives with.
+Status: drafted as UWTN 2026-016, in review on PR #26. **One post**, not a
+series. Rescoped 2026-08-17: rotated boundary conditions are the answer, but the
+*question* is the better frame, and it is the one a reader arrives with.
 
 On a box, "no flow through this wall" is a component of the velocity and you
 constrain it. On an annulus, a sphere, a boundary with topography, or any mesh
@@ -451,6 +451,6 @@ Listed as candidates, not commitments.
 | 6 | F5 The comparison | Last, with Thyagarajulu's benchmarks as its evidence |
 | 7 | S1, S2 free surface | After the discussion about how to split it |
 | — | C1 Launching from any repository | Standalone; the capability is live and undocumented |
-| — | R1 BCs on non-planar boundaries | Standalone; write whenever it suits. Much of the evidence exists — see the rescoped entry |
+| — | R1 BCs on non-planar boundaries | Drafted as UWTN 2026-016, in review on PR #26 |
 | ✓ | G1 Setting up FMG | Published 2026-08-17 (UWTN 2026-014) |
 | 8 | #1 Release announcement | Written last; links to everything |

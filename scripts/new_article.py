@@ -17,6 +17,7 @@ import argparse
 import datetime
 import pathlib
 import re
+import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -44,6 +45,37 @@ def load_authors():
     return registry
 
 
+def ids_on_branches(year):
+    """Article numbers claimed on a branch, merged or not.
+
+    The rest of the allocator reads the working tree, which cannot see a number
+    claimed by a note still in review on its own branch. Two notes drafted in
+    parallel were therefore both offered the same number, and UWTN 2026-012 was
+    claimed twice before anyone noticed.
+
+    Every local and remote-tracking ref is searched, so this covers open pull
+    requests as far as they have been fetched. A note on a branch that has never
+    been pushed to a remote this checkout tracks is still invisible, which is why
+    `pixi run validate` checks for duplicates as well.
+    """
+    def git(*args):
+        return subprocess.run(("git",) + args, cwd=str(ROOT),
+                              capture_output=True, text=True)
+
+    refs = git("for-each-ref", "--format=%(refname)", "refs/heads", "refs/remotes")
+    if refs.returncode != 0:
+        return set()          # no git, or not a checkout: the tree is all we have
+
+    used = set()
+    for ref in refs.stdout.split():
+        found = git("grep", "-h", "-E", r"^id: +UWTN +[0-9]{4}-[0-9]{3}",
+                    ref, "--", "articles/*/metadata.yml")
+        for match in re.finditer(r"UWTN\s+(\d{4})-(\d{3})", found.stdout):
+            if match.group(1) == str(year):
+                used.add(int(match.group(2)))
+    return used
+
+
 def next_article_id(year):
     """Allocate an ID that no existing article uses.
 
@@ -52,7 +84,7 @@ def next_article_id(year):
     number already present in that year keeps a new note clear of anything the
     backfill will produce, and an ID that has been published never moves.
     """
-    used = set()
+    used = ids_on_branches(year)
     for meta in ARTICLES.glob("*/metadata.yml"):
         match = re.search(r"^id:\s*(UWTN\s+(\d{4})-(\d{3}))\s*$",
                           meta.read_text(encoding="utf-8"), re.M)

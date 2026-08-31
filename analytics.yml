@@ -1,0 +1,17 @@
+# Cloudflare Web Analytics.
+#
+# Free, cookieless and without fingerprinting, so no consent banner: it counts
+# page views, referrer-defined "visits", top pages, countries and device types,
+# and deliberately cannot tell you how many distinct people visited. That is
+# enough for an order of magnitude and a trend, which is what it is here for.
+#
+# To turn it on: add the hostname at
+# https://dash.cloudflare.com/?to=/:account/web-analytics, copy the token out
+# of the JS snippet in "Manage site", put it below, and set enabled to true.
+# The token is not a secret -- it appears in the page source of every visitor's
+# browser -- so it belongs in the repository like any other site setting.
+enabled: true
+token: "b01cd97667bf423dae55b77bae29fbeb"
+# The beacon loads on this hostname only, so preview builds and `pixi run
+# start` do not report. Change it if the site moves.
+hostname: www.underworldcode.org
