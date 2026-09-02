@@ -2384,17 +2384,17 @@ def test_the_deposit_reminder_asks_on_a_schedule_as_well_as_on_a_push():
     hand. The schedule closes it, and the open-request guard is what makes a
     repeating trigger safe.
     """
-    import yaml
-    ready = yaml.safe_load(
-        (ROOT / ".github" / "workflows" / "deposit-ready.yml").read_text(
-            encoding="utf-8"))
-    on = ready.get(True) or ready.get("on")
-    assert "schedule" in on, "a state condition needs a repeating trigger"
-    assert "workflow_dispatch" in on, "and a manual route, for a note in a hurry"
+    src = (ROOT / ".github" / "workflows" / "deposit-ready.yml").read_text(
+        encoding="utf-8")
+    # Read as text rather than YAML: pyyaml is not in the test environment,
+    # and the triggers are a flat block at the top of the file.
+    triggers = src.split("jobs:")[0]
+    assert "schedule:" in triggers, "a state condition needs a repeating trigger"
+    assert "cron:" in triggers
+    assert "workflow_dispatch:" in triggers, \
+        "and a manual route, for a note in a hurry"
 
     # A repeating trigger without the guard would mint a fresh DOI every week
     # for every request left waiting. The two belong together.
-    src = (ROOT / ".github" / "workflows" / "deposit-ready.yml").read_text(
-        encoding="utf-8")
     assert "gh pr list --state open" in src, \
         "a scheduled reminder MUST skip what it has already asked about"
