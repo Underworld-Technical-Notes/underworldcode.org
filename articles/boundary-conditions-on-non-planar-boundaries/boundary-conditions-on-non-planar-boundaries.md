@@ -20,6 +20,7 @@ keywords:
   - development
 exports:
   - format: typst
+    archived: "2026-09-02T22:20:19Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/boundary-conditions-on-non-planar-boundaries/
@@ -28,6 +29,7 @@ exports:
     article_id: UWTN 2026-016
     article_version: 1.0.0
     software_version: underworld3 development @ 8b7c8b9e
+doi: 10.6084/m9.figshare.33420637
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@thefirmhtx?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Alexander Londoño</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 
