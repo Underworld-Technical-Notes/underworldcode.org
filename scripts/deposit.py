@@ -647,6 +647,19 @@ def run(slug, provider, live, publish, new_version, delete_draft,
             set_field(slug, "archived_version", meta.get("version") or "0.0.0")
             steps.append("stamped archived_at %s (version %s)"
                          % (stamp, meta.get("version")))
+            # The DOI has to reach the ARTICLE's front matter too, not only
+            # metadata.yml: that is where the PDF's title page takes it from,
+            # and `pixi run test` asserts the two agree. Run here, the request
+            # carries both files and the publish needs nothing further. Run at
+            # publish instead, it would land on the runner and have to be
+            # written back -- the step this flow exists to remove.
+            import subprocess
+            if subprocess.call([sys.executable, "scripts/sync_archival.py"],
+                               cwd=ROOT) != 0:
+                raise DepositError(
+                    "could not write the reserved DOI into the article's "
+                    "front matter; nothing else was changed")
+            steps.append("wrote the DOI into the article front matter")
             print("\n".join("  " + s for s in steps))
             print("\nReserved and stopped. The identifiers are in "
                   "metadata.yml; commit them, and the deposit runs when they "
