@@ -2372,3 +2372,21 @@ def test_an_open_request_is_not_asked_for_twice():
         "it must match the requests it opens itself"
     assert "if s not in asked" in ask_step, \
         "and it must subtract them from what it asks about"
+
+
+def test_the_reserve_writes_the_doi_into_the_article_too():
+    """A deposit request has to carry BOTH files.
+
+    `metadata.yml` holds the record for the guard; the article's own front
+    matter is where the PDF's title page takes the DOI from, and
+    `test_the_pdf_carries_the_archival_doi_once_a_note_is_deposited` asserts
+    the two agree. The first live reserve wrote only the metadata and that
+    test failed on the request it opened -- correctly, because a publish from
+    that state would have produced a PDF with no DOI on it.
+    """
+    src = (ROOT / "scripts" / "deposit.py").read_text(encoding="utf-8")
+    reserve = src.split("if not rebuild:")[1].split("return")[0]
+    assert "sync_archival.py" in reserve, \
+        "the reserve must write the DOI into the article front matter"
+    for field in ("archived_at", "archived_version"):
+        assert field in reserve, "%s must be stamped by the reserve" % field
