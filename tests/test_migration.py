@@ -2372,3 +2372,29 @@ def test_an_open_request_is_not_asked_for_twice():
         "it must match the requests it opens itself"
     assert "if s not in asked" in ask_step, \
         "and it must subtract them from what it asks about"
+
+
+def test_the_deposit_reminder_asks_on_a_schedule_as_well_as_on_a_push():
+    """The push trigger fires on a metadata CHANGE; the condition it cares
+    about is a STATE — archival, published, and holding no record.
+
+    A note published before this workflow existed, or one whose metadata has
+    not moved since, is therefore never asked about. Retrofitting the
+    boundary-conditions note found exactly that: it had to be asked for by
+    hand. The schedule closes it, and the open-request guard is what makes a
+    repeating trigger safe.
+    """
+    src = (ROOT / ".github" / "workflows" / "deposit-ready.yml").read_text(
+        encoding="utf-8")
+    # Read as text rather than YAML: pyyaml is not in the test environment,
+    # and the triggers are a flat block at the top of the file.
+    triggers = src.split("jobs:")[0]
+    assert "schedule:" in triggers, "a state condition needs a repeating trigger"
+    assert "cron:" in triggers
+    assert "workflow_dispatch:" in triggers, \
+        "and a manual route, for a note in a hurry"
+
+    # A repeating trigger without the guard would mint a fresh DOI every week
+    # for every request left waiting. The two belong together.
+    assert "gh pr list --state open" in src, \
+        "a scheduled reminder MUST skip what it has already asked about"

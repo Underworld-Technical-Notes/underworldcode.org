@@ -14,6 +14,16 @@ on:
   push:
     branches: [main]
     paths: ['articles/**/metadata.yml']
+  # A note published before this workflow existed, or one whose metadata has
+  # not moved since, is never asked about by the push trigger -- it fires on a
+  # CHANGE, and the condition here is a STATE: archival, published, no record.
+  # Retrofitting the boundary-conditions note found exactly that; it had to be
+  # asked for by hand. So the same question is asked weekly, and the guard on
+  # what is already open means a request left waiting is not asked again.
+  schedule:
+    # Mondays, 21:00 UTC -- an hour before the `outstanding` report, so a
+    # request opened here appears in that week's issue rather than the next.
+    - cron: '0 21 * * 1'
   workflow_dispatch:
 
 permissions:
