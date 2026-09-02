@@ -253,6 +253,11 @@
       ],
       "description": "When the archival PDF was made, ISO-8601 UTC. Stamped by the deposit at the moment the copy is taken, and again for each new version, so it always names the snapshot the record actually holds."
     },
+    "archived_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "The note's `version` at the moment it was last deposited. `version` ahead of this means the note has outrun its archival copy and wants a new deposit."
+    },
     "archive_published_at": {
       "type": [
         "string",

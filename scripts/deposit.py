@@ -616,8 +616,16 @@ def run(slug, provider, live, publish, new_version, delete_draft,
     if (new_version and rebuild) or not meta.get("archived_at"):
         stamp = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
         set_field(slug, "archived_at", stamp.isoformat().replace("+00:00", "Z"))
+        # The note's own version, recorded as deposited. This is what makes a
+        # STALE deposit visible: `version` moves when an author decides the
+        # content has materially changed, so `version != archived_version` is
+        # the note having outrun its archival copy. Nothing else in the
+        # metadata says that -- archived_at only says when the copy was taken,
+        # and a git timestamp cannot tell a rewrite from a typo.
+        set_field(slug, "archived_version", meta.get("version") or "0.0.0")
         meta = load(slug)
-        steps.append("stamped archived_at %s" % stamp.isoformat())
+        steps.append("stamped archived_at %s (version %s)"
+                     % (stamp.isoformat(), meta.get("archived_version")))
 
     # The reserved DOI has to be on the title page of the document it
     # identifies, so the PDF is rebuilt between reserving and uploading. In the

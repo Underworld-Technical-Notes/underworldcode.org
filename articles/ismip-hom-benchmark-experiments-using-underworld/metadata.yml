@@ -12,6 +12,7 @@ version: 1.0.0
 legacy_doi: 10.59350/8196m-xmj49
 archive_doi: 10.6084/m9.figshare.33193518
 archived_at: 2026-08-10T04:19:43Z
+archived_version: 1.0.0
 license: CC-BY-4.0
 canonical_path: /ismip-hom-benchmark-experiments-using-underworld/
 legacy_paths:

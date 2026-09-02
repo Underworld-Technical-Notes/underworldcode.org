@@ -31,7 +31,19 @@ jobs:
 
       - name: Which notes have no DOI
         id: pending
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # A request that is already OPEN counts as asked. deposit-queue.txt
+          # only records what has been merged, so without this the workflow
+          # re-asks on every metadata change and the same note accumulates
+          # requests -- four for one note, before this was noticed. Duplicate
+          # reminders are how a reminder becomes something you scroll past.
+          gh pr list --state open --limit 100 --json title \
+            --jq '.[] | select(.title | startswith("Deposit: ")) |
+                  .title | sub("^Deposit: "; "")' \
+            | tr ',' '\n' | tr -d ' ' | sed '/^$/d' > .already-asked || true
+          echo "already asked: $(tr '\n' ' ' < .already-asked)"
           SLUGS=$(pixi run -q python3 -c "
           import sys; sys.path.insert(0, 'scripts'); import deposit
           queued = set()
@@ -41,8 +53,13 @@ jobs:
                   if line: queued.add(line)
           except FileNotFoundError:
               pass
+          try:
+              queued.update(l.strip() for l in open('.already-asked') if l.strip())
+          except FileNotFoundError:
+              pass
           print(','.join(s for s in deposit.pending() if s not in queued))
           ")
+          rm -f .already-asked
           echo "slugs=${SLUGS}" >> "$GITHUB_OUTPUT"
           echo "not yet queued: ${SLUGS:-none}"
 
