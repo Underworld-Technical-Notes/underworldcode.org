@@ -2277,3 +2277,37 @@ def test_display_math_that_needs_a_blank_line_has_one():
                         "blank line before the `$$`."
                         % (path.name, opened + 1, risky[0].strip()[:40]))
                 opened = None
+
+
+def test_a_partial_build_does_not_let_one_slug_claim_anothers_page():
+    """`fix_slugs` restores URLs MyST truncated at 50 characters.
+
+    A preview builds only the notes a branch changes, so most slugs have no
+    built page at all -- and a slug SHORTER than the cap was never truncated,
+    so it has nothing to restore. Matching it by prefix or suffix anyway let
+    `underworld-2-10` and `joss-publication-underworld-2` both claim the built
+    page `underworld-2`, and the run died reporting an ambiguity that did not
+    exist. Seen on #42, whose metadata backfill touched 43 articles and so
+    made the preview a large partial build.
+    """
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "fix_slugs", ROOT / "scripts" / "fix_slugs.py")
+    fix_slugs = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(fix_slugs)
+
+    assert fix_slugs.SLUG_CAP == 50
+    built = {"underworld-2", "underworld-2-9"}
+    for slug in ("underworld-2-10", "joss-publication-underworld-2"):
+        assert len(slug) <= fix_slugs.SLUG_CAP, \
+            "the case only holds for slugs shorter than the cap"
+        assert slug not in built
+        # the old matching; what the fix must now refuse to act on
+        loose = ([b for b in built if slug.startswith(b) and b != slug]
+                 + [b for b in built if slug.endswith(b) and b != slug])
+        assert loose == ["underworld-2"], \
+            "this is the collision the fix exists to prevent"
+
+    src = (ROOT / "scripts" / "fix_slugs.py").read_text(encoding="utf-8")
+    assert "if len(slug) <= SLUG_CAP:" in src, \
+        "short slugs must be skipped before any prefix/suffix matching"

@@ -31,6 +31,9 @@ import re
 import shutil
 import sys
 
+# MyST truncates a page's URL at this many characters.
+SLUG_CAP = 50
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 # Files whose contents may reference a page URL.
@@ -59,7 +62,7 @@ def main():
     # MyST would disambiguate with a numeric suffix. Catch that before renaming.
     prefixes = {}
     for slug in slugs:
-        key = slug[:50]
+        key = slug[:SLUG_CAP]
         prefixes.setdefault(key, []).append(slug)
     collisions = {k: v for k, v in prefixes.items() if len(v) > 1}
     if collisions:
@@ -72,6 +75,18 @@ def main():
     for slug in slugs:
         if slug in built:
             continue                      # already correct, nothing to do
+        # Only a slug LONGER than the cap can have been truncated. A shorter
+        # one that is missing from `built` simply was not built -- which is
+        # normal in a preview, where only the notes a branch changes are.
+        # Matching it by prefix or suffix anyway lets it claim somebody else's
+        # page: `underworld-2-10` starts with `underworld-2` and
+        # `joss-publication-underworld-2` ends with it, so on a partial build
+        # both claimed /underworld-2/ and the run died reporting an ambiguity
+        # that does not exist.
+        if len(slug) <= SLUG_CAP:
+            if slug not in built:
+                print("  (not in this build: %s)" % slug, file=sys.stderr)
+            continue
         heads = [b for b in built if slug.startswith(b) and b != slug]
         tails = [b for b in built if slug.endswith(b) and b != slug]
         candidates = heads + tails
