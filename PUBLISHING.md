@@ -362,20 +362,43 @@ settled before code exists.
 
 ## The deposit is offered, not taken
 
-A note reaching `main` without a DOI opens a pull request titled
-**Deposit: <slug>**, adding it to `deposit-queue.txt`. Merging that pull
-request runs the deposit; closing it does not, and the note is offered again
-the next time anything changes.
+A note reaching `main` without a record gets a pull request titled
+**Deposit: <slug>**. The workflow creates a figshare draft and reserves a DOI
+for it — both private, both reversible — and commits the identifiers into that
+note's own `metadata.yml`. So the request you are reading already contains the
+DOI it is asking about, and `deposit-pdf` attaches the archival PDF to it.
 
-So the reminder is automatic and the decision is not. Nothing is deposited
-because a note was published — only because somebody merged the request to
-deposit it. That matters because a published DOI cannot be withdrawn, only
-superseded.
+**Merging is the decision, and it is the only one.** The push runs the deposit,
+which rebuilds the PDF with the DOI on its title page, uploads it with the
+archive package, and publishes. Nothing has to be recorded afterwards: the
+identifiers arrived with the approval.
 
-The deposit then opens a further pull request carrying the identifiers it
-obtained. **Merge that too**: until it lands, the repository does not know the
-record exists, and the guard against minting a second DOI for the same note
-keys on the record id being present.
+Closing the request deposits nothing. The draft is then unused, and it appears
+in the weekly *outstanding* issue until it is either merged or cleared with
+`--delete-draft`. A reserved DOI never resolves publicly, so an abandoned
+request costs nothing but a line in that report.
 
-Queue entries stay after the deposit. They are a log of what was approved, and
-the deposit skips anything already holding a record, so a stale line is inert.
+The reminder is automatic and the decision is not. Nothing is deposited because
+a note was published — only because somebody merged the request. That matters
+because a published DOI cannot be withdrawn, only superseded.
+
+### Why the approval lives in the note's metadata
+
+It used to live in one shared `deposit-queue.txt`, appended to by every note at
+the same line. Two notes in flight therefore conflicted, and merging one broke
+the other — so the approvals raced each other, and duplicate requests piled up
+for the same note. Per-note files cannot collide.
+
+The trigger watches `articles/**/metadata.yml` and acts on `--approved`, which
+is "holds a reserved record, not yet published". A reserved record can only
+reach `main` through a merged request, so an ordinary metadata edit — a
+keyword, a corrected credit — mints nothing. `--all`, which would deposit
+anything undeposited, stays behind an explicit manual mode.
+
+### What still comes back afterwards
+
+One thing: `archive_published_at`, the moment figshare published. It arrives as
+a small pull request, and it is bookkeeping — the record id and DOI are already
+on `main`, so the guard against a second mint is satisfied whether or not it
+lands. It only decides which notes a batch re-version offers. The *outstanding*
+report lists it until it is merged.
