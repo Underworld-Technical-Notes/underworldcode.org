@@ -1836,39 +1836,66 @@ def test_the_deposit_records_its_identifiers_through_a_pull_request():
 def test_nothing_mints_a_doi_without_somebody_merging_something():
     """The reminder is automatic; the act is not.
 
-    A note reaching main without a DOI opens a pull request adding it to the
-    queue. Merging that is the decision. The deposit fires on a push to
-    deposit-queue.txt — a file only a merge changes — or on manual dispatch.
-    It must never fire because a note was published.
+    A note reaching main without a record gets a pull request carrying a
+    RESERVED DOI -- a draft, not a publication, and reversible. Merging that
+    is the decision, and it is the only way a reserved record reaches main.
+    The deposit then fires on that push and publishes only what is reserved.
+
+    So the property is unchanged from the queue-file design it replaced, and
+    the mechanism has moved: the trigger now watches metadata, and what keeps
+    it from firing on any old edit is `--approved`.
     """
-    import re as _re
     deposit = (ROOT / ".github" / "workflows" / "deposit.yml").read_text(encoding="utf-8")
-    config = "\n".join(l for l in deposit.splitlines() if not l.lstrip().startswith("#"))
-    triggers = config.split("jobs:")[0]
-    assert "deposit-queue.txt" in triggers, "the queue merge is the consent"
-    # articles/** must NOT be a trigger: that would deposit on publication.
-    assert "articles/" not in triggers, \
-        "a deposit must not fire because an article changed"
+    config = "\n".join(l for l in deposit.splitlines()
+                       if not l.lstrip().startswith("#"))
+    push_step = config.split("github.event_name == 'push'")[1].split("- name:")[0]
+    assert "--approved" in push_step, \
+        "the push-triggered deposit must act only on reserved records"
+    assert "--all" not in push_step, \
+        "--all on the push trigger would deposit any note on an unrelated edit"
+
+    # --all stays reachable, but only when a person chooses it
+    all_step = config.split("--all --live --publish")[0]
+    assert "inputs.mode == 'deposit-all'" in all_step.split("- name:")[-1], \
+        "--all must be behind an explicit manual mode"
 
     ready = (ROOT / ".github" / "workflows" / "deposit-ready.yml").read_text(encoding="utf-8")
     ready_config = "\n".join(l for l in ready.splitlines()
                              if not l.lstrip().startswith("#"))
     assert "gh pr create" in ready_config, "it must ASK, not deposit"
-    for forbidden in ("FIGSHARE_TOKEN", "--live", "--publish"):
-        assert forbidden not in ready_config, \
-            "the reminder workflow must not be able to deposit anything (%s)" % forbidden
+    # It reserves now, which needs the token and --live. What it must never do
+    # is publish: everything it touches has to stay reversible.
+    assert "--reserve-only" in ready_config
+    assert "--publish" not in ready_config, \
+        "the request workflow must never publish anything"
 
 
-def test_the_queue_skips_what_is_already_deposited():
-    """Entries stay after the deposit, as a record of what was approved.
+def test_a_deposit_request_touches_only_its_own_note():
+    """One pull request per note, each editing that note's own metadata.
 
-    So the queue is not a work list — it is a log, and the guard against acting
-    on a stale line is that the deposit skips anything holding a record.
+    The shared queue file this replaced was appended to by every note at the
+    same line, so two notes in flight conflicted and merging one broke the
+    other. Per-note files cannot collide.
     """
-    queue = ROOT / "deposit-queue.txt"
-    assert queue.exists(), "the queue file is how a DOI gets minted"
     ready = (ROOT / ".github" / "workflows" / "deposit-ready.yml").read_text(encoding="utf-8")
-    assert "queued" in ready, "a note already in the queue must not be asked about twice"
+    assert 'git add "articles/$SLUG/metadata.yml"' in ready, \
+        "the request must stage only the note it is about"
+    assert not (ROOT / "deposit-queue.txt").exists(), \
+        "the shared queue file is what raced; it should be gone"
+
+
+def test_the_request_carries_what_the_publish_needs():
+    """Reserving stamps everything the archival copy needs, so nothing has to
+    be written back to main afterwards except a timestamp.
+
+    archived_at is printed on the PDF and stated in the package README, so if
+    it were stamped at publish time it would exist only on the runner.
+    """
+    src = (ROOT / "scripts" / "deposit.py").read_text(encoding="utf-8")
+    reserve = src.split("if not rebuild:")[1].split("return")[0]
+    for field in ("archived_at", "archived_version"):
+        assert field in reserve, \
+            "%s must be stamped when the DOI is reserved" % field
 
 
 def test_no_directive_option_is_wrapped_over_two_lines():

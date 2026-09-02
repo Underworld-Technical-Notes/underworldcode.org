@@ -11,10 +11,13 @@ which is exactly when it is least welcome.
 So this names the half-finished states. It reads metadata and, if `gh` is
 available, open pull requests; it changes nothing.
 
-    deposited, not recorded   an identifiers pull request is still open, so
-                              the repository does not know a record exists
-                              and the duplicate-mint guard is blind
-    asked for, not deposited  a deposit request is open on the queue
+    reserved, not published   a DOI is reserved and the deposit never
+                              finished: either the request is still open
+                              (normal, and named), or it was closed and the
+                              draft is now unused
+    timestamps not recorded   a publication-timestamp pull request is open;
+                              bookkeeping only, since the identifiers already
+                              reached main through the request
     note ahead of its copy    `version` has moved past `archived_version`:
                               the note has outrun what is on the DOI
     never deposited           archival, published, and has no DOI
@@ -76,7 +79,7 @@ def survey(check_net=True):
     build_index.TYPES.update(build_index.article_types())
 
     findings = {"unrecorded": None, "queued": None,
-                "stale": [], "undeposited": [], "blind": []}
+                "stale": [], "undeposited": [], "blind": [], "reserved": []}
 
     for md in sorted(ARTICLES.glob("*/metadata.yml")):
         slug = md.parent.name
@@ -95,6 +98,12 @@ def survey(check_net=True):
             if field(text, "status") == "published":
                 findings["undeposited"].append(slug)
             continue
+        # A reserved record that never got published. Normal while its
+        # request is open -- that is the gate doing its job -- and a stuck
+        # draft once it is not, which nothing else would ever mention.
+        if not field(text, "archive_published_at"):
+            findings["reserved"].append((slug, doi))
+            continue
         # archived_version is absent on nothing after the backfill, but a
         # note deposited by an older workflow would have none; say so
         # rather than guessing it matches.
@@ -105,7 +114,11 @@ def survey(check_net=True):
 
     if check_net:
         findings["unrecorded"] = open_branches("deposit/identifiers-")
-        findings["queued"] = open_branches("deposit/queue-")
+        every = open_branches("deposit/")
+        findings["queued"] = (None if every is None else
+                              [p for p in every
+                               if not p["headRefName"].startswith(
+                                   "deposit/identifiers-")])
     return findings
 
 
@@ -117,22 +130,46 @@ def report(f):
         lines.append("%s (%s)" % (title, n))
 
     if f["unrecorded"] is None:
-        head("deposited, not recorded", "not checked -- gh unavailable")
+        head("timestamps not recorded", "not checked -- gh unavailable")
     elif f["unrecorded"]:
-        head("deposited, not recorded", len(f["unrecorded"]))
+        head("timestamps not recorded", len(f["unrecorded"]))
         for p in f["unrecorded"]:
             lines.append("  #%-5d %s  (opened %s)"
                          % (p["number"], p["title"][:60], p["createdAt"][:10]))
-        lines.append("  -> merge these: until they land the repository does "
-                     "not know the records exist")
+        lines.append("  -> bookkeeping: the identifiers are already on main, "
+                     "so nothing is at risk while these wait")
         outstanding += len(f["unrecorded"])
 
-    if f["queued"]:
-        head("asked for, not deposited", len(f["queued"]))
-        for p in f["queued"]:
+    if f["reserved"]:
+        asked = {}
+        for p in (f["queued"] or []):
+            asked[p["title"].replace("Deposit: ", "").strip()] = p["number"]
+        head("reserved, not published", len(f["reserved"]))
+        for slug, doi in f["reserved"]:
+            if slug in asked:
+                lines.append("  %-46s %s  request #%d open"
+                             % (slug[:46], doi, asked[slug]))
+            else:
+                lines.append("  %-46s %s  NO OPEN REQUEST -- draft unused"
+                             % (slug[:46], doi))
+        lines.append("  -> merge the request to publish, or clear an unused "
+                     "draft with --delete-draft")
+        outstanding += len(f["reserved"])
+
+    # A request open against a note with nothing reserved: a leftover from the
+    # shared-queue design, or a reserve that failed. Either way it is asking
+    # for something that will not happen when merged.
+    reserved_slugs = {slug for slug, _doi in f["reserved"]}
+    orphan = [p for p in (f["queued"] or [])
+              if p["title"].replace("Deposit: ", "").strip()
+              not in reserved_slugs]
+    if orphan:
+        head("request open, nothing reserved", len(orphan))
+        for p in orphan:
             lines.append("  #%-5d %s  (opened %s)"
                          % (p["number"], p["title"][:60], p["createdAt"][:10]))
-        outstanding += len(f["queued"])
+        lines.append("  -> close these; the note is offered again on its own")
+        outstanding += len(orphan)
 
     if f["stale"]:
         head("note ahead of its archival copy", len(f["stale"]))

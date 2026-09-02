@@ -14,7 +14,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent
 import outstanding  # noqa: E402
 
 CLEAN = {"unrecorded": [], "queued": [], "stale": [], "undeposited": [],
-         "blind": []}
+         "blind": [], "reserved": []}
 
 
 def test_a_clean_repository_says_nothing():
@@ -32,14 +32,41 @@ def test_an_unanswerable_check_says_so_rather_than_nothing():
     assert n == 0                      # unknown is not counted as outstanding
 
 
-def test_unrecorded_identifiers_are_reported_with_the_reason():
+def test_unrecorded_timestamps_are_reported_as_bookkeeping():
+    """They are no longer dangerous -- the identifiers reach main through the
+    request -- so the report must not describe them as if they were."""
     f = dict(CLEAN, unrecorded=[
         {"number": 25, "title": "Deposit identifiers from run 1",
          "createdAt": "2026-08-17T21:39:38Z"}])
     text, n = outstanding.report(f)
     assert n == 1
     assert "#25" in text and "2026-08-17" in text
-    assert "duplicate-mint" in text or "does not know" in text
+    assert "nothing is at risk" in text
+
+
+def test_a_reserved_draft_with_no_request_is_distinguished_from_one_in_flight():
+    """A reserved DOI whose request is open is the gate working. The same
+    DOI with no request is an unused draft, and only this says so."""
+    in_flight = dict(CLEAN,
+                     reserved=[("note-a", "10.0/x")],
+                     queued=[{"number": 7, "title": "Deposit: note-a",
+                              "createdAt": "2026-09-01T00:00:00Z"}])
+    text, n = outstanding.report(in_flight)
+    assert n == 1 and "request #7 open" in text
+    assert "NO OPEN REQUEST" not in text
+
+    stranded = dict(CLEAN, reserved=[("note-a", "10.0/x")])
+    text, n = outstanding.report(stranded)
+    assert n == 1 and "NO OPEN REQUEST" in text
+
+
+def test_a_request_with_nothing_reserved_is_reported():
+    """A leftover from the shared-queue design, or a reserve that failed:
+    merging it would not deposit anything."""
+    f = dict(CLEAN, queued=[{"number": 33, "title": "Deposit: note-b",
+                             "createdAt": "2026-08-23T00:00:00Z"}])
+    text, n = outstanding.report(f)
+    assert n == 1 and "#33" in text and "nothing reserved" in text
 
 
 def test_a_note_ahead_of_its_deposit_is_reported():
@@ -59,12 +86,15 @@ def test_a_deposit_with_no_recorded_version_is_not_assumed_current():
 
 def test_the_counts_add_up():
     f = {"unrecorded": [{"number": 1, "title": "t", "createdAt": "2026-01-01T00:00:00Z"}],
-         "queued": [{"number": 2, "title": "t", "createdAt": "2026-01-01T00:00:00Z"}],
+         "queued": [{"number": 2, "title": "Deposit: z",
+                     "createdAt": "2026-01-01T00:00:00Z"}],
+         "reserved": [("a", "10.0/x")],
          "stale": [("a", "1.0.0", "1.1.0")],
          "undeposited": ["b"],
          "blind": ["c"]}
     _text, n = outstanding.report(f)
-    assert n == 5
+    # 1 timestamps + 1 reserved + 1 orphan request + 1 stale + 1 never + 1 blind
+    assert n == 6
 
 
 def test_the_real_repository_surveys_without_network():

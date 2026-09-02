@@ -29,68 +29,59 @@ jobs:
         with:
           cache: true
 
-      - name: Which notes have no DOI
+      - name: Which notes have no record at all
         id: pending
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # A request that is already OPEN counts as asked. deposit-queue.txt
-          # only records what has been merged, so without this the workflow
-          # re-asks on every metadata change and the same note accumulates
-          # requests -- four for one note, before this was noticed. Duplicate
-          # reminders are how a reminder becomes something you scroll past.
-          gh pr list --state open --limit 100 --json title \
-            --jq '.[] | select(.title | startswith("Deposit: ")) |
-                  .title | sub("^Deposit: "; "")' \
-            | tr ',' '\n' | tr -d ' ' | sed '/^$/d' > .already-asked || true
-          echo "already asked: $(tr '\n' ' ' < .already-asked)"
           SLUGS=$(pixi run -q python3 -c "
           import sys; sys.path.insert(0, 'scripts'); import deposit
-          queued = set()
-          try:
-              for line in open('deposit-queue.txt'):
-                  line = line.split('#')[0].strip()
-                  if line: queued.add(line)
-          except FileNotFoundError:
-              pass
-          try:
-              queued.update(l.strip() for l in open('.already-asked') if l.strip())
-          except FileNotFoundError:
-              pass
-          print(','.join(s for s in deposit.pending() if s not in queued))
+          print(','.join(deposit.unreserved()))
           ")
-          rm -f .already-asked
           echo "slugs=${SLUGS}" >> "$GITHUB_OUTPUT"
-          echo "not yet queued: ${SLUGS:-none}"
+          echo "no record yet: ${SLUGS:-none}"
 
-      - name: Ask, by pull request
+      # ONE pull request per note, each touching only that note's own
+      # metadata.yml. The queue file this replaced was appended to by every
+      # note at the same line, so two notes in flight conflicted and merging
+      # one broke the other -- measured, not feared.
+      - name: Reserve a DOI and ask, one note at a time
         if: steps.pending.outputs.slugs != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
         run: |
-          # RUN_ATTEMPT, not just RUN_ID: a re-run keeps the same run id, so
-          # without it the second attempt pushes to the branch the first one
-          # already created and is rejected non-fast-forward. Re-running a
-          # failed workflow is the obvious thing to do, and it must work.
-          BRANCH="deposit/queue-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           git config user.name "underworld-technical-notes"
           git config user.email "help@underworldcode.org"
-          git checkout -b "$BRANCH"
           for SLUG in $(echo "${{ steps.pending.outputs.slugs }}" | tr ',' ' '); do
-            echo "$SLUG" >> deposit-queue.txt
-          done
-          git add deposit-queue.txt
-          git commit -m "Deposit: ${{ steps.pending.outputs.slugs }}
+            # RUN_ATTEMPT, not just RUN_ID: a re-run keeps the same run id, so
+            # without it the second attempt pushes to the branch the first one
+            # already created and is rejected non-fast-forward.
+            BRANCH="deposit/${SLUG}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+            git checkout -q main
+            git checkout -qb "$BRANCH"
+            # Reserve only: a draft and a DOI, both reversible, and nothing
+            # uploaded or published. What reaches this pull request is the
+            # identifiers -- so merging it both approves the deposit AND
+            # records what was minted, in one act.
+            pixi run deposit -- --slug "$SLUG" --live --reserve-only
+            git add "articles/$SLUG/metadata.yml"
+            git commit -m "Deposit: $SLUG
 
-          Opened automatically because these notes are on main without a DOI.
-          Merging this runs the deposit workflow."
-          git push origin "$BRANCH"
-          gh pr create --base main --head "$BRANCH" \
-            --title "Deposit: ${{ steps.pending.outputs.slugs }}" \
-            --body "These notes are published and have no DOI.
+          A draft and a DOI are reserved for this note; neither is public. The
+          identifiers are in its metadata.yml, so merging this approves the
+          deposit and records it in one step.
 
-          **Merging this mints one.** The deposit workflow reserves a DOI, rebuilds the PDF so the DOI is on its title page, uploads the PDF and the archive package, publishes the record, and opens a further pull request with the identifiers.
+          Opened automatically because the note is on main without a record."
+            git push origin "$BRANCH"
+            DOI=$(grep '^archive_doi:' "articles/$SLUG/metadata.yml" | cut -d' ' -f2)
+            gh pr create --base main --head "$BRANCH" \
+              --title "Deposit: $SLUG" \
+              --body "\`$SLUG\` is published and has no archival record. A figshare draft has been created and **$DOI** reserved for it. Neither is public yet.
 
-          A published DOI cannot be withdrawn, only superseded. Close this instead if a note is not ready — it will be offered again the next time anything changes, so nothing is lost by waiting.
+          **Merging this publishes the record at that DOI.** The deposit workflow rebuilds the PDF so the DOI is on its title page, uploads the PDF and the archive package, and publishes. The identifiers are already in this pull request, so nothing has to be recorded afterwards.
+
+          A published DOI cannot be withdrawn, only superseded — and because figshare versions, a mistake is a new version rather than a lost identifier.
+
+          Not ready? Close this. The reserved draft is then unused and shows up in the weekly *outstanding* issue, where \`pixi run deposit -- --slug $SLUG --live --delete-draft\` clears it.
 
           Underworld development team with AI support from [Claude Code](https://claude.com/claude-code)"
+          done

@@ -12,16 +12,21 @@ name: deposit
 
 # Two ways in, and both are a person deciding.
 #
-# A push to deposit-queue.txt means somebody merged a pull request titled
-# "Deposit: <note>". That is the editorial act; the merge is the consent. The
-# file is only ever changed by such a merge, so this cannot fire on its own.
+# A reserved DOI reaching `main` means somebody merged a pull request titled
+# "Deposit: <note>". That is the editorial act; the merge is the consent. A
+# reserved record can only arrive that way, so this cannot fire on its own.
+#
+# The trigger watches metadata, not a queue file, because the approval now
+# lives in the note's own metadata.yml -- one file per note, so two notes in
+# flight cannot conflict. It is narrowed to `--approved` below for the same
+# reason it is not `--all`: an unrelated metadata edit must not mint anything.
 #
 # workflow_dispatch is the manual route, for a re-run or a mode other than
 # deposit-all.
 on:
   push:
     branches: [main]
-    paths: ['deposit-queue.txt']
+    paths: ['articles/**/metadata.yml']
   workflow_dispatch:
     inputs:
       slug:
@@ -148,11 +153,24 @@ jobs:
           FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
         run: pixi run deposit -- --slug "${{ inputs.slug }}" --live --publish
 
-      # A queue merge has no inputs, so `mode` is empty and this is the step
-      # that runs. Anything already holding a record is skipped, so a stale line
-      # in the queue does nothing.
+      # An approval merge has no inputs, so `mode` is empty and this is the
+      # step that runs.
+      #
+      # `--approved`, NOT `--all`: it acts only on notes holding a RESERVED
+      # record that is not yet published, which is exactly the set somebody has
+      # merged a request for. With `--all` this trigger would deposit any
+      # archival note the moment an unrelated metadata change reached main --
+      # the gate would be gone, and the first anyone knew would be the DOI.
+      - name: Publish what has been approved
+        if: github.event_name == 'push'
+        env:
+          FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
+        run: pixi run deposit -- --approved --live --publish
+
+      # The manual sweep keeps `--all`: run deliberately, by a person choosing
+      # the mode, it is allowed to reserve and publish in one go.
       - name: Deposit and publish everything outstanding
-        if: inputs.mode == 'deposit-all' || github.event_name == 'push'
+        if: inputs.mode == 'deposit-all'
         env:
           FIGSHARE_TOKEN: ${{ secrets.FIGSHARE_TOKEN }}
         run: pixi run deposit -- --all --live --publish
@@ -215,9 +233,11 @@ jobs:
           git push origin "$BRANCH"
           gh pr create --base main --head "$BRANCH" \
             --title "Deposit identifiers from run ${GITHUB_RUN_ID} (attempt ${GITHUB_RUN_ATTEMPT})" \
-            --body "DOIs and record ids written by the deposit workflow (\`${{ inputs.mode }}\`).
+            --body "Publication timestamps written by the deposit workflow (\`${{ inputs.mode }}\`).
 
-          **Merge this.** Until it lands, the repository does not know these records exist, and the guard against minting a second DOI for the same note has nothing to check.
+          Bookkeeping. The record id and DOI already reached \`main\` through the deposit request, so the guard against minting a second DOI is satisfied whether or not this lands; what is here is \`archive_published_at\`, which only affects which notes a batch re-version offers.
+
+          Merge it when convenient. It appears in the weekly *outstanding* issue until you do.
 
           Underworld development team with AI support from [Claude Code](https://claude.com/claude-code)"
 

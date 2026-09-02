@@ -510,6 +510,47 @@ def pending():
     return [slug for _date, slug in sorted(ready)]
 
 
+def unreserved():
+    """Archival articles with no record at all, oldest first.
+
+    The set a deposit REQUEST is opened for. Distinct from :func:`pending`,
+    which includes a note whose draft exists but is unpublished: under the
+    reserve-on-request flow that is a note already in flight -- its identifiers
+    are sitting in an open pull request, or a deposit is part way through -- and
+    asking again would open a second request for it. A draft that gets stuck is
+    caught by ``scripts/outstanding.py``, which is the tool for saying so.
+    """
+    import build_index
+    build_index.TYPES.update(build_index.article_types())
+    ready = []
+    for path in sorted(ARTICLES.glob("*/metadata.yml")):
+        meta = build_index.read_yaml(path)
+        if build_index.is_archival(meta) and not meta.get("repository_record_id"):
+            ready.append((str(meta.get("publication_date") or ""), meta["slug"]))
+    return [slug for _date, slug in sorted(ready)]
+
+
+def approved():
+    """Archival articles holding a RESERVED record that is not yet published.
+
+    A reserved DOI reaches `main` only by somebody merging the deposit request
+    that carries it, so this set is exactly "approved for deposit and not yet
+    deposited" -- which is what the push trigger acts on. Keying the trigger on
+    :func:`pending` instead would deposit any archival note the moment an
+    unrelated metadata change was merged, and the approval gate would be gone.
+    """
+    import build_index
+    build_index.TYPES.update(build_index.article_types())
+    ready = []
+    for path in sorted(ARTICLES.glob("*/metadata.yml")):
+        meta = build_index.read_yaml(path)
+        if (build_index.is_archival(meta)
+                and meta.get("repository_record_id")
+                and not meta.get("archive_published_at")):
+            ready.append((str(meta.get("publication_date") or ""), meta["slug"]))
+    return [slug for _date, slug in sorted(ready)]
+
+
 def published():
     """Archival articles that already hold a published record, oldest first.
 
@@ -594,11 +635,22 @@ def run(slug, provider, live, publish, new_version, delete_draft,
         set_field(slug, "archive_doi", doi)
         steps.append("reserved %s" % doi)
         if not rebuild:
+            # Everything the archival copy needs, stamped HERE so the reserve
+            # is self-contained. These reach `main` by somebody merging the
+            # deposit request, and the publish that follows finds them already
+            # set. Stamped at publish instead, they would exist only on the
+            # runner and have to be written back afterwards -- which is the
+            # step that used to sit unmerged for a fortnight.
+            stamp = (datetime.datetime.now(datetime.timezone.utc)
+                     .replace(microsecond=0).isoformat().replace("+00:00", "Z"))
+            set_field(slug, "archived_at", stamp)
+            set_field(slug, "archived_version", meta.get("version") or "0.0.0")
+            steps.append("stamped archived_at %s (version %s)"
+                         % (stamp, meta.get("version")))
             print("\n".join("  " + s for s in steps))
-            print("\nThe DOI is now in metadata.yml. REBUILD THE PDF before "
-                  "uploading, so the DOI is on its title page:\n"
-                  "    pixi run build\n"
-                  "then run this again to upload.")
+            print("\nReserved and stopped. The identifiers are in "
+                  "metadata.yml; commit them, and the deposit runs when they "
+                  "reach main.")
             return
 
     # BEFORE the rebuild, because the PDF prints this date and the README states
@@ -715,10 +767,19 @@ def main():
                         help="delete an unpublished draft and forget it")
     parser.add_argument("--all", action="store_true",
                         help="every archival article not yet deposited")
+    parser.add_argument("--approved", action="store_true",
+                        help="every article whose reserved DOI has been merged")
+    parser.add_argument("--reserve-only", action="store_true",
+                        help="create the draft and reserve the DOI, then stop: "
+                             "no PDF rebuild and no upload. What a deposit "
+                             "REQUEST runs, so the identifiers can be reviewed "
+                             "and merged before anything is published.")
     args = parser.parse_args()
 
     if args.publish and not args.live:
         sys.exit("--publish needs --live. Refusing to guess.")
+    if args.reserve_only and args.publish:
+        sys.exit("--reserve-only and --publish are opposites. Refusing to guess.")
 
     provider = Figshare(os.environ.get("FIGSHARE_TOKEN")) if args.live else None
 
@@ -726,6 +787,10 @@ def main():
         slugs = [args.slug]
     elif args.new_version:
         slugs = published()
+    elif args.approved:
+        slugs = approved()
+    elif args.reserve_only:
+        slugs = unreserved()
     else:
         slugs = pending()
     if not slugs:
@@ -759,7 +824,7 @@ def main():
             run(slug, provider, args.live, args.publish, args.new_version,
                 args.delete_draft,
                 rebuild=(args.live and not args.delete_draft
-                         and not batch_rebuild))
+                         and not batch_rebuild and not args.reserve_only))
         except DepositError as exc:
             failed.append((slug, str(exc)))
             print("REFUSED: %s" % exc, file=sys.stderr)
