@@ -2304,3 +2304,48 @@ def test_display_math_that_needs_a_blank_line_has_one():
                         "blank line before the `$$`."
                         % (path.name, opened + 1, risky[0].strip()[:40]))
                 opened = None
+
+
+def test_a_partial_build_does_not_let_one_slug_claim_anothers_page():
+    """`fix_slugs` restores URLs MyST mangled, and matches only the two ways
+    it actually mangles them: truncation at 50 characters, and dropping a
+    LEADING NUMBER (`2-11-scaling` is served as /scaling/).
+
+    Matched any looser, one note claims another's page. A preview builds only
+    the notes a branch changes, so most slugs have no built page at all, and
+    there `underworld-2-10` matched `underworld-2` merely by starting with it
+    while `joss-publication-underworld-2` matched by ending with it. Both
+    claimed /underworld-2/ and the run died on an ambiguity that does not
+    exist -- they are three separate notes. Seen on #42, whose metadata
+    backfill touched 43 articles and so made the preview a large partial build.
+    """
+    import importlib.util
+    import re as _re
+    spec = importlib.util.spec_from_file_location(
+        "fix_slugs", ROOT / "scripts" / "fix_slugs.py")
+    fix_slugs = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(fix_slugs)
+    cap = fix_slugs.SLUG_CAP
+    assert cap == 50
+
+    def candidates(slug, built):
+        heads = [b for b in built if len(slug) > cap and b == slug[:cap]]
+        tails = [b for b in built
+                 if b != slug and slug.endswith(b)
+                 and _re.fullmatch(r"[0-9]+(-[0-9]+)*-",
+                                   slug[:len(slug) - len(b)])]
+        return heads + tails
+
+    # the collision, on the partial build that exposed it
+    built = {"underworld-2", "underworld-2-9"}
+    for slug in ("underworld-2-10", "joss-publication-underworld-2"):
+        assert candidates(slug, built) == [], \
+            "%s must not claim another note's page" % slug
+
+    # and the two manglings that ARE real still resolve
+    assert candidates("2-11-scaling", {"scaling"}) == ["scaling"]
+    assert candidates("30-years-of-citcom-ellipsis-and-underworld",
+                      {"years-of-citcom-ellipsis-and-underworld"}) == \
+        ["years-of-citcom-ellipsis-and-underworld"]
+    long_slug = "a" * 60
+    assert candidates(long_slug, {"a" * cap}) == ["a" * cap]
