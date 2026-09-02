@@ -31,6 +31,9 @@ import re
 import shutil
 import sys
 
+# MyST truncates a page's URL at this many characters.
+SLUG_CAP = 50
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 # Files whose contents may reference a page URL.
@@ -59,7 +62,7 @@ def main():
     # MyST would disambiguate with a numeric suffix. Catch that before renaming.
     prefixes = {}
     for slug in slugs:
-        key = slug[:50]
+        key = slug[:SLUG_CAP]
         prefixes.setdefault(key, []).append(slug)
     collisions = {k: v for k, v in prefixes.items() if len(v) > 1}
     if collisions:
@@ -72,8 +75,23 @@ def main():
     for slug in slugs:
         if slug in built:
             continue                      # already correct, nothing to do
-        heads = [b for b in built if slug.startswith(b) and b != slug]
-        tails = [b for b in built if slug.endswith(b) and b != slug]
+        # MyST mangles a URL in exactly two ways, and matching anything looser
+        # lets one note claim another's page. On a preview -- which builds only
+        # the notes a branch changes, so most slugs have no page at all --
+        # `underworld-2-10` was matching `underworld-2` merely by starting with
+        # it, and `joss-publication-underworld-2` by ending with it, so both
+        # claimed /underworld-2/ and the run died on an ambiguity that does not
+        # exist. Neither is a mangling of the other; they are three notes.
+        #
+        #   truncation     the URL is cut at SLUG_CAP characters
+        #   leading strip  a leading NUMBER is dropped, so `2-11-scaling`
+        #                  is served as /scaling/ and
+        #                  `30-years-of-citcom-...` as /years-of-citcom-.../
+        heads = [b for b in built
+                 if len(slug) > SLUG_CAP and b == slug[:SLUG_CAP]]
+        tails = [b for b in built
+                 if b != slug and slug.endswith(b)
+                 and re.fullmatch(r"[0-9]+(-[0-9]+)*-", slug[:len(slug) - len(b)])]
         candidates = heads + tails
         if not candidates:
             print("  WARNING: no built page found for %s" % slug, file=sys.stderr)

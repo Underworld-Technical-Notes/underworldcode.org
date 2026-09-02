@@ -87,6 +87,12 @@ test-unit = "pytest -q tests/"
 # densities whose right value depends on what the document is, and that is
 # the author's call rather than the build's.
 check-style = "python3 scripts/check_style.py"
+
+# What is half-finished: deposits started and not recorded, requests never
+# merged, notes that have outrun their archival copy. Exits 1 if anything is
+# outstanding, which is what lets the scheduled `outstanding` workflow raise
+# an issue. Not part of `test`: an unfinished deposit is not a broken build.
+outstanding = "python3 scripts/outstanding.py"
 test = { depends-on = ["test-unit", "validate", "test-dois", "test-assets"] }
 
 # Stage 0 migration tooling. Read-only against the live Ghost site.
