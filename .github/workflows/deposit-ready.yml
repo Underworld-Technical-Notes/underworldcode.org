@@ -31,13 +31,32 @@ jobs:
 
       - name: Which notes have no record at all
         id: pending
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # A request that is already OPEN counts as asked. `unreserved()`
+          # reads main, and a reserved record only reaches main when a request
+          # is MERGED -- so without this, every run reserves a second DOI for a
+          # note whose request is still waiting, and abandons the draft behind
+          # it. That is the duplicate-mint hazard the whole flow exists to
+          # prevent, so the guard has to be here and not in the report.
+          gh pr list --state open --limit 100 --json title \
+            --jq '.[] | select(.title | startswith("Deposit: ")) |
+                  .title | sub("^Deposit: "; "")' \
+            | tr -d ' ' | sed '/^$/d' > .already-asked || true
+          echo "already asked: $(tr '\n' ' ' < .already-asked)"
           SLUGS=$(pixi run -q python3 -c "
           import sys; sys.path.insert(0, 'scripts'); import deposit
-          print(','.join(deposit.unreserved()))
+          asked = set()
+          try:
+              asked = {l.strip() for l in open('.already-asked') if l.strip()}
+          except FileNotFoundError:
+              pass
+          print(','.join(s for s in deposit.unreserved() if s not in asked))
           ")
+          rm -f .already-asked
           echo "slugs=${SLUGS}" >> "$GITHUB_OUTPUT"
-          echo "no record yet: ${SLUGS:-none}"
+          echo "to ask about: ${SLUGS:-none}"
 
       # ONE pull request per note, each touching only that note's own
       # metadata.yml. The queue file this replaced was appended to by every

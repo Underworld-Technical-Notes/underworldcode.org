@@ -2349,3 +2349,26 @@ def test_a_partial_build_does_not_let_one_slug_claim_anothers_page():
         ["years-of-citcom-ellipsis-and-underworld"]
     long_slug = "a" * 60
     assert candidates(long_slug, {"a" * cap}) == ["a" * cap]
+
+
+def test_an_open_request_is_not_asked_for_twice():
+    """`unreserved()` reads main, and a reserved record only reaches main when
+    a request is MERGED.
+
+    So without a guard on what is already open, every run of the reminder
+    reserves a SECOND DOI for a note whose request is still waiting, and
+    abandons the draft behind it -- the exact duplicate-mint hazard the flow
+    exists to prevent. It bites hardest on a schedule, where the reminder runs
+    whether or not anything changed.
+    """
+    ready = (ROOT / ".github" / "workflows" / "deposit-ready.yml").read_text(
+        encoding="utf-8")
+    config = "\n".join(l for l in ready.splitlines()
+                       if not l.lstrip().startswith("#"))
+    ask_step = config.split("id: pending")[1].split("- name:")[0]
+    assert "gh pr list --state open" in ask_step, \
+        "the reminder must look at what is already open before reserving"
+    assert 'startswith("Deposit: ")' in ask_step, \
+        "it must match the requests it opens itself"
+    assert "if s not in asked" in ask_step, \
+        "and it must subtract them from what it asks about"
