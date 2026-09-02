@@ -75,20 +75,23 @@ def main():
     for slug in slugs:
         if slug in built:
             continue                      # already correct, nothing to do
-        # Only a slug LONGER than the cap can have been truncated. A shorter
-        # one that is missing from `built` simply was not built -- which is
-        # normal in a preview, where only the notes a branch changes are.
-        # Matching it by prefix or suffix anyway lets it claim somebody else's
-        # page: `underworld-2-10` starts with `underworld-2` and
-        # `joss-publication-underworld-2` ends with it, so on a partial build
-        # both claimed /underworld-2/ and the run died reporting an ambiguity
-        # that does not exist.
-        if len(slug) <= SLUG_CAP:
-            if slug not in built:
-                print("  (not in this build: %s)" % slug, file=sys.stderr)
-            continue
-        heads = [b for b in built if slug.startswith(b) and b != slug]
-        tails = [b for b in built if slug.endswith(b) and b != slug]
+        # MyST mangles a URL in exactly two ways, and matching anything looser
+        # lets one note claim another's page. On a preview -- which builds only
+        # the notes a branch changes, so most slugs have no page at all --
+        # `underworld-2-10` was matching `underworld-2` merely by starting with
+        # it, and `joss-publication-underworld-2` by ending with it, so both
+        # claimed /underworld-2/ and the run died on an ambiguity that does not
+        # exist. Neither is a mangling of the other; they are three notes.
+        #
+        #   truncation     the URL is cut at SLUG_CAP characters
+        #   leading strip  a leading NUMBER is dropped, so `2-11-scaling`
+        #                  is served as /scaling/ and
+        #                  `30-years-of-citcom-...` as /years-of-citcom-.../
+        heads = [b for b in built
+                 if len(slug) > SLUG_CAP and b == slug[:SLUG_CAP]]
+        tails = [b for b in built
+                 if b != slug and slug.endswith(b)
+                 and re.fullmatch(r"[0-9]+(-[0-9]+)*-", slug[:len(slug) - len(b)])]
         candidates = heads + tails
         if not candidates:
             print("  WARNING: no built page found for %s" % slug, file=sys.stderr)

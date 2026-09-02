@@ -2280,34 +2280,45 @@ def test_display_math_that_needs_a_blank_line_has_one():
 
 
 def test_a_partial_build_does_not_let_one_slug_claim_anothers_page():
-    """`fix_slugs` restores URLs MyST truncated at 50 characters.
+    """`fix_slugs` restores URLs MyST mangled, and matches only the two ways
+    it actually mangles them: truncation at 50 characters, and dropping a
+    LEADING NUMBER (`2-11-scaling` is served as /scaling/).
 
-    A preview builds only the notes a branch changes, so most slugs have no
-    built page at all -- and a slug SHORTER than the cap was never truncated,
-    so it has nothing to restore. Matching it by prefix or suffix anyway let
-    `underworld-2-10` and `joss-publication-underworld-2` both claim the built
-    page `underworld-2`, and the run died reporting an ambiguity that did not
-    exist. Seen on #42, whose metadata backfill touched 43 articles and so
-    made the preview a large partial build.
+    Matched any looser, one note claims another's page. A preview builds only
+    the notes a branch changes, so most slugs have no built page at all, and
+    there `underworld-2-10` matched `underworld-2` merely by starting with it
+    while `joss-publication-underworld-2` matched by ending with it. Both
+    claimed /underworld-2/ and the run died on an ambiguity that does not
+    exist -- they are three separate notes. Seen on #42, whose metadata
+    backfill touched 43 articles and so made the preview a large partial build.
     """
     import importlib.util
+    import re as _re
     spec = importlib.util.spec_from_file_location(
         "fix_slugs", ROOT / "scripts" / "fix_slugs.py")
     fix_slugs = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(fix_slugs)
+    cap = fix_slugs.SLUG_CAP
+    assert cap == 50
 
-    assert fix_slugs.SLUG_CAP == 50
+    def candidates(slug, built):
+        heads = [b for b in built if len(slug) > cap and b == slug[:cap]]
+        tails = [b for b in built
+                 if b != slug and slug.endswith(b)
+                 and _re.fullmatch(r"[0-9]+(-[0-9]+)*-",
+                                   slug[:len(slug) - len(b)])]
+        return heads + tails
+
+    # the collision, on the partial build that exposed it
     built = {"underworld-2", "underworld-2-9"}
     for slug in ("underworld-2-10", "joss-publication-underworld-2"):
-        assert len(slug) <= fix_slugs.SLUG_CAP, \
-            "the case only holds for slugs shorter than the cap"
-        assert slug not in built
-        # the old matching; what the fix must now refuse to act on
-        loose = ([b for b in built if slug.startswith(b) and b != slug]
-                 + [b for b in built if slug.endswith(b) and b != slug])
-        assert loose == ["underworld-2"], \
-            "this is the collision the fix exists to prevent"
+        assert candidates(slug, built) == [], \
+            "%s must not claim another note's page" % slug
 
-    src = (ROOT / "scripts" / "fix_slugs.py").read_text(encoding="utf-8")
-    assert "if len(slug) <= SLUG_CAP:" in src, \
-        "short slugs must be skipped before any prefix/suffix matching"
+    # and the two manglings that ARE real still resolve
+    assert candidates("2-11-scaling", {"scaling"}) == ["scaling"]
+    assert candidates("30-years-of-citcom-ellipsis-and-underworld",
+                      {"years-of-citcom-ellipsis-and-underworld"}) == \
+        ["years-of-citcom-ellipsis-and-underworld"]
+    long_slug = "a" * 60
+    assert candidates(long_slug, {"a" * cap}) == ["a" * cap]
