@@ -279,6 +279,16 @@ Three limits come with not running servers:
 
 
 
+## History
+
+- **1.1.0** — 2026-08-31 · [10.6084/m9.figshare.33216996.v2](https://doi.org/10.6084/m9.figshare.33216996.v2)
+  Revised for house style and shortened by about a fifth, and the abstract
+  rewritten to say what the thing is for rather than list its parts. The
+  machinery described is unchanged: the container, the launcher, the workflows
+  and the URL all work exactly as they did in 1.0.0.
+- **1.0.0** — 2026-08-11 · [10.6084/m9.figshare.33216996.v1](https://doi.org/10.6084/m9.figshare.33216996.v1)
+  First published.
+
 <!-- uwtn-acknowledgement -->
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=running-underworld-in-a-browser">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=running-underworld-in-a-browser">Start one</a></div></div>
