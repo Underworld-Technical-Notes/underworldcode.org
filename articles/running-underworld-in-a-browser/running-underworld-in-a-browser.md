@@ -26,7 +26,7 @@ exports:
     template: ../../templates/pdf
     output: running-underworld-in-a-browser.pdf
     article_id: UWTN 2026-010
-    article_version: 1.1.0
+    article_version: 1.1.1
 doi: 10.6084/m9.figshare.33216996
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@jbl12761?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">James Lee</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
@@ -278,6 +278,16 @@ Three limits come with not running servers:
 - **Public repositories only**, because nbgitpuller has to be able to see the notebooks to bring them over.
 
 
+
+## History
+
+- **1.1.0** — 2026-08-31 · [10.6084/m9.figshare.33216996.v2](https://doi.org/10.6084/m9.figshare.33216996.v2)
+  Revised for house style and shortened by about a fifth, and the abstract
+  rewritten to say what the thing is for rather than list its parts. The
+  machinery described is unchanged: the container, the launcher, the workflows
+  and the URL all work exactly as they did in 1.0.0.
+- **1.0.0** — 2026-08-11 · [10.6084/m9.figshare.33216996.v1](https://doi.org/10.6084/m9.figshare.33216996.v1)
+  First published.
 
 <!-- uwtn-acknowledgement -->
 

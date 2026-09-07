@@ -2416,3 +2416,40 @@ def test_the_deposit_reminder_asks_on_a_schedule_as_well_as_on_a_push():
     # for every request left waiting. The two belong together.
     assert "gh pr list --state open" in src, \
         "a scheduled reminder MUST skip what it has already asked about"
+
+
+def test_a_redeposited_note_records_what_changed():
+    """A note past its first deposit carries a `## History` section.
+
+    Never changing a published note silently is the one thing every correction
+    policy agrees on, and the machinery cannot enforce the prose -- but it can
+    notice that a note has been deposited more than once and says nothing
+    about it. `archived_version` is the deposited version, so a `version`
+    ahead of `1.0.0` that has been deposited is a note that has moved.
+    """
+    import re as _re
+    missing = []
+    for meta_path in sorted((ROOT / "articles").glob("*/metadata.yml")):
+        text = meta_path.read_text(encoding="utf-8")
+
+        def field(key):
+            m = _re.search(r"^%s:\s*(.+?)\s*$" % key, text, _re.M)
+            if not m:
+                return None
+            v = m.group(1).strip().strip('"').strip("'")
+            return None if v in ("null", "~", "") else v
+
+        archived = field("archived_version")
+        # deposited, and at a version past the first
+        if not archived or archived == "1.0.0":
+            continue
+        slug = meta_path.parent.name
+        article = meta_path.parent / ("%s.md" % slug)
+        if not article.exists():
+            continue
+        body = article.read_text(encoding="utf-8")
+        if not _re.search(r"^##+\s+History\s*$", body, _re.M):
+            missing.append("%s (deposited at %s)" % (slug, archived))
+    assert not missing, (
+        "these notes were deposited past 1.0.0 and carry no History section, "
+        "so a reader cannot tell what changed: %s" % ", ".join(missing))
