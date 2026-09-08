@@ -45,6 +45,11 @@ constitutive-models-in-symbolic-form:
   subjects: [rheology]
   methods: [symbolic-codegen, solvers, finite-elements]
 
+faults-in-parallel:
+  article_type: technical-note
+  subjects: [earthquakes-faults]
+  methods: [meshing, parallel-hpc]
+
 symbolic-time-derivatives-in-underworld3:
   article_type: technical-note
   subjects: []
