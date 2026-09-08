@@ -211,7 +211,7 @@ A supplied manager fixes the order, so the solver has to be given the same one; 
 
 The solver does not need to be made aware of which DDt type you chose. It asks the manager for a time derivative, an advection term and a stabilisation flux, and gets SymPy expressions. The physics of the time discretisation is encapsulated in the DDt object. The numerics of the spatial discretisation are encapsulated in the solver. They communicate through symbolic expressions.
 
-Each solver type has a sensible default. Advection-diffusion and Navier-Stokes default to the Eulerian SUPG manager; the semi-Lagrangian solvers keep their `SLCN` names and their place at large Courant numbers, where tracing a characteristic beats stabilising a residual. The convection benchmarks decided it: the same answers, about a tenth of the cost per step, and no dependence on how the mesh is partitioned. There is more on that comparison in [Two Ways to Move a Field](/two-ways-to-move-a-field/). Stokes' viscoelastic stress history is still semi-Lagrangian, and pure diffusion is still Eulerian. You only need to override the default when your problem requires it.
+Each solver type has a sensible default. Advection-diffusion and Navier-Stokes default to the Eulerian SUPG manager; the semi-Lagrangian solvers keep their `SLCN` names and their place at large Courant numbers, where tracing a characteristic beats stabilising a residual. What decided it was cost and stability rather than accuracy: assembling the transport is several times cheaper per step than tracing characteristics and interpolating, and it does not care what the Courant number is. On smooth translation the semi-Lagrangian scheme is still the more accurate of the two, which is why it keeps its place; the convection benchmarks, where the flow turns and the error accumulates over a full circuit, are where the two draw level on accuracy and the cost difference decides. There is more on that comparison in [Two Ways to Move a Field](/two-ways-to-move-a-field/). Stokes' viscoelastic stress history is still semi-Lagrangian, and pure diffusion is still Eulerian. You only need to override the default when your problem requires it.
 
 ## Why This Matters
 
@@ -228,7 +228,9 @@ This is the same design principle we described in the [constitutive models post]
   `NavierStokes` now take their transport from the history manager and default
   to `EulerianSUPG`; the semi-Lagrangian classes keep the `SLCN` names. The
   DDt hierarchy gains a fifth flavour and the solver's template expressions are
-  written in the composing form. A runnable example was added.
+  written in the composing form. A runnable example was added
+  (`examples/timestepping.py`), and the reason the default moved is stated as
+  cost and stability rather than accuracy, which is what the measurements show.
   The scheme theory — BDF, Adams-Moulton, order ramping — is unchanged, and so
   is the viscoelastic stress history, which is still semi-Lagrangian.
 - **1.0.0** — 2026-04-16 · [10.6084/m9.figshare.33193596.v1](https://doi.org/10.6084/m9.figshare.33193596.v1)

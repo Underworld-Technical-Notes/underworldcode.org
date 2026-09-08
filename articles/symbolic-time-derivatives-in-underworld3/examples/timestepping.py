@@ -11,14 +11,24 @@ manager changes, and with it whether transport is assembled implicitly in the
 residual (Eulerian SUPG), traced along characteristics (semi-Lagrangian), or
 corrected explicitly on the mesh (Eulerian).
 
+What this shows and what it does not: uniform translation of a smooth blob is
+the easiest case there is for a semi-Lagrangian scheme -- the characteristic is
+a straight line and one interpolation per step is nearly exact -- so it wins on
+accuracy here and the cost column is the interesting one. The case that decided
+the default is a convection benchmark, where the flow turns and the
+interpolation error accumulates over a full circuit; see the design note
+`eulerian-supg-transport.md` for that comparison.
+
 Dimensional throughout: metres, seconds, kelvin. The Courant number is set
 deliberately above 1 for the last run, which is where the schemes part company.
 
 Usage:
     python3 timestepping.py                    # all three, default resolution
     python3 timestepping.py -uw_cells 48       # finer
-    python3 timestepping.py -uw_courant 2.0    # push past the CFL limit
+    python3 timestepping.py -uw_courant 2.0    # past the CFL limit
 """
+
+import time
 
 import numpy as np
 import sympy
@@ -28,7 +38,7 @@ import underworld3 as uw
 params = uw.Params(
     cells=uw.Param(32, "cells across the box"),
     courant=uw.Param(0.5, "Courant number: |v| dt / h"),
-    steps=uw.Param(20, "timesteps"),
+    travel=uw.Param(0.5, "how far the blob is carried, in box widths"),
 )
 
 # --- the physical problem, in units -----------------------------------------
@@ -85,10 +95,16 @@ def run(flavour):
     for wall in ("Bottom", "Top", "Left", "Right"):
         solver.add_dirichlet_bc(0.0, wall)
 
+    # Compare at equal PHYSICAL time, not equal step count: a bigger Courant
+    # number buys fewer steps, which is the whole point of an unconditionally
+    # stable scheme. Comparing at fixed step count flatters whichever scheme
+    # is given the smaller timestep.
     dt_nd = float(params.courant) / CELLS      # |v|=1 on the unit box
-    n = int(params.steps)
+    n = max(1, int(round(float(params.travel) / dt_nd)))
+    t0 = time.perf_counter()
     for _step in range(n):
         solver.solve(timestep=dt_nd)
+    per_step = (time.perf_counter() - t0) / n
 
     # the exact blob: advected by v*t, spread by the diffusion it has seen
     t_end = n * dt_nd
@@ -99,20 +115,21 @@ def run(flavour):
         -((coords[:, 0] - (x0 + t_end)) ** 2 + (coords[:, 1] - y0) ** 2)
         / (2.0 * spread ** 2))
     got = T.array[:, 0, 0]
-    return float(np.sqrt(np.mean((got - exact) ** 2)) / float(T0.magnitude))
+    err = float(np.sqrt(np.mean((got - exact) ** 2)) / float(T0.magnitude))
+    return err, n, per_step
 
 
 if __name__ == "__main__":
     uw.pprint(f"box {L}, wind {V}, diffusivity {KAPPA}")
     uw.pprint(f"{CELLS} cells, Courant {float(params.courant):g}, "
-              f"dt {dt.to('year')}, {int(params.steps)} steps\n")
+              f"dt {dt.to('year')}, carried {float(params.travel):g} box widths\n")
     have_supg = hasattr(uw.systems.ddt, "EulerianSUPG")
-    uw.pprint(f"  {'manager':<24} {'relative L2 error':>18}")
+    uw.pprint(f"  {'manager':<24} {'L2 error':>10} {'steps':>7} {'s/step':>9}")
     for flavour, name in (("supg", "Eulerian SUPG (default)"),
                           ("slcn", "Semi-Lagrangian"),
                           ("eulerian", "Eulerian")):
         if flavour == "supg" and not have_supg:
-            uw.pprint(f"  {name:<24} {'needs the release that':>18}")
-            uw.pprint(f"  {'':<24} {'ships EulerianSUPG':>18}")
+            uw.pprint(f"  {name:<24} {'needs EulerianSUPG':>10}")
             continue
-        uw.pprint(f"  {name:<24} {run(flavour):>18.4f}")
+        err, n, per_step = run(flavour)
+        uw.pprint(f"  {name:<24} {err:>10.4f} {n:>7d} {per_step:>9.3f}")
