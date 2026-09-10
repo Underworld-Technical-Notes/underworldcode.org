@@ -12,6 +12,10 @@ authors:
     orcid: 0000-0003-3685-174X
     affiliations:
       - Australian National University
+  - name: Thyagarajulu Gollapalli
+    orcid: 0000-0001-9394-4104
+    affiliations:
+      - Monash University
 license: CC-BY-4.0
 keywords:
   - Underworld Code
@@ -28,22 +32,24 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 0.0.0
 ---
-
 OUTLINE — not yet written.
 
 Faults can dominate the dynamic behaviour of Earth systems at scales from the entire planet to a few 10s of metres. They are an extreme example of localisation: feedback between forcing and response that results in self-reinforcing weakening that does not have a brake at the largest scale. Faults are *extreme* in the sense that their natural length scale is orders of magnitude below that of a typical tectonic simulation.
 
-At the tectonic scale fault is an infinitessimally thin surface across which the rock moves discontinuously. A finite element mesh is a machine for representing continuous fields. Putting the first into the second is work — cutting, conforming, refining, and doing it again every time the fault moves — so the first question is whether it has to be done at all.
+At the tectonic scale fault is an infinitessimally thin surface across which the rock moves discontinuously by overcoming a frictional resistance. A finite element mesh (the mesh we use in Underworld) is a mechanism for representing continuous fields and there is not a native mechanism that perfectly represents a fault. There are lots of different potential solutions to this difficulty. They include: 1) ignoring it by using a continuum model of the fault, 2) adding extra interpolation functions that represent discontinuities, 3) splitting the mesh along the line of the fault and dealing with it as a surface, 4) refining the mesh enough that the fault width is invisibly small at the model length scale.  
 
-## The fault you do not have to mesh
 
-Often it does not. Localisation is something a rheology does on its own: give the material a yield stress or a strain-rate-weakening viscosity and shear bands appear where the stress finds them, at whatever width the physics and the mesh between them allow. Nobody places those bands, nobody meshes them, and they form, rotate and fade as the loading changes. For a model asking how deformation organises itself, that emergence is the answer to the question, and prescribing a fault would beg it.
+## Sometimes it is better not to mesh
 
-The same is true of a fault you do want to prescribe. A direction of easy shear can be painted into the constitutive model as a field — a weak viscosity along a director taken from the gradient of the distance to a surface — and the mesh never learns that the fault is there. No cutting, no conforming, no remeshing when it migrates. The fault is a property of the material, not of the discretisation.
+Localisation is something a rheology does on its own: if we give the material a yield stress or a strain-rate-weakening viscosity, shear bands appear where the stress requires them, and at whatever width the physics and the mesh between them allow. Nobody places those bands, nobody meshes them, and they form, rotate and fade as the loading changes. For a model asking how deformation organises itself, that emergence itself is the answer to the question. 
 
-So the honest starting position is that meshing a fault is a cost you should have a reason to pay.
+The same can be true of a fault we do want to prescribe. A direction of easy shear can be painted into the constitutive model as a field: a weak viscosity along a normal direction taken from the fault surface. The mesh never learns that the fault is there. No cutting, no conforming, no remeshing when it migrates. The fault is a property of the material, not of the discretisation.
 
-## Why that is not always enough
+An anisotropic viscosity with a preferred plane of slip is a constitutive statement about how the material fails, and it has been used to carry faults and plate boundaries in convection models for two decades: @10.1080/14786430500255419 formulate large-deformation Mohr–Coulomb failure as an orthotropic viscous rheology, iterating the simple-shear viscosity so the yield criterion is satisfied on the failure plane, and @10.1002/2014JB011813 use the resulting anisotropic frictional rheology to study how rifts organise and how far apart their faults sit.
+
+Do we really need to do anything more than this ?
+
+## Sometimes it is better to mesh
 
 The reason is that a fault is not the same object as a shear band.
 
