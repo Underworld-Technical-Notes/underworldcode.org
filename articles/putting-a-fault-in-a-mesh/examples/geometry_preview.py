@@ -5,11 +5,12 @@ the curved 2-D ladder will build), the viscosity layer, and the drive.
 
     ../run geometry_preview.py      →  s_fault_geometry.png
 """
+import os
 import numpy as np
 import pyvista as pv
 
 pv.OFF_SCREEN = True
-OUT = "/Users/lmoresi/+Simulations/s_fault_rig"
+OUT = os.environ.get("SF_OUT", ".")   # where the figures are written
 
 # ----------------------------------------------------------------- dials
 THETA = np.deg2rad(40.0)     # strike of the diagonal baseline

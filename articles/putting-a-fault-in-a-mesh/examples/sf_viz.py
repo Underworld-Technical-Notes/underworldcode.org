@@ -13,6 +13,7 @@ Two panels over a very fine grey mesh:
     ../run sf_viz.py [-uw_res coarse|fine] [-uw_contrast C] [-uw_sense S]
         →  sf_dcff_trajectories_<res>_c<C>.png
 """
+import os
 import numpy as np
 import pyvista as pv
 from scipy.interpolate import RegularGridInterpolator
@@ -26,7 +27,7 @@ from underworld3.visualisation.glyphs import (direction_trajectories,
                                               trajectories_to_pv_lines)
 
 pv.OFF_SCREEN = True
-OUT = "/Users/lmoresi/+Simulations/s_fault_rig"
+OUT = os.environ.get("SF_OUT", ".")   # where the figures are written
 
 params = uw.Params(
     res=uw.Param("coarse", "coarse | fine (the two-resolution protocol)"),

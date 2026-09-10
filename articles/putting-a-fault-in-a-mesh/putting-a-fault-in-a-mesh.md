@@ -1,12 +1,11 @@
 ---
 title: "Faults: to mesh or not to mesh?"
 description: >-
-  A plate boundary is prior knowledge in a mantle model, and it has to be put
-  into the mesh by hand. Four ways to do it in two dimensions — a weak ribbon,
-  a transversely isotropic ribbon, split nodes, and a transversely isotropic
-  zone that ignores the mesh — what each asks of the mesh and of the
-  constitutive model, and how resolution is stacked on a static base so a
-  migrating fault does not accumulate mesh damage.
+  A fault is a discontinuity and a mesh represents continuity, so the first
+  question is whether the fault has to go into the mesh at all. Shear bands and
+  a painted director cost no mesh work; cutting and conforming cost a great
+  deal. What each of the four representations asks of the mesh and of the
+  constitutive model, where they agree, and why they part company at a junction.
 date: 2026-08-23
 authors:
   - name: Louis Moresi
@@ -20,6 +19,9 @@ keywords:
   - meshing
 exports:
   - format: typst
+    logo: ../../static/uwtn-logo.png
+    series: "Underworld Technical Notes"
+    origin_url: https://www.underworldcode.org/putting-a-fault-in-a-mesh/
     template: ../../templates/pdf
     output: putting-a-fault-in-a-mesh.pdf
     article_id: UWTN 2026-017
@@ -217,3 +219,5 @@ are demonstrations of what the representations do, not converged geophysics.
 - Contrast/viscosity-ladder numbers are solver stress tests, not geology.
 - Tip-shape questions are parked; do not over-claim tip-zone physics.
 - The dCFF reference is a welded solve; the gauge is demeaned pressure.
+
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=putting-a-fault-in-a-mesh">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=putting-a-fault-in-a-mesh">Start one</a></div></div>

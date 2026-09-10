@@ -7,6 +7,7 @@ mesh's own triangulation (the artefact rule).
 
     ../run sf_compare_viz.py    →  sf_compare_split_ti.png
 """
+import os
 import numpy as np
 import pyvista as pv
 import sympy
@@ -21,7 +22,7 @@ from underworld3.visualisation.glyphs import (direction_trajectories,
                                               trajectories_to_pv_lines)
 
 pv.OFF_SCREEN = True
-OUT = "/Users/lmoresi/+Simulations/s_fault_rig"
+OUT = os.environ.get("SF_OUT", ".")   # where the figures are written
 
 THETA = np.deg2rad(40.0)
 C = np.array([0.5, 0.5])
