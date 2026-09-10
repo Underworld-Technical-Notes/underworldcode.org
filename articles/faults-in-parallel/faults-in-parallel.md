@@ -22,7 +22,7 @@ exports:
     origin_url: https://www.underworldcode.org/faults-in-parallel/
     template: ../../templates/pdf
     output: faults-in-parallel.pdf
-    article_id: UWTN 2026-017
+    article_id: UWTN 2026-018
     article_version: 1.0.0
     software_version: underworld3 0.0.0
 ---

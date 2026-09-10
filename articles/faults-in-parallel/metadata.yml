@@ -2,7 +2,7 @@
 # `pixi run validate` checks this and the cross-file invariants a schema cannot
 # express -- that the article file is named <slug>.md, that canonical_path
 # matches the slug, and that no legacy DOI is ever paired with a new registrant.
-id: UWTN 2026-017
+id: UWTN 2026-018
 slug: faults-in-parallel
 title: Faults in parallel: meshing and cutting across the partition
 article_type: technical-note
