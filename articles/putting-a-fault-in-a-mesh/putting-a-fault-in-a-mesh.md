@@ -31,6 +31,9 @@ exports:
 
 OUTLINE — not yet written.
 
+Faults can dominate the dynamic behaviour of Earth systems at scales from the entire planet to a few 10s of metres. They are an extreme example of localisation in which 
+
+
 A fault is a surface across which the rock moves discontinuously. A finite
 element mesh is a machine for representing continuous fields. Putting the first
 into the second is work — cutting, conforming, refining, and doing it again
@@ -124,15 +127,26 @@ releasing.
 
 ## Four ways to model the same surface
 
+They form a ladder, and the rungs are what you are asking the mesh to do. At the
+bottom the mesh does not know the fault exists; at the top it conforms to the
+fault and is cut along it.
+
 | | the mesh must | the constitutive model must | width |
 |---|---|---|---|
+| TI, non-conforming | nothing | carry a director from the distance gradient | physics |
 | weak ribbon | resolve the band | carry a weak isotropic viscosity | physics |
 | TI ribbon | resolve the band | carry a director and two viscosities | physics |
 | split nodes | conform, then split the mid-surface | nothing inside the fault | a convenience |
-| TI, non-conforming | nothing | carry a director from the distance gradient | physics |
 
-A paragraph each: what it is, what it asks of you, when to reach for it. Detail
-goes to the notes that follow.
+Read the last column across and the trade is visible. For the first three the
+width is physics — it is the gouge zone, it enters the answer, and you owe it a
+value. For the last the width is a mesh convenience, because the fault has none:
+the split gives back a genuine discontinuity and asks the constitutive model for
+nothing at all, having spent the mesh instead.
+
+TODO(LOUIS) — a paragraph each: what it is, what it asks of you, and when you
+would reach for it. The first two clauses I can draft from the machinery; the
+third is the one worth your voice, and it is what the table cannot say.
 
 ```{figure} figures/split-anatomy.png
 The split: (a) the conforming chain; (b) exploded for display.
