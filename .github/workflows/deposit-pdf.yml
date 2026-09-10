@@ -8,13 +8,13 @@ name: deposit-pdf
 # preview site is the wrong tool here. It costs minutes to publish a whole
 # site, and it still leaves you clicking through a page to reach the download.
 #
-# So this builds the PDF for the queued notes and nothing else, and uploads it
-# as a run artifact. Download it from the checks, read it, and merge if it is
-# right.
+# So this builds the PDF for the note being asked about and nothing else, and
+# uploads it as a run artifact. Download it from the checks, read it, and merge
+# if it is right.
 
 on:
   pull_request:
-    paths: ['deposit-queue.txt']
+    paths: ['articles/**/metadata.yml']
 
 concurrency:
   group: deposit-pdf-${{ github.ref }}
@@ -30,19 +30,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # The base is needed to work out which lines this pull request ADDED.
-          # A queue entry that was already there has already been deposited, and
-          # rebuilding its PDF would say nothing about the decision at hand.
+          # The base is needed to work out what this pull request ADDED. A
+          # metadata edit that does not reserve a DOI is not a deposit request,
+          # and rebuilding a PDF for it would say nothing about any decision.
           fetch-depth: 0
 
       - name: Work out which notes are being asked about
         id: slugs
         run: |
           BASE="${{ github.event.pull_request.base.sha }}"
-          ADDED=$(git diff "$BASE"...HEAD -- deposit-queue.txt \
-                  | sed -n 's/^+\([a-z0-9][a-z0-9-]*\)$/\1/p' | tr '\n' ',' | sed 's/,$//')
+          # A note whose metadata.yml GAINED an archive_doi in this pull
+          # request. That is what a deposit request is, and it excludes every
+          # other metadata edit -- a keyword, a corrected banner credit -- which
+          # would otherwise each cost a PDF build.
+          ADDED=$(git diff "$BASE"...HEAD -- 'articles/*/metadata.yml' \
+                  | awk '/^\+\+\+ b\/articles\//{split($2,a,"/"); slug=a[3]}
+                         /^\+archive_doi:/{if (slug) print slug}' \
+                  | sort -u | tr '\n' ',' | sed 's/,$//')
           if [ -z "$ADDED" ]; then
-            echo "no slug added to the queue by this pull request"
+            echo "no DOI reserved by this pull request -- not a deposit request"
             echo "slugs=" >> "$GITHUB_OUTPUT"
           else
             echo "building: $ADDED"

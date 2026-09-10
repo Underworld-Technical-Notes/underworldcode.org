@@ -1,0 +1,88 @@
+name: outstanding
+
+# Every step of publishing here is deliberate: a person merges the request to
+# deposit, a person merges the identifiers that come back. That is the right
+# design, and its failure mode is that a step simply does not happen and
+# nothing says so. A deposit sat unrecorded for a fortnight because the only
+# thing that would have complained was the NEXT deposit -- which is the worst
+# possible moment to find out.
+#
+# So this asks the question on a schedule instead of relying on anyone
+# remembering to. It maintains ONE issue: opened when something is
+# outstanding, edited while it stays outstanding, closed when it clears. It
+# never opens a second one, and it says nothing at all when there is nothing
+# to say.
+
+on:
+  schedule:
+    # Mondays, 22:00 UTC -- Tuesday morning in Canberra, so the week starts
+    # with the list rather than ending with it.
+    - cron: '0 22 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+concurrency:
+  group: outstanding
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: prefix-dev/setup-pixi@v0.8.1
+        with:
+          cache: true
+
+      - name: What is half-finished
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e
+          pixi run -q python3 scripts/outstanding.py > report.txt
+          echo "count=$?" >> "$GITHUB_OUTPUT"
+          set -e
+          cat report.txt
+          {
+            echo "## Outstanding"
+            echo '```'
+            cat report.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open, update or close the one issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="Publishing steps not finished"
+          NUM=$(gh issue list --state open --limit 50 \
+                  --json number,title \
+                  --jq ".[] | select(.title == \"$TITLE\") | .number" | head -1)
+
+          if [ "${{ steps.check.outputs.count }}" = "0" ]; then
+            if [ -n "$NUM" ]; then
+              gh issue close "$NUM" \
+                --comment "Nothing outstanding as of $(date -u +%Y-%m-%d). Closed automatically."
+              echo "closed #$NUM"
+            else
+              echo "nothing outstanding, no issue open -- saying nothing"
+            fi
+            exit 0
+          fi
+
+          BODY=$(printf '%s\n\n```\n%s\n```\n\n%s\n' \
+            "Steps that were started and not finished. Regenerated each Monday by the \`outstanding\` workflow; run \`pixi run outstanding\` to see the same thing locally." \
+            "$(cat report.txt)" \
+            "This issue closes itself when the list is empty.")
+
+          if [ -n "$NUM" ]; then
+            gh issue edit "$NUM" --body "$BODY"
+            echo "updated #$NUM"
+          else
+            gh issue create --title "$TITLE" --body "$BODY"
+          fi

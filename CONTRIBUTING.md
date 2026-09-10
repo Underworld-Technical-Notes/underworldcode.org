@@ -108,6 +108,85 @@ Every paragraph introduces itself. The cost is a few repeated words; the benefit
 is that any section can be entered at any point, which is how a technical note
 is actually read.
 
+### A heading names its subject; it does not argue
+
+The same section, twice:
+
+```markdown
+## The container: just what we need and no less !
+## The launcher: an almost empty repository
+```
+
+```markdown
+## The container image
+## The launcher repository
+```
+
+A heading is a label on a drawer. It tells a reader what is inside so they can
+open it or walk past. The first pair instead makes a claim the section then has
+to earn, and holds back the point so it can be revealed a paragraph later. Read
+down a contents list of them and every entry sounds like it is about to
+surprise you, which is tiring at ten headings and says nothing about where to
+find anything.
+
+Colons are not banned — `UWTN 2026-014: Setting Up Full Multigrid` is a label.
+The test is whether the words after the colon *name* something or *assert*
+something. And an exclamation mark in a heading is always the wrong instinct.
+
+### Say the thing, rather than introducing it
+
+Two habits creep in, and both cost a reader time.
+
+**Announcing the writing.** *Written plainly, the link says…*; *three limits,
+stated plainly…*; *the honest framing is…* — the prose is either plain or it is
+not, and saying so does not make it so. Delete the frame and keep the sentence.
+
+**Withholding, then revealing.** *…and then does the thing that matters:*; *the
+word to notice is frozen*; *the consequences are the useful part:*; *the
+interesting parts are not entirely obvious*. Each of these tells the reader
+that something important is coming instead of just saying it. Every one is
+deletable with no loss: *and then does the thing that matters:* is *and then
+dispatches to the launcher:*.
+
+The related tic is **not-X-but-Y** — *it is not a container for a Python
+package*; *it ships the means of production, not just the product*. One is a
+useful correction of an expectation a reader really holds. Five in a note is a
+rhythm, and it reads as though the argument is with a sceptic who is not in the
+room.
+
+None of this is an argument for flat prose. A dry aside is welcome — *why
+writing one by hand is a poor use of an afternoon* — and so is a personal
+remark, because this audience is colleagues, not customers. The distinction is
+that those comment on the *world*. What to cut is commentary on the *writing*,
+and instructions about what the reader ought to find interesting.
+
+### Who is speaking
+
+- **"I"** reports what the author did and what they found. Two authors make
+  that "we".
+- **"we"** is the author and the reader, together, working through something:
+  *we can now measure the leak directly*.
+- **"you"** addresses the reader directly. Right where the note is telling
+  someone how to do something; out of place where it is reporting a result.
+
+The two senses of "we" collide in a co-authored note, so if a sentence could be
+read either way, name who did the work.
+
+**Do not strip second person out of instructions.** An earlier version of this
+section said to use "you" sparingly, full stop, and that was wrong: applied to
+a note that is half how-to, it took the second person down to 2.5 per thousand
+words where the 2020 cloud note — the register several of these notes are
+aiming at — sits at 5.6. Across the corpus the notes run 0–8 per thousand and
+the install guides reach 25–62, correctly. A note that is partly instruction
+belongs between those, and the sentence that reads naturally with "you" should
+keep it.
+
+`pixi run check-style` reports the habits above that a regular expression can
+find — it names the convention, quotes the line, and leaves the judgement to
+the author. Second person it reports as a density rather than a limit, for the
+reason just given, and it is not part of `pixi run test`, because several of
+its checks are densities whose right value depends on what the document is.
+
 ### The example code is part of the note
 
 A note's `examples/` scripts are read, not only run, so they are held to the same
@@ -145,8 +224,8 @@ something works, not how hard it was to make work.
 
 ### The other standing conventions
 
-- **Plain declarative prose, first person plural.** We measured, we found, we
-  were wrong. No antithesis pairs, no aphoristic closing line.
+- **Plain declarative prose.** No antithesis pairs, no aphoristic closing
+  line. See *Who is speaking* and *Say the thing* below.
 - **A published note carries results, not the route to them.** False steps,
   bugs found on the way and issue numbers belong in the tracker. What survives
   is the method and the measurement.

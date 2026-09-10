@@ -41,4 +41,5 @@ source: ghost-migration
 ghost_uuid: 6bfa4eab-e83e-4a57-8246-5c6ae2ecc353
 repository_record_id: 33193566
 archived_at: 2026-08-10T04:19:43Z
+archived_version: 1.0.0
 archive_published_at: 2026-08-10T04:27:30Z

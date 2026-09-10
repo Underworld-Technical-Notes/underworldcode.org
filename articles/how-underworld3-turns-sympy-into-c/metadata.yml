@@ -38,4 +38,5 @@ source: ghost-migration
 ghost_uuid: ba7cc108-239e-4371-8182-2316f9e2cf7c
 repository_record_id: 33193572
 archived_at: 2026-08-10T04:19:43Z
+archived_version: 1.0.0
 archive_published_at: 2026-08-10T04:27:41Z

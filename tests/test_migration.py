@@ -1836,39 +1836,66 @@ def test_the_deposit_records_its_identifiers_through_a_pull_request():
 def test_nothing_mints_a_doi_without_somebody_merging_something():
     """The reminder is automatic; the act is not.
 
-    A note reaching main without a DOI opens a pull request adding it to the
-    queue. Merging that is the decision. The deposit fires on a push to
-    deposit-queue.txt — a file only a merge changes — or on manual dispatch.
-    It must never fire because a note was published.
+    A note reaching main without a record gets a pull request carrying a
+    RESERVED DOI -- a draft, not a publication, and reversible. Merging that
+    is the decision, and it is the only way a reserved record reaches main.
+    The deposit then fires on that push and publishes only what is reserved.
+
+    So the property is unchanged from the queue-file design it replaced, and
+    the mechanism has moved: the trigger now watches metadata, and what keeps
+    it from firing on any old edit is `--approved`.
     """
-    import re as _re
     deposit = (ROOT / ".github" / "workflows" / "deposit.yml").read_text(encoding="utf-8")
-    config = "\n".join(l for l in deposit.splitlines() if not l.lstrip().startswith("#"))
-    triggers = config.split("jobs:")[0]
-    assert "deposit-queue.txt" in triggers, "the queue merge is the consent"
-    # articles/** must NOT be a trigger: that would deposit on publication.
-    assert "articles/" not in triggers, \
-        "a deposit must not fire because an article changed"
+    config = "\n".join(l for l in deposit.splitlines()
+                       if not l.lstrip().startswith("#"))
+    push_step = config.split("github.event_name == 'push'")[1].split("- name:")[0]
+    assert "--approved" in push_step, \
+        "the push-triggered deposit must act only on reserved records"
+    assert "--all" not in push_step, \
+        "--all on the push trigger would deposit any note on an unrelated edit"
+
+    # --all stays reachable, but only when a person chooses it
+    all_step = config.split("--all --live --publish")[0]
+    assert "inputs.mode == 'deposit-all'" in all_step.split("- name:")[-1], \
+        "--all must be behind an explicit manual mode"
 
     ready = (ROOT / ".github" / "workflows" / "deposit-ready.yml").read_text(encoding="utf-8")
     ready_config = "\n".join(l for l in ready.splitlines()
                              if not l.lstrip().startswith("#"))
     assert "gh pr create" in ready_config, "it must ASK, not deposit"
-    for forbidden in ("FIGSHARE_TOKEN", "--live", "--publish"):
-        assert forbidden not in ready_config, \
-            "the reminder workflow must not be able to deposit anything (%s)" % forbidden
+    # It reserves now, which needs the token and --live. What it must never do
+    # is publish: everything it touches has to stay reversible.
+    assert "--reserve-only" in ready_config
+    assert "--publish" not in ready_config, \
+        "the request workflow must never publish anything"
 
 
-def test_the_queue_skips_what_is_already_deposited():
-    """Entries stay after the deposit, as a record of what was approved.
+def test_a_deposit_request_touches_only_its_own_note():
+    """One pull request per note, each editing that note's own metadata.
 
-    So the queue is not a work list — it is a log, and the guard against acting
-    on a stale line is that the deposit skips anything holding a record.
+    The shared queue file this replaced was appended to by every note at the
+    same line, so two notes in flight conflicted and merging one broke the
+    other. Per-note files cannot collide.
     """
-    queue = ROOT / "deposit-queue.txt"
-    assert queue.exists(), "the queue file is how a DOI gets minted"
     ready = (ROOT / ".github" / "workflows" / "deposit-ready.yml").read_text(encoding="utf-8")
-    assert "queued" in ready, "a note already in the queue must not be asked about twice"
+    assert 'git add "articles/$SLUG/metadata.yml"' in ready, \
+        "the request must stage only the note it is about"
+    assert not (ROOT / "deposit-queue.txt").exists(), \
+        "the shared queue file is what raced; it should be gone"
+
+
+def test_the_request_carries_what_the_publish_needs():
+    """Reserving stamps everything the archival copy needs, so nothing has to
+    be written back to main afterwards except a timestamp.
+
+    archived_at is printed on the PDF and stated in the package README, so if
+    it were stamped at publish time it would exist only on the runner.
+    """
+    src = (ROOT / "scripts" / "deposit.py").read_text(encoding="utf-8")
+    reserve = src.split("if not rebuild:")[1].split("return")[0]
+    for field in ("archived_at", "archived_version"):
+        assert field in reserve, \
+            "%s must be stamped when the DOI is reserved" % field
 
 
 def test_no_directive_option_is_wrapped_over_two_lines():
@@ -2277,3 +2304,115 @@ def test_display_math_that_needs_a_blank_line_has_one():
                         "blank line before the `$$`."
                         % (path.name, opened + 1, risky[0].strip()[:40]))
                 opened = None
+
+
+def test_a_partial_build_does_not_let_one_slug_claim_anothers_page():
+    """`fix_slugs` restores URLs MyST mangled, and matches only the two ways
+    it actually mangles them: truncation at 50 characters, and dropping a
+    LEADING NUMBER (`2-11-scaling` is served as /scaling/).
+
+    Matched any looser, one note claims another's page. A preview builds only
+    the notes a branch changes, so most slugs have no built page at all, and
+    there `underworld-2-10` matched `underworld-2` merely by starting with it
+    while `joss-publication-underworld-2` matched by ending with it. Both
+    claimed /underworld-2/ and the run died on an ambiguity that does not
+    exist -- they are three separate notes. Seen on #42, whose metadata
+    backfill touched 43 articles and so made the preview a large partial build.
+    """
+    import importlib.util
+    import re as _re
+    spec = importlib.util.spec_from_file_location(
+        "fix_slugs", ROOT / "scripts" / "fix_slugs.py")
+    fix_slugs = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(fix_slugs)
+    cap = fix_slugs.SLUG_CAP
+    assert cap == 50
+
+    def candidates(slug, built):
+        heads = [b for b in built if len(slug) > cap and b == slug[:cap]]
+        tails = [b for b in built
+                 if b != slug and slug.endswith(b)
+                 and _re.fullmatch(r"[0-9]+(-[0-9]+)*-",
+                                   slug[:len(slug) - len(b)])]
+        return heads + tails
+
+    # the collision, on the partial build that exposed it
+    built = {"underworld-2", "underworld-2-9"}
+    for slug in ("underworld-2-10", "joss-publication-underworld-2"):
+        assert candidates(slug, built) == [], \
+            "%s must not claim another note's page" % slug
+
+    # and the two manglings that ARE real still resolve
+    assert candidates("2-11-scaling", {"scaling"}) == ["scaling"]
+    assert candidates("30-years-of-citcom-ellipsis-and-underworld",
+                      {"years-of-citcom-ellipsis-and-underworld"}) == \
+        ["years-of-citcom-ellipsis-and-underworld"]
+    long_slug = "a" * 60
+    assert candidates(long_slug, {"a" * cap}) == ["a" * cap]
+
+
+def test_an_open_request_is_not_asked_for_twice():
+    """`unreserved()` reads main, and a reserved record only reaches main when
+    a request is MERGED.
+
+    So without a guard on what is already open, every run of the reminder
+    reserves a SECOND DOI for a note whose request is still waiting, and
+    abandons the draft behind it -- the exact duplicate-mint hazard the flow
+    exists to prevent. It bites hardest on a schedule, where the reminder runs
+    whether or not anything changed.
+    """
+    ready = (ROOT / ".github" / "workflows" / "deposit-ready.yml").read_text(
+        encoding="utf-8")
+    config = "\n".join(l for l in ready.splitlines()
+                       if not l.lstrip().startswith("#"))
+    ask_step = config.split("id: pending")[1].split("- name:")[0]
+    assert "gh pr list --state open" in ask_step, \
+        "the reminder must look at what is already open before reserving"
+    assert 'startswith("Deposit: ")' in ask_step, \
+        "it must match the requests it opens itself"
+    assert "if s not in asked" in ask_step, \
+        "and it must subtract them from what it asks about"
+
+
+def test_the_reserve_writes_the_doi_into_the_article_too():
+    """A deposit request has to carry BOTH files.
+
+    `metadata.yml` holds the record for the guard; the article's own front
+    matter is where the PDF's title page takes the DOI from, and
+    `test_the_pdf_carries_the_archival_doi_once_a_note_is_deposited` asserts
+    the two agree. The first live reserve wrote only the metadata and that
+    test failed on the request it opened -- correctly, because a publish from
+    that state would have produced a PDF with no DOI on it.
+    """
+    src = (ROOT / "scripts" / "deposit.py").read_text(encoding="utf-8")
+    reserve = src.split("if not rebuild:")[1].split("return")[0]
+    assert "sync_archival.py" in reserve, \
+        "the reserve must write the DOI into the article front matter"
+    for field in ("archived_at", "archived_version"):
+        assert field in reserve, "%s must be stamped by the reserve" % field
+
+
+def test_the_deposit_reminder_asks_on_a_schedule_as_well_as_on_a_push():
+    """The push trigger fires on a metadata CHANGE; the condition it cares
+    about is a STATE — archival, published, and holding no record.
+
+    A note published before this workflow existed, or one whose metadata has
+    not moved since, is therefore never asked about. Retrofitting the
+    boundary-conditions note found exactly that: it had to be asked for by
+    hand. The schedule closes it, and the open-request guard is what makes a
+    repeating trigger safe.
+    """
+    src = (ROOT / ".github" / "workflows" / "deposit-ready.yml").read_text(
+        encoding="utf-8")
+    # Read as text rather than YAML: pyyaml is not in the test environment,
+    # and the triggers are a flat block at the top of the file.
+    triggers = src.split("jobs:")[0]
+    assert "schedule:" in triggers, "a state condition needs a repeating trigger"
+    assert "cron:" in triggers
+    assert "workflow_dispatch:" in triggers, \
+        "and a manual route, for a note in a hurry"
+
+    # A repeating trigger without the guard would mint a fresh DOI every week
+    # for every request left waiting. The two belong together.
+    assert "gh pr list --state open" in src, \
+        "a scheduled reminder MUST skip what it has already asked about"
