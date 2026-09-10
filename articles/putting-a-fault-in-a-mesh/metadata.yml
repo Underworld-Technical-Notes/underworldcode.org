@@ -4,7 +4,7 @@
 # matches the slug, and that no legacy DOI is ever paired with a new registrant.
 id: UWTN 2026-017
 slug: putting-a-fault-in-a-mesh
-title: Putting a fault in a mesh
+title: "Faults: to mesh or not to mesh?"
 article_type: technical-note
 status: draft
 authors:

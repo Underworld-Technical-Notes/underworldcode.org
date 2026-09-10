@@ -1,5 +1,5 @@
 ---
-title: Putting a fault in a mesh
+title: "Faults: to mesh or not to mesh?"
 description: >-
   A plate boundary is prior knowledge in a mantle model, and it has to be put
   into the mesh by hand. Four ways to do it in two dimensions — a weak ribbon,
@@ -29,7 +29,35 @@ exports:
 
 OUTLINE — not yet written.
 
-## A fault is not the same object as a shear band
+A fault is a surface across which the rock moves discontinuously. A finite
+element mesh is a machine for representing continuous fields. Putting the first
+into the second is work — cutting, conforming, refining, and doing it again
+every time the fault moves — so the first question is whether it has to be done
+at all.
+
+## The fault you do not have to mesh
+
+Often it does not. Localisation is something a rheology does on its own: give
+the material a yield stress or a strain-rate-weakening viscosity and shear bands
+appear where the stress finds them, at whatever width the physics and the mesh
+between them allow. Nobody places those bands, nobody meshes them, and they
+form, rotate and fade as the loading changes. For a model asking how deformation
+organises itself, that is not just cheaper than a prescribed fault — it is the
+answer to the question.
+
+The same is true of a fault you do want to prescribe. A direction of easy shear
+can be painted into the constitutive model as a field — a weak viscosity along a
+director taken from the gradient of the distance to a surface — and the mesh
+never learns that the fault is there. No cutting, no conforming, no remeshing
+when it migrates. The fault is a property of the material, not of the
+discretisation.
+
+So the honest starting position is that meshing a fault is a cost you should
+have a reason to pay.
+
+## Why that is not always enough
+
+The reason is that a fault is not the same object as a shear band.
 
 Localisation arises on its own wherever the rheology permits it. A shear band
 forms where the strain rate concentrates, it is as wide as the physics and the
@@ -55,8 +83,15 @@ it has to do again, repeatedly, without degrading.
 The width is the other consequence. No mantle-scale mesh reaches a metre, so
 every representation here is a sub-grid one: either the fault is given a width
 the mesh can carry and a rheology to go with it, or it is given no width at all
-and becomes a surface across which the solution is discontinuous. Those are the
-four choices below.
+and becomes a surface across which the solution is discontinuous.
+
+TODO(LOUIS) — one paragraph to close the frame, and it is the note's thesis:
+what actually forces you up the ladder from a painted director to a cut mesh.
+Candidates, and they are not the same argument: the fault must slip freely
+rather than shear stiffly; the discontinuity must be sharp because something
+downstream reads the jump; the fault must carry an interface law of its own. Say
+which of these is the real trigger in your experience — that is the sentence a
+reader takes away.
 
 ## Say where the fault is, then say how to model it
 
@@ -104,28 +139,60 @@ The split: (a) the conforming chain; (b) exploded for display.
 The tips are not duplicated, so slip tapers to zero there. That is the crack
 condition, and it removes the special case at the front.
 
-## The choice is not free, and the difference is measurable
+## They agree on a fault, and disagree at a junction
 
 ```{figure} figures/sf_compare_split_ti.png
 Split fine, TI coarse, TI fine on one colour scale. TODO alt text.
 ```
 
-| representation | main | branch | ratio |
+Take one strand on its own, with no branch to complicate it, and the two
+representations converge. The split does not care about the band width — its
+peak slip rate moves by a tenth of a percent across a sixfold change — so there
+the width is a mesh convenience and the split is the thin-fault reference. The
+band approaches it from above as the width shrinks:
+
+| Main strand alone, peak slip rate | w = 0.03 | w = 0.01 | w = 0.005 |
 |---|---|---|---|
-| split, coarse | 0.5368 | 0.2141 | 0.399 |
-| split, fine | 0.5363 | 0.2146 | 0.400 |
-| TI, coarse | 0.5771 | 0.2488 | 0.431 |
-| TI, fine | 0.5358 | 0.2274 | 0.424 |
+| split | 0.5149 | 0.5154 | 0.5152 |
+| TI band, `eta_1/w` = 0.1 | — | 0.5232 | 0.5133 |
+| TI band, `eta_1` = 1e-3 fixed | — | 0.5232 | 0.5000 |
 
-The split representation does not depend on the band width — 0.1% between the
-two — so there w is a mesh convenience and this is the thin-fault reference. The
-transversely isotropic band converges onto it from above as the width shrinks,
-and too wide is a measured bias of about 8%. The shorter strand converges more
-slowly, so a finite-width representation overweights the minor strands of a
-network and tilts the slip partitioning toward them.
+The middle row converges; the bottom row overshoots. The difference between them
+is the whole of what a finite-width representation asks you to hold fixed. A
+band's mechanical strength is the ratio `eta_1/w`, not `eta_1`: halving the width
+at fixed viscosity doubles the interface strength and carries the answer past the
+split rather than towards it. Hold the ratio and the band goes from 1.5% above
+the cut to 0.4% below as the width halves, tracking the split's profile along the
+whole strand to within a couple of per cent.
 
-Which is the practical rule the rest of the series rests on: run a finite-width
-model at two widths and judge it against the split reference.
+Put a branch on it and that agreement stops, and not because of resolution. The
+junction is the one place where the two representations describe genuinely
+different objects. A band can fork: two weak zones meet and merge into one
+continuous weak region. Two cuts cannot — where they touch they would share a
+node, and a shared node is a pinned tip with no slip on it — so a cut network
+leaves an intact ligament at every junction, and that ligament is rock that
+carries load.
+
+The consequence is measurable as a conservation statement. Along the main strand,
+slip steps up across the junction by what the branch takes in the opposite sense.
+In the band that budget closes: the step and the branch's slip sum to within a
+tenth of the step, at every ligament length and at the full join. In the cut it
+does not — the sum is 25 to 40% short, and the missing motion is deforming the
+ligament instead of slipping on either surface. Shrinking the ligament shrinks
+the shortfall, exactly as a smaller bridge should, and cannot take it to zero.
+
+So the branch's slip near a junction is a property of the representation, at the
+twenty per cent level, and no amount of refinement closes it. The through-going
+strand, which is what a regional model is usually after, is untouched by all of
+it.
+
+TODO(LOUIS) — the practical rule. The old draft said: run a finite-width model
+at two widths and judge it against the split reference. That still holds for a
+single fault, with `eta_1/w` held fixed rather than `eta_1`. What it should say
+about a NETWORK is the open question: whether to reach for the band because it
+conserves slip through junctions, or the cut because its ligament is arguably
+the more honest picture of a real fault intersection, or to bracket with both.
+This is a modelling judgement, not a measurement, and it belongs in your voice.
 
 Rig-scale throughout — 1 858 cells coarse, 2 940 fine, sub-second solves. These
 are demonstrations of what the representations do, not converged geophysics.
