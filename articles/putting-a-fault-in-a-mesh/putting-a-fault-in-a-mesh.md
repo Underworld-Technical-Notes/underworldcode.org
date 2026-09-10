@@ -42,8 +42,8 @@ the material a yield stress or a strain-rate-weakening viscosity and shear bands
 appear where the stress finds them, at whatever width the physics and the mesh
 between them allow. Nobody places those bands, nobody meshes them, and they
 form, rotate and fade as the loading changes. For a model asking how deformation
-organises itself, that is not just cheaper than a prescribed fault — it is the
-answer to the question.
+organises itself, that emergence is the answer to the question, and prescribing
+a fault would beg it.
 
 The same is true of a fault you do want to prescribe. A direction of easy shear
 can be painted into the constitutive model as a field — a weak viscosity along a
