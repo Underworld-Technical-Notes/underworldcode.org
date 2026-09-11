@@ -36,34 +36,43 @@ OUTLINE — not yet written.
 
 Faults can dominate the dynamic behaviour of Earth systems at scales from the entire planet to a few 10s of metres. They are an extreme example of localisation: feedback between forcing and response that results in self-reinforcing weakening that does not have a brake at the largest scale. Faults are *extreme* in the sense that their natural length scale is orders of magnitude below that of a typical tectonic simulation.
 
-At the tectonic scale fault is an infinitessimally thin surface across which the rock moves discontinuously by overcoming a frictional resistance. A finite element mesh (the mesh we use in Underworld) is a mechanism for representing continuous fields and there is not a native mechanism that perfectly represents a fault. There are lots of different potential solutions to this difficulty. They include: 1) ignoring it by using a continuum model of the fault, 2) adding extra interpolation functions that represent discontinuities, 3) splitting the mesh along the line of the fault and dealing with it as a surface, 4) refining the mesh enough that the fault width is invisibly small at the model length scale.  
+At the tectonic scale fault is an infinitessimally thin surface across which the rock moves discontinuously by overcoming a frictional resistance. A finite element mesh (the mesh we use in Underworld) is a mechanism for representing continuous fields and there is not a native mechanism that perfectly represents a fault. 
 
 
-## Sometimes it is better not to mesh
+There are lots of different potential solutions to this difficulty. They include: 1) ignoring it by using a continuum model of the fault, 2) adding extra interpolation functions that represent discontinuities, 3) splitting the mesh along the line of the fault and dealing with it as a surface, 4) refining the mesh enough that the fault width is invisibly small at the model length scale.  
 
-Localisation is something a rheology does on its own: if we give the material a yield stress or a strain-rate-weakening viscosity, shear bands appear where the stress requires them, and at whatever width the physics and the mesh between them allow. Nobody places those bands, nobody meshes them, and they form, rotate and fade as the loading changes. For a model asking how deformation organises itself, that emergence itself is the answer to the question. 
 
-The same can be true of a fault we do want to prescribe. A direction of easy shear can be painted into the constitutive model as a field: a weak viscosity along a normal direction taken from the fault surface. The mesh never learns that the fault is there. No cutting, no conforming, no remeshing when it migrates. The fault is a property of the material, not of the discretisation.
+## Faults in numerical models 
 
-None of this is new. Weak zones have stood in for plate margins in convection models since the 1980s [@10.1029/JB093iB09p10451], and the same idea still carries a subduction interface as a rheological fault [@10.5194/se-10-969-2019]. Those are isotropically weak regions; giving the weakness a direction instead is the orthotropic rheology of @10.1080/14786430500255419, applied to faults specifically by @10.1002/2014JB011813, and it is what the band representations below use. The other end of the ladder has a precedent too — @10.1126/science.267.5199.838 put slippery nodes into a convection model — but the mesh there was a hexahedral grid nudged towards the fault rather than one conforming to it, and conforming is most of the work.
+<!-- Don't rewrite this -->
 
-Do we really need to do anything more than this ?
+Localisation is something a rheology does by itself: if we give the material a yield stress or a strain-rate-weakening viscosity, shear bands appear where the stress requires them, with an orientation determined by the stress, and at whatever width the physics and the mesh between them allow. Do we really need to do anything more than this to represent faults ? The answer is yes and there are two main reasons. 
 
-## But sometimes it is better to mesh
+First, a fault is not in the same category as a shear band or a damage-zone. At the lithospheric scale a fault is persistent through changes in the tectonic loading.  Faults localise far more sharply than any band a lithosphere-scale mesh resolves, down to a gouge zone of metres or even less. They are self-reinforcing: once a fault has accumulated slip it has juxtaposed distinct rocks units; the weakness becomes structural and persistent even when the load is absent. Faults have history.
 
-The answer is yes, and the reason behind it is this: a fault is not in the same category as a shear band or a damage region. 
-
-Localisation arises on its own wherever the rheology permits it. A shear band forms where the strain rate concentrates, it is as wide as the physics and the mesh between them allow, and it can fade when the loading that produced it changes. Faults behave differently in three ways that matter for how they are put into a model. They are long-lived, outlasting many changes in the strain-field around them. They localise far more sharply than any band a lithosphere-scale mesh resolves, down to a gouge zone of metres or even less. And they are self-reinforcing: once a fault has accumulated slip it has juxtaposed rocks that were never neighbours; the weakness becomes structural and persistent even when the load is absent. 
+Second, conceptually, at the tectonic scale fault is an infinitessimally thin surface across which the rock moves discontinuously by overcoming a frictional resistance. A finite element mesh (the mesh we use in Underworld) is a mechanism for representing continuous fields and there is not a native mechanism that perfectly represents a fault. Faults are sub-grid objects with their own constitutive properties. 
 
 That is why it is common to impose plate boundaries in a mantle model as prior knowledge, and why those plate boundaries often have additional evolution rules. 
 
-~~The width is the other consequence. No mantle-scale mesh reaches a metre, so every representation here is a sub-grid one: either the fault is given a width the mesh can carry and a rheology to go with it, or it is given no width at all and becomes a surface across which the solution is discontinuous.~~
+It is also why crustal models of stress build-up and release always try to include known faults. They are very fine-scale structures, they reflect complex geological history and they are not simply emergent from the imposed loading. 
 
-TODO(LOUIS) — one paragraph to close the frame, and it is the note's thesis: what actually forces you up the ladder from a painted director to a cut mesh. Candidates, and they are not the same argument: the fault must slip freely rather than shear stiffly; the discontinuity must be sharp because something downstream reads the jump; the fault must carry an interface law of its own. Say which of these is the real trigger in your experience — that is the sentence a reader takes away.
+<!-- /Don't rewrite this -->
+
+
+
+
+None of this is new. Weak zones have stood in for plate margins in convection models since the 1980s [@10.1029/JB093iB09p10451], and the same idea still carries a subduction interface as a rheological fault [@10.5194/se-10-969-2019]. Those are isotropically weak regions; giving the weakness a direction instead is the orthotropic rheology of @10.1080/14786430500255419, applied to faults specifically by @10.1002/2014JB011813, ~~.
+
+
+Cutting the mesh has a precedent too. @10.1126/science.267.5199.838 put slippery nodes into a convection model, on a hexahedral grid nudged towards the fault rather than one conforming to it — and conforming is most of the work.
+
+
+Localisation arises on its own wherever the rheology permits it. A shear band forms where the strain rate concentrates, it is as wide as the physics and the mesh between them allow, and it can fade when the loading that produced it changes. Faults behave differently in three ways that matter for how they are put into a model. T
+
 
 ## Say where the fault is, then say how to model it
 
-These are two separate decisions and the machinery keeps them separate. The first is a statement about the Earth: here is my fault surface, sampled as a polyline in two dimensions or a triangulated sheet in three, curved as it likes. The second is a modelling choice: this surface is to become a slippery interface, or a weak band of a stated width, or a direction of easy shear painted into the rheology. The same surface supports all of them, and changing the choice does not send the user back to their geometry.
+These are two separate decisions and the machinery keeps them separate. It is the thesis of both @10.1126/science.267.5199.838 and @10.5194/se-10-969-2019: what the fault surface is, and what the solver is asked to do with it, are not the same statement. The first is a statement about the Earth: here is my fault surface, sampled as a polyline in two dimensions or a triangulated sheet in three, curved as it likes. The second is a modelling choice: this surface is to become a slippery interface, or a weak band of a stated width, or a direction of easy shear painted into the rheology. The same surface supports all of them, and changing the choice does not send the user back to their geometry.
 
 That separation is also what makes the construction simple. The fault's own discretisation builds the mesh that is added: the band's vertices are offsets of the fault's own points, so there is no remesh and no search for where the fault went. A mesh generator is still needed where faults meet and have to be merged or cut, but it is not asked to invent the fault.
 
@@ -82,7 +91,7 @@ The example throughout is San Andreas geometry in miniature: a tanh S-bend on th
 | split nodes | conform, then split the mid-surface | nothing inside the fault | a convenience |
 | TI, non-conforming | nothing | carry a director from the distance gradient | physics |
 
-A paragraph each: what it is, what it asks of you, when to reach for it. Detail goes to the notes that follow.
+A paragraph each: what it is, what it asks of you, when to reach for it.
 
 ```{figure} figures/split-anatomy.png
 The split: (a) the conforming chain; (b) exploded for display.
