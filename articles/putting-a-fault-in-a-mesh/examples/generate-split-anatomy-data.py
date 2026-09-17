@@ -1,75 +1,53 @@
 """Geometry for the split-anatomy figure (cetz draws, Python computes).
 
-A small structured triangulation of [0,3] x [0,1] with a fault chain along
-y = 0.5 from (0.5, 0.5) to (2.5, 0.5): 4 fault edges, 3 interior vertices
-(duplicated by the split), 2 tips (shared). The "after" panel is EXPLODED
-for display — the Minus side translated down — because the real copies are
-geometrically coincident.
+The same CONFORMING mesh as band-anatomy (a): the curved trace runs
+along a row of edges. The chain has nine vertices: two tips (shared)
+and seven interior (duplicated by the split). The "after" panel is
+EXPLODED for display — the Minus block under the trace translated down
+— because the real copies are geometrically coincident.
 """
 import json
 import os
 
-H = 0.5
-NX, NY = 6, 2
-DELTA = 0.22          # display-only explosion offset
+import anatomy_mesh as M
 
-verts = {}
-coords = []
+DELTA = 0.09          # display-only explosion offset
 
+coords, tris, vid = M.grid()
+bent = M.conforming(coords)
+ch = M.chain(vid)
+tips = [ch[0], ch[-1]]
+interior = ch[1:-1]
+cent = M.centroids(bent, tris)
 
-def vid(i, j):
-    if (i, j) not in verts:
-        verts[(i, j)] = len(coords)
-        coords.append([i * H, j * H])
-    return verts[(i, j)]
-
-
-tris = []
-for i in range(NX):
-    for j in range(NY):
-        a, b = vid(i, j), vid(i + 1, j)
-        c, d = vid(i + 1, j + 1), vid(i, j + 1)
-        tris.append([a, b, c])
-        tris.append([a, c, d])
-
-chain = [vid(i, 1) for i in range(1, 6)]      # (0.5,0.5) .. (2.5,0.5)
-tips = [chain[0], chain[-1]]
-interior = chain[1:-1]
-
-# Minus side = triangles whose centroid lies below the chain SEGMENT span;
-# triangles below y=0.5 but outside the span stay welded (no fault there).
+# Minus side = cells touching the chain from below, within the span;
+# everything else, including the cells beyond the tips, stays welded
 side = []
-for t in tris:
-    cx = sum(coords[v][0] for v in t) / 3.0
-    cy = sum(coords[v][1] for v in t) / 3.0
-    touches = any(v in chain for v in t)
-    side.append(-1 if (cy < 0.5 and touches and 0.5 < cx < 2.5) else +1)
+for k, t in enumerate(tris):
+    touches = any(v in ch for v in t)
+    below = cent[k][1] < M.curve(cent[k][0])[1]
+    side.append(-1 if (below and touches and M.X0 < cent[k][0] < M.X1) else +1)
 
-# Exploded positions: replicas of the interior chain vertices move down;
-# to keep the Minus flank rigid, the row below them (y = 0) within the span
-# moves too. Tips stay put — the lens pins there.
-exploded = [list(c) for c in coords]
+# Exploded: the replicas and the whole Minus block strictly inside the
+# span move down together; the tips and the columns at the tips stay,
+# so the cells at the two ends shear — the pinned tip
+exploded = [list(c) for c in bent]
 replicas = {}
 for v in interior:
     replicas[v] = len(exploded)
-    exploded.append([coords[v][0], coords[v][1] - DELTA])
-moved_tris = []
-flank = set()
-for t, s in zip(tris, side):
-    if s < 0:
-        moved_tris.append([replicas.get(v, v) for v in t])
-        flank.update(v for v in t if v not in chain)
-    else:
-        moved_tris.append(list(t))
-for v in flank:
-    exploded[v][1] -= DELTA
+    exploded.append([bent[v][0], bent[v][1] - DELTA])
+for v, (x, y) in enumerate(coords):
+    if y < 0.5 - 1e-9 and M.X0 + 1e-9 < x < M.X1 - 1e-9:
+        exploded[v][1] -= DELTA
+moved_tris = [[replicas.get(v, v) for v in t] if s < 0 else list(t)
+              for t, s in zip(tris, side)]
 
-out = dict(coords=coords, exploded=exploded, tris=tris,
-           moved_tris=moved_tris, side=side, chain=chain, tips=tips,
-           interior=interior, replicas=replicas, delta=DELTA)
+out = dict(coords=bent, exploded=exploded, tris=tris, moved_tris=moved_tris,
+           side=side, chain=ch, tips=tips, interior=interior,
+           replicas=replicas, delta=DELTA)
 here = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(here, "split-anatomy-data.json"), "w") as f:
     json.dump(out, f)
 print("wrote split-anatomy-data.json:",
-      f"{len(coords)} verts, {len(tris)} tris, chain {len(chain)},",
+      f"{len(bent)} verts, {len(tris)} tris, chain {len(ch)},",
       f"replicas {len(replicas)}")
