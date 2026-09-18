@@ -41,8 +41,6 @@ There are lots of different potential solutions to this difficulty. They include
 
 ## Faults in numerical models 
 
-<!-- Don't rewrite this -->
-
 Localisation is something a rheology produces all by itself: if we give the material a yield stress or a strain-rate-weakening viscosity, shear bands appear where the stress requires them, with an orientation determined by the stress, and at whatever width the physics and the mesh between them allow. Do we really need to do anything more than this to represent faults ? The answer is yes and there are two main reasons. 
 
 First, a fault is not in the same category as a shear band or a damage-zone. At the lithospheric scale a fault is persistent through changes in the tectonic loading.  Faults localise far more sharply than any band a lithosphere-scale mesh resolves, down to a gouge zone of metres or even less. They are self-reinforcing: once a fault has accumulated slip it has juxtaposed distinct rock units; the weakness becomes structural and persistent even when the load is absent. Faults have history.
@@ -53,19 +51,12 @@ That is why it is common to impose plate boundaries in a mantle model as prior k
 
 It is also why crustal models of stress build-up and release always try to include known faults. They are very fine-scale structures, they reflect complex geological history and they are not simply emergent from the imposed loading. 
 
-<!-- /Don't rewrite this -->
-
-
-
 
 ## Describe the fault not the implementation
 
-These are two separate decisions and the machinery keeps them separate. It is the thesis of both @10.1126/science.267.5199.838 and @10.5194/se-10-969-2019: what the fault surface is, and what the solver is asked to do with it, are distinct choices. The first is a statement about the Earth: here is my fault surface, sampled as a polyline in two dimensions or a triangulated sheet in three, curved as it likes. The second is a modelling choice: this surface is to become a slippery interface, or a weak band of a stated width, or a direction of easy shear painted into the rheology. The same surface supports all of them and is agnostic to the implementation.
+The fault geometry and its numerical representation ought to be decoupled as far as possible. 
+It is the thesis of both @10.1126/science.267.5199.838 and @10.5194/se-10-969-2019: what the fault surface is, and what the solver is asked to do with it, are distinct choices. The first is a statement about the Earth: this is the fault surface, sampled as a polyline in two dimensions or a triangulated sheet in three, curved as it likes. The second is a modelling choice: this surface is to become a slippery interface, or a weak band of a stated width, or a direction of easy shear painted into the rheology. The same surface supports all of them and is agnostic to the implementation.
 
-
-<!-- All anticipation of the next section
-That separation makes the construction simple. The fault's own discretisation builds the mesh that is added: the band's vertices are offsets of the fault's own points, so there is no remesh and no search for where the fault went. A mesh generator is still needed where faults meet and have to be merged or cut, but it is not asked to invent the fault.
-<!-- Grrr ends -->
 
 ```{figure} figures/s_fault_geometry.png
 :name: fig-s-fault-geometry
@@ -79,14 +70,14 @@ A synthetic fault network that we use to validate the different fault algorithms
 
 ## Three implementations
 
-There is no perfect choice in how we model a fault in a geodynamic context and that means keeping several possible choices on hand to see which one works best for a specific set-up. 
+There is no perfect choice in how we model a fault in a geodynamic context and that means keeping several possible choices on hand to see which one works best for a specific problem. 
 Underworld3 offers three: a weak zone, a weak zone with a direction, and a cut. Each of them can be built on the unstructured mesh, or on a mesh modified to conform to the fault.
 
-| | mesh untouched | mesh conforms to the fault |
+| | Mesh untouched | Mesh conforms to the fault |
 |---|---|---|
-| weak zone | painted band — the mesh sets the width | ribbon — the width is yours |
-| TI weak zone | painted, director from the distance gradient | TI ribbon |
-| cut | XFEM: enrichment functions carry the jump through the elements; not in Underworld | split nodes |
+| Weak zone | painted band — the mesh sets the width | ribbon — the width is prescribed |
+| TI weak zone | painted, director from the distance gradient | TI ribbon — the width is prescribed |
+| Cut | XFEM: enrichment functions carry the jump through the elements (not in Underworld) | split nodes with additional degrees of freedom |
 
 The **non-conforming, transversely isotropic (TI)** rheology requires no changes to the mesh to represent the mechanics of the fault. It simply creates a near-fault band of material that has a lower frictional strength parallel to the fault. There is a zone of weakness that depends on the perpendicular distance to the *fault object*, and the internal orientation is given by the perpendicular vector to the fault surface. The band is whichever cells fall within $w/2$ of the fault, so its width is set by the mesh as much as by $w$. The resulting zone of weakness crosses element boundaries and can produce anomalous stress concentrations along the fault. These are mitigated at the large scale by refining the triangulation and smoothing the fault's influence function but they never disappear [@10.1016/j.pepi.2020.106637]. This is the representation of @10.1002/2014JB011813 and of @10.5194/se-10-969-2019.
 
@@ -100,12 +91,12 @@ The **split** algorithm is the one that embraces the notion of the fault as an e
 
 ```{figure} figures/fault-anatomy.png
 :name: fig-fault-anatomy
-:alt: Three panels, each the same rectangular triangulation twelve cells across and four deep, pale grey, stacked vertically. (a) The grid is gently bowed upward in its middle rows so that a red trace with nine dots runs along mesh edges as a shallow arch across the middle two thirds; the cells immediately above and below the arch are tinted green, each with a short dark-green stroke perpendicular to the local trace; a bracket at the right marks the two-cell band height as w. (b) The grid is flat and the same red arch is drawn across it without dots, cutting through the triangles; the tinted cells form a ragged band of the same width, two rows deep on the flanks and three at the crest, with a saw-toothed outline, each with a stroke tilted perpendicular to the arch. (c) The bowed grid again, with the row of cells above the arch tinted pale blue and the row below pale pink; the pink block has dropped, so the red line has opened into two — a solid upper arch with seven filled dots labelled v-plus (original) and Gamma-plus, and a dashed lower arch with open circles labelled v-minus (replica) and Gamma-minus — still meeting at a black ringed vertex labelled tip at each end, with the cells at the two ends sheared where the block has dropped.
+:alt: Three panels, each the same rectangular triangulation twelve cells across and four deep, pale grey, stacked vertically. (a) The grid is flat and a red arch is drawn across the middle two thirds without dots, cutting through the triangles; the tinted green cells form a ragged band around it, two rows deep on the flanks and three at the crest, with a saw-toothed outline, each with a short dark-green stroke tilted perpendicular to the arch. (b) The grid is gently bowed upward in its middle rows so that the same red arch, now with nine dots, runs along mesh edges; the cells immediately above and below it are tinted green, each with a stroke perpendicular to the local trace; a bracket at the right marks the two-cell band height as w. (c) The bowed grid again, with the row of cells above the arch tinted pale blue and the row below pale pink; the pink block has dropped, so the red line has opened into two — a solid upper arch with seven filled dots labelled v-plus (original) and Gamma-plus, and a dashed lower arch with open circles labelled v-minus (replica) and Gamma-minus — still meeting at a black ringed vertex labelled tip at each end, with the cells at the two ends sheared where the block has dropped.
 
-One fault, three strategies, on one mesh. (a) The ribbon: the mesh is bent so that the trace runs along element edges, and the band is the cells either side of it, each carrying a director; nothing is duplicated and every field is continuous. (b) The non-conforming paint: the same trace and the same width across the flat grid, where the band is whichever cells fall within $w/2$ of it. (c) The split, on the bent mesh: each interior vertex of the chain is duplicated and the cells on the Minus side are rewired to the replica; the tips are not duplicated. The copies are coincident — the lower block is pulled away only so that they can be seen.
+One fault, three strategies, on one mesh. (a) The non-conforming paint: the trace across the flat grid, and the band is whichever cells fall within $w/2$ of it. (b) The ribbon: the mesh is bent so that the same trace runs along element edges, and the band is the cells either side of it, each carrying a director; nothing is duplicated and every field is continuous. (c) The split, on the bent mesh: each interior vertex of the chain is duplicated and the cells on the Minus side are rewired to the replica; the tips are not duplicated. The copies are coincident — the lower block is pulled away only so that they can be seen.
 ```
 
-[](#fig-fault-anatomy) compares the three strategies on one mesh. Panel (b) shows the fault running through the mesh with elements identified as fault / not-fault depending on their centroid distance to the fault. Panel (a) shows the ribbon near the fault constructed so that the fault volume itself is defined by element boundaries.  Panel (c) is what the split does. The trace has first been made a chain of element edges, so that the two cells at every facet share it and every field is continuous across it, as anywhere else in the mesh. The split then duplicates each interior vertex of the chain. The original stays with the cells on one side, which we label Plus; the cells on the other side, Minus, are rewired to a replica at the same position. In this simple example, no elements are added or divided, but, across the fault, the two sides no longer share a degree of freedom, so the velocity is free to jump.
+[](#fig-fault-anatomy) compares the three strategies on one mesh. Panel (a) shows the fault running through the mesh with elements identified as fault / not-fault depending on their centroid distance to the fault. Panel (b) shows the ribbon near the fault constructed so that the fault volume itself is defined by element boundaries.  Panel (c) is what the split does. The trace has first been made a chain of element edges, so that the two cells at every facet share it and every field is continuous across it, as anywhere else in the mesh. The split then duplicates each interior vertex of the chain. The original stays with the cells on one side, which we label Plus; the cells on the other side, Minus, are rewired to a replica at the same position. In this simple example, no elements are added or divided, but, across the fault, the two sides no longer share a degree of freedom, so the velocity is free to jump.
 
 The fault is just the pair of surfaces and the condition we impose between each vertex and its replica. The simplest condition is no-opening: the two normal velocities of a pair are equal and the tangential velocities are free, which is a frictionless slippery interface. The slip rate is read off the pair as the tangential jump. A friction law is a relation between that jump and the traction the pair carries, and it lives on the pair as well.
 

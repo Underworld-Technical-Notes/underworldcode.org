@@ -1,8 +1,8 @@
 // Three representations of one fault on one mesh (cetz draws; the
 // geometry comes from generate-band-anatomy-data.py and
 // generate-split-anatomy-data.py over the shared anatomy_mesh.py).
-//   (a) the ribbon, on the mesh bent so the trace runs along its edges
-//   (b) the non-conforming paint, the same trace across the flat grid
+//   (a) the non-conforming paint, the trace across the flat grid
+//   (b) the ribbon, on the mesh bent so the trace runs along its edges
 //   (c) the split, on the bent mesh, exploded for display
 // No captions in the drawing: they live in the figure caption.
 #import "@preview/cetz:0.3.4"
@@ -45,14 +45,14 @@
 }
 
 #let GAP = 1.35
-#let YA = 2 * GAP
-#let YB = GAP
+#let YA = GAP
+#let YB = 2 * GAP
 #let YC = 0.0
 
 #cetz.canvas(length: 1.55cm, {
   import cetz.draw: *
 
-  // ---- (a) the ribbon on the bent mesh -------------------------------------
+  // ---- (b) the ribbon on the bent mesh -------------------------------------
   cells(YA, band.bent, band.tris,
         k => if band.band_a.contains(k) { band-fill } else { mesh-fill })
   directors(YA, band.cent_a, band.band_a, band.dir_a)
@@ -64,14 +64,14 @@
   for v in band.chain {
     circle(Pa(v), radius: 0.028, fill: fault-col, stroke: none)
   }
-  content((-0.3, YA + 0.95), [(a)])
+  content((-0.3, YA + 0.95), [(b)])
   content((3.5, YA + 0.5), text(fill: fault-col)[$Gamma$])
   line((3.12, YA + 0.25), (3.12, YA + 0.75), stroke: (paint: dir-col, thickness: 0.5pt))
   line((3.07, YA + 0.25), (3.17, YA + 0.25), stroke: (paint: dir-col, thickness: 0.5pt))
   line((3.07, YA + 0.75), (3.17, YA + 0.75), stroke: (paint: dir-col, thickness: 0.5pt))
   content((3.28, YA + 0.5), text(fill: dir-col, size: 4.5pt)[$w$])
 
-  // ---- (b) the same trace on the flat grid ---------------------------------
+  // ---- (a) the same trace on the flat grid ---------------------------------
   cells(YB, band.flat, band.tris,
         k => if band.band_b.contains(k) { band-fill } else { mesh-fill })
   directors(YB, band.cent_b, band.band_b, band.dir_b)
@@ -80,7 +80,7 @@
          (band.curve.at(i + 1).at(0), band.curve.at(i + 1).at(1) + YB),
          stroke: (paint: fault-col, thickness: 0.9pt))
   }
-  content((-0.3, YB + 0.95), [(b)])
+  content((-0.3, YB + 0.95), [(a)])
   content((3.5, YB + 0.5), text(fill: fault-col)[$Gamma$])
 
   // ---- (c) the split on the bent mesh, exploded ----------------------------
