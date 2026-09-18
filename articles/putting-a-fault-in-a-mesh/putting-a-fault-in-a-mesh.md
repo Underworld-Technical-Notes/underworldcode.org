@@ -17,6 +17,8 @@ authors:
     affiliations:
       - Australian National University
 license: CC-BY-4.0
+bibliography:
+  - references.bib
 keywords:
   - Underworld Code
   - Tricks of the Trade
@@ -47,7 +49,7 @@ First, a fault is not in the same category as a shear band or a damage-zone. At 
 
 Second, conceptually, at the tectonic scale fault is an infinitesimally thin surface across which the rock moves discontinuously by overcoming a frictional resistance. A finite element mesh (the mesh we use in Underworld) is a mechanism for representing continuous fields and there is not a native mechanism that perfectly represents a fault. Faults are sub-grid objects with their own constitutive properties. 
 
-That is why it is common to impose plate boundaries in a mantle model as prior knowledge [@10.1029/JB093iB09p10451], and why those plate boundaries often have additional evolution rules. 
+That is why it is common to impose plate boundaries in a mantle model as prior knowledge [@Davies_1988], and why those plate boundaries often have additional evolution rules. 
 
 It is also why crustal models of stress build-up and release always try to include known faults. They are very fine-scale structures, they reflect complex geological history and they are not simply emergent from the imposed loading. 
 
@@ -55,7 +57,7 @@ It is also why crustal models of stress build-up and release always try to inclu
 ## Describe the fault not the implementation
 
 The fault geometry and its numerical representation ought to be decoupled as far as possible. 
-It is the thesis of both @10.1126/science.267.5199.838 and @10.5194/se-10-969-2019: what the fault surface is, and what the solver is asked to do with it, are distinct choices. The first is a statement about the Earth: this is the fault surface, sampled as a polyline in two dimensions or a triangulated sheet in three, curved as it likes. The second is a modelling choice: this surface is to become a slippery interface, or a weak band of a stated width, or a direction of easy shear painted into the rheology. The same surface supports all of them and is agnostic to the implementation.
+It is the thesis of both @Zhong_1995 and @Sandiford_2019: what the fault surface is, and what the solver is asked to do with it, are distinct choices. The first is a statement about the Earth: this is the fault surface, sampled as a polyline in two dimensions or a triangulated sheet in three, curved as it likes. The second is a modelling choice: this surface is to become a slippery interface, or a weak band of a stated width, or a direction of easy shear painted into the rheology. The same surface supports all of them and is agnostic to the implementation.
 
 
 ```{figure} figures/s_fault_geometry.png
@@ -80,14 +82,14 @@ Underworld3 offers three: a weak zone, a weak zone with a direction, and a cut. 
 | TI weak zone | painted, director from the distance gradient | TI ribbon — the width is prescribed |
 | Cut | XFEM: enrichment functions carry the jump through the elements (not in Underworld) | split nodes with additional degrees of freedom |
 
-The **non-conforming, transversely isotropic (TI)** rheology requires no changes to the mesh to represent the mechanics of the fault. It simply creates a near-fault band of material that has a lower frictional strength parallel to the fault. There is a zone of weakness that depends on the perpendicular distance to the *fault object*, and the internal orientation is given by the perpendicular vector to the fault surface. The band is whichever cells fall within $w/2$ of the fault, so its width is set by the mesh as much as by $w$. The resulting zone of weakness crosses element boundaries and can produce anomalous stress concentrations along the fault. These are mitigated at the large scale by refining the triangulation and smoothing the fault's influence function but they never disappear [@10.1016/j.pepi.2020.106637]. This is the representation of @10.1002/2014JB011813 and of @10.5194/se-10-969-2019.
+The **non-conforming, transversely isotropic (TI)** rheology requires no changes to the mesh to represent the mechanics of the fault. It simply creates a near-fault band of material that has a lower frictional strength parallel to the fault. There is a zone of weakness that depends on the perpendicular distance to the *fault object*, and the internal orientation is given by the perpendicular vector to the fault surface. The band is whichever cells fall within $w/2$ of the fault, so its width is set by the mesh as much as by $w$. The resulting zone of weakness crosses element boundaries and can produce anomalous stress concentrations along the fault. These are mitigated at the large scale by refining the triangulation and smoothing the fault's influence function but they never disappear [@Yang_2021]. This is the representation of @Sharples_2015 and of @Sandiford_2019.
 
 Material property jumps can be incorporated into finite element representations when they lie along element boundaries. It is therefore possible to represent a fault as a rheologically distinct volume if we are prepared to remesh. The **weak ribbon** is a band of width $w$ meshed along the fault trace — its vertices are the fault's own points offset by $w/2$ either side — with a contrasting rheology in that region (a weak zone, or a zone with its own plasticity coefficients). For this we do need the ability to remesh so it is more difficult to implement in models where the fault system evolves. In this model, the fault, as a volume under normal stress, can deform internally and violate the frictional surface *approximation*. This is primarily an issue when $w$ is significantly larger than the fault's true physical width.
 
-The latter problem can be alleviated by combining the first two approaches. A **TI ribbon** is the same band but using the transversely isotropic frictional model of @10.1080/14786430500255419 within the remeshed band: the same rheology as the non-conforming case, with the remesh taking control of the width. This has the same desirable properties from the finite element solver's point of view as the weak band model, but it can transmit normal stresses across the fault without internal flow.  
+The latter problem can be alleviated by combining the first two approaches. A **TI ribbon** is the same band but using the transversely isotropic frictional model of @Moresi_2006 within the remeshed band: the same rheology as the non-conforming case, with the remesh taking control of the width. This has the same desirable properties from the finite element solver's point of view as the weak band model, but it can transmit normal stresses across the fault without internal flow.  
 
 
-The **split** algorithm is the one that embraces the notion of the fault as an embedded surface. It produces a cut through the mesh to create a new internal surface boundary. In general this is also a remeshing step: the mesh is cut along the fault line, dividing the elements it crosses, and degrees of freedom are added along the cut; @10.1126/science.267.5199.838 put slippery nodes into a convection model this way, on a hexahedral grid nudged towards the fault. We make the mesh conform to the fault beforehand, so that what remains is the duplication alone. Faults are surfaces that conform to element boundaries but they are implemented as pairs of surfaces to represent the two sides of the fault. The constitutive model lies in the interaction of these two coincident surfaces. This is a good choice of model when the physical scale completely precludes resolving $w$, but there are some limitations: because the mesh is cut into sliding surfaces, there are incompatible constraints when two faults meet or cross. 
+The **split** algorithm is the one that embraces the notion of the fault as an embedded surface. It produces a cut through the mesh to create a new internal surface boundary. In general this is also a remeshing step: the mesh is cut along the fault line, dividing the elements it crosses, and degrees of freedom are added along the cut; @Zhong_1995 put slippery nodes into a convection model this way, on a hexahedral grid nudged towards the fault. We make the mesh conform to the fault beforehand, so that what remains is the duplication alone. Faults are surfaces that conform to element boundaries but they are implemented as pairs of surfaces to represent the two sides of the fault. The constitutive model lies in the interaction of these two coincident surfaces. This is a good choice of model when the physical scale completely precludes resolving $w$, but there are some limitations: because the mesh is cut into sliding surfaces, there are incompatible constraints when two faults meet or cross. 
 
 
 ```{figure} figures/fault-anatomy.png
