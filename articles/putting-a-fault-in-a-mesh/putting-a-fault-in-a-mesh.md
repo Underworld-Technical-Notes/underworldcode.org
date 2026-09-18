@@ -59,6 +59,7 @@ It is the thesis of both @10.1126/science.267.5199.838 and @10.5194/se-10-969-20
 
 
 ```{figure} figures/s_fault_geometry.png
+:width: 60%
 :name: fig-s-fault-geometry
 :alt: A square domain with a red fault trace running from lower left to upper right, gently S-bent in the middle, drawn inside a pale blue ribbon labelled w = 0.03 and annotated main (tanh S); the trace continues as a red dashed line out of each corner, and the whole region above and left of it is shaded beige and labelled STRONG (eta x contrast) against a white region below and right. Beyond the main trace's upper tip a short collinear segment carries on in its own ribbon, labelled main segment (stepover) gap = 0.010. Just past the bend, three short parallel strands in pale green ribbons climb away into the beige region at a shallow angle to the main trace, labelled splay (kissing) + en-echelon zone; the lowest of the three almost touches the main trace, labelled Y gap = 0.010, and the other two are stepped up and to the left of it. To the right of the bend a straight dark red trace in its own blue ribbon, labelled branch (through-line), runs parallel to the strike and stops short of the main trace, marked gap = 0.071. Near the lower tip a short segment parallel to the main trace sits just below it in the white region, labelled lower stepover (offset 0.035). Every trace ends in a black dot. Two black arrows, one in each half of the domain, point up-right and down-left.
 
@@ -90,6 +91,7 @@ The **split** algorithm is the one that embraces the notion of the fault as an e
 
 
 ```{figure} figures/fault-anatomy.png
+:width: 72%
 :name: fig-fault-anatomy
 :alt: Three panels, each the same rectangular triangulation twelve cells across and four deep, pale grey, stacked vertically. (a) The grid is flat and a red arch is drawn across the middle two thirds without dots, cutting through the triangles; the tinted green cells form a ragged band around it, two rows deep on the flanks and three at the crest, with a saw-toothed outline, each with a short dark-green stroke tilted perpendicular to the arch. (b) The grid is gently bowed upward in its middle rows so that the same red arch, now with nine dots, runs along mesh edges; the cells immediately above and below it are tinted green, each with a stroke perpendicular to the local trace; a bracket at the right marks the two-cell band height as w. (c) The bowed grid again, with the row of cells above the arch tinted pale blue and the row below pale pink; the pink block has dropped, so the red line has opened into two — a solid upper arch with seven filled dots labelled v-plus (original) and Gamma-plus, and a dashed lower arch with open circles labelled v-minus (replica) and Gamma-minus — still meeting at a black ringed vertex labelled tip at each end, with the cells at the two ends sheared where the block has dropped.
 
@@ -105,6 +107,7 @@ The two end vertices of the chain are not duplicated. Slip therefore goes to zer
 ## Difficulties with branching faults
 
 ```{figure} figures/sf_note_stress_slip.png
+:width: 64%
 :name: fig-stress-and-slip
 :alt: A three-by-two grid of panels; the left column is the cut, the right the band, both at w = 0.005. The top row shows the whole square domain coloured by log10 of the second stress invariant on a black-purple-orange-white scale from -1.18 to 0.99: a flat mid-orange background, a dark low-stress lobe flanking each trace, and a bright concentration at every tip. Each trace is a tube coloured by its signed slip rate on a blue-grey-green scale, blue sinistral down to -0.029 and green dextral up to 0.54: the S-bent main trace is dark green, the branch and the lower stepover segment mid green, the three en-echelon strands pale, and the splay nearest the main carries a short blue reach where it meets it. The two columns look the same at this scale. The middle row zooms the Y junction with the mesh in faint white: in the cut the splay's tube stops a short distance from the main trace and the stress there is smooth; in the band it runs into the main trace and the two merge, with a bright knot at the join and dark lobes either side. The bottom row zooms the upper stepover, where the main trace ends and a collinear segment carries on one element beyond it. In the cut, a bright four-lobed stress concentration sits on the one-element bridge between the two tips, the continuation segment's tube is noticeably paler than the main trace's, and a dark lobe lies along its far side. In the band, one green tube runs straight through with no break and no change of shade, a narrow dark band runs along it, and there is no concentration at the old tip at all — only a single dark speck on the line where the two tips were.
 
