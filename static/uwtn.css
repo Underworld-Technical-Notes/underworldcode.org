@@ -12,6 +12,8 @@
   --uwtn-muted: #5d6b7a;
   --uwtn-rule: #dfe4ea;
   --uwtn-accent: #1a4f80;        /* the PDF's theme colour, blue.darken(30%) */
+  --uwtn-table-head: #1a4f80;    /* table header fill: the theme blue, both modes */
+  --uwtn-table-head-ink: #dbe9f7;
   --uwtn-paper: #ffffff;
   --uwtn-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
                 "Times New Roman", serif;
@@ -25,6 +27,8 @@
     --uwtn-rule: #2b3541;
     --uwtn-accent: #7cb3e0;
     --uwtn-paper: #131a21;
+    --uwtn-table-head: #16456f;
+    --uwtn-table-head-ink: #d3e4f5;
   }
 }
 
@@ -212,6 +216,39 @@ article.content h3 {
   font-family: var(--uwtn-serif);
   letter-spacing: -0.005em;
 }
+
+/* ---- tables ------------------------------------------------------------ */
+
+/* The house table, matching the PDF template's tableStyle: centred, sans,
+   horizontal hairlines only, the header row filled in the theme blue with
+   light text. MyST emits a bare <table> inside a wrapper div, so the rules
+   key on the elements. */
+article.content table {
+  margin: 1.4rem auto;
+  width: auto;
+  border-collapse: collapse;
+  font-family: var(--uwtn-sans);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+article.content th {
+  background: var(--uwtn-table-head);
+  color: var(--uwtn-table-head-ink);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.45rem 0.85rem;
+  border: none;
+}
+
+article.content td {
+  padding: 0.4rem 0.85rem;
+  border: none;
+  border-bottom: 1px solid var(--uwtn-rule);
+}
+
+article.content th code,
+article.content td code { font-size: 0.85em; }
 
 /* Captions read as apparatus, matching the PDF: sans, smaller, lighter. */
 article.content figcaption,
