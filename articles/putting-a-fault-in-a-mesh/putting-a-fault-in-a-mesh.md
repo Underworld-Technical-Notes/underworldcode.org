@@ -6,7 +6,7 @@ description: >-
   a painted director cost no mesh work; cutting and conforming cost a great
   deal. What each of the four representations asks of the mesh and of the
   constitutive model, where they agree, and why they part company at a junction.
-date: 2026-08-23
+date: 2026-09-18
 authors:
   - name: Louis Moresi
     orcid: 0000-0003-3685-174X
@@ -32,16 +32,16 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 0.0.0
 ---
-Faults can dominate the dynamic behaviour of Earth systems at scales from the entire planet to a few 10s of metres. They are an extreme example of localisation: feedback between forcing and response that results in self-reinforcing weakening that does not have a brake at the largest scale. Faults are *extreme* in the sense that their natural length scale is orders of magnitude below that of a typical tectonic simulation.
+Faults can dominate the dynamic behaviour of Earth systems at scales from the entire planet to a few 10s of metres. They are an extreme example of localisation: feedback between forcing and response that results in self-reinforcing weakening that does not have a brake at the largest scale. Faults are *extreme* in the sense that their natural thickness is orders of magnitude below that of a typical tectonic simulation.
 
-At the tectonic scale fault is an infinitesimally thin surface across which the rock moves discontinuously by overcoming a frictional resistance. A finite element mesh (the mesh we use in Underworld) is a mechanism for representing continuous fields and there is not a native mechanism that perfectly represents a fault. 
+At the tectonic scale, a fault is an infinitesimally thin surface across which the rock moves discontinuously by overcoming a frictional resistance. A finite element mesh (the mesh we use in Underworld) is a mechanism for representing continuous fields and there is not a native mechanism that perfectly represents a fault. 
 
 There are lots of different potential solutions to this difficulty. They include: 1) ignoring it by using a continuum model of the fault, 2) adding extra interpolation functions that represent discontinuities, 3) splitting the mesh along the line of the fault and dealing with it as a surface, 4) refining the mesh enough that the fault width is invisibly small at the model length scale.  
 
 
 ## Faults in numerical models 
 
-Localisation is something a rheology produces all by itself: if we give the material a yield stress or a strain-rate-weakening viscosity, shear bands appear where the stress requires them, with an orientation determined by the stress, and at whatever width the physics and the mesh between them allow. Do we really need to do anything more than this to represent faults ? The answer is yes and there are two main reasons. 
+Localisation is something a rheological law produces all by itself: if we give the material a yield stress or a strain-rate-weakening viscosity, shear bands appear where the stress requires them, with an orientation determined by the stress, and at whatever width the physics and the mesh between them allow. Do we really need to do anything more than this to represent faults ? The answer is yes and there are two main reasons. 
 
 First, a fault is not in the same category as a shear band or a damage-zone. At the lithospheric scale a fault is persistent through changes in the tectonic loading.  Faults localise far more sharply than any band a lithosphere-scale mesh resolves, down to a gouge zone of metres or even less. They are self-reinforcing: once a fault has accumulated slip it has juxtaposed distinct rock units; the weakness becomes structural and persistent even when the load is absent. Faults have history.
 
@@ -138,20 +138,13 @@ The transversely isotropic, meshed ribbon does a good job of faults that have br
 
 The non-conforming transversely isotropic fault representation trades fault fidelity and solver efficiency against simplicity. This is the choice for cases where remeshing or mesh adaptation is difficult, and fluctuations in the near-fault stress-field can be tolerated. 
 
-
+<!--
 ## What the rest of the series covers
 
 - Building the fault mesh: the band from the fault's own points, extents and paint honoured, junctions that stop short, resolution stacked on a static base, and where a mesh generator is still needed.
 - Slippery interfaces: the pair transform, no-opening to machine precision, and interface laws on the trace.
 - Solvers: a multigrid hierarchy on a stacked mesh.
 - Parallel practice and tuning, with a California-scale example.
-- Benchmarks against the published lithospheric-deformation solutions, by Thyagarajulu Gollapalli. Named here because it is part of the same series; nothing in these notes rests on it.
-
-## Cautions to carry into the text
-
-- The toolset is in development on `feature/fault-outcrop-3d-cap`; show usage, do not promise API stability.
-- Contrast/viscosity-ladder numbers are solver stress tests, not geology.
-- Tip-shape questions are parked; do not over-claim tip-zone physics.
-- The dCFF reference is a welded solve; the gauge is demeaned pressure.
+- Benchmarks against the published lithospheric-deformation solutions, by Thyagarajulu Gollapalli. Named here because it is part of the same series; nothing in these notes rests on it.-->
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=putting-a-fault-in-a-mesh">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=putting-a-fault-in-a-mesh">Start one</a></div></div>
