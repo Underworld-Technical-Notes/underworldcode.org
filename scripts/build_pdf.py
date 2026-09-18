@@ -31,6 +31,44 @@ def run(*command):
     return subprocess.call(list(command), cwd=ROOT)
 
 
+def warm_package_cache():
+    """Fetch every Typst package the PDF template imports, once, serially.
+
+    Typst downloads a package into a per-user cache the first time any
+    compile imports it, and MyST compiles the archival PDFs concurrently.
+    On a fresh CI runner that cache is empty, so every compile that starts
+    together downloads the same package into the same directory, and the
+    losers die with "failed to decompress package" or "package not found"
+    having watched somebody else's download reach 100%. Two contenders got
+    away with it for months; when the template itself began importing
+    @preview/tablex (the house table style), every article became a
+    contender and four PDFs died on the first cold runner (PR #54).
+
+    The template's own imports are ours to know, so they are read from the
+    template files rather than listed here, and compiled from a stub before
+    MyST starts. MyST's generated preamble may import more (subpar, for
+    subfigures); the serial first-target build below still covers those.
+    """
+    import re
+    import tempfile
+    pattern = re.compile(r'@preview/[A-Za-z0-9_-]+:[0-9]+\.[0-9]+\.[0-9]+')
+    packages = set()
+    for path in sorted((ROOT / "templates" / "pdf").glob("*.typ")):
+        packages.update(pattern.findall(path.read_text(encoding="utf-8")))
+    if not packages:
+        return
+    with tempfile.TemporaryDirectory() as tmp:
+        stub = pathlib.Path(tmp) / "warm.typ"
+        stub.write_text("".join('#import "%s"\n' % p for p in sorted(packages))
+                        + "warm\n", encoding="utf-8")
+        status = subprocess.call(
+            ["typst", "compile", str(stub), str(pathlib.Path(tmp) / "warm.pdf")],
+            cwd=ROOT)
+    print("typst package cache warmed: %s" % ", ".join(sorted(packages))
+          if status == 0 else
+          "typst package cache NOT warmed (exit %d); the build may race" % status)
+
+
 def main():
     if run(sys.executable, "scripts/sync_archival.py") != 0:
         sys.exit("could not sync the archival metadata")
@@ -76,6 +114,7 @@ def main():
     #
     # Seen on PR #17, the first build to produce two PDFs at once. It is luck
     # rather than design that the 43-PDF production build has not hit it.
+    warm_package_cache()
     status = 0
     if len(targets) > 1:
         status = run("myst", "build", "--typst", targets[0])
