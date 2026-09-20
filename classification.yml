@@ -331,3 +331,7 @@ boundary-conditions-on-non-planar-boundaries:
   article_type: technical-note
   subjects: [surface-processes]
   methods: [solvers, finite-elements, meshing]
+discrete-adjoint:
+  article_type: technical-note
+  subjects: []
+  methods: [solvers, symbolic-codegen]
