@@ -133,4 +133,29 @@
 
 [-IMPORTS-]
 
+// The house table style. MyST renders every markdown table as
+// `tablex(columns: n, header-rows: 1, ..tableStyle, ..columnStyle, ...)`
+// with both dictionaries EMPTY in its generated myst-imports.typ, so the
+// template sets the style by shadowing them here, after that import and
+// before the content. Horizontal hairlines only, no verticals; the header
+// row filled in the theme blue with light text; the table centred. The
+// site's CSS (static/uwtn.css, "tables") carries the same design to HTML.
+#import "@preview/tablex:0.0.9": tablex as tablex-base
+#let uwtn-theme = blue.darken(30%)
+#let uwtn-table-sans = ("Helvetica Neue", "Helvetica", "Arial")
+#let tableStyle = (
+  auto-vlines: false,
+  auto-hlines: true,
+  map-hlines: h => (..h, stroke: 0.3pt + luma(165)),
+  fill: (col, row) => if row == 0 { uwtn-theme } else { none },
+  map-cells: c => if c.y == 0 {
+    (..c, content: text(font: uwtn-table-sans, size: 8pt, weight: "semibold",
+                        fill: blue.lighten(88%), c.content))
+  } else {
+    (..c, content: text(size: 9pt, c.content))
+  },
+  inset: (x: 8pt, y: 4.5pt),
+)
+#let tablex(..args) = align(center, block(above: 10pt, below: 12pt, tablex-base(..args)))
+
 [-CONTENT-]

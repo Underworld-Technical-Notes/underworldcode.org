@@ -50,7 +50,8 @@ authors:
   gthyagi:
     name: Thyagarajulu Gollapalli
     orcid: 0000-0001-9394-4104
-    affiliation: Monash University
+    # At ANU since the start of 2026; the JOSS paper predates the move.
+    affiliation: Australian National University
   knepley:
     name: Matt Knepley
     orcid: 0000-0002-2292-0735

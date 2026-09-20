@@ -318,6 +318,11 @@ introducing-the-technical-notes:
   subjects: []
   methods: []
 
+putting-a-fault-in-a-mesh:
+  article_type: technical-note
+  subjects: [earthquakes-faults, tectonics-lithosphere]
+  methods: [meshing, rheology]
+
 setting-up-full-multigrid:
   article_type: technical-note
   subjects: [mantle-convection]
