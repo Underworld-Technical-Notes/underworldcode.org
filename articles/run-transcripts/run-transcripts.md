@@ -6,7 +6,9 @@ description: >-
   laid out the way it is — one line per step, the operators in the order they
   ran, how each solve went, notes only where something changed — and the chart,
   figure and key that make it readable: the residual each solver assembled, set
-  as an equation, with the quantities in it under the names the script gave them.
+  as an equation, with the quantities in it under the names the script gave
+  them — and the query object that asks the record the questions a debugging
+  session always asks, the same questions a language model can ask it.
 date: 2026-09-15
 authors:
   - name: Louis Moresi
@@ -274,6 +276,71 @@ twice, which re-running the script cannot give you. Snapshots cost about 13
 bytes per primary degree of freedom per step and are off unless asked for;
 the transcript itself is bytes.
 
+A rewind is a decision, and the record now keeps the decision rather than
+only the backtrack. The transcript cannot infer why a run went back, because
+the acceptance test lives in the caller's loop, so the caller says:
+`model.rewind(1, reason="free surface displacement over the limit",
+observed=0.18, threshold=0.10, action="halve dt")`, and the note between the
+steps carries the reason and the numbers. A step stopped by an exception
+records the exception's class and message as the thing that abandoned it.
+And a part is recorded again when a parameter changes between solves, not
+only when its form is rebuilt: a diffusivity set to a new value is a
+different equation even though no kernel was recompiled, and the record says
+so at the step it happened.
+
+## Asking the record questions
+
+Reading a record is one thing; interrogating it is another, and the
+questions a debugging session asks are always the same ones. Which steps
+were abandoned, and by what? Where did the run go back, and why? Which
+solves failed, and which ran with an inner block at its iteration cap? What
+was this solver solving at step 600? What changed between step 12 and step
+13? Each of those is a walk over the JSON Lines that every reader used to
+write for themselves, and each reader wrote it slightly differently.
+
+`uw.Transcript` is one query object over the record, so a notebook, a test,
+the digest and a tool all ask the same questions of the same interpretation:
+
+```python
+t = uw.Transcript("transcripts/latest/transcript.jsonl")   # or a live model
+t.abandoned()                  # rejected steps, each with what stopped it
+t.backtracks()                 # rewinds, with the reason the caller gave
+t.failed(), t.capped()         # solves by outcome, by the figure's own rule
+t.patterns()                   # the run collapsed to its distinct step patterns
+t.part("SNES_Stokes#3", at_step=600)   # the equation in force at that step
+t.compare(12, 13)              # operators, outcomes, dt, wall time, completion
+```
+
+Every answer is the record's own data. A solve is `capped` here exactly when
+the figure marks it amber, because both read the same rule; the chart's
+collapse of repeated steps is `patterns()`, keyed by position in the sequence
+rather than by step index, since after a rewind the run numbers its steps
+again from where it went back to and one index can name several attempts.
+
+The query object describes itself in the same shape as everything else in
+the library — kind, name, summary, facts, children — and one renderer sets
+that description as Markdown with mathematics for a notebook, plain text for
+a terminal, a LaTeX fragment for a note, or YAML for a tool. The key in the
+previous section is that renderer applied to the part records. A solver
+describes itself the same way, at the moment it solves and, without an
+instance, at the class level: `uw.systems.Stokes.view()` lists the residual
+templates it declares, the terms it is given, the conditions it accepts and
+the guides that apply to it. So the record and the live object agree on what
+an equation looks like, and "what was being solved at step 600" and "what can
+this solver solve" are answered from the same description.
+
+That last point is what makes the record usable by a language model as well
+as by a person. A small read-only server speaks the Model Context Protocol
+over the same queries — a run's summary, its problems, a part at a step, the
+catalogue of what the library can solve, and the curated guides that say
+which scheme or boundary treatment to choose — and answers in the compact
+form first, with the full symbolic form only when asked. A model helping to
+debug a run reads the record's own interpretation of it rather than
+reconstructing the model from the source, and reads the same interpretation
+the author reads. The guides it serves are documentation pages, and the
+recipes an assistant loads are links to them, so there is one text to keep
+current and a change to a solver is reviewed against the guides that name it.
+
 ## Where this lands against FAIR
 
 *Findable* is the stamped directory, the `latest` pointer and the announced
@@ -290,10 +357,12 @@ A part that does nothing in a step is marked as having done nothing only in
 the chart, from the roster of parts that played; the log does not mention it.
 Mesh deformation and adaptation are not recorded as events, so a history
 stored before the mesh moved and read after it has nothing in the record to
-flag it. And what a step is *supposed* to contain is inferred from what
-repeated rather than declared by the script, so the record can say that one
-step differs from its neighbours and cannot yet say that a run disagrees with
-its own description. That last one is where the Underworld 1 comparison ends
+flag it. The time integrator a part used is in the key through the names of
+its coefficients, and in the part's own description through its scheme and
+order, but not yet as a field a query can filter on. And what a step is
+*supposed* to contain is inferred from what repeated rather than declared by
+the script, so the record can say that one step differs from its neighbours
+and cannot yet say that a run disagrees with its own description. That last one is where the Underworld 1 comparison ends
 up: a declared plan would be the XML's descendant, a statement of what a step
 should contain, checked against the transcript rather than executed from it.
 
