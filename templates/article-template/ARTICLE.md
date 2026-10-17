@@ -113,3 +113,16 @@ deposited with the note, so the archived record carries working code.
 When a release breaks one, update it and publish a **new version** of the same
 deposit rather than a new note — the DOI already in circulation then resolves to
 the working notebook.
+
+## History
+
+<!-- Delete this section until the note has been updated after deposit.
+     Then one entry per DEPOSITED version, newest first: version, date,
+     version DOI, what changed, and what did not. A typo fix is a patch
+     bump with no deposit and gets no entry. See PUBLISHING.md.
+
+- **1.1.0** — YYYY-MM-DD · [10.6084/m9.figshare.NNNNN.v2](https://doi.org/10.6084/m9.figshare.NNNNN.v2)
+  What changed, in a sentence. What did not change, if that helps.
+- **1.0.0** — YYYY-MM-DD · [10.6084/m9.figshare.NNNNN.v1](https://doi.org/10.6084/m9.figshare.NNNNN.v1)
+  First published.
+-->
