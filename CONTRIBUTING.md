@@ -209,6 +209,26 @@ script worse.
 the file. `uw.print` and `uw.timing` rather than bare prints and stopwatches.
 A reader should never meet an MPI call in a note's example.
 
+**Every example is dimensional, or says plainly that it is not.** A number in a
+geodynamics script means nothing without its unit, and a reader who cannot tell
+whether `1e-6` is a diffusivity in m²/s or a non-dimensional group cannot check
+the result or reuse the script. So either carry units —
+
+```python
+kappa = uw.Param(1.0e-6, units="m**2/s", description="thermal diffusivity")
+```
+
+— or state the scaling in a comment where the parameters are set, naming what
+was scaled by what:
+
+```python
+# Non-dimensional throughout: lengths by the layer depth D, time by D^2/kappa,
+# temperature by the drop across the layer. Ra is then the only free number.
+```
+
+Not both, and never neither. Tutorials are the exception: they are teaching one
+idea at a time, and units there can be the idea getting in the way.
+
 **Name the parameters, once, at the top.** A number a reader has to hunt for in
 the middle of a loop is a number they cannot change with any confidence. This is
 also what makes a figure reproducible: the script that made it carries the
