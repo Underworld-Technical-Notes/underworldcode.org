@@ -188,12 +188,14 @@ band rediscretised on each level to stand in for the fault, split add-on levels
 with a welded base, and split add-on levels over a base carrying a broad weak
 zone.
 
-**Splitting every add-on level, and leaving the base welded, is the one that
-works.** The add-on levels are cut and split exactly as the finest is, so the
+**Splitting every add-on level, and leaving the base welded, is the one to
+use.** The add-on levels are cut and split exactly as the finest is, so the
 coarse spaces contain the discontinuity. A smeared weak band on a coarse level
-is a continuous shear that the split fine operator rejects, and the hierarchies
-that used one converged more slowly than the welded tail they were meant to
-improve, badly so for a viscous fault.
+is a continuous shear that the split fine operator rejects: the welded tail
+with such a band converged more slowly than the welded tail alone at every
+depth, 14, 22 and 30 iterations against 8, 13 and 18. The split levels over a
+weak-zone base match the split levels at depth and add a rediscretised base
+operator to assemble at every step and band parameters to choose, for no gain.
 
 | add-on levels $k$ | near-fault $h$ | split add-on levels | welded add-on levels |
 |---|---|---|---|
@@ -346,10 +348,11 @@ run would have taken.
 | child rebuilt, saved child velocity and pressure as the guess | 4 | 103 |
 | uninterrupted run, same step | 4 | |
 
-The table is from the annulus model of a yielding lid with slipping faults
-([UWTN 2026-017](https://www.underworldcode.org/putting-a-fault-in-a-mesh/)
-describes the fault laws), base cell size 0.5 degrees with four halvings, 16
-processes, restarted at a step with four faults in place. With the child's
+The table is from an annulus model of a yielding lid with slipping faults, the
+split representation of
+[UWTN 2026-017](https://www.underworldcode.org/putting-a-fault-in-a-mesh/),
+base cell size 0.5 degrees with four halvings, 16 processes, restarted at a
+step with four faults in place. With the child's
 velocity saved, the first step after the restart reproduces the uninterrupted
 run's velocity to $3 \times 10^{-15}$ in its root mean square, and the fault
 decisions over the following ten steps are identical.
