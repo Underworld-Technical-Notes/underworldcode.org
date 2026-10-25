@@ -3,8 +3,8 @@
 # express -- that the article file is named <slug>.md, that canonical_path
 # matches the slug, and that no legacy DOI is ever paired with a new registrant.
 id: UWTN 2026-021
-slug: adjoint-forms-in-practice
-title: Adjoint Forms in Practice
+slug: model-derivatives-and-their-uses
+title: Model Derivatives and Their Uses
 article_type: technical-note
 status: draft
 authors:
@@ -18,7 +18,7 @@ version: 1.0.0
 # once and are not fields the schema knows -- every note made from this
 # template failed `pixi run validate` on all three of them.
 license: CC-BY-4.0
-canonical_path: /adjoint-forms-in-practice/
+canonical_path: /model-derivatives-and-their-uses/
 legacy_paths: []
 # Facets, from vocabulary.yml. Both keys must be present even when empty: a
 # note with no subject is normal -- many are purely about method.

@@ -1,10 +1,11 @@
 ---
-title: Adjoint Forms in Practice
+title: Model Derivatives and Their Uses
 description: >-
-  The adjoint of an Underworld3 solve is assembled from the Jacobian blocks
-  its Newton solver already uses. We describe how the library assembles it
-  for a scalar parameter and for a field, use it to find how far a viscosity
-  floor still moves a viscoplastic solution, and recover the friction
+  A model derivative says how a prediction moves when a parameter does.
+  Underworld3 takes it from one adjoint solve, assembled from the Jacobian
+  blocks its Newton solver already uses, for a scalar parameter or a field.
+  We use it to find how low a viscosity floor has to go before a
+  viscoplastic solution stops depending on it, and to recover the friction
   coefficient of a listric fault, segment by segment, from the uplift rate
   along the surface and the shear stress near five points.
 date: 2026-10-06
@@ -26,16 +27,16 @@ exports:
   - format: typst
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
-    origin_url: https://www.underworldcode.org/adjoint-forms-in-practice/
+    origin_url: https://www.underworldcode.org/model-derivatives-and-their-uses/
     template: ../../templates/pdf
-    output: adjoint-forms-in-practice.pdf
+    output: model-derivatives-and-their-uses.pdf
     article_id: UWTN 2026-021
     article_version: 1.0.0
     software_version: underworld3 0.0.0
 ---
-[Symbolic FEM and Adjoint Forms](/symbolic-fem-and-adjoint-forms/) showed that the adjoint of an Underworld3 solve is assembled from the Jacobian blocks that Newton already uses: one transposed linear solve, $K^{T}\mu = -(\partial J/\partial u)^{T}$, and an integral $\mu^{T}\partial R/\partial m_k$ for each parameter. Here we look at how the library assembles it.
+A model derivative, $\mathrm dJ/\mathrm dm$, says how a prediction $J$ moves when a parameter $m$ does: whether the parameter matters to the prediction, which way to move it, and how far. [Symbolic FEM and Adjoint Forms](/symbolic-fem-and-adjoint-forms/) showed that Underworld3 obtains it from the Jacobian blocks that Newton already uses: one transposed linear solve, $K^{T}\mu = -(\partial J/\partial u)^{T}$, and an integral $\mu^{T}\partial R/\partial m_k$ for each parameter. Here we look at how the library assembles it, and at two of its uses.
 
-We provide two examples. The first is a solver that contains a tuneable, regularising parameter where we ask the question - is there an optimal value for this parameter that minimises the perturbation of the true problem while providing the maximum benefit to the solver efficiency. In the second example, we invert for model parameters by matching a subset of model outputs.
+The first is a solver that contains a tuneable, regularising parameter, a viscosity floor, and we ask how far it can be lowered before it stops perturbing the answer, so that it costs the solver nothing it does not have to. In the second example, we invert for model parameters by matching a subset of model outputs.
 
 ## The adjoint of one solve
 
@@ -271,4 +272,4 @@ fitted $\chi^2$ per observation is 1.0001 in each case, so those are the answers
 hold. A run in time is a chain of solves like this one, differentiated in
 reverse order.
 
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=adjoint-forms-in-practice">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=adjoint-forms-in-practice">Start one</a></div></div>
+<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=model-derivatives-and-their-uses">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=model-derivatives-and-their-uses">Start one</a></div></div>

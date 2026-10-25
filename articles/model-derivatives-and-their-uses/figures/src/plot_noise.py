@@ -1,11 +1,19 @@
-"""Recovered friction against the noise on the observations, from the data files."""
+"""Recovered friction against the noise on the observations, from the data files.
+
+Run from the note's examples/ directory, where fault_friction.py writes its
+_data.npz files; the figure is written to the note's figures/.
+"""
 import glob
 import re
 
 import numpy as np
+import pathlib
+
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+
+FIGURES = pathlib.Path(__file__).resolve().parent.parent
 
 names = ["flat", "lower ramp", "upper ramp", "near surface"]
 runs = []
@@ -35,6 +43,5 @@ ax.set_xlabel("noise on the observed velocity, fraction of its rms")
 ax.set_ylabel("recovered friction (dashed: true; dotted: bounds)")
 ax.legend(fontsize=8, frameon=False, ncol=2)
 fig.tight_layout()
-fig.savefig("fault_friction_noise.png", dpi=180)
-fig.savefig("fault_friction_noise.pdf")
-print("wrote fault_friction_noise.png / .pdf")
+fig.savefig(FIGURES / "fault_friction_noise.png", dpi=180)
+print("wrote", FIGURES / "fault_friction_noise.png")

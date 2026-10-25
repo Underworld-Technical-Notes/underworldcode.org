@@ -1,13 +1,20 @@
 """The figure for the fault-segments examples.
 
-    python plot_fault_segments.py fault_segments_data.npz   # weak-plane viscosity
-    python plot_fault_segments.py fault_friction_data.npz   # friction coefficient
+    python ../figures/src/plot_fault_segments.py fault_segments_data.npz   # weak-plane viscosity
+    python ../figures/src/plot_fault_segments.py fault_friction_data.npz   # friction coefficient
+
+Run from the note's examples/ directory, where fault_friction.py writes its
+_data.npz files; the figure is written to the note's figures/.
 """
 import sys
 import numpy as np
+import pathlib
+
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+
+FIGURES = pathlib.Path(__file__).resolve().parent.parent
 
 source = sys.argv[1] if len(sys.argv) > 1 else "fault_segments_data.npz"
 friction = "friction" in source
@@ -55,6 +62,5 @@ ax.legend(fontsize=8, frameon=False)
 
 fig.tight_layout()
 stem = source.replace("_data.npz", "")
-fig.savefig(stem + ".png", dpi=180)
-fig.savefig(stem + ".pdf")
-print(f"wrote {stem}.png / .pdf")
+fig.savefig(FIGURES / (pathlib.Path(stem).name + ".png"), dpi=180)
+print("wrote", FIGURES / (pathlib.Path(stem).name + ".png"))

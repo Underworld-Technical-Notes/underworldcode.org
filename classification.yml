@@ -335,7 +335,7 @@ symbolic-fem-and-adjoint-forms:
   article_type: technical-note
   subjects: []
   methods: [solvers, symbolic-codegen]
-adjoint-forms-in-practice:
+model-derivatives-and-their-uses:
   article_type: technical-note
   subjects: [earthquakes-faults, rheology]
   methods: [solvers, symbolic-codegen]

@@ -1,8 +1,16 @@
-"""Convergence of the friction inversion under the three observation sets."""
+"""Convergence of the friction inversion under the three observation sets.
+
+Run from the note's examples/ directory, where fault_friction.py writes its
+_data.npz files; the figure is written to the note's figures/.
+"""
 import numpy as np
+import pathlib
+
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+
+FIGURES = pathlib.Path(__file__).resolve().parent.parent
 
 cases = [("uplift + stress", "fault_friction_uplift+stress_data.npz"),
          ("stress orientation at five interior points", "fault_friction_orientation_points_data.npz"),
@@ -31,6 +39,5 @@ for col, (title, path) in enumerate(cases):
         ax.set_ylabel("$J / J_0$")
     ax.set_ylim(1e-11, 2)
 fig.tight_layout()
-fig.savefig("fault_friction_convergence.png", dpi=180)
-fig.savefig("fault_friction_convergence.pdf")
-print("wrote fault_friction_convergence.png / .pdf")
+fig.savefig(FIGURES / "fault_friction_convergence.png", dpi=180)
+print("wrote", FIGURES / "fault_friction_convergence.png")
