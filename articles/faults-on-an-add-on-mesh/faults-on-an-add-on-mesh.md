@@ -30,12 +30,11 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 0.0.0
 ---
-
 <!--
 DRAFT, hub session 2026-10-25. Figures are declared below with their alt text and
 captions but the PNGs are not yet made. Each is produced on hyperion from the
 scripts named in the FIGURES block at the end of this file and goes into
-examples/ (script) and figures/ (image). Numbers in the tables are taken from the
+figures/src/ (script) and figures/ (image). Numbers in the tables are taken from the
 underworld3 design documents named in the same block; re-run before publication
 and pin software_version to the commit used.
 -->
@@ -356,10 +355,11 @@ decisions over the following ten steps are identical.
 
 ## What it costs, and what is refused
 
-The add-on's load is proportional to the fault's length rather than the domain's area. A fault band two
-cells wide at $h = 0.003$ along a trace of unit length is a few thousand cells
-on a base of a few thousand; a network of faults is the sum of its bands. The
-base pays nothing for the fault, which is the reason to build it this way.
+The add-on's load is proportional to the fault's length rather than the
+domain's area. A fault band two cells wide at $h = 0.003$ along a trace of unit
+length is a few thousand cells on a base of a few thousand; a network of faults
+is the sum of its bands. The base pays nothing for the fault, which is the
+reason to build it this way.
 
 A **junction** between two faults is where the construction is narrowest. Two
 cuts cannot share a vertex, since it would be a pinned tip of both, so a branch
@@ -433,7 +433,7 @@ counts and the convergence reference, which is where to look when a warm start
 seems not to help.
 
 <!--
-FIGURES (to be produced on hyperion; scripts into examples/, PNGs into figures/)
+FIGURES (to be produced on hyperion; scripts into figures/src/, PNGs into figures/)
 
 stack.png          one panel per level near the fault, base levels and split
                    add-on levels, copies drawn apart.

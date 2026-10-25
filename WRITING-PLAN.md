@@ -108,7 +108,14 @@ cross-link in place.
 
 ### M3. Stack-on-top for faults
 
-Status: not started. **Deliberately separate from M2.**
+Status: draft — UWTN 2026-022, *Faults on an add-on mesh*, on
+`note/faults-on-an-add-on-mesh`. **Deliberately separate from M2.**
+
+The method, serially: the static base and the ephemeral add-on, refinement from
+the fault's exact distance, conform and split, split add-on multigrid levels,
+moving the fault, warm starts and restarts. Its parallel half is UWTN 2026-018,
+*Faults in parallel: partitioning the add-on once* (draft, on
+`note/faults-in-parallel`).
 
 This one is about resolving a fault, and it may belong to the meshing paper or
 to the fault paper depending on how each turns out. Keeping it as its own note
@@ -182,16 +189,14 @@ orientation. Leans on the mover work in M1.
 
 ### F3. Meshing tricks: slicing, in serial and in parallel
 
-Status: not started.
+Status: absorbed by M3 (UWTN 2026-022) and UWTN 2026-018; no note of its own.
 
 Mesh slicing and how to use the result as an **add-on mesh**. The parallel case
-is the hard half and is the reason this is its own note.
+is the hard half and is the reason this was its own note.
 
-> **Open question.** This overlaps M3 (stack-on-top for faults), which was
-> carved out on the grounds that it might serve either paper. They may be one
-> note seen from two directions — F3 from the meshing side, M3 from the fault
-> side — or F3 may be the general technique and M3 its application. Worth
-> deciding before either is drafted rather than writing both and finding out.
+> **Settled (2026-10-25).** F3 and M3 were one note seen from two directions.
+> UWTN 2026-022 is the method, from the fault side and in serial; UWTN 2026-018
+> is its parallel half, which is the hard half this entry was kept for.
 
 ### F4. Cutting the mesh: surfaces as faults
 
@@ -445,9 +450,9 @@ Listed as candidates, not commitments.
 |-------|------|-----|
 | ✓ | M1 MMPDE mover | Published 2026-08-13 (UWTN 2026-011); anchors the meshing paper |
 | 2 | M2 Stacking resolution | Reads as the answer to M1's limitation |
-| 3 | M3 Stack-on-top for faults | Bridges the two papers — settle the F3 overlap first |
+| 3 | M3 Stack-on-top for faults | Drafted as UWTN 2026-022; its parallel half is UWTN 2026-018 (draft). Absorbs F3 |
 | 4 | F1 The problem and the options | The frame the rest of the fault cluster hangs on |
-| 5 | F2, F3, F4 | One approach each; F2 leans on M1 |
+| 5 | F2, F4 | One approach each; F2 leans on M1. F3 is absorbed by M3 and 2026-018 |
 | 6 | F5 The comparison | Last, with Thyagarajulu's benchmarks as its evidence |
 | 7 | S1, S2 free surface | After the discussion about how to split it |
 | — | C1 Launching from any repository | Standalone; the capability is live and undocumented |

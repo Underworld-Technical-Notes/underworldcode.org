@@ -36,7 +36,6 @@ project:
           children:
             - file: articles/boundary-conditions-on-non-planar-boundaries/boundary-conditions-on-non-planar-boundaries.md
             - file: articles/setting-up-full-multigrid/setting-up-full-multigrid.md
-            - file: articles/faults-on-an-add-on-mesh/faults-on-an-add-on-mesh.md
             - file: articles/moving-the-mesh-without-remaking-it/moving-the-mesh-without-remaking-it.md
             - file: articles/running-underworld-in-a-browser/running-underworld-in-a-browser.md
             - file: articles/finding-particles-in-a-distributed-unstructured-mesh/finding-particles-in-a-distributed-unstructured-mesh.md

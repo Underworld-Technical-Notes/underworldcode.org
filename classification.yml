@@ -331,3 +331,8 @@ boundary-conditions-on-non-planar-boundaries:
   article_type: technical-note
   subjects: [surface-processes]
   methods: [solvers, finite-elements, meshing]
+
+faults-on-an-add-on-mesh:
+  article_type: technical-note
+  subjects: [earthquakes-faults]
+  methods: [meshing, solvers]
