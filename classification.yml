@@ -48,7 +48,7 @@ constitutive-models-in-symbolic-form:
 faults-in-parallel:
   article_type: technical-note
   subjects: [earthquakes-faults]
-  methods: [meshing, parallel-hpc]
+  methods: [meshing, parallel-hpc, solvers]
 
 symbolic-time-derivatives-in-underworld3:
   article_type: technical-note
