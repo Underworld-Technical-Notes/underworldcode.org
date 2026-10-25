@@ -208,15 +208,16 @@ fixture the fault region, 544 cells with its growth layers, already exceeds the
 mean load, so its owner keeps it whole and carries the excess.
 
 Splitting every add-on level is what keeps the iteration count flat as the
-add-on deepens. On a box in simple shear with a straight fault, the velocity
-solve takes 6, 5 and 4 iterations at two, three and four add-on levels, against
-13, 18 and 23 when the add-on levels are left unsplit, and the peak slip agrees
-between the two to six figures. In parallel, measured on 13 October with the
-fault's cells moved after the split rather than partitioned beforehand, the
-split levels took 6 and 5 iterations at two processors and 7 and 6 at four, for
-two and three add-on levels. A fault moved through three positions at four
-add-on levels, with the add-on rebuilt and re-split at each, took 7 iterations at
-eight processors against 4 to 5 in serial, and its slip agreed with the serial
+add-on deepens. On a box in simple shear with a straight fault, solved serially
+to a relative tolerance of $10^{-6}$, the velocity solve takes 5, 5 and 4
+iterations at two, three and four add-on levels, against 8, 13 and 18 when the
+add-on levels are left unsplit, and the peak slip agrees between the two to six
+figures. In parallel, measured on 13 October with the fault's cells moved after
+the split rather than partitioned beforehand, the split levels took 6 and 5
+iterations at two processors and 7 and 6 at four, for two and three add-on
+levels. A fault moved through three positions at four add-on levels, with the
+add-on rebuilt and re-split at each, takes 7 iterations at eight processors
+against 4 or 5 in serial; in the 13 October run its slip agreed with the serial
 slip to six figures.
 
 The partition is cheap. On four processors it takes 1.35 s for a
