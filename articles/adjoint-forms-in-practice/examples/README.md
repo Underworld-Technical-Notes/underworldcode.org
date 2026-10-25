@@ -1,7 +1,7 @@
 # Friction on a listric fault from surface observations
 
-The example for the technical note *A Discrete Adjoint from the Run Record*
-(UWTN 2026-020). Four friction coefficients on a listric fault are recovered
+The example for the technical note *Adjoint Forms in Practice*
+(UWTN 2026-021). Four friction coefficients on a listric fault are recovered
 from the surface uplift rate and the shear stress at five interior points,
 with the gradient from the solver's own adjoint.
 

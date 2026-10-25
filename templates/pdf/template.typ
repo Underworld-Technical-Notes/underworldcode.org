@@ -57,6 +57,11 @@
 [# if doc.bibtex #]
   bibliography-file: "[-doc.bibtex-]",
 [# endif #]
+[# if parts.appendix #]
+  appendix: [
+[-parts.appendix-]
+  ],
+[# endif #]
   authors: (
 [# for author in doc.authors #]
     (

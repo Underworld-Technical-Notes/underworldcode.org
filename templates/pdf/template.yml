@@ -93,6 +93,12 @@ parts:
       abstract will prepare readers for the detailed information to follow,
       communicate the essence of the article and help readers take away and remember key points.
     max_words: 500
+  - id: appendix
+    description: >
+      Material the article points to but does not need inline, such as a
+      formal derivation. Printed after the references, with lettered
+      headings. Marked in the source with a `+++ {"part": "appendix"}` block,
+      not a heading, so no ordinary section is ever lifted into it.
   # summary / acknowledgements / availability are NOT declared.
   #
   # A declared part is filled from a body section with a matching heading, so

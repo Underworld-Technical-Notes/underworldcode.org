@@ -331,7 +331,11 @@ boundary-conditions-on-non-planar-boundaries:
   article_type: technical-note
   subjects: [surface-processes]
   methods: [solvers, finite-elements, meshing]
-discrete-adjoint:
+symbolic-fem-and-adjoint-forms:
   article_type: technical-note
   subjects: []
+  methods: [solvers, symbolic-codegen]
+adjoint-forms-in-practice:
+  article_type: technical-note
+  subjects: [earthquakes-faults, rheology]
   methods: [solvers, symbolic-codegen]
