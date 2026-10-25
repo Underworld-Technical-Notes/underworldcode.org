@@ -355,8 +355,9 @@ split representation of
 base cell size 0.5 degrees with four halvings, 16 processes, restarted at a
 step with four faults in place. With the child's
 velocity saved, the first step after the restart reproduces the uninterrupted
-run's velocity to $3 \times 10^{-15}$ in its root mean square, and the fault
-decisions over the following ten steps are identical. The table is regenerated
+run's velocity to $3 \times 10^{-15}$ in its root mean square; over the following
+ten steps the two agree to $4 \times 10^{-4}$, within the solve's tolerance, and
+the fault decisions are identical. The table is regenerated
 from the runs' step records by `restart_table.py` in `figures/src/`, which also
 prints each run's directory and provenance.
 
