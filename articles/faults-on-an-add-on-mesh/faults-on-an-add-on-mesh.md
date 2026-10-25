@@ -346,7 +346,7 @@ run would have taken.
 | child rebuilt, solve from rest | 36 | 783 |
 | child rebuilt, base velocity as the guess | 17 | 387 |
 | child rebuilt, saved child velocity and pressure as the guess | 4 | 103 |
-| uninterrupted run, same step | 4 | |
+| uninterrupted run, same step | 4 | 94 to 101 |
 
 The table is from an annulus model of a yielding lid with slipping faults, the
 split representation of
@@ -355,7 +355,9 @@ base cell size 0.5 degrees with four halvings, 16 processes, restarted at a
 step with four faults in place. With the child's
 velocity saved, the first step after the restart reproduces the uninterrupted
 run's velocity to $3 \times 10^{-15}$ in its root mean square, and the fault
-decisions over the following ten steps are identical.
+decisions over the following ten steps are identical. The table is regenerated
+from the runs' step records by `restart_table.py` in `figures/src/`, which also
+prints each run's directory and provenance.
 
 ## What it costs, and what is refused
 
@@ -457,6 +459,11 @@ SOURCES (underworld3, branch feature/parallel-addon-distribution unless noted)
   docs/developer/subsystems/conforming-surfaces-and-fault-zones.md (cut vs place)
   docs/developer/guides/adapt-on-top-faults.md               (API)
   uw3-campaigns zg95_lid_regimes/RESTART_AND_RECORDS.md      (restart table)
+  uw3-campaigns 788f481 zg95_lid_regimes/analysis/restart_table.py (the table's
+  script; runs ~/campaigns/dev-restart-runs/{old,new,i3}_{a,b*} on kaiju, np 16,
+  overlay-warmonly / uw3 547ebb7f; the i3 pair's run_info.json driver_commit
+  values are stale (a worktree HEAD), cite the runs' paths, not those hashes;
+  trimmed records to ship in figures/src/ are requested from kaiju)
   underworld3 bugfix/rotated-solve-diagnostics 210c7307, feature/box-faults-warm
   371d3bd (the convergence reference)
 -->
