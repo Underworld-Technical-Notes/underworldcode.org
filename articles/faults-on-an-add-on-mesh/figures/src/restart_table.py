@@ -9,6 +9,13 @@ the fault events and the rebuild count n_built move identically). Prints the tab
 markdown, then the run directories, their provenance (run_info.json, or for runs that
 predate it the job log's Script/Container lines) and the records read.
 
+The runs' records, trimmed to steps 3580-3600, ship in restart_table/ beside this script
+(its README says where they came from); run from this directory, the defaults read them:
+
+    python restart_table.py
+
+On kaiju, against the runs themselves:
+
     python restart_table.py -uw_tests "original:<dir>/old_a,<dir>/old_b;decisions+V_b:<dir>/new_a,<dir>/new_b;faulted-mesh checkpoint:<dir>/i3_a,<dir>/i3_b16"
 """
 import glob
@@ -18,10 +25,10 @@ import os
 import underworld3 as uw
 
 params = uw.Params(
-    # label:uninterrupted,restarted;label:...  (section 5's three tests on kaiju by default)
-    uw_tests="original driver:~/campaigns/dev-restart-runs/old_a,~/campaigns/dev-restart-runs/old_b;"
-             "decision state + V_b warm start:~/campaigns/dev-restart-runs/new_a,~/campaigns/dev-restart-runs/new_b;"
-             "faulted-mesh checkpoint:~/campaigns/dev-restart-runs/i3_a,~/campaigns/dev-restart-runs/i3_b16",
+    # label:uninterrupted,restarted;label:...  (section 5's three tests, the shipped records by default)
+    uw_tests="original driver:restart_table/old_a,restart_table/old_b;"
+             "decision state + V_b warm start:restart_table/new_a,restart_table/new_b;"
+             "faulted-mesh checkpoint:restart_table/i3_a,restart_table/i3_b16",
     uw_restart=3590,            # the checkpoint the restarted runs start from
     uw_last=3600,               # the window's last step
 )
@@ -34,7 +41,8 @@ def records(run):
 
 def provenance(run):
     """Driver and library commits from run_info.json (the last entry: the restart's), or the
-    driver path, container and arguments from the newest job log for runs that predate it."""
+    driver path, container and arguments from the newest job log for runs that predate it,
+    or, in the shipped copies, the line this function printed from that log (PROVENANCE.txt)."""
     path = os.path.join(run, "run_info.json")
     if os.path.exists(path):
         with open(path) as f:
@@ -44,6 +52,10 @@ def provenance(run):
                 f"np {info.get('mpi_ranks')}, restart_from {info.get('restart_from')}")
     logs = sorted(glob.glob(os.path.join(run, "slurm_*.out")), key=os.path.getmtime)
     if not logs:
+        shipped = os.path.join(run, "PROVENANCE.txt")
+        if os.path.exists(shipped):
+            with open(shipped) as f:
+                return f.read().strip()
         return "no run_info.json and no job log"
     head = {}
     with open(logs[-1]) as f:

@@ -35,7 +35,8 @@ DRAFT, hub session 2026-10-25. The three figures were made on hyperion at
 underworld3 e135429f (feature/coarse-solve-nullspace) and copied here with their
 scripts and records into figures/src/, whose README carries every number. The
 iteration table and the moving-fault timings are taken from that README; the
-restart table is from the kaiju annulus runs and still needs its script.
+restart table is from the kaiju annulus runs, whose trimmed records ship in
+figures/src/restart_table/ and which figures/src/restart_table.py reads.
 -->
 
 A fault in a geodynamic model asks two things of the mesh that pull against each
@@ -463,7 +464,8 @@ SOURCES (underworld3, branch feature/parallel-addon-distribution unless noted)
   script; runs ~/campaigns/dev-restart-runs/{old,new,i3}_{a,b*} on kaiju, np 16,
   overlay-warmonly / uw3 547ebb7f; the i3 pair's run_info.json driver_commit
   values are stale (a worktree HEAD), cite the runs' paths, not those hashes;
-  trimmed records to ship in figures/src/ are requested from kaiju)
+  the trimmed records ship in figures/src/restart_table/, from kaiju
+  ~/campaigns/zg95/figures_out/restart_table/ by Louis's rsync, 2026-10-26)
   underworld3 bugfix/rotated-solve-diagnostics 210c7307, feature/box-faults-warm
   371d3bd (the convergence reference)
 -->
