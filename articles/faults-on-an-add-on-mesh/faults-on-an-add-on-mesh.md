@@ -28,15 +28,14 @@ exports:
     output: faults-on-an-add-on-mesh.pdf
     article_id: UWTN 2026-022
     article_version: 1.0.0
-    software_version: underworld3 0.0.0
+    software_version: underworld3 feature/coarse-solve-nullspace @ e135429f
 ---
 <!--
-DRAFT, hub session 2026-10-25. Figures are declared below with their alt text and
-captions but the PNGs are not yet made. Each is produced on hyperion from the
-scripts named in the FIGURES block at the end of this file and goes into
-figures/src/ (script) and figures/ (image). Numbers in the tables are taken from the
-underworld3 design documents named in the same block; re-run before publication
-and pin software_version to the commit used.
+DRAFT, hub session 2026-10-25. The three figures were made on hyperion at
+underworld3 e135429f (feature/coarse-solve-nullspace) and copied here with their
+scripts and records into figures/src/, whose README carries every number. The
+iteration table and the moving-fault timings are taken from that README; the
+restart table is from the kaiju annulus runs and still needs its script.
 -->
 
 A fault in a geodynamic model asks two things of the mesh that pull against each
@@ -99,7 +98,7 @@ child's finest, through the add-on levels. Everything else about the child is
 local to one solve.
 
 ```{figure} figures/stack.png
-:alt: Five panels of mesh edges near a straight fault drawn in red, coarsest at the left and finest at the right. The two left panels are the base's own levels, with cells of size 0.1 and 0.05 and the fault trace running through cells without following their edges. The three right panels are the add-on levels at cell sizes 0.025, 0.0125 and 0.00625 along the trace, grading back to the base size within a few cells; in each of them the trace runs along element edges and is drawn as two lines, red and blue, opened by a small offset to show the split, meeting at a single vertex at each tip.
+:alt: Five panels of mesh edges near a straight fault drawn in red, coarsest at the left and finest at the right, titled with their cell counts. The two left panels are the base's own levels, 242 and 968 cells at sizes 0.1 and 0.05, welded, with the fault trace running through cells without following their edges. The three right panels are the add-on levels, 1274, 1644 and 2006 cells at sizes 0.025, 0.0125 and 0.00625 along the trace, grading back to the base size within a few cells; in each of them the trace runs along element edges and is drawn as two lines, red and blue, opened by a small offset to show the split, meeting at a single vertex at each tip.
 
 The stack. The two left levels are the base's own, welded and never cut. The
 three right levels are the add-on, refined toward the fault, conforming to it,
@@ -198,23 +197,23 @@ improve, badly so for a viscous fault.
 
 | add-on levels $k$ | near-fault $h$ | split add-on levels | welded add-on levels |
 |---|---|---|---|
-| 2 | 0.0125 | 6 | 13 |
-| 3 | 0.00625 | 5 | 18 |
-| 4 | 0.0031 | 4 | 23 |
+| 2 | 0.0125 | 5 | 8 |
+| 3 | 0.00625 | 5 | 13 |
+| 4 | 0.0031 | 4 | 18 |
 
-The table gives velocity iterations per solve to a relative tolerance of $10^{-4}$
-for a frictionless fault. The count falls slightly with refinement on the split
-levels and grows on the welded ones. A viscous fault at $k = 3$ took 5 iterations
-against 17. The peak slip agrees between the two tails to six figures: the
+The table gives velocity iterations per solve to a relative tolerance of $10^{-6}$
+for a frictionless fault. The count stays flat or falls slightly with refinement
+on the split levels and grows on the welded ones. A viscous fault at $k = 3$ took
+5 iterations against 12. The peak slip agrees between the two tails to six figures: the
 levels change the cost of the solve and nothing about its answer.
 
 ```{figure} figures/iterations.png
-:alt: Two line charts side by side. Left, velocity iterations against the number of add-on levels from 2 to 4 for four hierarchies: the welded tail rises from 13 to 23, the rediscretised weak band rises faster, the split add-on levels fall from 6 to 4, and the split levels over a weak-zone base match them at depth but sit higher at two levels. Right, the same for a viscous fault at three levels, the split levels at 5 and the welded tail at 17.
+:alt: Two panels. Left, a line chart of velocity iterations per solve against the add-on depth k from 2 to 4 for four hierarchies: the welded tail rises 8, 13, 18; the welded tail with a transversely isotropic band rises faster, 14, 22, 30; the split add-on levels go 5, 5, 4; the split levels over a weak-zone background go 7, 4, 4. Right, a bar chart for a viscous fault at k = 3: 5 iterations for the split add-on levels and 12 for the welded tail.
 
 Velocity iterations per solve against the depth of the add-on, for the four
 hierarchies measured, frictionless fault on the left and viscous fault on the
-right. The split add-on levels are the only hierarchy whose count does not grow
-with refinement.
+right. The two split hierarchies are the ones whose count does not grow with
+refinement.
 ```
 
 Two constructions make the split levels usable. The **transfer between levels
@@ -285,20 +284,22 @@ continuous across the fault, as a base field must be, and the slip is kept on
 the fault object.
 
 The cost of a rebuild is small against the solve it enables. On the box above at
-$k = 4$, with the fault moved through three positions and the add-on rebuilt and
-re-split at each, a step at eight processes took 0.8 to 1.3 s to refine, 1.5 to
-2.1 s to conform and split every level, and 11 to 14 s to solve, with the slip
-equal to six figures across the rebuilds; the serial figures were 2.7, 4.5 and
-26 to 30 s. The welded alternative solved three times slower at this depth, so
-the extra surgery pays for itself on the first solve.
+$k = 4$, with the fault moved along its own line to three positions and the
+add-on rebuilt and re-split at each, a step at eight processes took 0.3 to 0.6 s
+to refine, 0.75 to 0.9 s to conform and split every level, and 4.5 to 4.8 s to
+build the solver and solve, in 7 velocity iterations; in serial the same steps
+took 0.8 to 1.4 s, 1.1 to 1.2 s and 6.0 to 6.5 s, in 4 or 5 iterations. The
+rebuild costs between a fifth and a half of the solve, and at this depth the
+welded tail needs 18 iterations to the split levels' 4.
 
 ```{figure} figures/moving-fault.png
-:alt: Three panels across the top show the mesh and the second invariant of the stress near a fault at three positions, the fault having translated and rotated between them, the refined band following it and the base cells outside the band identical in all three. Below, a stacked bar for each position gives the wall time of the step at eight processes: refine about 1 s, conform and split about 2 s, solve 11 to 14 s.
+:alt: Three panels across the top show the mesh and the logarithm of the second invariant of the stress near a fault centred at x = 0.3, 0.5 and 0.7, titled 3102, 3034 and 3080 cells and 4, 4 and 5 velocity iterations; the refined band follows the fault and most base cells away from it are unchanged. Below, stacked bars give the wall time of each step at eight processes and at one: at eight, 0.3 to 0.6 s to refine, about 0.8 s to conform and split, and 4.5 to 4.8 s to solve; at one, 0.8 to 1.4 s, 1.1 to 1.2 s and 6.0 to 6.5 s.
 
-A fault moved through three positions. The add-on follows it; the base cells
-away from the band are the same in every panel. The bars give the wall time of
-each step at eight processes, split into refining the add-on, conforming and
-splitting its levels, and the velocity solve.
+A fault moved through three positions. The add-on follows it, and about nine in
+ten of the base cells away from the band are the same in every panel. The bars
+give the wall time of each step at eight processes and at one, split into
+refining the add-on, conforming and splitting its levels, and the velocity solve,
+which includes building the solver and its transfers.
 ```
 
 ## Warm starts and restarts
@@ -364,20 +365,21 @@ reason to build it this way.
 A **junction** between two faults is where the construction is narrowest. Two
 cuts cannot share a vertex, since it would be a pinned tip of both, so a branch
 stops one cell short of the fault it meets, and that ligament is one fine cell
-wide. On the next coarser add-on level the same ligament closes, the two labels
-meet, and the replay of the faults onto the levels stops there: that level and
-those beneath it stay welded, and the hierarchy for a network is split only as
-deep as its narrowest ligament allows. A network whose branches meet at the
-scale of the mesh gets the welded tail below the finest, and converges as the
-welded tail does.
+wide. The replay of a network onto the coarser add-on levels stops at the first
+level below the finest, and that level and those beneath it stay welded: a
+junction needs a side assignment the replay does not yet define, and on a deeper
+add-on the coarser level's snap can invert a cell. A network therefore gets the
+welded tail below the finest, and converges as the welded tail does.
 
 A **placed band** that is not cut, the weak or transversely isotropic ribbon,
 keeps its mesh on every level but is not replayed as a cut, and takes the
 welded tail with a patch smoother on the band. A **fault near a boundary** needs
 the band to meet the wall, and the outcropping ladder that does this is serial.
-In **three dimensions** a fault is a triangulated sheet placed into the child;
-on a child with two add-on levels the placement's volume guard currently refuses
-the sheet, so three-dimensional faults on add-on meshes have one split level.
+In **three dimensions** a fault is a triangulated sheet placed into the child.
+On a child with two add-on levels the sheet places, at a clearance of 0.9
+(44,382 tetrahedra, 7 velocity iterations), but no intermediate add-on level
+survives in the multigrid tail, so a three-dimensional fault on an add-on mesh
+has no split coarse level yet.
 These are the limits of the construction as it stands, and each is a statement
 about the mesher rather than the method.
 
@@ -433,7 +435,7 @@ counts and the convergence reference, which is where to look when a warm start
 seems not to help.
 
 <!--
-FIGURES (to be produced on hyperion; scripts into figures/src/, PNGs into figures/)
+FIGURES (delivered from hyperion at underworld3 e135429f; scripts, records and README in figures/src/)
 
 stack.png          one panel per level near the fault, base levels and split
                    add-on levels, copies drawn apart.
