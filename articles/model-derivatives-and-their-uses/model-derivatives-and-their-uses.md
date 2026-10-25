@@ -32,7 +32,7 @@ exports:
     output: model-derivatives-and-their-uses.pdf
     article_id: UWTN 2026-021
     article_version: 1.0.0
-    software_version: underworld3 0.0.0
+    software_version: underworld3 development @ 7222caf3
 ---
 A model derivative, $\mathrm dJ/\mathrm dm$, says how a prediction $J$ moves when a parameter $m$ does: whether the parameter matters to the prediction, which way to move it, and how far. [Symbolic FEM and Adjoint Forms](/symbolic-fem-and-adjoint-forms/) showed that Underworld3 obtains it from the Jacobian blocks that Newton already uses: one transposed linear solve, $K^{T}\mu = -(\partial J/\partial u)^{T}$, and an integral $\mu^{T}\partial R/\partial m_k$ for each parameter. Here we look at how the library assembles it, and at two of its uses.
 
