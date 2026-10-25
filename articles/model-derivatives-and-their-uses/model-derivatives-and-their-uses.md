@@ -159,8 +159,67 @@ the sensitivity is an integral over the cells the floor is holding up (rounded
 over a narrow band when the bound is smoothed). The same field that gives the
 number shows where the floor is doing its work.
 
-TODO: the notch — $\mathrm dJ/\mathrm d\eta_{\min}$ against $\eta_{\min}$ and
-the iteration count at each floor.
+The example is a viscoplastic layer four times as wide as it is thick,
+shortened at unit rate from both walls over a free-slip base, with a free
+top. It has unit viscosity and yields at a von Mises stress of one half,
+half the viscous stress of the bulk shortening, so it must yield to shorten
+at all, and a Gaussian seed at the middle of the base lowers the yield
+stress there by ninety per cent. Two bands rise from the seed to the surface
+at $45^\circ$, and the wedge between them is pushed up
+([](#fig-floor)a). We follow two predictions: the rate of work the walls do,
+$\int\tau:\dot\varepsilon$, which is the layer's strength at this rate of
+shortening, and the uplift, through $\int v_y^2/2$ along the top, which
+grows as the uplift concentrates in the wedge. The floor starts at $0.5$ and
+is lowered in steps to $10^{-4}$, each solve starting from the solution at
+the floor above, and at each floor one adjoint solve per prediction gives
+its derivative. At a floor of $0.01$ the adjoint derivative of the rate of
+work agrees with central differences to three parts in $10^{7}$.
+
+```{figure} figures/viscosity_floor.png
+:label: fig-floor
+:alt: Four panels. (a) The layer, four units wide and one deep, coloured by the logarithm of the effective viscosity at the lowest floor: yellow, a viscosity of one, everywhere except two narrow bands that rise from the middle of the base at 45 degrees to the surface at x = 1 and x = 3, where the viscosity falls to about a thousandth; white arrows show the walls moving inward and the wedge between the bands moving up. (b) The same layer coloured by the derivative of the rate of work with respect to the floor, per unit area, at a floor of 0.01: black almost everywhere, faint along the two bands, and bright at the seed where they meet. (c) The magnitude of the logarithmic sensitivity of the rate of work, solid, and the uplift, dashed, against the floor from 0.5 down to 0.0001, on logarithmic axes, one colour per mesh: both rise to a maximum between floors of 0.1 and 0.03, the uplift's eight times higher, fall by a factor of ten by a floor of 0.003, then fall steeply, by a further two orders of magnitude by 0.001 on the coarser mesh, the finer mesh falling at a slightly lower floor. (d) Newton iterations against the floor: lowered from the floor above, a peak of twelve to fifteen at floors of 0.03, falling to one or none below 0.001; solved from rest, eight to thirty-three at the floors that matter and thirty-five to forty below 0.001.
+
+The viscosity floor of a viscoplastic layer. (a) The effective viscosity and
+the velocity at the lowest floor. (b) Where the floor does its work at a
+floor of $0.01$: the derivative of the rate of work with respect to a floor
+set cell by cell, per unit area. (c) The logarithmic sensitivity of the rate
+of work (solid) and the uplift (dashed) as the floor is lowered, for two
+mesh sizes $h$. (d) The Newton iterations at each floor, lowered from the
+floor above (filled) and solved from rest (open).
+```
+
+The logarithmic sensitivity, $\mathrm d\ln J/\mathrm d\ln\eta_{\min}$, is
+the fractional change in a prediction for a fractional change in the floor
+([](#fig-floor)c). At a floor of $0.5$ the floor holds up most of the layer,
+and the rate of work changes by half as much as the floor does. Lower down it
+holds up the bands, and the two predictions part: at $0.1$, while the wedge
+is still forming, the uplift is twenty times as sensitive as the rate of
+work. From their maxima both sensitivities fall by a factor of ten by a
+floor of $0.003$, and then steeply, by a further factor of a hundred and fifty
+by $0.001$ on the coarser mesh, where the floor passes below the viscosity the
+bands reach on their own. Lowering the floor from $0.5$ to
+$10^{-4}$ changes the rate of work by nine per cent and the uplift by twenty;
+below $0.002$ it changes neither by more than four parts in $10^{4}$. On the
+mesh with half the cell size the fall comes at a floor about a third lower:
+the bands are narrower, their strain rate is higher, and the viscosity they
+reach is lower, so how low the floor needs to go depends on the mesh as well
+as on the material, and the derivative finds it on each mesh without a solve
+below it.
+
+The Newton iterations follow the same course ([](#fig-floor)d). Lowered from
+the floor above, each solve takes most iterations where the sensitivity is
+largest, and one or none once the floor has stopped mattering. Solved from
+rest, the same floors take eight to thirty-three iterations where the floor
+matters and thirty-five to forty below $0.001$, where it does not.
+
+The floor's work is also local. With the floor set cell by cell, all cells
+equal, the adjoint returns $\mathrm dJ/\mathrm d\eta_{\min}$ for each cell,
+and the cells' values add up to the derivative with respect to the single
+floor to eleven figures. At a floor of $0.01$, ninety-nine per cent of the
+derivative of the rate of work comes from two per cent of the layer, and
+ninety-seven per cent from within $0.15$ of the seed, where the two bands
+meet ([](#fig-floor)b). That is where the floor is still holding the
+solution up, and where a lower floor would first change it.
 
 ## A listric fault of unknown friction
 

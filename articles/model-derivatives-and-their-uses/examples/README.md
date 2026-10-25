@@ -6,12 +6,14 @@ parameter from the solver's own adjoint, `stokes.gradient(J, parameters=...)`.
 
 | file | what it does |
 |---|---|
-| `viscosity_floor.py` | lowers the viscosity floor of a viscoplastic layer step by step, and gives at each floor how much two predictions still depend on it; `python viscosity_floor.py -uw_cell_size 0.025` runs it finer |
+| `viscosity_floor.ipynb` | the viscosity-floor example as a notebook: a viscoplastic layer's floor lowered step by step, with how much two predictions still depend on it at each floor, and a map of where the floor does its work |
+| `viscosity_floor.py` | the same, as a script in jupytext percent format; `python viscosity_floor.py -uw_cell_size 0.05` runs it finer, and `-uw_from_rest 1` solves every floor from rest |
 | `fault_friction.ipynb` | the fault example as a notebook: four friction coefficients on a listric fault, recovered from the surface uplift rate and the shear stress at five interior points |
 | `fault_friction.py` | the same, as a script in jupytext percent format; `python fault_friction.py -uw_check_only 1` runs the gradient check alone |
 | `render_fault_friction.py` | PyVista renders of the fault truth: the plane's viscosity, the slip rate, the uplift and the pressure |
 
-The viscosity-floor example takes a few minutes at its default resolution.
+The viscosity-floor example takes under ten minutes at its default
+resolution and about half an hour at `-uw_cell_size 0.05`.
 The fault example's gradient check takes about three minutes and its
 inversion about ten on a laptop. The transcript of a fault run is written to
 `transcripts/<started>/`, and `uw.transcript_figure(...)` draws it.
