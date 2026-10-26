@@ -403,23 +403,26 @@ Picard step after each rebuild, and no linear solve reached its iteration cap.
 | weak crust, fault, overriding plate | 35 | 37.1 | 55.8 | 5 / 20 | 12082 |
 
 A step on the split mesh costs what a step without the fault costs: the fault
-adds degrees of freedom along one curve and the multigrid levels carry it. A
-rebuild adds about 24 s. Measured on rank 0 over 21 rebuilds at sixteen
-processes, 9 s of that is carving the cavity in the base, filling it with the
-band and splitting every level (4.3 s in the carve, fill and sew, 2.5 s building
-the new meshes, 1.5 s cutting along the trace, 0.5 s in the split), 1.5 s is the
-partition, 4 s is the solver's set-up (1.4 s compiling its functions, 1.1 s
-building the multigrid transfers), and the first solve on the new mesh takes
-about 11 s longer than an ordinary step's because it begins with a Picard
-iteration. Measured as the extra over an ordinary step, 19 to 25 s per rebuild,
+adds degrees of freedom along one curve and the multigrid levels carry it. In
+the run with 47 rebuilds a rebuild adds about 24 s. Measured on rank 0 over 21
+rebuilds at sixteen processes, 9 s of that is carving the cavity in the base,
+filling it with the band and splitting every level (4.3 s in the carve, fill and
+sew, 2.5 s building the new meshes, 1.5 s cutting along the trace, 0.5 s in the
+split), 1.5 s is the partition, 1 s is constructing the solver, and the first
+solve on the new mesh takes about 11 s longer than an ordinary step's: 3 s of
+set-up inside it (1.4 s compiling its functions, 1.1 s building the multigrid
+transfers) and the rest the Picard iteration it begins with and the extra linear
+iterations that follow. Measured as the extra over an ordinary step, 19 to 25 s
+per rebuild across the three faulted runs,
 following the trench through 27 rebuilds costs 7 per cent more wall time than
 the run without a fault, and through 47 rebuilds, when the trench moves far and
 fast, about 14 per cent; in that run the rebuild steps, each about twice an
 ordinary one, hold 27 per cent of the wall time.
 
-The partition has little to do here. The base mesh of 126,976 cells is divided
-once, 8192 or 7168 cells per process on every level, and the band adds 430 to
-570 cells to the process that holds the trench. The largest load on the finest
+The partition has little to do here. The base mesh is divided once, in the
+same proportions on every level, 8192 or 7168 of its 126,976 finest cells per
+process, and the band adds 430 to 570 cells to the process that holds the
+trench. The largest load on the finest
 level stays within 3 per cent of the mean while the band sits on a lighter
 process and within 9 per cent once the trench has moved onto a full one; the
 add-on levels follow the same pattern, and every transfer found its nodes
@@ -427,12 +430,12 @@ without a cross-partition search. The balance is the base partition's, as the
 design intends, and the fault region's cost is one process's few hundred cells.
 
 ```{figure} figures/trench-cost.png
-:alt: Three panels for the run with 47 rebuilds. Top, wall time per step stacked by phase over 300 steps, about 24 s on ordinary steps and about 49 s on the rebuild steps, which are marked by vertical lines every five steps or so; the extra is 12 s of build and about 11 s more in the Stokes solve. Middle, the peak slip rate per step with the same rebuild lines: a peak near 430 at step 3 falling to about 20 by step 45, each early rebuild cutting it and the slip climbing back between them; later a sawtooth the other way, the slip peaking on each rebuild step and decaying until the next. Bottom, the number of cells per process on the finest level at seven checkpoints, minimum 7168, mean about 7965, maximum 8192 up to step 100 and 8600 to 8700 from step 150 on.
+:alt: Three panels for the run with 47 rebuilds. Top, wall time per step stacked by phase over 300 steps, about 24 s on ordinary steps and about 49 s on the rebuild steps, which are marked by vertical lines every five steps or so; the extra is 12 s in the build band, which covers the carve, fill, split, partition and the solver's construction, and about 11 s more in the Stokes band, which covers the solver's set-up inside the first solve and its Picard iteration. Middle, the peak slip rate per step with the same rebuild lines: a peak near 430 at step 3 falling to about 20 by step 45, each early rebuild cutting it and the peak slip rate climbing back between them; later a sawtooth the other way, peaking on each rebuild step and decaying until the next. Bottom, the number of cells per process on the finest level at seven checkpoints, minimum 7168, mean about 7965, maximum 8192 up to step 100 and 8600 to 8700 from step 150 on.
 
 The run with 47 rebuilds. Above, wall time per step by phase; the rebuild steps
 stand out and cost about twice an ordinary step. Middle, the peak slip rate per
-step with the rebuilds marked: early rebuilds cut the slip, later ones carry its
-peak. Below, the load per process on the finest level after each rebuild's
+step with the rebuilds marked: early rebuilds cut it, later ones carry its
+maximum. Below, the load per process on the finest level after each rebuild's
 partition, measured at seven checkpoints: the owner of the fault region carries
 the band's few hundred cells, and the largest load stays within 3 to 9 per cent
 of the mean as the fault moves.
@@ -443,14 +446,15 @@ trace has moved enough to rebuild is a threshold on a fitted curve, so two runs
 that differ at the level of the solver tolerance can fall on different sides of
 it and take different rebuild decisions; and each rebuild's transfer carries the
 velocity onto the new mesh but not the jump across the old fault's position, so
-the slip record carries the rebuilds. In the run with 47 of them the slip at a
-rebuild step, against the step before, is 0.43 in median over the first eight
-rebuilds, while the slip falls from its early peak and climbs back between
-rebuilds, and 1.5 to 2 over the last 24, when the rebuild step carries the slip
-peak and the slip decays until the next rebuild. Neither changes the
-plate-scale answer here, where the fault under a weak crust reproduces the
-trench history of the run without one, but a slip record has to be read with
-the rebuilds marked.
+the record of the peak slip rate carries the rebuilds. In the run with 47 of
+them, the peak slip rate at a rebuild step against the step before, over the 46
+rebuilds that replaced an existing fault, is 0.43 in median over the first
+eight, while the peak slip rate falls from its early maximum and climbs back
+between rebuilds, and 1.5 to 2 over the last 24, when the rebuild step carries
+the maximum and the peak slip rate decays until the next rebuild. Neither
+changes the plate-scale answer here, where the fault under a weak crust
+reproduces the trench history of the run without one, but a slip record has to
+be read with the rebuilds marked.
 
 ## What it costs, and what is refused
 
@@ -484,8 +488,8 @@ about the mesher rather than the method.
 One cost is a defect rather than a design. Each rebuild of the add-on currently
 leaves the previous child, or the solver objects built on it, in memory: on the
 annulus runs above, 7 GB per node of sixteen processes at every rebuild, the same
-on a fresh process and an old one, so that a run with 24 rebuilds filled a 188 GB
-node. The runs were completed as chains of restarts, each a fresh process
+on a fresh process and an old one, so that a run filled a 188 GB node at its
+24th rebuild. The runs were completed as chains of restarts, each a fresh process
 restoring the saved child exactly, which the restart design above makes
 possible. The reference that holds the old child is being traced; until it is
 released, a long run with many rebuilds is a sequence of restarts.
