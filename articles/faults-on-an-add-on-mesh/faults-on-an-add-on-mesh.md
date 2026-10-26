@@ -361,6 +361,67 @@ the fault decisions are identical. The table is regenerated
 from the runs' step records by `restart_table.py` in `figures/src/`, which also
 prints each run's directory and provenance.
 
+## A fault following a trench
+
+The construction's working case is a fault that is not placed once but follows
+the model. The example is an annulus with a subducting plate: a thin, weak
+crustal layer rides on the slab, the plate yields where the stress demands it,
+and a fault is to lie along the base of the crust where it bends into the
+mantle, after @Sandiford_2019. The trench retreats as the slab founders, so
+the fault's trace has to move with it.
+
+The fault is found rather than prescribed. Every five steps the subducted crust
+particles are gathered, the cluster nearest the trench is fitted by a parabola
+along its lower envelope, and that curve, from just below the surface to a cap
+depth, is the fault. When the fitted trace has moved by more than a set number
+of cells the add-on is rebuilt from the static base at the new position, the
+velocity and pressure of the previous step are carried onto it, and the solve
+continues. The base mesh, the temperature, the plastic strain and the particles
+never move between meshes; only the add-on does.
+
+```{figure} figures/trench-mesh.png
+:alt: Four panels of mesh edges around a subduction trench in an annulus at four steps of one run, each with the whole annulus inset. The refined add-on band follows a red fault trace that dips from the trench into the mantle; between panels the trace has moved along the surface and steepened, the band has moved with it, and the base cells away from the band are the same in every panel.
+
+The add-on mesh at four steps of the run with no weak crust, in which the trench
+moves 29 degrees over 300 steps and the fault is rebuilt 47 times. The refined
+band follows the fitted trace; the base cells away from it do not change.
+```
+
+Four runs of 300 steps at sixteen processes measure what following the trench
+costs. Every ordinary step converged in one Newton iteration, builds included,
+and no linear solve reached its iteration cap.
+
+| run | rebuilds | ordinary step (s) | rebuild step (s) | velocity / pressure iterations | 300 steps (s) |
+|---|---|---|---|---|---|
+| weak crust, no fault | 0 | 26.4 | | 4 / 17 | 7802 |
+| weak crust, fault at the crust base | 27 | 25.7 | 44.8 | 3 / 18 | 8324 |
+| no weak crust, fault at the crust base | 47 | 23.8 | 48.6 | 3 / 15 | 8471 |
+| weak crust, fault, overriding plate | 35 | 37.1 | 55.8 | | |
+
+A step on the split mesh costs what a step without the fault costs: the fault
+adds degrees of freedom along one curve and the multigrid levels carry it. A
+rebuild adds about 20 s, so following the trench through 27 rebuilds costs 7
+per cent of the wall time of the run without a fault, and through 47 rebuilds,
+when the trench moves far and fast, the rebuilds are 27 per cent of the run.
+
+```{figure} figures/trench-cost.png
+:alt: Two panels for the run with 47 rebuilds. Top, wall time per step stacked by phase over 300 steps, about 24 s on ordinary steps and about 49 s on the rebuild steps, which are marked by vertical lines every five steps or so; the extra is the rebuild itself and a slightly longer first solve. Bottom, the number of cells per process on the finest level at each rebuild, minimum, mean and maximum, with the maximum within a small factor of the mean throughout.
+
+The run with 47 rebuilds. Above, wall time per step by phase; the rebuild steps
+stand out and cost about twice an ordinary step. Below, the load per process on
+the finest level after each rebuild's partition: the owner of the fault region
+carries the band, and the balance holds as the fault moves.
+```
+
+The fit that finds the fault is also where the method is sensitive. Two runs
+that differ only in a warm or cold first solve can take different rebuild
+decisions a few steps later, because a near-tie in the fit decides whether the
+trace has moved enough; and each rebuild's transfer carries the velocity but not
+its jump, so the slip on the fault drops at a rebuild and recovers over a few
+steps. Neither affects the plate-scale answer in these runs, where the fault
+under a weak crust reproduces the trench history of the run without one, but a
+slip record read across rebuilds has to be read with the rebuilds marked.
+
 ## What it costs, and what is refused
 
 The add-on's load is proportional to the fault's length rather than the
@@ -389,6 +450,15 @@ survives in the multigrid tail, so a three-dimensional fault on an add-on mesh
 has no split coarse level yet.
 These are the limits of the construction as it stands, and each is a statement
 about the mesher rather than the method.
+
+One cost is a defect rather than a design. Each rebuild of the add-on currently
+leaves the previous child, or the solver objects built on it, in memory: on the
+annulus runs above, 7 GB per node of sixteen processes at every rebuild, the same
+on a fresh process and an old one, so that a run with 24 rebuilds filled a 188 GB
+node. The runs were completed as chains of restarts, each a fresh process
+restoring the saved child exactly, which the restart design above makes
+possible. The reference that holds the old child is being traced; until it is
+released, a long run with many rebuilds is a sequence of restarts.
 
 ## In parallel
 
