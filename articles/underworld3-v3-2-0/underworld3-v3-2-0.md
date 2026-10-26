@@ -23,7 +23,7 @@ exports:
     origin_url: https://www.underworldcode.org/underworld3-v3-2-0/
     template: ../../templates/pdf
     output: underworld3-v3-2-0.pdf
-    article_id: UWTN 2026-021
+    article_id: UWTN 2026-023
     article_version: 1.0.0
     software_version: underworld3 v3.2.0
 ---
