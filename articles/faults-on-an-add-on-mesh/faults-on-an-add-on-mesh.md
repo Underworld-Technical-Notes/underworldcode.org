@@ -390,8 +390,10 @@ panels.
 ```
 
 Four runs of 300 steps at sixteen processes measure what following the trench
-costs. Every ordinary step converged in one Newton iteration, builds included,
-and no linear solve reached its iteration cap.
+costs. They are demonstrations of the mesh, not a subduction result: the slab is
+compositional and its physics is a stand-in for the thermal one. Every step
+converged in one nonlinear iteration, a Newton step on ordinary steps and a
+Picard step after each rebuild, and no linear solve reached its iteration cap.
 
 | run | rebuilds | ordinary step (s) | rebuild step (s) | velocity / pressure iterations | 300 steps (s) |
 |---|---|---|---|---|---|
@@ -409,9 +411,11 @@ the new meshes, 1.5 s cutting along the trace, 0.5 s in the split), 1.5 s is the
 partition, 4 s is the solver's set-up (1.4 s compiling its functions, 1.1 s
 building the multigrid transfers), and the first solve on the new mesh takes
 about 11 s longer than an ordinary step's because it begins with a Picard
-iteration. Following the trench through 27 rebuilds therefore costs 7 per cent
-of the wall time of the run without a fault, and through 47 rebuilds, when the
-trench moves far and fast, the rebuilds are 27 per cent of the run.
+iteration. Measured as the extra over an ordinary step, 19 to 25 s per rebuild,
+following the trench through 27 rebuilds costs 7 per cent more wall time than
+the run without a fault, and through 47 rebuilds, when the trench moves far and
+fast, about 14 per cent; in that run the rebuild steps, each about twice an
+ordinary one, hold 27 per cent of the wall time.
 
 The partition has little to do here. The base mesh of 126,976 cells is divided
 once, 8192 or 7168 cells per process on every level, and the band adds 430 to
@@ -432,14 +436,15 @@ the owner of the fault region carries the band's few hundred cells, and the
 largest load stays within 3 to 9 per cent of the mean as the fault moves.
 ```
 
-The fit that finds the fault is also where the method is sensitive. Two runs
-that differ only in a warm or cold first solve can take different rebuild
-decisions a few steps later, because a near-tie in the fit decides whether the
-trace has moved enough; and each rebuild's transfer carries the velocity but not
-its jump, so the slip on the fault drops at a rebuild and recovers over a few
-steps. Neither affects the plate-scale answer in these runs, where the fault
-under a weak crust reproduces the trench history of the run without one, but a
-slip record read across rebuilds has to be read with the rebuilds marked.
+The fit that finds the fault is also where the method is sensitive. Whether the
+trace has moved enough to rebuild is a threshold on a fitted curve, so two runs
+that differ at the level of the solver tolerance can fall on different sides of
+it and take different rebuild decisions; and each rebuild's transfer carries the
+velocity onto the new mesh but not the jump across the old fault's position, so
+the slip on the fault drops at a rebuild, by about half in these runs. Neither
+changes the plate-scale answer here, where the fault under a weak crust
+reproduces the trench history of the run without one, but a slip record has to
+be read with the rebuilds marked.
 
 ## What it costs, and what is refused
 
