@@ -177,7 +177,7 @@ work agrees with central differences to three parts in $10^{7}$.
 
 ```{figure} figures/viscosity_floor.png
 :label: fig-floor
-:alt: Four panels. (a) The layer, four units wide and one deep, coloured by the logarithm of the effective viscosity at the lowest floor: yellow, a viscosity of one, everywhere except two narrow bands that rise from the middle of the base at 45 degrees to the surface at x = 1 and x = 3, where the viscosity falls to about a thousandth; white arrows show the walls moving inward and the wedge between the bands moving up. (b) The same layer coloured by the derivative of the rate of work with respect to the floor, per unit area, at a floor of 0.01: black almost everywhere, faint along the two bands, and bright at the seed where they meet. (c) The magnitude of the logarithmic sensitivity of the rate of work, solid, and the uplift, dashed, against the floor from 0.5 down to 0.0001, on logarithmic axes, one colour per mesh: both rise to a maximum between floors of 0.1 and 0.03, the uplift's eight times higher, fall by a factor of ten by a floor of 0.003, then fall steeply, by a further two orders of magnitude by 0.001 on the coarser mesh, the finer mesh falling at a slightly lower floor. (d) Newton iterations against the floor: lowered from the floor above, a peak of twelve to fifteen at floors of 0.03, falling to one or none below 0.001; solved from rest, eight to thirty-three at the floors that matter and thirty-five to forty below 0.001.
+:alt: Four panels. (a) The layer, four units wide and one deep, coloured by the logarithm of the effective viscosity at the lowest floor: yellow, a viscosity of one, everywhere except two narrow bands that rise from the middle of the base at 45 degrees to the surface at x = 1 and x = 3, where the viscosity falls to about a thousandth; white arrows show the walls moving inward and the wedge between the bands moving up. (b) The same layer coloured by the derivative of the rate of work with respect to the floor, per unit area, at a floor of 0.01: black almost everywhere, faint along the two bands, and bright at the seed where they meet. (c) The magnitude of the logarithmic sensitivity of the rate of work, solid, and the uplift, dashed, against the floor from 0.5 down to 0.0001, on logarithmic axes, one colour per mesh: both rise to a maximum between floors of 0.1 and 0.03, the uplift's eight times higher, fall by a factor of ten by a floor of 0.003, then fall steeply, by a further two orders of magnitude by 0.001 on the coarser mesh, the finer mesh falling at a slightly lower floor. (d) Newton iterations against the floor: lowered from the floor above, a peak of twelve to fifteen at floors of 0.03, falling to one or none below 0.001; solved from rest, from six to sixty-one at the floors that matter and from thirty to a hundred and eight below 0.001, higher and more scattered on the finer mesh.
 
 The viscosity floor of a viscoplastic layer. (a) The effective viscosity and
 the velocity at the lowest floor. (b) Where the floor does its work at a
@@ -209,8 +209,12 @@ below it.
 The Newton iterations follow the same course ([](#fig-floor)d). Lowered from
 the floor above, each solve takes most iterations where the sensitivity is
 largest, and one or none once the floor has stopped mattering. Solved from
-rest, the same floors take eight to thirty-three iterations where the floor
-matters and thirty-five to forty below $0.001$, where it does not.
+rest, the same floors reach the same solutions, to a few parts in $10^{6}$,
+but take eight to thirty-three iterations where the floor matters and
+thirty-five to forty below $0.001$, where it does not; on the mesh with half
+the cell size, six to sixty-one, and thirty to a hundred and eight. A solve
+from rest is hardest, and least predictable, at the floors that matter
+least.
 
 The floor's work is also local. With the floor set cell by cell, all cells
 equal, the adjoint returns $\mathrm dJ/\mathrm d\eta_{\min}$ for each cell,
@@ -330,5 +334,11 @@ and at ten percent only the near-surface segment moves, halfway. The
 fitted $\chi^2$ per observation is 1.0001 in each case, so those are the answers the data
 hold. A run in time is a chain of solves like this one, differentiated in
 reverse order.
+
+<!-- uwtn-acknowledgement -->
+
+*The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
+
+<!-- uwtn-acknowledgement -->
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=model-derivatives-and-their-uses">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=model-derivatives-and-their-uses">Start one</a></div></div>
