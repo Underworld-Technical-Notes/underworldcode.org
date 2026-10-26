@@ -7,21 +7,26 @@ in the repository. Keep them consistent — if the process changes, both move.
 
 ## Writing a note
 
-Give it its own working tree. Writing and building are the same repository
-doing two things at once, and they collide over generated files — `myst.yml`
-holds the toc, and a production build run in another terminal takes notes at
-draft and review out of the toc that `myst start` is watching. The dev server
-then reports *File is not in project* for the file you have open. Nothing is
-lost; it just stops updating, which is worse, because it looks like your
-editor.
+Write every note in one checkout, the **workbench**, and let `pixi run note`
+make each note's branch from that note's own files. Notes do not collide: each
+lives in `articles/<slug>/`, and the one file they share, `classification.yml`,
+has an entry per note. So they can sit side by side in one editor window, with
+a session or a terminal on each, and one `pixi run start` serving all of them.
 
 ```bash
-pixi run worktree create particle-level-sets     # branch note/particle-level-sets
-cd ../underworld-technical-notes-worktrees/particle-level-sets
-pixi install                                     # its own environment, once
+pixi run note init                                  # once: this checkout becomes the workbench
 pixi run new --slug particle-level-sets --title "…" --author louis
-pixi run start                                   # localhost:3000, hot reload
+pixi run start                                      # localhost:3000, hot reload, every draft
+pixi run note save particle-level-sets -m "First draft" --push
+gh pr create --head note/particle-level-sets
 ```
+
+`note save` commits the note's directory, and its entry in `classification.yml`,
+onto `note/<slug>`, on top of whatever that branch already had — and nothing
+else. Other notes' unsaved edits stay where they are. Without `--push` it is a
+local save point. A change outside any note — a template, a script, this file —
+goes the same way with its paths named:
+`pixi run note save docs/pdf-template templates/pdf -m "…"`.
 
 Three cycles, three tools, and they do not interfere:
 
@@ -31,20 +36,41 @@ Three cycles, three tools, and they do not interfere:
 | **Review** | push the branch → link on the pull request | ~3 minutes |
 | **Publishing** | merge to `main` | the live site |
 
-`pixi run worktree list` shows what is in flight; `remove` takes the working
-copy away and leaves the branch, since those are different decisions.
+**A note is written in more than one place.** The machine that has the runs —
+usually a hub session — makes the skeleton and the figures, and the prose is
+finished somewhere else. Everything travels as a branch and a pull request on
+this repository. Away from the workbench a checkout is an ordinary one: work on
+`note/<slug>` and push to it, or put a contribution — figures, a section — on a
+branch of its own that changes only that note, and open a pull request. Never
+push to `main`.
 
-**Picking up a note that already exists** — one somebody started on the web, or
-that you left a fortnight ago — is the same command. It adopts the branch
-rather than creating one, and tells you which note is on it:
+The workbench is where the pieces meet. `pixi run note pull 58` merges pull
+request 58 into it, fork or not, and `pixi run note pull note/binder-note` a
+branch. Unsaved edits to the same files are committed to the workbench first so
+that git merges the two; a real conflict stops before anything changes and says
+how to resolve it. From then on the note saves like your own, and a save refuses
+to overwrite commits somebody pushed after your last pull. A contribution whose
+branch changes only one note is carried into that note's next save as a parent
+commit: its author stays on its commits, and its pull request is marked merged
+when the note's is.
 
-```bash
-pixi run worktree create binder-note          # adopts note/binder-note
-cd ../underworld-technical-notes-worktrees/binder-note
-git pull
-pixi install                                  # first time only
-pixi run start
-```
+`pixi run note sync` gathers: it merges main, merges every tracked branch that
+somebody has pushed to, stops tracking branches whose pull requests have merged,
+and lists open pull requests not yet on the bench. A conflict on one branch is
+reported and the rest go ahead. `pixi run note list` shows what each tracked
+branch needs — unsaved edits, saved but not pushed, pushed to since you pulled —
+and any edited note that is on no branch yet.
+
+**What not to do in the workbench:** `git checkout`, `switch`, `stash`, `reset`,
+`restore`, `clean`, `rebase`, `pull` or `commit -a`. Each changes or hides every
+session's files at once; a Claude Code hook (`scripts/workbench_guard.py`)
+refuses them, and `note` does what they would have been wanted for. Nor run a
+production build (`pixi run build`) there: it rewrites the contents list in
+`myst.yml` that `pixi run start` is serving, and the dev server then reports
+*File is not in project* for the file you have open. Nothing is lost; it just
+stops updating, which is worse, because it looks like your editor. CI builds;
+for a local one, use a checkout of its own that you never edit in
+(`git worktree add --detach ../underworld-technical-notes-build origin/main`).
 
 **Editing on GitHub is fine for a typo** and no worse than doing it locally.
 It is a poor way to fix formatting, because you cannot see the built page —
