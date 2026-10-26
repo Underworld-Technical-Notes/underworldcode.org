@@ -380,11 +380,13 @@ continues. The base mesh, the temperature, the plastic strain and the particles
 never move between meshes; only the add-on does.
 
 ```{figure} figures/trench-mesh.png
-:alt: Four panels of mesh edges around a subduction trench in an annulus at four steps of one run, each with the whole annulus inset. The refined add-on band follows a red fault trace that dips from the trench into the mantle; between panels the trace has moved along the surface and steepened, the band has moved with it, and the base cells away from the band are the same in every panel.
+:alt: Four panels of mesh edges in a window 0.30 wide and 0.22 deep on a subduction trench in an annulus, at steps 10, 100, 200 and 290 of one run, the trench at -0.9, -10.8, -24.1 and -28.9 degrees, each with the whole annulus inset showing the window. The base mesh is drawn in blue and the solver mesh's edges in black over it, with the fault trace in red dipping from the trench into the mantle; between panels the trace has moved along the surface and the band has moved with it, while the base edges away from the band coincide exactly.
 
-The add-on mesh at four steps of the run with no weak crust, in which the trench
-moves 29 degrees over 300 steps and the fault is rebuilt 47 times. The refined
-band follows the fitted trace; the base cells away from it do not change.
+The add-on mesh at steps 10, 100, 200 and 290 of the run with no weak crust, in
+which the trench moves 29 degrees over 300 steps and the fault is rebuilt 47
+times. The band follows the fitted trace, adding 430 to 570 cells to a base of
+126,976; every base edge more than 0.1 from the trace is the same in all four
+panels.
 ```
 
 Four runs of 300 steps at sixteen processes measure what following the trench
@@ -396,21 +398,38 @@ and no linear solve reached its iteration cap.
 | weak crust, no fault | 0 | 26.4 | | 4 / 17 | 7802 |
 | weak crust, fault at the crust base | 27 | 25.7 | 44.8 | 3 / 18 | 8324 |
 | no weak crust, fault at the crust base | 47 | 23.8 | 48.6 | 3 / 15 | 8471 |
-| weak crust, fault, overriding plate | 35 | 37.1 | 55.8 | | |
+| weak crust, fault, overriding plate | 35 | 37.1 | 55.8 | 5 / 20 | 12082 |
 
 A step on the split mesh costs what a step without the fault costs: the fault
 adds degrees of freedom along one curve and the multigrid levels carry it. A
-rebuild adds about 20 s, so following the trench through 27 rebuilds costs 7
-per cent of the wall time of the run without a fault, and through 47 rebuilds,
-when the trench moves far and fast, the rebuilds are 27 per cent of the run.
+rebuild adds about 24 s. Measured on rank 0 over 21 rebuilds at sixteen
+processes, 9 s of that is carving the cavity in the base, filling it with the
+band and splitting every level (4.3 s in the carve, fill and sew, 2.5 s building
+the new meshes, 1.5 s cutting along the trace, 0.5 s in the split), 1.5 s is the
+partition, 4 s is the solver's set-up (1.4 s compiling its functions, 1.1 s
+building the multigrid transfers), and the first solve on the new mesh takes
+about 11 s longer than an ordinary step's because it begins with a Picard
+iteration. Following the trench through 27 rebuilds therefore costs 7 per cent
+of the wall time of the run without a fault, and through 47 rebuilds, when the
+trench moves far and fast, the rebuilds are 27 per cent of the run.
+
+The partition has little to do here. The base mesh of 126,976 cells is divided
+once, 8192 or 7168 cells per process on every level, and the band adds 430 to
+570 cells to the process that holds the trench. The largest load on the finest
+level stays within 3 per cent of the mean while the band sits on a lighter
+process and within 9 per cent once the trench has moved onto a full one; the
+add-on levels follow the same pattern, and every transfer found its nodes
+without a cross-partition search. The balance is the base partition's, as the
+design intends, and the fault region's cost is one process's few hundred cells.
 
 ```{figure} figures/trench-cost.png
-:alt: Two panels for the run with 47 rebuilds. Top, wall time per step stacked by phase over 300 steps, about 24 s on ordinary steps and about 49 s on the rebuild steps, which are marked by vertical lines every five steps or so; the extra is the rebuild itself and a slightly longer first solve. Bottom, the number of cells per process on the finest level at each rebuild, minimum, mean and maximum, with the maximum within a small factor of the mean throughout.
+:alt: Two panels for the run with 47 rebuilds. Top, wall time per step stacked by phase over 300 steps, about 24 s on ordinary steps and about 49 s on the rebuild steps, which are marked by vertical lines every five steps or so; the extra is 12 s of build and about 11 s more in the Stokes solve. Bottom, the number of cells per process on the finest level at seven checkpoints, minimum 7168, mean about 7965, maximum 8192 up to step 100 and 8600 to 8700 from step 150 on.
 
 The run with 47 rebuilds. Above, wall time per step by phase; the rebuild steps
 stand out and cost about twice an ordinary step. Below, the load per process on
-the finest level after each rebuild's partition: the owner of the fault region
-carries the band, and the balance holds as the fault moves.
+the finest level after each rebuild's partition, measured at seven checkpoints:
+the owner of the fault region carries the band's few hundred cells, and the
+largest load stays within 3 to 9 per cent of the mean as the fault moves.
 ```
 
 The fit that finds the fault is also where the method is sensitive. Two runs
