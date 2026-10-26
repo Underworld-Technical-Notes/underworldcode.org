@@ -447,14 +447,14 @@ that differ at the level of the solver tolerance can fall on different sides of
 it and take different rebuild decisions; and each rebuild's transfer carries the
 velocity onto the new mesh but not the jump across the old fault's position, so
 the record of the peak slip rate carries the rebuilds. In the run with 47 of
-them, the peak slip rate at a rebuild step against the step before, over the 46
+them, the ratio of that rate at a rebuild step to the step before, over the 46
 rebuilds that replaced an existing fault, is 0.43 in median over the first
-eight, while the peak slip rate falls from its early maximum and climbs back
-between rebuilds, and 1.5 to 2 over the last 24, when the rebuild step carries
-the maximum and the peak slip rate decays until the next rebuild. Neither
-changes the plate-scale answer here, where the fault under a weak crust
-reproduces the trench history of the run without one, but a slip record has to
-be read with the rebuilds marked.
+eight, while the rate falls from its early maximum and climbs back between
+rebuilds, and 1.5 to 2 over the last 24, when the rebuild step carries the
+maximum and the rate decays until the next rebuild. Neither changes the
+plate-scale answer here, where the fault under a weak crust reproduces the
+trench history of the run without one, but the slip record has to be read with
+the rebuilds marked.
 
 ## What it costs, and what is refused
 
