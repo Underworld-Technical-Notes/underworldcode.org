@@ -427,13 +427,15 @@ without a cross-partition search. The balance is the base partition's, as the
 design intends, and the fault region's cost is one process's few hundred cells.
 
 ```{figure} figures/trench-cost.png
-:alt: Two panels for the run with 47 rebuilds. Top, wall time per step stacked by phase over 300 steps, about 24 s on ordinary steps and about 49 s on the rebuild steps, which are marked by vertical lines every five steps or so; the extra is 12 s of build and about 11 s more in the Stokes solve. Bottom, the number of cells per process on the finest level at seven checkpoints, minimum 7168, mean about 7965, maximum 8192 up to step 100 and 8600 to 8700 from step 150 on.
+:alt: Three panels for the run with 47 rebuilds. Top, wall time per step stacked by phase over 300 steps, about 24 s on ordinary steps and about 49 s on the rebuild steps, which are marked by vertical lines every five steps or so; the extra is 12 s of build and about 11 s more in the Stokes solve. Middle, the peak slip rate per step with the same rebuild lines: a peak near 430 at step 3 falling to about 20 by step 45, each early rebuild cutting it and the slip climbing back between them; later a sawtooth the other way, the slip peaking on each rebuild step and decaying until the next. Bottom, the number of cells per process on the finest level at seven checkpoints, minimum 7168, mean about 7965, maximum 8192 up to step 100 and 8600 to 8700 from step 150 on.
 
 The run with 47 rebuilds. Above, wall time per step by phase; the rebuild steps
-stand out and cost about twice an ordinary step. Below, the load per process on
-the finest level after each rebuild's partition, measured at seven checkpoints:
-the owner of the fault region carries the band's few hundred cells, and the
-largest load stays within 3 to 9 per cent of the mean as the fault moves.
+stand out and cost about twice an ordinary step. Middle, the peak slip rate per
+step with the rebuilds marked: early rebuilds cut the slip, later ones carry its
+peak. Below, the load per process on the finest level after each rebuild's
+partition, measured at seven checkpoints: the owner of the fault region carries
+the band's few hundred cells, and the largest load stays within 3 to 9 per cent
+of the mean as the fault moves.
 ```
 
 The fit that finds the fault is also where the method is sensitive. Whether the
@@ -441,10 +443,14 @@ trace has moved enough to rebuild is a threshold on a fitted curve, so two runs
 that differ at the level of the solver tolerance can fall on different sides of
 it and take different rebuild decisions; and each rebuild's transfer carries the
 velocity onto the new mesh but not the jump across the old fault's position, so
-the slip on the fault drops at a rebuild, by about half in these runs. Neither
-changes the plate-scale answer here, where the fault under a weak crust
-reproduces the trench history of the run without one, but a slip record has to
-be read with the rebuilds marked.
+the slip record carries the rebuilds. In the run with 47 of them the slip at a
+rebuild step, against the step before, is 0.43 in median over the first eight
+rebuilds, while the slip falls from its early peak and climbs back between
+rebuilds, and 1.5 to 2 over the last 24, when the rebuild step carries the slip
+peak and the slip decays until the next rebuild. Neither changes the
+plate-scale answer here, where the fault under a weak crust reproduces the
+trench history of the run without one, but a slip record has to be read with
+the rebuilds marked.
 
 ## What it costs, and what is refused
 
