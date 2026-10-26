@@ -451,10 +451,10 @@ at the same place at the end (28.9 degrees in both, never more than 0.4 degrees
 apart) and the peak slip rate over the second half of the run the same within
 5 per cent. The fault drifts further before a rebuild, 10.6 cells in median at
 a triggering detection against 6.6, and the sawtooth's amplitude between
-rebuilds, the range over the mean, is 0.81 against 0.89: it is set by the
-fault ageing between fits, not by how often the fits are made. The warm start
-after a rebuild costs the same in both runs, one Picard iteration and about
-4 s of extra linear iterations over the two following steps. At the finer
+rebuilds, the range over the mean, is 0.81 against 0.89: the longer drift does
+not make the teeth taller. The warm start after a rebuild costs the same in
+both runs: the rebuild step's own extra, described above, and a few seconds of
+extra linear iterations spread over the two steps after it. At the finer
 threshold the mesh was rebuilt more often than the slab required.
 
 ```{figure} figures/rebuild-spacing.png
