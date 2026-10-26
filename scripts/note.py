@@ -226,18 +226,44 @@ def owned(tip, named):
 
     A note owns its whole directory, so a file added to it is carried without
     being named. The registers and myst.yml come only by name: a branch that
-    once committed them does not thereby own everyone's entries.
+    once committed them does not thereby own everyone's entries. Nor does a
+    note's branch own a file outside articles/ that it once edited --
+    WRITING-PLAN.md, say: saving the note would carry the workbench's copy, with
+    every other branch's edits to it, and would carry as a contribution any
+    branch that edits nothing else. A branch with no article in it owns all it
+    changed, having nothing else to own.
     """
     named = {path.rstrip("/") for path in named}
     paths = set(named)
     if tip:
         base = line("merge-base", MAIN, tip)
-        paths |= set(git("diff", "--name-only", "--no-renames", base, tip).splitlines())
+        changed = set(git("diff", "--name-only", "--no-renames", base, tip).splitlines())
+        if any(path.startswith("articles/") for path in changed | paths):
+            changed = {path for path in changed if path.startswith("articles/")}
+        paths |= changed
     collapsed = set()
     for path in paths:
         parts = path.split("/")
         collapsed.add("/".join(parts[:2]) if parts[0] == "articles" and len(parts) > 2 else path)
     return sorted(collapsed - ((set(REGISTERS) | {GENERATED}) - named))
+
+
+def edited_elsewhere(branch, paths):
+    """Those of these paths outside articles/ that another tracked branch edits too.
+
+    The workbench's copy of such a file holds both branches' edits, so saving
+    it whole would hand one branch's work to the other.
+    """
+    outside = {path for path in paths if not path.startswith("articles/")}
+    found = {}
+    for other in tracked():
+        tip = commit_of(published_ref(other)) or commit_of("refs/heads/%s" % other)
+        if other == branch or not tip or not outside:
+            continue
+        base = line("merge-base", MAIN, tip)
+        for path in outside & set(git("diff", "--name-only", "--no-renames", base, tip).splitlines()):
+            found.setdefault(path, []).append(other)
+    return found
 
 
 def slugs_in(paths):
@@ -436,6 +462,16 @@ def save(target, named, message, push):
             # of what it merges, or a later sync would think main was in it.
             parents = [published or local or line("merge-base", BENCH, MAIN)]
         paths = owned(parents[0], named)
+        # Named outright, a file goes whole: whoever names it has looked.
+        shared = {path: others for path, others in edited_elsewhere(branch, paths).items()
+                  if path not in {name.rstrip("/") for name in named}}
+        paths = [path for path in paths if path not in shared]
+        if not paths and shared:
+            sys.exit("Nothing saved: every file %s changes is edited by another branch too:\n%s\n"
+                     "Name the ones to save the workbench's copy of, whole: "
+                     "`pixi run note save %s <path> ...`"
+                     % (branch, "\n".join("  %s (%s)" % (path, ", ".join(others))
+                                          for path, others in sorted(shared.items())), target))
         if not paths:
             sys.exit("%s owns nothing yet. Name what it is for: "
                      "`pixi run note save %s <path> ...`" % (branch, target))
@@ -500,6 +536,10 @@ def save(target, named, message, push):
         stdin="\0".join(snapshot) + "\0")
 
     remember(branch, tracked="true")
+    for path, others in sorted(shared.items()):
+        print("left %s as it was on %s: %s edit%s it too. Name it to save the "
+              "workbench's copy whole." % (path, branch, " and ".join(others),
+                                           "s" if len(others) == 1 else ""))
     for other, _ in carried:
         remember(other, carriedby=branch)
         print("carries %s: its pull request closes as merged when %s's does" % (other, branch))
