@@ -12,8 +12,8 @@ parameter from the solver's own adjoint, `stokes.gradient(J, parameters=...)`.
 | `fault_friction.py` | the same, as a script in jupytext percent format; `python fault_friction.py -uw_check_only 1` runs the gradient check alone |
 | `render_fault_friction.py` | PyVista renders of the fault truth: the plane's viscosity, the slip rate, the uplift and the pressure |
 
-The viscosity-floor example takes under ten minutes at its default
-resolution and about half an hour at `-uw_cell_size 0.05`.
+The viscosity-floor example takes about ten minutes at its default
+resolution and the best part of an hour at `-uw_cell_size 0.05`.
 The fault example's gradient check takes about three minutes and its
 inversion about ten on a laptop. The transcript of a fault run is written to
 `transcripts/<started>/`, and `uw.transcript_figure(...)` draws it.

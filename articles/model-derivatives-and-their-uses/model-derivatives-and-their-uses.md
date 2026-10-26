@@ -173,17 +173,18 @@ grows as the uplift concentrates in the wedge. The floor starts at $0.5$ and
 is lowered in steps to $10^{-4}$, each solve starting from the solution at
 the floor above, and at each floor one adjoint solve per prediction gives
 its derivative. At a floor of $0.01$ the adjoint derivative of the rate of
-work agrees with central differences to three parts in $10^{7}$.
+work agrees with central differences to a few parts in $10^{7}$ on each of
+the three meshes we use.
 
 ```{figure} figures/viscosity_floor.png
 :label: fig-floor
-:alt: Four panels. (a) The layer, four units wide and one deep, coloured by the logarithm of the effective viscosity at the lowest floor: yellow, a viscosity of one, everywhere except two narrow bands that rise from the middle of the base at 45 degrees to the surface at x = 1 and x = 3, where the viscosity falls to about a thousandth; white arrows show the walls moving inward and the wedge between the bands moving up. (b) The same layer coloured by the derivative of the rate of work with respect to the floor, per unit area, at a floor of 0.01: black almost everywhere, faint along the two bands, and bright at the seed where they meet. (c) The magnitude of the logarithmic sensitivity of the rate of work, solid, and the uplift, dashed, against the floor from 0.5 down to 0.0001, on logarithmic axes, one colour per mesh: both rise to a maximum between floors of 0.1 and 0.03, the uplift's eight times higher, fall by a factor of ten by a floor of 0.003, then fall steeply, by a further two orders of magnitude by 0.001 on the coarser mesh, the finer mesh falling at a slightly lower floor. (d) Newton iterations against the floor: lowered from the floor above, a peak of twelve to fifteen at floors of 0.03, falling to one or none below 0.001; solved from rest, from six to sixty-one at the floors that matter and from thirty to a hundred and eight below 0.001, higher and more scattered on the finer mesh.
+:alt: Four panels. (a) The layer, four units wide and one deep, coloured by the logarithm of the effective viscosity at the lowest floor: yellow, a viscosity of one, everywhere except two narrow bands that rise from the middle of the base at 45 degrees to the surface at x = 1 and x = 3, where the viscosity falls to a few hundredths, and lower still at the seed where they meet; white arrows show the walls moving inward and the wedge between the bands moving up. (b) The same layer coloured by the derivative of the rate of work with respect to the floor, per unit area, at a floor of 0.01: black almost everywhere, faint along the two bands, and bright at the seed where they meet. (c) The magnitude of the logarithmic sensitivity of the rate of work, solid, and the uplift, dashed, against the floor from 0.5 down to 0.0001, on logarithmic axes, one colour per mesh: both rise to a maximum between floors of 0.1 and 0.03, the uplift's eight times higher, fall by a factor of ten or more by a floor of 0.003, then fall steeply, by a further two orders of magnitude, by a floor of 0.001 on the coarsest mesh, 0.0007 on the next and 0.0005 on the finest. (d) Newton iterations against the floor: lowered from the floor above, a peak of twelve to sixteen near a floor of 0.03, falling to two or fewer once the sensitivity has fallen; solved from rest, from six to sixty-one at the floors that matter and from thirty to a hundred and eight below 0.001, higher and more scattered on the finer of the two meshes solved from rest.
 
 The viscosity floor of a viscoplastic layer. (a) The effective viscosity and
 the velocity at the lowest floor. (b) Where the floor does its work at a
 floor of $0.01$: the derivative of the rate of work with respect to a floor
 set cell by cell, per unit area. (c) The logarithmic sensitivity of the rate
-of work (solid) and the uplift (dashed) as the floor is lowered, for two
+of work (solid) and the uplift (dashed) as the floor is lowered, for three
 mesh sizes $h$. (d) The Newton iterations at each floor, lowered from the
 floor above (filled) and solved from rest (open).
 ```
@@ -194,25 +195,28 @@ the fractional change in a prediction for a fractional change in the floor
 and the rate of work changes by half as much as the floor does. Lower down it
 holds up the bands, and the two predictions part: at $0.1$, while the wedge
 is still forming, the uplift is twenty times as sensitive as the rate of
-work. From their maxima both sensitivities fall by a factor of ten by a
-floor of $0.003$, and then steeply, by a further factor of a hundred and fifty
-by $0.001$ on the coarser mesh, where the floor passes below the viscosity the
-bands reach on their own. Lowering the floor from $0.5$ to
-$10^{-4}$ changes the rate of work by nine per cent and the uplift by twenty;
-below $0.002$ it changes neither by more than four parts in $10^{4}$. On the
-mesh with half the cell size the fall comes at a floor about a third lower:
-the bands are narrower, their strain rate is higher, and the viscosity they
-reach is lower, so how low the floor needs to go depends on the mesh as well
-as on the material, and the derivative finds it on each mesh without a solve
-below it.
+work. From their maxima, where the floor holds up the bands, both
+sensitivities fall by a factor of ten or more by a floor of $0.003$, as the
+floor passes below the viscosity of the bands, and then steeply, by a further
+factor of a hundred or more, as it passes below the lowest viscosity the
+layer reaches on its own, at the seed. Lowering the floor from $0.5$ to
+$10^{-4}$ changes the rate of work by nine per cent and the uplift by twenty.
+Where the steep fall comes depends on the mesh. The sensitivity of the rate of
+work falls below $10^{-4}$ at a floor of $0.001$, $0.0007$ and $0.0005$ as the
+cell size is halved and halved again, about a third lower each time: on a
+finer mesh the bands are narrower, their strain rate is higher, and the
+viscosity they reach is lower. Below that floor, on every mesh, lowering it to
+$10^{-4}$ changes neither prediction by as much as six parts in $10^{6}$. How
+low the floor needs to go depends on the mesh as well as on the material, and
+the derivative finds it on each mesh without a solve below it.
 
 The Newton iterations follow the same course ([](#fig-floor)d). Lowered from
 the floor above, each solve takes most iterations where the sensitivity is
-largest, and one or none once the floor has stopped mattering. Solved from
+largest, and two or fewer once the floor has stopped mattering. Solved from
 rest, the same floors reach the same solutions, to a few parts in $10^{6}$,
-but take eight to thirty-three iterations where the floor matters and
-thirty-five to forty below $0.001$, where it does not; on the mesh with half
-the cell size, six to sixty-one, and thirty to a hundred and eight. A solve
+but on the coarsest mesh take eight to thirty-three iterations where the floor
+matters and thirty-five to forty below $0.001$, where it does not; on the
+next, six to sixty-one, and thirty to a hundred and eight. A solve
 from rest is hardest, and least predictable, at the floors that matter
 least.
 
