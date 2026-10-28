@@ -240,6 +240,15 @@ something works, not how hard it was to make work.
 - **Every figure and table ships the script that made it**, in the note's
   `figures/src/`, beside the figures it draws. A number a reader cannot
   regenerate is an assertion.
+- **A note is assembled from journal entries, and a finding made while writing
+  one is an entry first.** The
+  [Underworld journal](https://github.com/underworldcode/journal) holds the
+  dated record (what was tried, what happened, what we now think, with the run
+  and the commit linked); a note explains what the entries established. Cite the
+  entries the figures and numbers came from in the note's front matter or
+  `README`, so a reviewer can go back to the run, and write a measurement made
+  for the note as an entry before it goes into the note, since the entry is the
+  provenance the deposited PDF cannot carry.
 - **`examples/` holds what a reader is meant to launch**: the notebooks a
   Binder link opens, and the scripts and data they read. A script that only
   draws a figure goes in `figures/src/`, so a reader who opens `examples/`
