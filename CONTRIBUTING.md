@@ -242,7 +242,7 @@ something works, not how hard it was to make work.
   regenerate is an assertion.
 - **A note is assembled from journal entries, and a finding made while writing
   one is an entry first.** The
-  [Underworld journal](https://github.com/underworldcode/journal) holds the
+  [Underworld journal](https://github.com/underworldcode/underworld3-journal) holds the
   dated record (what was tried, what happened, what we now think, with the run
   and the commit linked); a note explains what the entries established. Cite the
   entries the figures and numbers came from in the note's front matter or
