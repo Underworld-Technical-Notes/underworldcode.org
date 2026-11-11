@@ -211,12 +211,14 @@ def test_a_labelled_equation_is_referenceable():
     import re
     for path in sorted((ROOT / "articles").glob("*/*.md")):
         body = path.read_text(encoding="utf-8")
-        # Two forms label an equation in this corpus, and both are valid MyST:
-        # `$$ ... $$ (label)`, and amsmath's \label{} inside \begin{equation}.
-        # A \label{} inside a plain $$ block is NEITHER -- that is LaTeX the
+        # Three forms label an equation in this corpus, and all are valid MyST:
+        # `$$ ... $$ (label)`, amsmath's \label{} inside \begin{equation}, and
+        # the `:label:` option of a {math} directive, which native notes use.
+        # A \label{} inside a plain $$ block is NONE of them -- that is LaTeX the
         # renderer never sees, and it is the mistake this test exists to catch.
         labels = set(re.findall(r"(?m)^\$\$\s*\(([^)\s]+)\)\s*$", body))
         labels |= set(re.findall(r"\\begin\{equation\}\s*\\label\{([^}]+)\}", body))
+        labels |= set(re.findall(r"(?m)^\s*:label:\s*(\S+)\s*$", body))
         referenced = set(re.findall(r"\{eq\}`([^`]+)`", body))
         missing = referenced - labels
         assert not missing, (

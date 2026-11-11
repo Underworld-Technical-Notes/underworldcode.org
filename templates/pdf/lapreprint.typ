@@ -65,6 +65,8 @@
   // The path to a bibliography file if you want to cite some external works.
   bibliography-file: none,
   bibliography-style: "apa",
+  // Printed after the references, as a paper sets it.
+  appendix: none,
   // The paper's content.
   body
 ) = {
@@ -209,7 +211,7 @@
       #show: smallcaps
       #v(20pt, weak: true)
       #if it.numbering != none and not is-ack {
-        numbering(heading-numbering, ..levels)
+        numbering(it.numbering, ..levels)
         [.]
         h(7pt, weak: true)
       }
@@ -221,7 +223,7 @@
       #set text(style: "italic")
       #v(10pt, weak: true)
       #if it.numbering != none {
-        numbering(heading-numbering, ..levels)
+        numbering(it.numbering, ..levels)
         [.]
         h(7pt, weak: true)
       }
@@ -230,7 +232,7 @@
     ] else [
       // Third level headings are run-ins too, but different.
       #if it.level == 3 {
-        numbering(heading-numbering, ..levels)
+        numbering(if it.numbering != none { it.numbering } else { heading-numbering }, ..levels)
         [. ]
       }
       _#(it.body):_
@@ -419,5 +421,17 @@ if (abstracts != none and abstracts.len() > 0) {
   if (bibliography-file != none) {
     show bibliography: set text(8pt)
     bibliography(bibliography-file, title: text(10pt, "References"), style: bibliography-style)
+  }
+
+  // Lettered, and counted afresh, so that A.1 cannot be read as a section of
+  // the body. The show rule above prints `it.numbering` for this reason.
+  if appendix != none {
+    counter(heading).update(0)
+    set heading(numbering: (..n) => if n.pos().len() == 1 {
+      "Appendix " + numbering("A", ..n)
+    } else {
+      numbering("A.1", ..n)
+    })
+    appendix
   }
 }
