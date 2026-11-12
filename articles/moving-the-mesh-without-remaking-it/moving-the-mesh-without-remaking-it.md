@@ -373,7 +373,7 @@ partition exactly as they were.
 
 ## History
 
-- **1.1.0** — 2026-11-12
+- **1.1.0** — 2026-11-12 · [10.6084/m9.figshare.33241170.v2](https://doi.org/10.6084/m9.figshare.33241170.v2)
   The worked example's animation is now a movie encoded from the run's own
   frames: all 250 time steps from the first, 864 pixels square and in full
   colour, in place of a GIF that carried every fourth step at 600 pixels in 96
