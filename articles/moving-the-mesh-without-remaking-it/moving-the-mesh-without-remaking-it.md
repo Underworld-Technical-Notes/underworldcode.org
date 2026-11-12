@@ -24,7 +24,7 @@ keywords:
   - development
 exports:
   - format: typst
-    archived: "2026-08-13T11:10:11Z"
+    archived: "2026-11-12T04:07:03Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/moving-the-mesh-without-remaking-it/
