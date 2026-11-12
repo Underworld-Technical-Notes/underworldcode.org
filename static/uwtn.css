@@ -684,3 +684,18 @@ a.uwtn-tag:hover { color: var(--uwtn-accent); border-color: var(--uwtn-accent); 
   color: var(--uwtn-accent);
   border-color: var(--uwtn-accent);
 }
+
+/* A movie figure: the theme renders the :placeholder: still beside the video,
+   so the still showed underneath it. The still is for the PDF and for print;
+   on screen the video stands alone. */
+figure video + img {
+  display: none;
+}
+@media print {
+  figure video {
+    display: none;
+  }
+  figure video + img {
+    display: block;
+  }
+}

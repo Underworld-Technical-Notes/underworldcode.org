@@ -257,7 +257,8 @@ something works, not how hard it was to make work.
   `yuv420p` and `+faststart`, at the resolution the run was rendered at; it
   replaces a GIF at a fraction of the size. Show it with a `{figure}` whose
   `:placeholder:` names the still: the site plays the movie, looping and muted,
-  and the PDF shows the still (`scripts/build_pdf.py` swaps them). Say in the
+  and the PDF shows the still (`scripts/build_pdf.py` swaps them; the site's
+  stylesheet hides the still on screen and shows it in print). Say in the
   caption that the PDF shows a frame and the movie is on the note's record; the
   deposit uploads each movie there as a file of its own. Set `thumbnail:` in the
   front matter to the still, or the site takes the first image it finds.
