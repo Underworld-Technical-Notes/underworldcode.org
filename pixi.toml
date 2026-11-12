@@ -6,7 +6,7 @@ platforms = ["osx-arm64", "osx-64", "linux-64"]
 
 [dependencies]
 python = ">=3.11,<3.13"
-mystmd = ">=1.6,<2"
+mystmd = "==1.10.1"  # pinned with the theme in myst.yml (1.4.1); upgrade both together
 typst = ">=0.13,<0.14"
 nodejs = ">=20"
 pytest = ">=8"
