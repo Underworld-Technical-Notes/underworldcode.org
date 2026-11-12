@@ -152,7 +152,9 @@ project:
   # END GENERATED TOC
 
 site:
-  template: book-theme
+  # Pinned: an unpinned theme broke every build when a release outran mystmd (2026-11-11).
+  # Upgrade mystmd and this pin together.
+  template: https://github.com/jupyter-book/myst-theme/releases/download/myst-to-react%401.4.1/book-theme.zip
   title: Underworld Geodynamics
   # BEGIN GENERATED NAV
   nav:
