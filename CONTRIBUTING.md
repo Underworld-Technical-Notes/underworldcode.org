@@ -237,6 +237,12 @@ something works, not how hard it was to make work.
   the reason to write *that* note, not to reference it from this one. Say the
   general thing the reader can check, and leave the specific one to its own
   note.
+- **An updated note carries a `## History` section**, and only versions that
+  were deposited appear in it: a version, a date, the version DOI, what changed
+  and — when it applies — what did not. A published note is never changed
+  silently. The live page shows the current history and each deposited PDF
+  shows the history up to its own version, so nothing goes back to amend an
+  older PDF. See PUBLISHING.md.
 - **Every figure and table ships the script that made it**, in the note's
   `figures/src/`, beside the figures it draws. A number a reader cannot
   regenerate is an assertion.
