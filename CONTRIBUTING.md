@@ -253,6 +253,14 @@ something works, not how hard it was to make work.
   deposited with the note. Notes published before this rule keep their figure
   scripts in `examples/`; they move when the note next gains a real example,
   in the same change.
+- **A movie is an MP4 in `figures/`, with a still beside it.** H.264 with
+  `yuv420p` and `+faststart`, at the resolution the run was rendered at; it
+  replaces a GIF at a fraction of the size. Show it with a `{figure}` whose
+  `:placeholder:` names the still: the site plays the movie, looping and muted,
+  and the PDF shows the still (`scripts/build_pdf.py` swaps them). Say in the
+  caption that the PDF shows a frame and the movie is on the note's record; the
+  deposit uploads each movie there as a file of its own. Set `thumbnail:` in the
+  front matter to the still, or the site takes the first image it finds.
 - **Alt text describes what the image shows, including the numbers.** It is read
   by people who never see the figure, and by anyone reading the markdown.
 - **Citations are pinned** in the note's `references.bib` and cited in one form,
