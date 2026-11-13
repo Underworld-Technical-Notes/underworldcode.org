@@ -27,11 +27,15 @@ exports:
     template: ../../templates/pdf
     output: boundary-conditions-on-non-planar-boundaries.pdf
     article_id: UWTN 2026-016
-    article_version: 1.0.0
-    software_version: underworld3 development @ 8b7c8b9e
+    article_version: 1.1.0
+    software_version: underworld3 development @ eb3d2f02
 doi: 10.6084/m9.figshare.33420637
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@thefirmhtx?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Alexander Londoño</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
+
+:::{note} Corrected in version 1.1.0 (14 November 2026)
+The Nitsche results in this note have been rerun and corrected: the Nitsche column of the annulus table, the $\gamma$ table, the SolCx comparison, which now has a Nitsche column, and the advice on choosing $\gamma$. No other result has changed. The History at the end says what moved and why.
+:::
 
 Free-slip boundary conditions are used to simplify the physical behaviour at a domain boundary. It may be a free-surface where the boundary deforms slightly in response to the internal flow, or it may be an interface where the boundary layer thickness is so small that it cannot be resolved at the same time as the interior flow. The simplifying assumption: ignore the changes in shape, ignore the thin boundary layer, treat the surface as impenetrable, and the tangential stresses as vanishingly small.
 
@@ -118,7 +122,7 @@ $$
   \; \mathrm{d}S .
 $$
 
-The first of the three is the consistency term: it is the boundary traction the integration by parts produced, and including this makes the true solution satisfy the discrete equations exactly. The second is its transpose, which keeps the form symmetric and buys optimal convergence in $L^2$. The third is the penalty again, and it is still needed — but now for *stability* rather than for accuracy, and $\gamma$ has a threshold set by an inverse inequality rather than being an unspecified free parameter.
+The first of the three is the consistency term: it is the boundary traction the integration by parts produced, and including this makes the true solution satisfy the discrete equations exactly. The second is its transpose, which keeps the form symmetric and buys optimal convergence in $L^2$. Here $\boldsymbol{\sigma}(\mathbf{w})$ is the whole test stress, $2\eta\,\boldsymbol{\varepsilon}(\mathbf{w}) - q\,\mathbf{I}$ with $q$ the pressure test function, so the transpose has a viscous part in the momentum equation and a pressure part, $+\int_{\partial\Omega} q\,(\mathbf{u}\cdot\hat{\mathbf{n}})\,\mathrm{d}S$, in the continuity equation. In Underworld3's `add_nitsche_bc` the argument `theta` scales the viscous part only; the pressure part is always there. The third is the penalty again, and it is still needed — but now for *stability* rather than for accuracy, and $\gamma$ has a threshold set by an inverse inequality rather than being an unspecified free parameter.
 
 This is a real improvement and it is still done through a weak imposition. The constraint holds to the accuracy of the discretisation, not to the accuracy of the arithmetic — measured below, it leaks a few parts in a thousand on a typical mesh, and the leak falls with increasing mesh resolution.
 
@@ -250,16 +254,16 @@ Penalty at $\kappa = 10^4$, Nitsche at $\gamma = 10$.
 
 | cell size | penalty | Nitsche | multiplier | rotated |
 |---|---|---|---|---|
-| 0.150 | 3.1 × 10⁻³ / 2.5 × 10⁻² | 1.0 × 10⁻² / 5.8 × 10⁻² | 2.3 × 10⁻⁴ / 2.4 × 10⁻² | 5.3 × 10⁻¹¹ / 2.4 × 10⁻² |
-| 0.100 | 3.0 × 10⁻³ / 1.1 × 10⁻² | 2.4 × 10⁻³ / 2.4 × 10⁻² | 1.0 × 10⁻⁴ / 1.0 × 10⁻² | 5.8 × 10⁻¹¹ / 1.0 × 10⁻² |
-| 0.075 | 3.0 × 10⁻³ / 7.2 × 10⁻³ | 1.2 × 10⁻³ / 1.5 × 10⁻² | 8.6 × 10⁻⁵ / 6.3 × 10⁻³ | 1.2 × 10⁻¹⁰ / 6.2 × 10⁻³ |
-| 0.050 | 3.0 × 10⁻³ / 3.6 × 10⁻³ | 2.7 × 10⁻⁴ / 6.3 × 10⁻³ | 6.7 × 10⁻⁵ / 2.7 × 10⁻³ | 1.2 × 10⁻¹⁰ / 2.7 × 10⁻³ |
+| 0.150 | 3.1 × 10⁻³ / 2.5 × 10⁻² | 1.6 × 10⁻² / 7.5 × 10⁻² | 2.3 × 10⁻⁴ / 2.4 × 10⁻² | 5.3 × 10⁻¹¹ / 2.4 × 10⁻² |
+| 0.100 | 3.0 × 10⁻³ / 1.1 × 10⁻² | 4.3 × 10⁻³ / 3.2 × 10⁻² | 1.0 × 10⁻⁴ / 1.0 × 10⁻² | 5.8 × 10⁻¹¹ / 1.0 × 10⁻² |
+| 0.075 | 3.0 × 10⁻³ / 7.2 × 10⁻³ | 2.3 × 10⁻³ / 1.9 × 10⁻² | 8.6 × 10⁻⁵ / 6.3 × 10⁻³ | 1.2 × 10⁻¹⁰ / 6.2 × 10⁻³ |
+| 0.050 | 3.0 × 10⁻³ / 3.6 × 10⁻³ | 5.0 × 10⁻⁴ / 8.4 × 10⁻³ | 6.7 × 10⁻⁵ / 2.7 × 10⁻³ | 1.2 × 10⁻¹⁰ / 2.7 × 10⁻³ |
 
-Reading the leak first, Nitsche leaks parts in a thousand and improves with the mesh — the rate consistency buys. The multiplier is an order of magnitude better and improves faster. The rotated constraint does not move: it sits at the solver's floor at every resolution, because the mesh has nothing to do with it. The penalty does not improve either, and for the opposite reason — its leak is set by the penalty coefficient rather than by the discretisation.
+Reading the leak first, Nitsche leaks between a part in sixty and a part in two thousand and improves with the mesh — the rate consistency buys. The multiplier is an order of magnitude better and improves faster. The rotated constraint does not move: it sits at the solver's floor at every resolution, because the mesh has nothing to do with it. The penalty does not improve either, and for the opposite reason — its leak is set by the penalty coefficient rather than by the discretisation.
 
 Reading the stress column, the ranking changes. **Every treatment that imposes the constraint correctly lands on the same stress error at a given mesh**: 6.3 × 10⁻³ for the multiplier and 6.2 × 10⁻³ for the rotated constraint at cell 0.075, where their leaks differ by nine orders of magnitude. What sets that number is the recovery — a projection of a stress differentiated out of a piecewise-quadratic velocity — and not the boundary condition underneath it. A constraint held to $10^{-10}$ buys nothing over one held to $10^{-4}$ if the answer is then recovered the same way.
 
-Nitsche is the exception, at twice the error of the others on the coarser meshes. Its $\gamma = 10$ is enough for the leak and not for the stress: at $\gamma = 100$ the leak improves by a factor of nearly forty and the stress by a factor of two, onto the same floor as everything else, after which more $\gamma$ buys nothing.
+Nitsche is the exception, at three times the error of the others at every resolution. Its $\gamma = 10$ is enough for the leak and not for the stress: at $\gamma = 100$, at cell 0.075, the leak improves by a factor of more than fifty and the stress by a factor of three, to 6.8 × 10⁻³ and then onto the same floor as everything else (6.3 × 10⁻³ from $\gamma = 1000$), after which more $\gamma$ buys nothing.
 
 ### Traction extraction v. Stress recovery
 
@@ -280,13 +284,13 @@ The two weak methods look alike in the comparison above, but this is for a fixed
 
 | $\kappa$ (penalty) | leak | | $\gamma$ (Nitsche) | leak |
 |---|---|---|---|---|
-| 10² | 2.6 × 10⁻¹ | | 1 | diverged |
-| 10³ | 2.6 × 10⁻² | | 10 | 1.7 × 10⁻³ |
-| 10⁴ | 2.6 × 10⁻³ | | 100 | 2.7 × 10⁻⁴ |
-| 10⁵ | 3.0 × 10⁻⁴ | | 1000 | 3.0 × 10⁻⁵ |
-| 10⁶ | 4.5 × 10⁻⁵ | | 10⁴ and above | diverged |
+| 10² | 2.6 × 10⁻¹ | | 1 | 1.1 × 10⁻² |
+| 10³ | 2.6 × 10⁻² | | 10 | 1.8 × 10⁻³ |
+| 10⁴ | 2.6 × 10⁻³ | | 100 | 3.3 × 10⁻⁴ |
+| 10⁵ | 3.0 × 10⁻⁴ | | 1000 | 2.8 × 10⁻⁵ |
+| 10⁶ | 4.5 × 10⁻⁵ | | 10⁴ | 3.5 × 10⁻⁵ |
 
-Nitsche is bounded at both ends. Below $\gamma \sim 1$ the form is no longer coercive and no amount of solver tuning recovers a solution; from $\gamma \sim 10^4$ in this problem, the line search stops converging. The virtue of $\gamma \sim 10$ is that it sits within that window on any mesh, because $\gamma$ is dimensionless and the term it scales already carries $\mu / h$.
+Nitsche converged at every $\gamma$ tried in this problem, from 1 to $10^5$. Its leak falls steadily with $\gamma$ up to $10^3$ and then stops improving, at a few times 10⁻⁵. The theory puts a floor under $\gamma$: below a threshold set by an inverse inequality the form is no longer coercive. The solve at $\gamma = 1$ still converged on this mesh, and we did not look for where the threshold lies. The virtue of $\gamma \sim 10$ is that it is comfortably above that threshold on any mesh, because $\gamma$ is dimensionless and the term it scales already carries $\mu / h$.
 
 The penalty coefficient scales differently because it directly penalises the value of the velocity across the boundary. It should therefore scale with the characteristic velocity which is best estimated from the magnitude of the forcing terms and the resisting viscosity.
 
@@ -311,16 +315,16 @@ On a box every treatment reduces to holding one velocity component. What it can 
 
 In the table below, we show the relative $l_2$ error of the surface topography along the top wall, mean removed, at 32 × 32 elements. Each entry is the whole wall and then the wall with two elements trimmed from each end.
 
-| $\eta_B/\eta_A$ | component Dirichlet | penalty, $10^4$ | multiplier | rotated |
-|---|---|---|---|---|
-| 10 | 0.048 / 0.054 | 0.045 / 0.051 | 0.048 / 0.054 | 0.048 / 0.054 |
-| 10² | 0.072 / 0.081 | 0.056 / 0.060 | 0.072 / 0.081 | 0.072 / 0.081 |
-| 10³ | 0.075 / 0.084 | 0.234 / 0.230 | 0.075 / 0.084 | 0.075 / 0.084 |
-| 10⁴ | 0.076 / 0.085 | 0.698 / 0.697 | 0.076 / 0.085 | 0.076 / 0.085 |
-| 10⁶ | 0.076 / 0.085 | 0.992 / 1.000 | 0.075 / 0.084 | 0.076 / 0.085 |
+| $\eta_B/\eta_A$ | component Dirichlet | penalty, $10^4$ | Nitsche, $\gamma = 10$ | multiplier | rotated |
+|---|---|---|---|---|---|
+| 10 | 0.048 / 0.054 | 0.045 / 0.051 | 0.049 / 0.055 | 0.048 / 0.054 | 0.048 / 0.054 |
+| 10² | 0.072 / 0.081 | 0.056 / 0.060 | 0.073 / 0.082 | 0.072 / 0.081 | 0.072 / 0.081 |
+| 10³ | 0.075 / 0.084 | 0.234 / 0.230 | 0.076 / 0.085 | 0.075 / 0.084 | 0.075 / 0.084 |
+| 10⁴ | 0.076 / 0.085 | 0.698 / 0.697 | 0.076 / 0.085 | 0.076 / 0.085 | 0.076 / 0.085 |
+| 10⁶ | 0.076 / 0.085 | 0.992 / 1.000 | 0.076 / 0.085 | 0.075 / 0.084 | 0.076 / 0.085 |
 
 ```{figure} figures/topography.png
-:alt: Two line plots of surface topography along the top wall from x=0 to x=1, mean removed, at viscosity contrasts of 100 and a million. In both, the exact answer is a thick grey curve falling from +0.29 at the left, flattening near +0.21, dropping sharply at the viscosity step at x=0.5 and continuing down to -0.38 at the right. At a contrast of 100 every curve lies on the grey one. At a contrast of a million they separate: the component Dirichlet, the rotated reaction and the traction lambda + r(u.n - u_n) still lie on the exact curve, while the multiplier field lambda alone is a nearly flat line near zero reaching only 0.04, and the penalty at 1e4 is a second nearly flat line near zero. Nitsche does not solve at either contrast and is absent.
+:alt: Two line plots of surface topography along the top wall from x=0 to x=1, mean removed, at viscosity contrasts of 100 and a million. In both, the exact answer is a thick grey curve falling from +0.29 at the left, flattening near +0.21, dropping sharply at the viscosity step at x=0.5 and continuing down to -0.38 at the right. At a contrast of 100 every curve lies on the grey one. At a contrast of a million they separate: the component Dirichlet, Nitsche at gamma = 10, the rotated reaction and the traction lambda + r(u.n - u_n) still lie on the exact curve, while the multiplier field lambda alone is a nearly flat line near zero reaching only 0.04, and the penalty at 1e4 is a second nearly flat line near zero.
 
 Surface topography along the top wall, against the exact answer. At a contrast of
 100 nothing distinguishes the treatments. At $10^6$ the multiplier field
@@ -328,7 +332,8 @@ $\lambda$ carries almost none of the traction on its own — the augmentation
 holds the rest — while $\lambda + r(\mathbf{u}\cdot\hat{\mathbf{n}} -
 \tilde{u}_n)$, which is what `traction()` returns, lies on the exact curve. The
 penalty has failed by this contrast: its coefficient is a bare number and cannot
-be large against $10^6$ and moderate against 1 at the same time.
+be large against $10^6$ and moderate against 1 at the same time. Nitsche at
+$\gamma = 10$ lies on the exact curve at both contrasts.
 ```
 
 **The three exact treatments agree to three figures at every contrast**, whole wall and trimmed alike. That is the result to take from this half, and it took the multiplier reporting the whole traction rather than $\lambda$ alone, and the rotated constraint holding the corner where it meets the side walls.
@@ -337,7 +342,7 @@ be large against $10^6$ and moderate against 1 at the same time.
 
 **A bare penalty coefficient cannot serve both halves.** At $10^4$ it is the best column in the table at low contrast (the constraint is weak enough not to fight the recovery) but by $10^6$ it is meaningless: 0.992, which is to say the recovered topography carries none of the signal. Reading $\kappa(\mathbf{u}\cdot\hat{\mathbf{n}})$ instead of recovering the stress gives the same numbers to three figures, here and at every coefficient tried, which is the point made above from the other side: the term is the traction, so it inherits the error in the constraint rather than curing it. Scaling the coefficient by the local viscosity is the obviously right thing to want, but the solver does not converge here at any magnitude we tried, from $\eta$ to $10^3\eta$.
 
-**Nitsche has no column in this table.** In our implementation it is unreliable on a boundary that mixes essential patches with Nitsche patches, which is what this test asks for: the top wall weak, the other three held strongly. We could not reach a converged solution for this example at any penalty. Imposed weakly on all four walls does converge, but that is a different problem.
+**Nitsche follows the exact treatments to within about 1%.** At $\gamma = 10$ its column reads 0.049 / 0.055 at a contrast of 10 and 0.076 / 0.085 from $10^3$ up, beside 0.048 / 0.054 and 0.076 / 0.085 for the component condition. At a contrast of $10^6$ every $\gamma$ from 1 to 1000 converges, with stress errors of 0.079, 0.076, 0.076 and 0.076, and the leak on the soft half falling from 7.2 × 10⁻³ to 2.0 × 10⁻⁶. Version 1.0 of this note said that Nitsche could not be made to converge on this problem, with the top wall weak and the other three held strongly. That was a defect in Underworld3's Nitsche term, since corrected; see the History at the end.
 
 ### Solver timing
 
@@ -361,7 +366,7 @@ The obvious question is whether that is the method's cost or the recovery's. A g
 | cell 0.0125 | projection | CBF back-calculation |
 |---|---|---|
 | penalty, node normal | 0.651 s, error 1.1 × 10⁻³ | 0.224 s, **error 1.00** |
-| Nitsche | 0.666 s, error 3.6 × 10⁻⁴ | 0.230 s, **error 1.00** |
+| Nitsche | 0.666 s, error 4.9 × 10⁻⁴ | 0.230 s, **error 1.00** |
 | rotated | 0.602 s, error 1.6 × 10⁻⁴ | 0.206 s, error 1.6 × 10⁻⁴ |
 
 An error of 1.00 just means that no topography was recovered. With the weak constraint, the boundary stress is recovered using the multiplier $\lambda$. In the penalty case, the boundary traction is $\kappa(\mathbf{u}\cdot\hat{\mathbf{n}})$. Nitsche's term is written in terms of $\boldsymbol{\sigma}(\mathbf{u})$, so reading it back still requires differentiating the answer.
@@ -388,7 +393,7 @@ When the wall-normal traction is needed:
 
 - **Rotated free slip is the default.** It holds the constraint to machine precision rather than to the discretisation, its reaction is the most accurate surface stress measured here, and that reaction is nearly free. The price is structural — a mixed basis that the multigrid has to carry — and it is paid once, inside the solver, rather than by the person setting up the model.
 - **The multiplier is its equal on accuracy** and returns the same object by a different route; take it when you want the traction as an unknown of the system, or when the constrained problem's conditioning suits you better. It costs about 50% more to solve.
-- **Nitsche is the one to reach for when the boundary condition must change during the model** — a wall that begins as a prescribed velocity and relaxes to a prescribed traction is a Nitsche problem, because a hard constraint cannot morph. Budget for tuning $\gamma$ against the stress and not against the leak, and expect the window to move with the viscosity contrast. If the viscosity contrast is large with jumps or strong gradients along the boundary, be very careful if you choose Nitsche.
+- **Nitsche is the one to reach for when the boundary condition must change during the model** — a wall that begins as a prescribed velocity and relaxes to a prescribed traction is a Nitsche problem, because a hard constraint cannot morph. Choose $\gamma$ against the stress and not against the leak: on the annulus $\gamma = 10$ held the leak to parts in a thousand and left the recovered stress three times worse than the exact treatments, and $\gamma = 100$ closed most of that gap. A viscosity jump of $10^6$ along the wall did not move the window in the SolCx test, where $\gamma$ from 1 to 1000 all gave the stress to within a few per cent of the component condition.
 - **A direct penalty is fine for a velocity-only model** and needs the node normal, a coefficient chosen per problem, and a check on something physical before the answer is believed. It will also hand back the traction it holds the wall with, at no cost, and that reading is worth no more than the coefficient behind it. It has the advantage that this is pure, direct penalty on the weak form and can be used for many things beyond simply boundary conditions. Good for a first pass on a very general idea.
 
 
@@ -414,5 +419,41 @@ sigma_nn = stokes.boundary_normal_traction("Upper")
 Leave the normal to Underworld unless the constraint has to follow the true surface rather than the mesh. Passing an analytic normal — `X / |X|` on a sphere — is exact for the geometry and keeps a consistency error against the faceted assembly, which is usually not what you want.
 
 Reach for Nitsche when the boundary condition has to **change during the model**. A hard constraint cannot morph: a wall that begins as a prescribed velocity and relaxes to a prescribed traction is a Nitsche problem, because the rotated constraint is either imposed or it is not.
+
+## History
+
+- **1.1.0** — 2026-11-14 · [10.6084/m9.figshare.33420637.v2](https://doi.org/10.6084/m9.figshare.33420637.v2)
+  The Nitsche results are corrected; they were rerun with Underworld3 development at
+  `eb3d2f02`. Two things had changed underneath them.
+  First, a defect in Underworld3's Nitsche condition for Stokes: the pressure part
+  of the symmetric term, $+\int q\,(\mathbf{u}\cdot\hat{\mathbf{n}})\,\mathrm{d}S$
+  in the continuity equation, was never assembled
+  ([underworld3#1072](https://github.com/underworldcode/underworld3/issues/1072),
+  fixed in [#1145](https://github.com/underworldcode/underworld3/pull/1145)). On an
+  enclosed domain that left the system singular with an incompatible right-hand
+  side. It is why version 1.0 could not make Nitsche converge on SolCx with one
+  weak wall and three strong ones; with the term in place it converges, and the
+  SolCx table and figure now carry a Nitsche column. On
+  the annulus the same fix moves the Nitsche numbers by 1 to 4 %.
+  Second, the annulus numbers of version 1.0 were computed before Underworld3
+  changed its definition of the cell size $h$
+  ([#694](https://github.com/underworldcode/underworld3/pull/694), commit
+  `4b4f341c`). The scripts pass $\gamma = 10$ explicitly, and after that change
+  the same $\gamma$ is a weaker penalty: at $\gamma = 10$ the stress error is
+  about a third larger than version 1.0 printed and the leak 60 to 90 % larger.
+  The published column is reproduced, to its second digit, by the code just
+  before that commit and not at or after it. Version 1.0 also reported Nitsche diverging at $\gamma = 1$ and
+  from $10^4$; on the current code it converges from 1 to $10^5$.
+  The statement of the method gains two sentences on the pressure part of the
+  symmetric term; the equation itself is unchanged. The penalty, multiplier and
+  rotated results, the timings, the equivalence of the multiplier and the
+  consistent boundary flux, and the recommendation of the rotated constraint are
+  unchanged: every non-Nitsche entry of the accuracy tables was rerun and came
+  back within one unit in its last printed digit. One
+  number in the timing section changed, Nitsche's projection error at cell
+  0.0125 (4.9 × 10⁻⁴, from 3.6 × 10⁻⁴); the times beside it were not measured
+  again.
+- **1.0.0** — 2026-08-23 · [10.6084/m9.figshare.33420637.v1](https://doi.org/10.6084/m9.figshare.33420637.v1)
+  First published.
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=boundary-conditions-on-non-planar-boundaries">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=boundary-conditions-on-non-planar-boundaries">Start one</a></div></div>
