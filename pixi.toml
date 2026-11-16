@@ -63,6 +63,11 @@ build = { depends-on = ["build-pdf", "build-html"] }
 #   pixi run worktree create particle-level-sets
 worktree = "python3 scripts/worktree.py"
 
+# Or write every note in one checkout -- the workbench -- and build each note's
+# branch from its own directory, without checking it out. CONTRIBUTING.md:
+#   pixi run note save particle-level-sets -m "First draft" --push
+note = "python3 scripts/note.py"
+
 # Push the site you already built straight to the preview host, instead of
 # making a runner rebuild it. Removes everything before GitHub's own ~60s
 # deployment, which is the floor and is the same either way.
