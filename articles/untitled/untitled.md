@@ -21,8 +21,6 @@ exports:
     article_id: UWTN 2017-003
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
-
 *Modelling the relative time-scales of the Rayleigh-Taylor Instability and delamination, using Underworld*
 
 With Adam Beall, Cardiff University.
@@ -98,5 +96,3 @@ These simple models demonstrate that for a given package of dense lower crust or
 Bird, P. (1979). Continental delamination and the Colorado Plateau. Journal of Geophysical Research: Solid Earth, 84(B13), 7561-7571.
 
 Jones, C. H., & Saleeby, J. B. (2013). Introduction: Geodynamics and consequences of lithospheric removal in the Sierra Nevada, California. Geosphere, 9(2), 188-190.
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=untitled">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=untitled">Start one</a></div></div>

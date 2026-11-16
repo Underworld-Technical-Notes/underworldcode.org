@@ -19,8 +19,6 @@ keywords:
 parts:
   abstract: "Underworld 2.10 has dropped... kidding this is a benchmark model proposed by Schmalholz, 2011, A simple analytical solution for slab detachment."
 ---
-<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
-
 Underworld 2.10 has been released!
 
 Available via *docker* (recommended), *pip* and *source code*.  
@@ -69,5 +67,3 @@ This new release includes the following:
 As always the Underworld team welcomes contact via our GitHub [Issue tracker](https://github.com/underworldcode/underworld2/issues), where questions and issues can be posted to the Underworld community.  
   
 Good luck, wash those hands and have fun modelling!
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld-2-10">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld-2-10">Start one</a></div></div>

@@ -27,8 +27,6 @@ exports:
 parts:
   abstract: We built a cheap-and-cheerful solution with persistent storage and a binder-like access to notebooks in a repository that is aimed at serving a single classroom. The zero-to-server time is just a few minutes and there is minimal manual configuration.
 ---
-<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
-
 One of the most popular cloud services for python / jupyter - based codes is binder ([www.mybinder.org](https://www.mybinder.org/)) which can transform an online repository into a running instance in the cloud with little effort on the part of the owner of that repository to set it up and no effort at all for the end user. Access to binder has transformed classes with computational content by allowing flexible delivery of content that does not have to depend on a standardized software stack that has been approved months in advance by a specialist IT group.
 
 In recent weeks lectures at schools and universities around the world have moved to on-line classrooms and one shortcoming of binder has become apparent — the lack of persistence for work that spans an extended work session. The fact that students (and lecturers) working at home may be forced to work in a fragmented fashion means that they often time-out access in binder and have to restart a new, pristine session each time they return.
@@ -116,5 +114,3 @@ The admin users of the hub are also able to configure the server itself via the 
 ### Why Digital Ocean ?
 
 Digital ocean provides very flexible virtual servers (droplets) that can be spun up and down very quickly and very cost effectively. It is simple to resize a resource and the whole process can, in principle, be automated.
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld-low-fat-cloud">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld-low-fat-cloud">Start one</a></div></div>

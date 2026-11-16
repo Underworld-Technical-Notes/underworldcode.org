@@ -23,8 +23,6 @@ exports:
     article_id: UWTN 2015-002
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
-
 While huge improvements in usability have been achieved in Underworld2, the installation process is still unfortunately as painful as ever. This difficulty is in large part due to Underworld's numerous dependencies, and also the multiple platforms we try to support. Compounding this, the legacy of a individual user's machine often conspires against success, rarely in obvious ways. Simply, compiling is not fun.
 
 Enter docker.
@@ -194,5 +192,3 @@ While not currently applicable to large scale parallel simulation, early researc
 - [https://www.docker.com/what-docker](https://www.docker.com/what-docker)
 
 - [https://en.wikipedia.org/wiki/Docker](https://en.wikipedia.org/wiki/Docker%5F(software))
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld-and-docker-part-1">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld-and-docker-part-1">Start one</a></div></div>

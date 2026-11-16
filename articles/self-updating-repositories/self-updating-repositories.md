@@ -26,8 +26,6 @@ exports:
     article_id: UWTN 2020-006
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
-
 [Meghan S. Miller](https://theconversation.com/profiles/meghan-s-miller-1105475), *[Australian National University](https://theconversation.com/institutions/australian-national-university-877)* and [Louis Moresi](https://theconversation.com/profiles/louis-moresi-1133314), *[Australian National University](https://theconversation.com/institutions/australian-national-university-877)*
 
 ***How we built a simple dashboard using Github actions with [open source software](https://github.com/ThomasLecocq/SeismoRMS) and [openly available (FAIR) data](https://auspass.edu.au/).***
@@ -70,5 +68,3 @@ It is quite common to see code repositories with badges that show if the current
 ### Can I use this ?
 
 Of course — all of these codes are open source including everything we built in the template to make the dashboards.
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=self-updating-repositories">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=self-updating-repositories">Start one</a></div></div>

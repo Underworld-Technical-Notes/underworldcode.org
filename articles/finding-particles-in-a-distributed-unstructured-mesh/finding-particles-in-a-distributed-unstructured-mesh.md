@@ -26,8 +26,6 @@ parts:
   abstract: It can be difficult to figure out where you are in an unstructured mesh of triangles or tetrahedra; worse when the mesh is distributed in parallel. We have to solve this problem for particle-in-cell type codes such as Underworld3. This is how we do it.
 doi: 10.6084/m9.figshare.33193611
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@syinq?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Susan Q Yin</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
-
 Lagrangian particles are central to geodynamics modelling. They track material properties through large deformation, carry stress history for viscoelastic models, and define material interfaces. But managing particles in a finite element mesh is harder than it looks. On a structured grid, finding which cell contains a given point is arithmetic. On an unstructured mesh of triangles or tetrahedra, it is a search problem. And when the mesh is decomposed across processors, it becomes a distributed search problem with communication costs.
 
 This post describes how Underworld3 locates particles in an unstructured mesh, and then how it extends that to work across a parallel decomposition.
@@ -131,5 +129,3 @@ UW3 implements this as a round-trip `migrate`. Each rank wraps its query points 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
 
 <!-- uwtn-acknowledgement -->
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=finding-particles-in-a-distributed-unstructured-mesh">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=finding-particles-in-a-distributed-unstructured-mesh">Start one</a></div></div>

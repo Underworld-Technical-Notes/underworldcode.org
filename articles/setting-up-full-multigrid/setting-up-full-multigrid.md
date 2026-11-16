@@ -30,8 +30,6 @@ exports:
     software_version: underworld3 development @ 0addec15
 doi: 10.6084/m9.figshare.33273984
 ---
-<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
-
 Most of the effort in a geodynamics model goes into solving the Stokes
 equations, and most of that is spent on the velocity solver. How that solver is
 preconditioned sets how long a model takes to run. Multigrid methods accelerate elliptic
@@ -299,5 +297,3 @@ change: rebuild it with `refinement` rather than at a fine `cellSize`, and the
 same resolution arrives with the coarse levels attached. Note that `cellSize`
 then sets the *coarsest* mesh, and each refinement halves it — so `cellSize=0.05`
 with `refinement=2` resolves like `cellSize=0.0125`.
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=setting-up-full-multigrid">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=setting-up-full-multigrid">Start one</a></div></div>

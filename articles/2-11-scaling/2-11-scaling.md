@@ -27,8 +27,6 @@ exports:
     article_id: UWTN 2021-004
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
-
 How does Underworld scale on a HPC? In this post we showcase how Underworld 2.11 scales across two of Australia's premiere HPC systems.
 
 - Gadi - [https://nci.org.au/our-systems/hpc-systems](https://nci.org.au/our-systems/hpc-systems)
@@ -89,5 +87,3 @@ Finally we thank the following supporting project/support schemes:
 - Project q97: Mueller, D. Geodynamics and evolution of sedimentary systems.
 
 - Sydney Informatics Hub HPC Allocation Scheme, which is supported by the Deputy Vice-Chancellor (Research), University of Sydney and the ARC LIEF, 2019: Smith, Muller, Thornber et al., Sustaining and strengthening merit-based access to National Computational Infrastructure (LE190100021).
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=2-11-scaling">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=2-11-scaling">Start one</a></div></div>

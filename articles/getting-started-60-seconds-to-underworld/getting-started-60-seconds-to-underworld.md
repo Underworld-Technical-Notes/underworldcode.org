@@ -22,8 +22,6 @@ exports:
 parts:
   abstract: "As the old truism states, the best way to learn is by doing. This guide can get you from zero to hero in 60 seconds - give or take."
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
-
 As the old truism states, the best way to learn is by doing.
 
 This is terribly unhelpful since, really, you can't 'do' anything *until* you learn. This is a [Catch-22](https://en.wiktionary.org/wiki/Catch-22) that every grad student encounters; doubly so when it comes to anything involving code, where daily life provides very little in the way of intuition.
@@ -279,5 +277,3 @@ for i in range(100):
     go(10)
     show()
 ```
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=getting-started-60-seconds-to-underworld">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=getting-started-60-seconds-to-underworld">Start one</a></div></div>

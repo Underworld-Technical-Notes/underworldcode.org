@@ -16,8 +16,6 @@ keywords:
 parts:
   abstract: "A new study by an international team of scientists found lockdown measures to stop the spread of COVID-19 led to a 50 per cent reduction in seismic noise around the world. The researchers, including Meghan Miller and Louis Moresi from ANU analysed datasets from over 300 seismic stations."
 ---
-<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
-
 *[Meghan S Miller](http://rses.anu.edu.au/people/academics/associate-professor-meghan-s-miller#acton-tabs-link--tabs-person_tabs-middle-2), Louis Moresi, Research School of Earth Sciences, Australian National University*
 
 **A [new study by an international team of scientists](https://science.sciencemag.org/content/early/2020/07/22/science.abd2438) has found lockdown measures to stop the spread of COVID-19 led to a 50 per cent reduction in seismic noise observed around the world.** It is the largest reduction in human-generated noise ever observed globally.
@@ -58,5 +56,3 @@ The study was the result of a unique collaboration involving 76 authors from 66 
 - [Australian cities are quiet during lockdown. Earthquake scientists are making the most of it](/articles/australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it/)
 
 - [Australian Seismometers in Schools - Noise monitoring dashboard](/articles/self-updating-repositories/)Australian Seismometers in Schools - Noise monitoring dashboard
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=covid-quiet-time">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=covid-quiet-time">Start one</a></div></div>

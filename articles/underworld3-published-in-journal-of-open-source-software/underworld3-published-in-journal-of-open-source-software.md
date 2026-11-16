@@ -33,8 +33,6 @@ exports:
 parts:
   abstract: "The aim of underworld3 is to provide strong support to users in developing sophisticated mathematical models, and provide the ability to interrogate those models during development and at run-time. Underworld3 encodes the mathematical structure of the equations it solves in symbolic form."
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@jessbaileydesigns?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Jess Bailey</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
-
 [![DOI](figures/status.svg){width=168px}](https://doi.org/10.21105/joss.07831)
 
 A recent paper in the Journal of Open Source Software describes the implementation details of Underworld3 and a brief motivation for the rewritten codebase (Moresi et al, 2025).
@@ -119,5 +117,3 @@ Meurer, A., Smith, C. P., Paprocki, M., Čertík, O., Kirpichev, S. B., Rocklin,
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
 
 <!-- uwtn-acknowledgement -->
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld3-published-in-journal-of-open-source-software">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld3-published-in-journal-of-open-source-software">Start one</a></div></div>

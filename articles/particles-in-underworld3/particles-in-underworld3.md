@@ -27,8 +27,6 @@ parts:
   abstract: "Underworld is built around the idea of active Lagrangian tracer particles that carry history and composition information as the material deforms. How do we combine this information with our symbolic mathematical framework ?"
 doi: 10.6084/m9.figshare.33193599
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@resourcedatabase?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Resource Database</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
-
 Lagrangian particles in a fixed-mesh, finite-element code can be used to carry material properties with the flow. Composition, strain history, stress memory, damage. Finite element solvers operate on fields defined on the mesh, so scattered data on particles always demand special treatment of some kind. In Underworld 1 and Underworld 2, we created dynamic integration schemes for particle swarms on an element-by-element basis. This option is not available with the [PETSc point-wise function approach](/how-underworld3-turns-sympy-into-c/) that UW3 uses. For this, we need to project particle data onto the available interpolating functions before each solve.
 
 We also need to be able to represent the particle-based data and its derivatives symbolically for the underworld3 representation to be composable with mesh-based data when we construct the weak form. In Underworld3, we create `swarmVariables` as natural, symbolic objects to fulfil this requirement.
@@ -150,5 +148,3 @@ This uniformity is important. It means you can start with a mesh-based viscosity
 ---
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code: [github.com/underworldcode/underworld3](https://github.com/underworldcode/underworld3)*
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=particles-in-underworld3">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=particles-in-underworld3">Start one</a></div></div>

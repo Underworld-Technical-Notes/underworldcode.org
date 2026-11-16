@@ -24,8 +24,6 @@ exports:
     article_id: UWTN 2014-001
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
-
 In a recent paper [1], we used Underworld models to examine subduction congestion associated with the ingestion of a continental ribbon. The SE Australian geological record turned out to be a wonderful place to study this process. Here is a short summary of the work for a relatively non-technical audience that we put together and some additional figures which I prepared.
 
 [1] *Moresi, L.N., Betts, P.G., Miller, M.S., and Cayley, R.A., 2014, The Dynamics of Continental Accretion: Nature, [doi:10.1038/nature13033](http://dx.doi.org/10.1038/nature13033). Also see [supplementary information and animations](http://www.nature.com/nature/journal/vaop/ncurrent/full/nature13033.html#supplementary-information)*
@@ -72,5 +70,3 @@ The results will also likely provoke significant re-interpretation of some ancie
 ```{figure} figures/ImpKS6BgT4WPS9aLFRjq_AdditionalImages3.png
 :alt: Additional Images #3
 ```
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=the-dynamics-of-continental-accretion">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=the-dynamics-of-continental-accretion">Start one</a></div></div>

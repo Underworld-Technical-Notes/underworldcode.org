@@ -25,8 +25,6 @@ exports:
     article_id: UWTN 2021-003
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
-
 The new generation of Apple Mac comes with the new Apple Silicon (M1) chip which has an Arm architecture (as opposed to the older generation that had i386 Intel processor). This brings all manner of troubles and requirements for the development of codes. Here I detail how to install Underworld on Mac OSX Big Sur 11.5.2 (Apple Silicon) using Python 3.9
 
 Important Note: The following guide uses the CMake branch of Underworld.
@@ -102,5 +100,3 @@ Note the `/` is important.
 ```
 python3 -c "import underworld as uw"
 ```
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=how-to-install-underworld-on-mac-osx-big-sur-apple-silicon-m1">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=how-to-install-underworld-on-mac-osx-big-sur-apple-silicon-m1">Start one</a></div></div>

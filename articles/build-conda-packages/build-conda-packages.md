@@ -24,8 +24,6 @@ exports:
     article_id: UWTN 2020-012
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
-
 ```{figure} figures/landing-page.jpg
 ```
 
@@ -218,5 +216,3 @@ Conda-build performs the following steps:
 2. Creates a test environment with the package and its dependencies.
 
 3. Runs the test scripts.
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=build-conda-packages">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=build-conda-packages">Start one</a></div></div>

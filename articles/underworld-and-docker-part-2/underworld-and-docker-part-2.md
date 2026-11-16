@@ -26,8 +26,6 @@ exports:
     article_id: UWTN 2015-003
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
-
 By the way, before you read this post, catch up with how we use `docker` by reading part 1
 
 Docker allows us to distribute pre-built applications which are hosted in a virtual machine and are therefore platform independent. This simplifies things for us (only one platform we need to support) and for the users (you get a universal binary with complete reproducibility across platforms). However, if you are not running on a native linux machine, you have to understand the way docker works before being able to access the binary.
@@ -90,5 +88,3 @@ You can access the contents of the `/workspace` volume to save any changes you m
 ## Caution !!
 
 Some actions within Kitematic have unexpected side effects. Renaming a container actually will stop and restart it which means it reverts to the original image and you will lose any changes you have made within the container.
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld-and-docker-part-2">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld-and-docker-part-2">Start one</a></div></div>

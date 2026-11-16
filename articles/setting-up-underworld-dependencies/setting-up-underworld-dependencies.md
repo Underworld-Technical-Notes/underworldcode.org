@@ -24,8 +24,6 @@ exports:
     article_id: UWTN 2022-001
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@markusspiske?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Markus Spiske</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
-
 [https://doi.org/10.59350/t7ghx-8f823](https://doi.org/10.59350/t7ghx-8f823)
 
 The following is compatible with Ubuntu 20.04 under ***Windows*** 10/11 WSL 2 (***Windows*** Subsystem for Linux).  
@@ -226,5 +224,3 @@ Completed test examples
 We have described one way to have a working PETSc installation to be used with Underworld. Experienced users may choose a different path and have different installations of PETSc pointing to different libraries with optimization options turned on etc... Users may also want to experiment with different compilers, different implementation of BLAS and/or MPI for example. PETSc is very powerful and flexible so many configurations can (should?) be tested.  
   
 Feel free to contact me or the other members of the team on Github (\@rbeucher)
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=setting-up-underworld-dependencies">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=setting-up-underworld-dependencies">Start one</a></div></div>

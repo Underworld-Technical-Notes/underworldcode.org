@@ -18,8 +18,6 @@ exports:
     article_id: UWTN 2023-001
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
-
 ## Abstract
 
 Numerical models have become an indispensable tool for understanding and predicting the flow of ice sheets and glaciers. Here we present the full-Stokes software package Underworld to the glaciological community. The code is already well established in simulating complex geodynamic systems. Advantages for glaciology are that it provides a full-Stokes solution for elastic–viscous–plastic materials and includes mechanical anisotropy. Underworld uses a material point method to track the full history information of Lagrangian material points, of stratigraphic layers and of free surfaces. We show that Underworld successfully reproduces the results of other full-Stokes models for the benchmark experiments of the Ice Sheet Model Intercomparison Project for Higher-Order Models (ISMIP-HOM). Furthermore, we test finite-element meshes with different geometries and highlight the need to be able to adapt the finite-element grid to discontinuous interfaces between materials with strongly different properties, such as the ice–bedrock boundary.
@@ -73,5 +71,3 @@ Mühlhaus, H.-B., Moresi, L., and Cada, M.: Emergent Anisotropy and Flow Alignme
 Pattyn, F. and Payne, T.: Benchmark experiments for numerical Higher-Order ice-sheet Models, [https://frank.pattyn.web.ulb.be/ismip/welcome.html](https://frank.pattyn.web.ulb.be/ismip/welcome.html) (last access: 30 May 2022), 2006.
 
 Yang, H., Moresi, L. N., and Mansour, J.: Stress recovery for the particle-in-cell finite element method, Phys. Earth Planet. Int., 311, 106637, `https://doi.org/10.1016/j.pepi.2020.106637,` 2021.
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=ismip-hom-benchmark-experiments-using-underworld">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=ismip-hom-benchmark-experiments-using-underworld">Start one</a></div></div>

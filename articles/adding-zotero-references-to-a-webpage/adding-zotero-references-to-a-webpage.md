@@ -22,8 +22,6 @@ exports:
     article_id: UWTN 2019-003
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
-
 *How we added an auto-updating set of citations to underworld in our [publications](/publications-using-uw/) webpage.*
 
 We need to curate all the publications that we can find that use the [underworld](/intro-to-underworld/) geodynamics code and provide this information on our website. To avoid needless repetition, we take advantage of the fact that nearly all the information we require is online and automatically construct the bibliography from an [online public zotero library](https://www.zotero.org/groups/2386948/underworld-geodynamics-community/items/collectionKey/QNARWBUC).
@@ -112,5 +110,3 @@ For more information on how to use the zotero api consult[their documentation](h
 This is not an automatically generated list of publications from the whole web that use the underworld code because we ultimately have to curate our references quite carefully.
 
 The same applies if you want a  list of your own publications to be generated automatically — you could just link to google scholar or orcid. However, at the moment, it is hard to access those databases publicly on demand via a webpage, and their automatic discovery of publications can be somewhat hit and miss. You probably have a curating job ahead of you anyway. Hence this semi-automatic but open source / free solution.
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=adding-zotero-references-to-a-webpage">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=adding-zotero-references-to-a-webpage">Start one</a></div></div>

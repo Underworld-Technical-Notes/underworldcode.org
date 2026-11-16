@@ -10,8 +10,6 @@ doi: 10.59350/ng0d5-23959
 license: CC-BY-4.0
 banner: figures/banner.jpg
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@lisanto_?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Lisanto 李奕良</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
-
 Yeah, one repo, one vision!
 
 In an effort to simplify maintenance and compatibility between Underworld and UWGeodynamics, we have decided to merge the codes into a single  repository.
@@ -27,5 +25,3 @@ The [UWGeodynamics](https://github.com/underworldcode/UWGeodynamics) repository 
 We encourage users to update their Underworld package as soon as possible.
 
 We understand this can be an inconvenience to some users. This will allow us to focus on development by reducing maintenance work.
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=uwgeodynamics-and-underworld-merge">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=uwgeodynamics-and-underworld-merge">Start one</a></div></div>

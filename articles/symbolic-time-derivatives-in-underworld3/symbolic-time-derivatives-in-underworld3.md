@@ -28,8 +28,6 @@ parts:
   abstract: "In Underworld3, the time derivative is a symbolic object. It appears in the solver's strong form as a SymPy expression, alongside the constitutive stress and the body force."
 doi: 10.6084/m9.figshare.33193596
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@aronvisuals?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Aron Visuals</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
-
 A symbolic time derivatives: you can inspect it, display it in a notebook, and verify that the time discretisation is doing what you expect. And you can swap between Lagrangian, Semi-Lagrangian, and Eulerian approaches without rewriting the solver. Sympy introduces incredible flexibility for on-the-fly composition of time-dependent problems.
 
 Many geodynamics equations involve a material derivative. Temperature advection-diffusion, viscoelastic stress transport, Navier-Stokes momentum. The material derivative $D\phi/Dt$ combines the time rate of change with advection by the flow:
@@ -206,5 +204,3 @@ This is the same design principle we described in the [constitutive models post]
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
 
 <!-- uwtn-acknowledgement -->
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=symbolic-time-derivatives-in-underworld3">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=symbolic-time-derivatives-in-underworld3">Start one</a></div></div>

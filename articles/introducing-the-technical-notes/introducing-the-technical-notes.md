@@ -15,8 +15,6 @@ banner: figures/banner.jpg
 keywords:
   - Underworld Code
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@lukashron?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Lukas Hron</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
-
 Our underworld web site has always carried two kinds of writing. Some of it is news — a
 release, a workshop, a paper accepted. The rest is the sort of thing a reader
 later wants to point at: how a solver behaves, what a benchmark
@@ -47,5 +45,3 @@ that already carry DOIs keep them, and those DOIs still resolve.
 If you work with Underworld and have something worth writing down, the notes
 are open to you — [how to submit one](/submit/). You can read [all of
 them](/notes/), or [browse by topic](/topics/).
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=introducing-the-technical-notes">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=introducing-the-technical-notes">Start one</a></div></div>

@@ -23,8 +23,6 @@ exports:
     article_id: UWTN 2018-001
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
-
 **(they don't make them like they used to ... )**
 
 Cratons are anomalously-strong regions of the continents that have largely resisted tectonic forces for billions of years. How such strong zones could be forged in a hot, low-viscosity, low stress,  early-Earth has been a long-standing puzzle for geologists. Adam Beall, Katie Cooper and I have recently proposed that cratons were made by the catastrophic switching on of plate tectonics. An event in which the stresses were larger than they have ever been in the intervening 3 billion years [(Beall et al, 2018)](https://doi.org/10.1130/G39943.1)
@@ -87,5 +85,3 @@ The model cratons form cold and from material that was originally crystallised a
 - Bostock, M.G., 1998, Mantle stratigraphy and evolution of the Slave province: Journal of Geophysical Research. Solid Earth, v. 103, p. 21183–21200, `https://doi.org/10.1029/98JB01069.`
 
 - Calò, M., Bodin, T., and Romanowicz, B., 2016, Layered structure in the upper mantle across North America from joint inversion of long and short period seismic data: Earth and Planetary Science Letters, v. 449, p. 164–175, `https://doi.org/10.1016/j.epsl.2016.05.054`
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=craton-formation-and-the-onset-of-plate-tectonics">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=craton-formation-and-the-onset-of-plate-tectonics">Start one</a></div></div>

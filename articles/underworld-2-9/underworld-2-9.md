@@ -25,8 +25,6 @@ banner: figures/banner.jpg
 keywords:
   - Underworld Code
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
-
 The Underworld 2.9 release is available from [Github](https://github.com/underworldcode/underworld2/releases/tag/v2.9.5b), as a docker container and via [zenodo](https://zenodo.org/record/3964957#.X0xXG0lS9RU) (doi:10.5281/zenodo.3964957) it is also available through `pip install` for the first time (see below).
 
 ### Underworld paper in the Journal of Open Source Software
@@ -72,5 +70,3 @@ Note that, for the above, you will also need to have a parallel enabled version 
 **Other**: The following should also be installed via a system package manager (such as apt on Ubuntu):`swig`, `git` and  `libxml2-dev` (or equivalent). The following should be installed via pip:`scons` and `numpy`.
 
 Please refer to the `Installation.rst` file located at the top level of the project repository for the latest installation information and guidelines.
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld-2-9">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld-2-9">Start one</a></div></div>

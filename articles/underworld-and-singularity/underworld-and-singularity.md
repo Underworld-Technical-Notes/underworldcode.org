@@ -26,8 +26,6 @@ exports:
 parts:
   abstract: "TL; DR: Underworld is now Singularity-enabled, making it easier and somewhat quicker to use compared to traditional HPC installs."
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@hooverpaul55?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Paul Teysen</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplas</a></div></div>
-
 ```{figure} figures/Weak-Scaling-UW-2.16-1.png
 
 Fig 1. Total Runtime of timed_model.py with Underworld 2.16. Container (Singularity) is quicker than default (traditional) Baremetal.
@@ -88,5 +86,3 @@ For container creation, Dockerfile considerations.
 For singularity execution.  
 Bind Mounts:   
 The --bind argument when running *singularity* forces directories on the host machine to map into the running container filesystem. For Underworld, we map the HPC's MPI implementation directories into our running container on Gadi to access the high performance network of the HPC.
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld-and-singularity">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld-and-singularity">Start one</a></div></div>

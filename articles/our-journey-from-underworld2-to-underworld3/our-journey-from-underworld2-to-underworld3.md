@@ -39,8 +39,6 @@ exports:
 parts:
   abstract: "Underworld is a code for geodynamics — mantle convection, lithospheric deformation, subduction, ice flow. We solve coupled, nonlinear PDEs with complex rheologies using Lagrangian particles to track material history. The project has been running for 20 years: why did we start again ?"
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@les_photos_de_raph?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Raphaël Biscaldi</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
-
 ## UW1 and UW2: Same Wolf, different clothes
 
 Underworld1 assembled simulations from modular C components via XML configuration files: deterministic, reproducible, and rigid. Changing the physics meant writing C code and registering it in the XML framework. The target audience narrowed to people who could write C in a specific component architecture and, you'd have to admit, this is not a recipe for widespread adoption.
@@ -102,5 +100,3 @@ In upcoming posts, we go deeper into the machinery: how SymPy expressions become
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
 
 <!-- uwtn-acknowledgement -->
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=our-journey-from-underworld2-to-underworld3">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=our-journey-from-underworld2-to-underworld3">Start one</a></div></div>

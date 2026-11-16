@@ -23,8 +23,6 @@ exports:
     article_id: UWTN 2020-011
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
-
 *Version control systems and online-communities such as Github have made contributing to the development of opensource software incredibly easy. That is assuming that people get over their initial fear of sharing their code!  In this short blog post I go through how to submit a pull request to one of our repository. Do not fear and join us for some fun! You may actually learn some interesting things along the way and we will acknowledge your contribution.*
 
 ```{image} figures/github-mark.png
@@ -159,5 +157,3 @@ if you want to contribute to one of our project, the simplest way is to:
 If we ask for changes, repeat steps 5 and 6 to add more commits to your pull request.
 
 Don't be shy, we are really looking forward to getting PRs!!!
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=getting-started-with-pull-requests">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=getting-started-with-pull-requests">Start one</a></div></div>

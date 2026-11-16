@@ -27,8 +27,6 @@ exports:
 parts:
   abstract: "A constitutive model is a Python class where the relationship between fluxes and gradients is encoded in SymPy. At every stage the mathematics is visible, inspectable, and differentiable. The framework handles Jacobians, C code generation, and PETSc integration. You handle the physics."
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@foodistika?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Elena Leya</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
-
 In Underworld2, adding a new rheology was a matter of writing C code inside the StGermain framework, compiling it, and registering it with the component system. The barrier was high enough that most users never tried. The available rheologies were the ones the developers had implemented, and combining them required understanding the C internals.
 
 In Underworld3, a constitutive model is a Python class where the relationship between fluxes and gradients is encoded as a SymPy expression. You can build a viscous model, add plasticity, add elasticity, make it anisotropic. At every stage the mathematics is visible, inspectable, and differentiable. The framework handles Jacobians, C code generation, and PETSc integration. You handle the physics.
@@ -259,5 +257,3 @@ In UW2, the physics and numerics were entangled in C. Changing one required unde
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
 
 <!-- uwtn-acknowledgement -->
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=constitutive-models-in-symbolic-form">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=constitutive-models-in-symbolic-form">Start one</a></div></div>

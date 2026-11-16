@@ -32,8 +32,6 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 development @ f414da63
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@loganvoss?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Logan Voss</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
-
 In this article, we will see how the underworld3 sympy formulation combined with the PETSc finite element, strong-form framework builds model derivatives which can solve non-linear problems using a Newton method. This requires us to calculate the local derivative of the model with respect to the unknowns so that we know the direction to move towards a better solution.
 
 If we differentiate the prediction a model makes with respect to one of its parameters, then we can determine how sensitive the prediction is to changes in that parameter and therefore whether the model can be used to constrain the value of that parameter. Similarly, model derivatives are used in data assimilation to determine how to adjust a model's parameters so it better fits the observations we have [@Bunge_2003; @Liu_2008].
@@ -406,5 +404,3 @@ costs one more linear solve.
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
 
 <!-- uwtn-acknowledgement -->
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=symbolic-fem-and-adjoint-forms">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=symbolic-fem-and-adjoint-forms">Start one</a></div></div>

@@ -16,8 +16,6 @@ keywords:
 parts:
   abstract: Meghan S. Miller (ANU) Louis Moresi (ANU) Our responses to the COVID-19 pandemic have dramatically changed human activity all over the world. Sensitive instruments are detecting far less of the noise and vibration produced by humans in motion.
 ---
-<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
-
 [Meghan S. Miller](https://theconversation.com/profiles/meghan-s-miller-1105475), *[Australian National University](https://theconversation.com/institutions/australian-national-university-877)* and [Louis Moresi](https://theconversation.com/profiles/louis-moresi-1133314), *[Australian National University](https://theconversation.com/institutions/australian-national-university-877)*
 
 Our responses to the COVID-19 pandemic have dramatically changed human activity all over the world. People are working from home, schools are closed in many places, travel is restricted, and in some cases only essential shops and businesses are open.
@@ -93,5 +91,3 @@ This time of quiescence in seismic noise due to the COVID-19 emergency provides 
 [Meghan S. Miller](https://theconversation.com/profiles/meghan-s-miller-1105475), Associate Professor; Program Director AuScope Earth Imaging, *[Australian National University](https://theconversation.com/institutions/australian-national-university-877)* and [Louis Moresi](https://theconversation.com/profiles/louis-moresi-1133314), Professor of Geophysics, *[Australian National University](https://theconversation.com/institutions/australian-national-university-877)*
 
 This article is republished from [The Conversation](https://theconversation.com/) under a Creative Commons license. Read the [original article](https://theconversation.com/australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it-142717).
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=australian-cities-are-quiet-during-lockdown-earthquake-scientists-are-making-the-most-of-it">Start one</a></div></div>

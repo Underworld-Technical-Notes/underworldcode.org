@@ -29,8 +29,6 @@ exports:
     article_version: 1.1.1
 doi: 10.6084/m9.figshare.33216996
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@jbl12761?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">James Lee</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
-
 Somebody reads a paper and wants to run the model; they have forty minutes. They
 will not have time to install PETSc. They may not have a compiler. If the answer is "clone
 this, then build these dependencies", the answer is really: "no thanks".
@@ -290,5 +288,3 @@ Three limits come with not running servers:
   First published.
 
 <!-- uwtn-acknowledgement -->
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=running-underworld-in-a-browser">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=running-underworld-in-a-browser">Start one</a></div></div>

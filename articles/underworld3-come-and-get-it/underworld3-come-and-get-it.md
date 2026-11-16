@@ -26,8 +26,6 @@ exports:
 parts:
   abstract: "Introducing Underworld3: Mathematically Self-Describing Modelling in Python for Desktop, HPC and Cloud."
 ---
-<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
-
 The most recent version of Underworld (v3), is a ground-up rewrite of our widely-used geodynamics modelling code.  I don't think there is a single line of code carried forward from v2. Underworld3 does share many ideas with Underworld2: it is a finite element code in which particle swarms and mesh variables have equal standing, with a python front end and a parallel-optimised ([PETSc](www.petsc.org)) back end, with rich symbolic algebra capabilities to help set up the mathematics of your model (this time we are using [sympy](www.sympy.org)), and full integration with the Jupyter notebook system for designing and analysing problems.
 
 We say that Underworld3 is mathematically self-describing because every data object has a symbolic (sympy) equivalent, all the equation systems retain their symbolic representation throughout the problem assembly and, as a result, when you have finished building your problem, you can ask to see the mathematical representation of the numerical implementation. The symbolic representation that Underworld uses makes it easy to evaluate model derivatives for non-linear problems and optimisations, and it also means that you can view, check, simplify and re-use those derivatives in a mathematical form later in your scripts.
@@ -82,5 +80,3 @@ It's all available on through GitHub at [https://github.com/underworldcode/under
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
 
 <!-- uwtn-acknowledgement -->
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld3-come-and-get-it">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld3-come-and-get-it">Start one</a></div></div>

@@ -343,8 +343,7 @@ feature, and an isotropic metric in 3D gives them no reason to align.
 
 Convection in an annulus, with the mesh redistributed as the calculation runs.
 
-```{figure} figures/adaptive-convection.mp4
-:placeholder: figures/adaptive-convection-still.png
+```{figure} figures/adaptive-convection-still.png
 :alt: Animated cross-section of a convecting annulus. Warm upwellings and cool downwellings develop and migrate, and the triangular mesh visibly tightens around the thermal boundary layers and the plume margins, following them as they move.
 
 Thermal convection in an annulus with a Frank–Kamenetskii viscosity spanning a

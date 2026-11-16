@@ -17,8 +17,6 @@ keywords:
 parts:
   abstract: Sharing a workflow environment is also paramount if we want to make sure that reproducibility can be effectively tested. An environment management system such as conda allows us to do so.
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
-
 *Conda packages are now available for most of the underworldcode suite of software* *([Underworld](https://github.com/underworldcode/underworld2.git), [UWGeodynamics](https://github.com/underworldcode/UWGeodynamics.git), [Lavavu](https://github.com/lavavu/LavaVu.git), [Stripy](https://github.com/underworldcode/stripy.git)) from the [geo-down-under](https://anaconda.org/geo-down-under) conda channel.*
 
 ```{figure} figures/conda_logo.svg
@@ -118,5 +116,3 @@ conda env create --file conda-env.txt
 ```
 
 ##
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=here-comes-conda">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=here-comes-conda">Start one</a></div></div>

@@ -22,8 +22,6 @@ exports:
     article_id: UWTN 2019-001
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
-
 Viscoelastic materials exhibit the properies of both solids and liquids, with deformation rates dependent on both the viscous stress and elastic stress rate.  In a Maxwell viscoelastic material the strain rate $D$ is proportional to the sum of the stress $\tau$ and the stress rate $\dot\tau$,
 
 \begin{equation}  
@@ -58,5 +56,3 @@ For full details regarding the background, numerics and use in geodynamic modell
 ### References
 
 Farrington, R. J., L.-N. Moresi, and F. A. Capitanio (2014), The role of viscoelasticity in subducting plates, Geochem. Geophys. Geosyst., 15, 4291–4304
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=viscoelasticity">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=viscoelasticity">Start one</a></div></div>

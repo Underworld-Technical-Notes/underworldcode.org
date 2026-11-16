@@ -25,8 +25,6 @@ exports:
     article_id: UWTN 2024-001
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@henleydesign?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Henley Design Studio</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
-
 CITCOM is a geodynamics modelling code based on the finite element method that is designed for planetary evolution modelling where large spatial variations and strong non-linearities occur in the material properties. CITCOM was originally conceived by Louis Moresi working at Caltech with Professor David Stevenson but quickly developed into an open-source community software effort with the work of Shijie Zhong, Slava Solomatov, Mike Gurnis and many others. CITCOM spun off many novel software tools including CITCOM-S, CITCOM-SVE, Ellipsis and Underworld. In this article, Louis Moresi reflects on a 30 year community-software development journey.
 
 We mark January 17, 1994 (the day better known for the [Northridge Earthquake](https://en.wikipedia.org/wiki/1994%5FNorthridge%5Fearthquake)) as the birthday of the CITCOM family of codes. I was shaken awake early in the morning, and spent the rest of the day nervously waiting for the next aftershock while I checked that the code was really solving all the test problems quickly and accurately. CITCOM took more than a year to get right and many deadlines went by un-met as a result including the pre-Christmas deadline of the 1993 AGU Fall Meeting.
@@ -59,5 +57,3 @@ Moresi, L.-N., & Solomatov, V. S. (1995). Numerical investigation of 2D convecti
 Moresi, L., Zhong, S., & Gurnis, M. (1996). The accuracy of finite element solutions of Stokes’ flow with strongly varying viscosity. *Physics of the Earth and Planetary Interiors*, *97*(1–4), 83–94. `https://doi.org/10.1016/0031-9201(96)03163-9`
 
 Zhong, S., Zuber, M. T., Moresi, L., & Gurnis, M. (2000). Role of temperature-dependent viscosity and surface plates in spherical shell models of mantle convection. *Journal of Geophysical Research B: Solid Earth*, *105*(B5), 11063–11082. `https://doi.org/10.1029/2000JB900003`
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=30-years-of-citcom-ellipsis-and-underworld">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=30-years-of-citcom-ellipsis-and-underworld">Start one</a></div></div>

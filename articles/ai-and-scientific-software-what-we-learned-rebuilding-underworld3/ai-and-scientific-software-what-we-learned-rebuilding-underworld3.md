@@ -27,8 +27,6 @@ exports:
 parts:
   abstract: "Underworld3 has about 50,000 lines of Python/ Cython wrapping PETSc, SymPy, and a just-in-time compiler. I began a trial of AI coding tools in 2025 and they have gradually become central to the way our team works. This is a story of co-evolution as much as it is about adoption of a new set of tools."
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@tinkerman?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Immo Wegmann</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
-
 Our story begins with an underworld side-project: me working on an evaluation branch of underworld3, undertaking a complicated refactor of particle / mesh interaction modules. The complexity was getting the better of me, and I wondered if it would help to have an AI tool oversee the implementation of some of the more detailed work where I was making too many mistakes.
 
 Initially, human and AI were continually in tension. The AI tools would make rudimentary mistakes and repeat them even after re-direction. The human struggled to contain his frustration and (as a result) did not give sufficiently clear direction. The breakthrough came after a realisation that, the first thing we should have done all along was to refactor underworld3 to be AI-developer friendly. The changes that came along during that refactor made the code considerably easier for humans to learn and use as well.
@@ -190,5 +188,3 @@ The lesson we'd offer other scientific software teams is simple: if your AI tool
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
 
 <!-- uwtn-acknowledgement -->
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=ai-and-scientific-software-what-we-learned-rebuilding-underworld3">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=ai-and-scientific-software-what-we-learned-rebuilding-underworld3">Start one</a></div></div>

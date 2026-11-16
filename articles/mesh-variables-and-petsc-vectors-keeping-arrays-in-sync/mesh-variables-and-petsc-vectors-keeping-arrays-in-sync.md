@@ -26,8 +26,6 @@ exports:
 parts:
   abstract: "One of the less glamorous but important problems in a finite element framework is this: how does the user assign values to a field variable, and how does the framework ensure that PETSc sees those values correctly, in parallel, without the user needing to keep track themselves?"
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@cmzw?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">MW</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
-
 In Underworld2, the answer was context managers. You would wrap every data access in a `with` block, and the framework synchronised the arrays on exit. It was safe, but verbose.
 
 In Underworld3, you just write to the array. The synchronisation happens automatically.
@@ -146,5 +144,3 @@ The cost is one `id()` comparison per `.data` access and one callback dispatch p
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
 
 <!-- uwtn-acknowledgement -->
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=mesh-variables-and-petsc-vectors-keeping-arrays-in-sync">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=mesh-variables-and-petsc-vectors-keeping-arrays-in-sync">Start one</a></div></div>

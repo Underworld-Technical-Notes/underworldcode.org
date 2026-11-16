@@ -20,8 +20,6 @@ exports:
     article_id: UWTN 2021-005
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
-
 ### Free surface in geodynamics simulations
 
 Geodynamic simulations increasingly rely on models with a true free surface to investigate questions of tectonic deformation, mantle convection, and coupling of surface processes and lithosphere dynamics. Historically, most mantle convection simulations have been performed with free-slip boundary conditions at the surface. However, the Earth's surface is a free surface, which implies that both normal and shear stress should be zero at this interface. Moreover, it has been shown that treating the Earth's surface as a free surface can have a significant effect on lithospheric and mantle dynamics (Schmeling et al., 2008; Kaus et al., 2010).
@@ -82,5 +80,3 @@ All of the approaches to free surface simulations have been subject to instabili
 - Kaus, B. J., Mühlhaus, H., & May, D. A. (2010). A stabilization algorithm for geodynamic numerical simulations with a free surface. Physics of the Earth and Planetary Interiors, 181(1-2), 12-20.
 
 - Schmeling, H., Babeyko, A. Y., Enns, A., Faccenna, C., Funiciello, F., Gerya, T., ... & Van Hunen, J. (2008). A benchmark comparison of spontaneous subduction models—Towards a free surface. Physics of the Earth and Planetary Interiors, 171(1-4), 198-223.
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=free-surface-in-underworld">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=free-surface-in-underworld">Start one</a></div></div>

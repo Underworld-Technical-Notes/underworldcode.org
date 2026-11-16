@@ -20,8 +20,6 @@ exports:
     article_id: UWTN 2021-001
     article_version: 1.0.0
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
-
 ### Issues with intra-element discontinuities in PIC-FEM
 
 The classical finite element method (FEM) has been widely used to simulate diverse problems in engineering. Unlike most engineering problems, geological simulations are dominated by emergence of geometrical structures due to the non-linear processes involved. For the structurally conforming FEM meshes, the large deformations result in distorted meshes, which often require repeated re-meshing in computation. The particle-in-cell (PIC) method allows Lagrangian material particles to move in a background Eulerian mesh. Those particles carry the density, composition, viscosity, etc., while the unknowns are solved at nodes of the mesh.
@@ -46,5 +44,3 @@ Yang, H., Moresi, L.N. and Mansour, J., 2020. Stress recovery for the particle-i
 Zienkiewicz, O.C. and Zhu, J.Z., 1992. The superconvergent patch recovery and a posteriori error estimates. Part 1: The recovery technique. *International Journal for Numerical Methods in Engineering*, *33*(7), pp.1331-1364. (`https://doi.org/10.1002/nme.1620330702`)
 
 Zienkiewicz, O.C. and Zhu, J.Z., 1992. The superconvergent patch recovery and a posteriori error estimates. Part 2: Error estimates and adaptivity. *International Journal for Numerical Methods in Engineering*, *33*(7), pp.1365-1382. (`https://doi.org/10.1002/nme.1620330703`)
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=stress-recovery-in-underworld">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=stress-recovery-in-underworld">Start one</a></div></div>

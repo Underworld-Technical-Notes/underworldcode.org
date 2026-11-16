@@ -13,8 +13,6 @@ keywords:
   - Underworld Code
   - Underworld Workshops
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""></div>
-
 *Underworld2 is a python-friendly version of the Underworld geodynamics code which provides a programmable and flexible front end to all the functionality of the code running in a parallel HPC environment. This gives signficant advantages to the user, with access to the power of python libraries for setup of complex problems, analysis at runtime, problem steering, and coupling of multiple problems. Underworld2 is integrated with the literate programming environment of the [jupyter notebook](https://jupyter.org/) system for tutorials and as a teaching tool for solid Earth geoscience.*
 
 ## INSTRUCTORS
@@ -50,5 +48,3 @@ Docker Underworld images are the preferred avenue for Underworld usage.
 **Linux**: Docker toolbox (see [https://docs.docker.com/linux/](https://docs.docker.com/linux/) for linux specific information). An overview of dockers, as well as details on installing Underworld2 via the docker command line interface is available [here](/posts/Underworld-and-Dockers).
 
 Those wishing to compile natively are directed to the [Underworld2 github](https://github.com/underworldcode/underworld2/) page for details.
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=underworld2-workshop-at-cig-2016-meeting">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=underworld2-workshop-at-cig-2016-meeting">Start one</a></div></div>

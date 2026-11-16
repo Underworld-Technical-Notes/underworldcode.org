@@ -31,8 +31,6 @@ exports:
     software_version: underworld3 development @ 8b7c8b9e
 doi: 10.6084/m9.figshare.33420637
 ---
-<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@thefirmhtx?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Alexander Londoño</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
-
 Free-slip boundary conditions are used to simplify the physical behaviour at a domain boundary. It may be a free-surface where the boundary deforms slightly in response to the internal flow, or it may be an interface where the boundary layer thickness is so small that it cannot be resolved at the same time as the interior flow. The simplifying assumption: ignore the changes in shape, ignore the thin boundary layer, treat the surface as impenetrable, and the tangential stresses as vanishingly small.
 
 $$
@@ -414,5 +412,3 @@ sigma_nn = stokes.boundary_normal_traction("Upper")
 Leave the normal to Underworld unless the constraint has to follow the true surface rather than the mesh. Passing an analytic normal — `X / |X|` on a sphere — is exact for the geometry and keeps a consistency error against the faceted assembly, which is usually not what you want.
 
 Reach for Nitsche when the boundary condition has to **change during the model**. A hard constraint cannot morph: a wall that begins as a prescribed velocity and relaxes to a prescribed traction is a Nitsche problem, because the rotated constraint is either imposed or it is not.
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=boundary-conditions-on-non-planar-boundaries">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=boundary-conditions-on-non-planar-boundaries">Start one</a></div></div>

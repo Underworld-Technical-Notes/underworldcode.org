@@ -24,8 +24,6 @@ exports:
 parts:
   abstract: "Coupling in Underworld 2 Underworld 2's UWGeodynamic module enables the coupling of tectonics and surface processes models, most notably, with Underworld 2 handling the tectonics and Badlands (Salles, Ding, & Brocard, 2018) handling the surface processes. This coupling framework has been employed to study landscape evolution and topography in orogenic regions, including the Three Rivers region in Southeast Tibet (Lu et al., 2019), Southwestern North America (Bahadori et al., 2022), and subduct"
 ---
-<div class="uwtn-banner"><img src="figures/banner.png" alt=""></div>
-
 **Coupling in Underworld 2**
 
 Underworld 2's UWGeodynamic module enables the coupling of tectonics and surface processes models, most notably, with Underworld 2 handling the tectonics and Badlands (Salles, Ding, & Brocard, 2018) handling the surface processes.
@@ -100,5 +98,3 @@ This model is adapted from Tutorial 10 in UWGeodynamics, which explores the deve
 - Corcho, A. F. R., Polanco, S., Farrington, R., & Moresi, L. (2025). Subduction system response to ribbon collision: implications on the intra-plate force balance and the style of slab deformation. Authorea Preprints.
 
 - Ghosh, S., Bose, S., Mandal, N., & Laik, A. (2020). Mid-crustal ramping of the Main Himalayan Thrust in Nepal to Bhutan Himalaya: New insights from analogue and numerical experiments. *Tectonophysics*, *782*, 228425.
-
-<div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=new-features-of-the-surface-coupling-framework-in-underworld-2">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=new-features-of-the-surface-coupling-framework-in-underworld-2">Start one</a></div></div>
