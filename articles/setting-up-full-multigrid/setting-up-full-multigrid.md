@@ -19,7 +19,7 @@ keywords:
   - development
 exports:
   - format: typst
-    archived: "2026-08-17T21:37:48Z"
+    archived: "2026-11-16T05:51:21Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/setting-up-full-multigrid/
