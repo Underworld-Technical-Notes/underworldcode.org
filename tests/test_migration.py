@@ -1292,7 +1292,10 @@ def test_every_underworld3_note_acknowledges_its_funding():
     for slug in listed:
         text = (ROOT / "articles" / slug / ("%s.md" % slug)).read_text(encoding="utf-8")
         assert "NCRIS" in text, "%s does not acknowledge its funding" % slug
-        assert text.count("NCRIS") == 1, "%s acknowledges it twice" % slug
+        # Once: the author's own words or the generated sentence, not both.
+        # (NCRIS itself may appear twice: the NCI merit-allocation sentence of
+        # acknowledgements-nci.yml carries the scheme's own wording.)
+        assert text.count("supported by AuScope") == 1, "%s acknowledges it twice" % slug
 
 
 def test_no_matrix_row_break_is_a_single_backslash():

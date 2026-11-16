@@ -101,4 +101,10 @@ This model is adapted from Tutorial 10 in UWGeodynamics, which explores the deve
 
 - Ghosh, S., Bose, S., Mandal, N., & Laik, A. (2020). Mid-crustal ramping of the Main Himalayan Thrust in Nepal to Bhutan Himalaya: New insights from analogue and numerical experiments. *Tectonophysics*, *782*, 228425.
 
+<!-- uwtn-acknowledgement -->
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
+
+<!-- uwtn-acknowledgement -->
+
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=new-features-of-the-surface-coupling-framework-in-underworld-2">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=new-features-of-the-surface-coupling-framework-in-underworld-2">Start one</a></div></div>

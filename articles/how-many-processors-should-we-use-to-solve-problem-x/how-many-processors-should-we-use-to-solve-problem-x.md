@@ -91,4 +91,10 @@ So how can we use strong scaling to determine the optimal number of processors t
 
 These results are a guide to potential performance available when running Underworld codes in parallel. Speed up / performance graphs are averages over many runs, and the exact details depend on the architecture, the communications hardware, queueing policies and other details that you might need to ask your HPC team to explain. If you are seeing wildly unexpected results, get in touch by leaving us a message in the comments or on the GitHub issue trackers.
 
+<!-- uwtn-acknowledgement -->
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
+
+<!-- uwtn-acknowledgement -->
+
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=how-many-processors-should-we-use-to-solve-problem-x">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=how-many-processors-should-we-use-to-solve-problem-x">Start one</a></div></div>

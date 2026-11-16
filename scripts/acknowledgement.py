@@ -14,6 +14,12 @@ explicitly rather than guessing from the text. A note that merely mentions
 Underworld3 is not necessarily work the project funded, and claiming funding
 that did not happen is worse than omitting one that did.
 
+**Computing time.** Notes listed in `acknowledgements-nci.yml` also acknowledge
+the NCI merit allocations (the National Computational Merit Allocation Scheme
+and the ANU Merit Allocation Scheme), which are granted year by year. That list
+is checked at each allocation round: a note from a year without an allocation
+does not go on it.
+
 Idempotent: the block is recognised by its own marker and replaced, so running
 this twice changes nothing and editing the wording here updates every note.
 
@@ -39,6 +45,16 @@ TEXT = (
     "(https://github.com/underworldcode/underworld3)"
 )
 
+# Merged from the two schemes' required wordings (NCMAS and ANU MAS, as given
+# by Louis Moresi, 2026-11-16).
+NCI_TEXT = (
+    "*This research was supported by the Australian Government's National "
+    "Collaborative Research Infrastructure Strategy (NCRIS), with access to "
+    "computational resources provided by the National Computational "
+    "Infrastructure (NCI Australia) through the National Computational Merit "
+    "Allocation Scheme and the ANU Merit Allocation Scheme.*"
+)
+
 # The surrounding blank lines are part of what gets removed. Without them the
 # rewrite is not idempotent: it strips the block, leaves the whitespace that
 # framed it, and adds its own on the way back in, so eight articles grew two
@@ -52,9 +68,9 @@ BLOCK = re.compile(r"\n*" + re.escape(MARKER) + r".*?" + re.escape(MARKER) + r"\
 # already there does not need improving.
 
 
-def articles_to_credit():
-    """Slugs from acknowledgements.yml."""
-    path = ROOT / "acknowledgements.yml"
+def articles_to_credit(name="acknowledgements.yml"):
+    """Slugs from a list file at the repository root."""
+    path = ROOT / name
     if not path.exists():
         return []
     slugs = []
@@ -70,16 +86,23 @@ def main():
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
 
-    block = "%s\n\n%s\n\n%s" % (MARKER, TEXT, MARKER)
+    project = articles_to_credit()
+    nci = articles_to_credit("acknowledgements-nci.yml")
     changed, missing = 0, []
-    for slug in articles_to_credit():
+    for slug in project + [s for s in nci if s not in project]:
         source = ARTICLES / slug / ("%s.md" % slug)
         if not source.exists():
-            sys.exit("acknowledgements.yml names %s, which does not exist" % slug)
+            sys.exit("an acknowledgements list names %s, which does not exist" % slug)
         text = source.read_text(encoding="utf-8")
 
-        if MARKER not in text and "NCRIS" in text:
-            continue          # already acknowledged, in the author's own words
+        # The author's own words, outside any generated block, stand: such a
+        # note gets only the NCI sentence, if it is on that list.
+        own_words = "NCRIS" in BLOCK.sub("\n\n", text)
+        parts = (([TEXT] if slug in project and not own_words else [])
+                 + ([NCI_TEXT] if slug in nci else []))
+        if not parts:
+            continue
+        block = "%s\n\n%s\n\n%s" % (MARKER, "\n\n".join(parts), MARKER)
         stripped = BLOCK.sub("\n\n", text).rstrip() + "\n"
 
         # Before the discussion block, which is web-only and belongs last.

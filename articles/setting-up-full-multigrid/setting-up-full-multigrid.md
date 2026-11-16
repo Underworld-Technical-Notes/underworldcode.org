@@ -300,4 +300,10 @@ same resolution arrives with the coarse levels attached. Note that `cellSize`
 then sets the *coarsest* mesh, and each refinement halves it — so `cellSize=0.05`
 with `refinement=2` resolves like `cellSize=0.0125`.
 
+<!-- uwtn-acknowledgement -->
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
+
+<!-- uwtn-acknowledgement -->
+
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=setting-up-full-multigrid">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=setting-up-full-multigrid">Start one</a></div></div>
