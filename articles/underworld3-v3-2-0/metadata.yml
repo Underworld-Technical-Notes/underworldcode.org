@@ -1,0 +1,31 @@
+# Validated in CI against schemas/article-metadata.schema.json.
+# `pixi run validate` checks this and the cross-file invariants a schema cannot
+# express -- that the article file is named <slug>.md, that canonical_path
+# matches the slug, and that no legacy DOI is ever paired with a new registrant.
+id: UWTN 2026-023
+slug: underworld3-v3-2-0
+title: "Underworld 3.2.0: dropping while it's hot!"
+article_type: release-note
+status: draft
+authors:
+  - name: Juan Carlos Graciosa
+    affiliation: Australian National University
+publication_date: null
+version: 1.0.0
+# The deposit writes archive_doi and repository_record_id when the note is
+# published; leave them out until then. `doi` and `doi_registrant` were here
+# once and are not fields the schema knows -- every note made from this
+# template failed `pixi run validate` on all three of them.
+license: CC-BY-4.0
+canonical_path: /underworld3-v3-2-0/
+legacy_paths: []
+# Facets, from vocabulary.yml. Both keys must be present even when empty: a
+# note with no subject is normal -- many are purely about method.
+subjects:
+methods:
+ghost_tags:
+  - Underworld Code
+banner: figures/banner.png
+banner_credit: null
+figures: 1
+source: native
