@@ -1,0 +1,32 @@
+# Notes that acknowledge the NCI merit allocations: the National Computational
+# Merit Allocation Scheme (NCMAS) and the ANU Merit Allocation Scheme (ANU MAS).
+#
+# Allocations are granted year by year. Add a note here only if it comes from a
+# year in which the project held an allocation: 2025 and 2026 so far. Check at
+# each round; the 2027 allocation is not yet known (Louis, 2026-11-16).
+#
+# Named explicitly, like acknowledgements.yml. Left off on purpose: notes with
+# no computation behind them (introducing-the-technical-notes, the Perth
+# workshop invitation, running-underworld-in-a-browser, underworld-and-singularity).
+# The wording lives in scripts/acknowledgement.py.
+
+# 2025
+- how-many-processors-should-we-use-to-solve-problem-x
+- new-features-of-the-surface-coupling-framework-in-underworld-2
+- underworld3-published-in-journal-of-open-source-software
+
+# 2026
+- ai-and-scientific-software-what-we-learned-rebuilding-underworld3
+- our-journey-from-underworld2-to-underworld3
+- how-underworld3-turns-sympy-into-c
+- mesh-variables-and-petsc-vectors-keeping-arrays-in-sync
+- physical-units-in-computational-geodynamics
+- constitutive-models-in-symbolic-form
+- symbolic-time-derivatives-in-underworld3
+- particles-in-underworld3
+- finding-particles-in-a-distributed-unstructured-mesh
+- symbolic-fem-and-adjoint-forms
+- moving-the-mesh-without-remaking-it
+- setting-up-full-multigrid
+- boundary-conditions-on-non-planar-boundaries
+- putting-a-fault-in-a-mesh

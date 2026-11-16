@@ -119,6 +119,18 @@ It is a list rather than a rule inferred from the text, deliberately: a note
 that mentions Underworld3 is not necessarily work the project funded, and
 claiming funding that did not happen is worse than omitting one that did.
 
+A note whose work used NCI computing time under a merit allocation also carries:
+
+> This research was supported by the Australian Government's National
+> Collaborative Research Infrastructure Strategy (NCRIS), with access to
+> computational resources provided by the National Computational Infrastructure
+> (NCI Australia) through the National Computational Merit Allocation Scheme and
+> the ANU Merit Allocation Scheme.
+
+Add its slug to `acknowledgements-nci.yml`. Allocations are granted year by year,
+so a note goes on that list only if it comes from a year with an allocation:
+2025 and 2026 so far. Check the list at each allocation round.
+
 Three of the eleven Underworld3 notes carried this and eight did not, which is
 what an acknowledgement looks like when it depends on an author remembering
 rather than on the build.

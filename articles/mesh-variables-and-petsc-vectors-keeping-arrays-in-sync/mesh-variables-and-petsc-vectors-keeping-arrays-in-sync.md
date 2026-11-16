@@ -22,7 +22,7 @@ exports:
     template: ../../templates/pdf
     output: mesh-variables-and-petsc-vectors-keeping-arrays-in-sync.pdf
     article_id: UWTN 2026-004
-    article_version: 1.0.0
+    article_version: 1.1.0
 parts:
   abstract: "One of the less glamorous but important problems in a finite element framework is this: how does the user assign values to a field variable, and how does the framework ensure that PETSc sees those values correctly, in parallel, without the user needing to keep track themselves?"
 ---
@@ -141,9 +141,20 @@ The callback approach eliminates an entire class of bugs. You cannot forget to s
 
 The cost is one `id()` comparison per `.data` access and one callback dispatch per write. For user-level operations — setting initial conditions, post-processing solution fields, checkpointing — this is negligible. For solver-level operations — millions of quadrature evaluations — the direct `.vec` path bypasses it entirely.
 
+## History
+
+- **1.1.0** — 2026-11-16
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193578.v1](https://doi.org/10.6084/m9.figshare.33193578.v1)
+  First published.
+
 <!-- uwtn-acknowledgement -->
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
 
 <!-- uwtn-acknowledgement -->
 

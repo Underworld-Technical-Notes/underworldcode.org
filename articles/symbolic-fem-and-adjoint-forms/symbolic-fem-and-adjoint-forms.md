@@ -23,6 +23,7 @@ keywords:
   - data assimilation
 exports:
   - format: typst
+    archived: "2026-10-26T04:34:12Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/symbolic-fem-and-adjoint-forms/
@@ -31,6 +32,7 @@ exports:
     article_id: UWTN 2026-020
     article_version: 1.0.0
     software_version: underworld3 development @ f414da63
+doi: 10.6084/m9.figshare.34785585
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by <a href="https://unsplash.com/@loganvoss?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Logan Voss</a> / <a href="https://unsplash.com/?utm_source=underworld-technical-notes&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></div></div>
 
@@ -404,6 +406,8 @@ costs one more linear solve.
 <!-- uwtn-acknowledgement -->
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
 
 <!-- uwtn-acknowledgement -->
 

@@ -25,6 +25,7 @@ keywords:
   - meshing
 exports:
   - format: typst
+    archived: "2026-09-20T09:42:20Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/putting-a-fault-in-a-mesh/
@@ -33,6 +34,7 @@ exports:
     article_id: UWTN 2026-017
     article_version: 1.0.0
     software_version: underworld3 0.0.0
+doi: 10.6084/m9.figshare.33944806
 ---
 Faults can dominate the dynamic behaviour of Earth systems at scales from the entire planet to a few 10s of metres. They are an extreme example of localisation: feedback between forcing and response that results in self-reinforcing weakening that does not have a brake at the largest scale. Faults are *extreme* in the sense that their natural thickness is orders of magnitude below that of a typical tectonic simulation.
 
@@ -150,5 +152,11 @@ The non-conforming transversely isotropic fault representation trades fault fide
 - Solvers: a multigrid hierarchy on a stacked mesh.
 - Parallel practice and tuning, with a California-scale example.
 - Benchmarks against the published lithospheric-deformation solutions, by Thyagarajulu Gollapalli. Named here because it is part of the same series; nothing in these notes rests on it.-->
+
+<!-- uwtn-acknowledgement -->
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
+
+<!-- uwtn-acknowledgement -->
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=putting-a-fault-in-a-mesh">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=putting-a-fault-in-a-mesh">Start one</a></div></div>

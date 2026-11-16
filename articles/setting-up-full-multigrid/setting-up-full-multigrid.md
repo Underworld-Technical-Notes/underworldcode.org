@@ -26,7 +26,7 @@ exports:
     template: ../../templates/pdf
     output: setting-up-full-multigrid.pdf
     article_id: UWTN 2026-014
-    article_version: 1.0.0
+    article_version: 1.1.0
     software_version: underworld3 development @ 0addec15
 doi: 10.6084/m9.figshare.33273984
 ---
@@ -299,5 +299,20 @@ change: rebuild it with `refinement` rather than at a fine `cellSize`, and the
 same resolution arrives with the coarse levels attached. Note that `cellSize`
 then sets the *coarsest* mesh, and each refinement halves it — so `cellSize=0.05`
 with `refinement=2` resolves like `cellSize=0.0125`.
+
+## History
+
+- **1.1.0** — 2026-11-16
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-17 · [10.6084/m9.figshare.33273984.v1](https://doi.org/10.6084/m9.figshare.33273984.v1)
+  First published.
+
+<!-- uwtn-acknowledgement -->
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
+
+<!-- uwtn-acknowledgement -->
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=setting-up-full-multigrid">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=setting-up-full-multigrid">Start one</a></div></div>

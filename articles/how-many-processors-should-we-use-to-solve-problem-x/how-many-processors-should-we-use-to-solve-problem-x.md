@@ -27,7 +27,7 @@ exports:
     template: ../../templates/pdf
     output: how-many-processors-should-we-use-to-solve-problem-x.pdf
     article_id: UWTN 2025-003
-    article_version: 1.0.0
+    article_version: 1.1.0
 parts:
   abstract: "Parallel computation puts many CPUs to work on solving a problem much more quickly than one CPU alone. But this only works if the tasks are carefully scheduled and the additional CPUs are not waiting around for something to do. How do we choose the right number of processors for a given problem ?"
 ---
@@ -90,5 +90,20 @@ Shown in Figures 2a and 2b are the speed-up obtained in NCI *Gadi* versus the nu
 So how can we use strong scaling to determine the optimal number of processors to solve a problem? If turnaround time is prioritized, then one should aim for the highest speed-up possible. If one intends to do more runs of the model used in the strong scaling test, then the number of processors corresponding to the largest speed-up prior to degradation should be a good choice. If not, then one can calculate the elements per processor corresponding to the largest speed-up and use this to estimate the optimal number of processors for the same model but with different resolution. As an example, running the spherical Stokes model with ~2.4M elements will have optimal speed-up when 1000 processors are used (Figure 2b). This corresponds to ~2.4k elements per processor. With this estimate, optimally running a similar spherical Stokes model but with ~720k elements (i.e. lower resolution), should need ~300 cores. Lastly, if turnaround speed is not a priority, then one should aim to use the elements per processor that are within the linear speed-up regime to ensure that the computing resources are not wasted.
 
 These results are a guide to potential performance available when running Underworld codes in parallel. Speed up / performance graphs are averages over many runs, and the exact details depend on the architecture, the communications hardware, queueing policies and other details that you might need to ask your HPC team to explain. If you are seeing wildly unexpected results, get in touch by leaving us a message in the comments or on the GitHub issue trackers.
+
+## History
+
+- **1.1.0** — 2026-11-16
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193554.v1](https://doi.org/10.6084/m9.figshare.33193554.v1)
+  First published.
+
+<!-- uwtn-acknowledgement -->
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
+
+<!-- uwtn-acknowledgement -->
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=how-many-processors-should-we-use-to-solve-problem-x">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=how-many-processors-should-we-use-to-solve-problem-x">Start one</a></div></div>

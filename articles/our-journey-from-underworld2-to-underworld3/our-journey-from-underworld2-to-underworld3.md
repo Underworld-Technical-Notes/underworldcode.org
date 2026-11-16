@@ -35,7 +35,7 @@ exports:
     template: ../../templates/pdf
     output: our-journey-from-underworld2-to-underworld3.pdf
     article_id: UWTN 2026-002
-    article_version: 1.0.0
+    article_version: 1.1.0
 parts:
   abstract: "Underworld is a code for geodynamics — mantle convection, lithospheric deformation, subduction, ice flow. We solve coupled, nonlinear PDEs with complex rheologies using Lagrangian particles to track material history. The project has been running for 20 years: why did we start again ?"
 ---
@@ -97,9 +97,20 @@ Underworld3 3.0.0 marks the point where the new architecture is mature enough to
 
 In upcoming posts, we go deeper into the machinery: how SymPy expressions become C code, how particles navigate a parallel mesh, how the units system tracks physical dimensions through the pipeline, and how we build geographic meshes for regional models.
 
+## History
+
+- **1.1.0** — 2026-11-16
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193566.v1](https://doi.org/10.6084/m9.figshare.33193566.v1)
+  First published.
+
 <!-- uwtn-acknowledgement -->
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
 
 <!-- uwtn-acknowledgement -->
 
