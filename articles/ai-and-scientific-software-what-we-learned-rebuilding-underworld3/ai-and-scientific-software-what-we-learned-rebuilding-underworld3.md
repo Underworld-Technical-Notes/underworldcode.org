@@ -23,7 +23,7 @@ exports:
     template: ../../templates/pdf
     output: ai-and-scientific-software-what-we-learned-rebuilding-underworld3.pdf
     article_id: UWTN 2026-001
-    article_version: 1.0.0
+    article_version: 1.1.0
 parts:
   abstract: "Underworld3 has about 50,000 lines of Python/ Cython wrapping PETSc, SymPy, and a just-in-time compiler. I began a trial of AI coding tools in 2025 and they have gradually become central to the way our team works. This is a story of co-evolution as much as it is about adoption of a new set of tools."
 ---
@@ -184,6 +184,15 @@ Looking back over eight months, the central insight is this: making the code AI-
 We didn't try (for long) to bolt AI tools onto an existing workflow. The code changed to suit the tools, and the tools became more useful as the code improved. The result is a codebase that is better for everyone — AI and human alike.
 
 The lesson we'd offer other scientific software teams is simple: if your AI tools are struggling with your code, listen to what that is telling you. The problem is probably real, and fixing it will pay off in ways that go well beyond AI.
+
+## History
+
+- **1.1.0** — 2026-11-16
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193560.v1](https://doi.org/10.6084/m9.figshare.33193560.v1)
+  First published.
 
 <!-- uwtn-acknowledgement -->
 

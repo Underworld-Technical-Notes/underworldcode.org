@@ -35,7 +35,7 @@ exports:
     template: ../../templates/pdf
     output: our-journey-from-underworld2-to-underworld3.pdf
     article_id: UWTN 2026-002
-    article_version: 1.0.0
+    article_version: 1.1.0
 parts:
   abstract: "Underworld is a code for geodynamics — mantle convection, lithospheric deformation, subduction, ice flow. We solve coupled, nonlinear PDEs with complex rheologies using Lagrangian particles to track material history. The project has been running for 20 years: why did we start again ?"
 ---
@@ -96,6 +96,15 @@ Not everything is better yet. The particle machinery in UW3 is still catching up
 Underworld3 3.0.0 marks the point where the new architecture is mature enough to replace UW2 as the production tool. The symbolic pipeline is solid. The solver framework leverages modern PETSc properly. The mesh infrastructure handles the geometries that geodynamics actually needs. And the Python interface — the part of UW2 that actually worked — is better than ever, because SymPy makes it legible all the way down.
 
 In upcoming posts, we go deeper into the machinery: how SymPy expressions become C code, how particles navigate a parallel mesh, how the units system tracks physical dimensions through the pipeline, and how we build geographic meshes for regional models.
+
+## History
+
+- **1.1.0** — 2026-11-16
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193566.v1](https://doi.org/10.6084/m9.figshare.33193566.v1)
+  First published.
 
 <!-- uwtn-acknowledgement -->
 

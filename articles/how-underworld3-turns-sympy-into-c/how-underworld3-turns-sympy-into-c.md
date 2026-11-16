@@ -31,7 +31,7 @@ exports:
     template: ../../templates/pdf
     output: how-underworld3-turns-sympy-into-c.pdf
     article_id: UWTN 2026-003
-    article_version: 1.0.0
+    article_version: 1.1.0
 parts:
   abstract: "What actually happens between the moment you write a mathematical expression in underworld3's python layer and the moment PETSc receives a finite element term in the form of compiled C code ?"
 ---
@@ -223,6 +223,15 @@ For geodynamics, where constitutive models are complex, nonlinear, and frequentl
 ---
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code: [github.com/underworldcode/underworld3](https://github.com/underworldcode/underworld3)*
+
+## History
+
+- **1.1.0** — 2026-11-16
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193572.v1](https://doi.org/10.6084/m9.figshare.33193572.v1)
+  First published.
 
 <!-- uwtn-acknowledgement -->
 

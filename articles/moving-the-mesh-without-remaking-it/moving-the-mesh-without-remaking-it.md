@@ -31,7 +31,7 @@ exports:
     template: ../../templates/pdf
     output: moving-the-mesh-without-remaking-it.pdf
     article_id: UWTN 2026-011
-    article_version: 1.1.0
+    article_version: 1.2.0
     software_version: underworld3 0.0.0
 doi: 10.6084/m9.figshare.33241170
 ---
@@ -373,6 +373,10 @@ partition exactly as they were.
 
 ## History
 
+- **1.2.0** — 2026-11-16
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
 - **1.1.0** — 2026-11-12 · [10.6084/m9.figshare.33241170.v2](https://doi.org/10.6084/m9.figshare.33241170.v2)
   The worked example's animation is now a movie encoded from the run's own
   frames: all 250 time steps from the first, 864 pixels square and in full

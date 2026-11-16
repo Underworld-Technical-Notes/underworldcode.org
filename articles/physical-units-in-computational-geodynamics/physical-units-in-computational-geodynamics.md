@@ -26,7 +26,7 @@ exports:
     template: ../../templates/pdf
     output: physical-units-in-computational-geodynamics.pdf
     article_id: UWTN 2026-005
-    article_version: 1.0.0
+    article_version: 1.1.0
 parts:
   abstract: "Non-dimensionalisation (rewriting problems to make them re-scalable from lab to the real world) is a specialised task that all modellers confront at some point. It is important for accurate and efficient numerical solutions. Can we take away the pain that comes with the task ?"
 ---
@@ -240,6 +240,15 @@ This does not replace physical intuition. You still need to know that a Rayleigh
 ---
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code: [github.com/underworldcode/underworld3](https://github.com/underworldcode/underworld3)*
+
+## History
+
+- **1.1.0** — 2026-11-16
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193587.v1](https://doi.org/10.6084/m9.figshare.33193587.v1)
+  First published.
 
 <!-- uwtn-acknowledgement -->
 

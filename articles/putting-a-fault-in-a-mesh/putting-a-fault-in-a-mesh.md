@@ -25,6 +25,7 @@ keywords:
   - meshing
 exports:
   - format: typst
+    archived: "2026-09-20T09:42:20Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/putting-a-fault-in-a-mesh/
@@ -33,6 +34,7 @@ exports:
     article_id: UWTN 2026-017
     article_version: 1.0.0
     software_version: underworld3 0.0.0
+doi: 10.6084/m9.figshare.33944806
 ---
 Faults can dominate the dynamic behaviour of Earth systems at scales from the entire planet to a few 10s of metres. They are an extreme example of localisation: feedback between forcing and response that results in self-reinforcing weakening that does not have a brake at the largest scale. Faults are *extreme* in the sense that their natural thickness is orders of magnitude below that of a typical tectonic simulation.
 

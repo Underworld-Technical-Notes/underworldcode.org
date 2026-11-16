@@ -27,7 +27,7 @@ exports:
     template: ../../templates/pdf
     output: boundary-conditions-on-non-planar-boundaries.pdf
     article_id: UWTN 2026-016
-    article_version: 1.0.0
+    article_version: 1.1.0
     software_version: underworld3 development @ 8b7c8b9e
 doi: 10.6084/m9.figshare.33420637
 ---
@@ -414,6 +414,15 @@ sigma_nn = stokes.boundary_normal_traction("Upper")
 Leave the normal to Underworld unless the constraint has to follow the true surface rather than the mesh. Passing an analytic normal — `X / |X|` on a sphere — is exact for the geometry and keeps a consistency error against the faceted assembly, which is usually not what you want.
 
 Reach for Nitsche when the boundary condition has to **change during the model**. A hard constraint cannot morph: a wall that begins as a prescribed velocity and relaxes to a prescribed traction is a Nitsche problem, because the rotated constraint is either imposed or it is not.
+
+## History
+
+- **1.1.0** — 2026-11-16
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-09-02 · [10.6084/m9.figshare.33420637.v1](https://doi.org/10.6084/m9.figshare.33420637.v1)
+  First published.
 
 <!-- uwtn-acknowledgement -->
 

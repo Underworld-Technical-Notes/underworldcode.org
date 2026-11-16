@@ -21,7 +21,7 @@ exports:
     template: ../../templates/pdf
     output: finding-particles-in-a-distributed-unstructured-mesh.pdf
     article_id: UWTN 2026-009
-    article_version: 1.0.0
+    article_version: 1.1.0
 parts:
   abstract: It can be difficult to figure out where you are in an unstructured mesh of triangles or tetrahedra; worse when the mesh is distributed in parallel. We have to solve this problem for particle-in-cell type codes such as Underworld3. This is how we do it.
 doi: 10.6084/m9.figshare.33193611
@@ -125,6 +125,15 @@ The centroid KDTree is a cheap ingredient that buys the whole architecture. Cost
 The same predict-then-send pattern underlies `uw.function.global_evaluate(expr, coords)`, which evaluates a symbolic expression at a set of points that may live on any rank. Interpolating a field requires the values of the underlying mesh variables, and those are only available on the rank that owns the relevant cells. So the query points have to travel to their owners, get evaluated, and come back carrying the evaluation data.
 
 UW3 implements this as a round-trip `migrate`. Each rank wraps its query points in a temporary evaluation swarm, with each point labelled by its origin rank and original index. The same centroid KDTree we built for migration gives the owning rank of every query point as a local lookup — and again, each rank learns its candidate peers before any per-step communication begins. The first migrate sends the points to their owning ranks. Each owner evaluates the expression at its local set of points and stores the result on a swarm variable. The destination of each result is then set back to the origin rank (recorded at outbound time), and a second migrate sends the results home. Origin ranks unpack results by index and reassemble the answer in the original order. The return rank is guaranteed (it is the originating rank) so ownership tests can be skipped.
+
+## History
+
+- **1.1.0** — 2026-11-16
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193611.v1](https://doi.org/10.6084/m9.figshare.33193611.v1)
+  First published.
 
 <!-- uwtn-acknowledgement -->
 

@@ -22,7 +22,7 @@ exports:
     template: ../../templates/pdf
     output: mesh-variables-and-petsc-vectors-keeping-arrays-in-sync.pdf
     article_id: UWTN 2026-004
-    article_version: 1.0.0
+    article_version: 1.1.0
 parts:
   abstract: "One of the less glamorous but important problems in a finite element framework is this: how does the user assign values to a field variable, and how does the framework ensure that PETSc sees those values correctly, in parallel, without the user needing to keep track themselves?"
 ---
@@ -140,6 +140,15 @@ The context-manager approach in UW2 was safe but required discipline. Every data
 The callback approach eliminates an entire class of bugs. You cannot forget to synchronise because synchronisation is automatic. The self-validating cache eliminates another class — stale views after DM rebuilds. And batch updates via `synchronised_array_update()` give you the performance of explicit synchronisation when you need it.
 
 The cost is one `id()` comparison per `.data` access and one callback dispatch per write. For user-level operations — setting initial conditions, post-processing solution fields, checkpointing — this is negligible. For solver-level operations — millions of quadrature evaluations — the direct `.vec` path bypasses it entirely.
+
+## History
+
+- **1.1.0** — 2026-11-16
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193578.v1](https://doi.org/10.6084/m9.figshare.33193578.v1)
+  First published.
 
 <!-- uwtn-acknowledgement -->
 
