@@ -243,12 +243,14 @@ This does not replace physical intuition. You still need to know that a Rayleigh
 
 ## History
 
-- **1.1.0** — 2026-11-16
+- **1.1.0** — 2026-11-16 · [10.6084/m9.figshare.33193587.v3](https://doi.org/10.6084/m9.figshare.33193587.v3)
   The acknowledgement now names the NCI computing time behind the work,
   under the National Computational Merit Allocation Scheme and the ANU Merit
   Allocation Scheme. Nothing else changed.
-- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193587.v1](https://doi.org/10.6084/m9.figshare.33193587.v1)
-  First published.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193587.v2](https://doi.org/10.6084/m9.figshare.33193587.v2)
+  First published. A first cut, deposited 2026-08-09 as
+  [.v1](https://doi.org/10.6084/m9.figshare.33193587.v1), was replaced the next day
+  after the migration's last repairs.
 
 <!-- uwtn-acknowledgement -->
 

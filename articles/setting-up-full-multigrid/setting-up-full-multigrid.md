@@ -302,7 +302,7 @@ with `refinement=2` resolves like `cellSize=0.0125`.
 
 ## History
 
-- **1.1.0** — 2026-11-16
+- **1.1.0** — 2026-11-16 · [10.6084/m9.figshare.33273984.v2](https://doi.org/10.6084/m9.figshare.33273984.v2)
   The acknowledgement now names the NCI computing time behind the work,
   under the National Computational Merit Allocation Scheme and the ANU Merit
   Allocation Scheme. Nothing else changed.
