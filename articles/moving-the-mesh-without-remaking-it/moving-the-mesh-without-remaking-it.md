@@ -373,7 +373,7 @@ partition exactly as they were.
 
 ## History
 
-- **1.2.0** — 2026-11-16
+- **1.2.0** — 2026-11-16 · [10.6084/m9.figshare.33241170.v3](https://doi.org/10.6084/m9.figshare.33241170.v3)
   The acknowledgement now names the NCI computing time behind the work,
   under the National Computational Merit Allocation Scheme and the ANU Merit
   Allocation Scheme. Nothing else changed.
