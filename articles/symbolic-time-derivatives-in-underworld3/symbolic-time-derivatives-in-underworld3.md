@@ -16,7 +16,7 @@ keywords:
   - development
 exports:
   - format: typst
-    archived: "2026-08-10T04:19:43Z"
+    archived: "2026-11-16T05:17:40Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/symbolic-time-derivatives-in-underworld3/
