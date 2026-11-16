@@ -20,7 +20,7 @@ keywords:
   - development
 exports:
   - format: typst
-    archived: "2026-09-02T22:20:19Z"
+    archived: "2026-11-16T06:01:07Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/boundary-conditions-on-non-planar-boundaries/
