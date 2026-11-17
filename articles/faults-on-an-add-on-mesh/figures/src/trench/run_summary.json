@@ -1,0 +1,286 @@
+{
+ "run": {
+  "name": "earth_recipe_movie",
+  "slurm_job": "4417",
+  "starts": 1,
+  "restart_from": [
+   null
+  ],
+  "started": "2026-11-12T07:41:18+11:00",
+  "nodes": "n2",
+  "mpi_ranks": 26,
+  "ranks_per_node": 26,
+  "driver_commit": "d358b9775d091b3e307b3f4b5c324f2946f88f85",
+  "uw3_commit_recorded": null,
+  "uw3_path": "/uw3-extra/underworld3/__init__.py",
+  "container": "/home/louis/uw3/images/uw3-gadi-development-20261021.sif",
+  "petsc": "3.25.0",
+  "driver": "/home/louis/+Claude/kaiju/clones/zg95-v2-d358b97/zg95_lid_regimes/drivers/annulus_faults.py"
+ },
+ "steps": {
+  "first": 0,
+  "last": 799,
+  "count": 800,
+  "t_first": 1.2020896385722954e-05,
+  "t_last": 0.004137446637067526,
+  "Myr_first": 3.2,
+  "Myr_last": 1102.6,
+  "dt_Myr": {
+   "n": 800,
+   "mean": 1.3783,
+   "median": 1.2543,
+   "min": 0.76111,
+   "max": 3.2035
+  }
+ },
+ "settings": {
+  "uw_chain": 0,
+  "uw_rebuild_cells": 0.0,
+  "uw_detect_every": 1,
+  "uw_detect_start": 0,
+  "uw_spacing": 0.0078125,
+  "uw_cell": 0.5,
+  "uw_refinement": 5,
+  "uw_band_widen": 1,
+  "uw_split_inset": 1.0,
+  "uw_split_inset_along": 1,
+  "uw_tol": 0.001,
+  "uw_pres_rtol": 0.01,
+  "uw_pres_rtol_cold": 0.0001,
+  "uw_vel_rtol": 0.0,
+  "uw_newton_switch": 0.01,
+  "uw_warm_newton_switch": 0.1,
+  "uw_rebuild_newton_switch": 0.01,
+  "uw_picard": 0,
+  "uw_retry_keep": "best",
+  "uw_fault_realisation": "split",
+  "uw_fault_seams": "gather",
+  "uw_fault_depth_max": 0.15,
+  "uw_ckpt_every": 1,
+  "uw_steps": 800
+ },
+ "derived": {
+  "base_cell": 0.015625,
+  "base_cell_km": 45.3125,
+  "rung_spacing_S": 0.0078125,
+  "rung_spacing_km": 22.65625,
+  "band_width_W_2S": 0.015625,
+  "band_width_km": 45.3125,
+  "split_inset_km_along_fault": 22.65625,
+  "effective": {
+   "pressure_rtol": 0.01,
+   "pressure_rtol_source": "uw_pres_rtol",
+   "pressure_rtol_warm": 0.01,
+   "pressure_rtol_cold": 0.0001,
+   "pressure_rtol_rule": "cold solves (the first solve and any cold retry) take the cold rtol, warm solves the warm; an unconverged cold first solve stops a fresh run",
+   "velocity_rtol_rotated": 3.3e-05,
+   "consistent_jacobian": "continuation",
+   "rung_spacing": 0.0078125,
+   "rung_spacing_source": "uw_spacing",
+   "rebuild_threshold": 0.0,
+   "rebuild_threshold_source": "uw_rebuild_cells 0 x base cell 0.015625 (a distance, independent of S)",
+   "fault_seams": "gather",
+   "fault_mesher": "ladder",
+   "fault_partition": "gather via addon_partition.partition_addon (the band's region on one rank first)",
+   "wall_normal": "analytic",
+   "placement_attempts": "margin_rings 1/1/2/1, clearance 0.7, width x1/x1.25/x1/x1.5"
+  }
+ },
+ "kinds": {
+  "init_first": 1,
+  "ordinary": 40,
+  "rebuild_changed_set": 1,
+  "rebuild_same_set": 758
+ },
+ "no_rebuild_reasons": {
+  "the fit found no slab top reaching the cap; the fault kept its place": 28,
+  "placement refused (the fault touches the domain boundary); the previous fault kept": 12
+ },
+ "solver_mesh_phases_s": {
+  "steps_that_built_a_faulted_mesh": {
+   "build": {
+    "n": 759,
+    "mean": 4.5868,
+    "median": 4.636,
+    "min": 3.837,
+    "max": 5.062
+   },
+   "transfer": {
+    "n": 759,
+    "mean": 2.8532,
+    "median": 2.878,
+    "min": 2.675,
+    "max": 3.09
+   },
+   "to_base": {
+    "n": 759,
+    "mean": 2.8212,
+    "median": 2.777,
+    "min": 2.741,
+    "max": 3.756
+   }
+  },
+  "steps_that_kept_the_mesh": {
+   "build": {
+    "n": 40,
+    "mean": 1.0768,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 3.701
+   },
+   "transfer": {
+    "n": 40,
+    "mean": 2.3697,
+    "median": 2.3755,
+    "min": 2.259,
+    "max": 2.423
+   },
+   "to_base": {
+    "n": 40,
+    "mean": 1.0403,
+    "median": 1.033,
+    "min": 1.022,
+    "max": 1.237
+   }
+  },
+  "all_steps": {
+   "build": {
+    "n": 800,
+    "mean": 4.4056,
+    "median": 4.6255,
+    "min": 0.0,
+    "max": 5.062
+   },
+   "transfer": {
+    "n": 800,
+    "mean": 2.8286,
+    "median": 2.873,
+    "min": 2.259,
+    "max": 3.09
+   },
+   "to_base": {
+    "n": 800,
+    "mean": 2.732,
+    "median": 2.776,
+    "min": 1.022,
+    "max": 3.756
+   }
+  }
+ },
+ "levels_cells_at_builds": [
+  [
+   124,
+   496,
+   1984,
+   7936,
+   31744,
+   126976
+  ]
+ ],
+ "iterations": {
+  "converged_steps": 800,
+  "cold_starts": 1,
+  "nonlinear_total": 5580,
+  "nonlinear_per_step": {
+   "n": 800,
+   "mean": 6.975,
+   "median": 7.0,
+   "min": 1.0,
+   "max": 19.0
+  },
+  "picard_total": 3139,
+  "picard_per_step": {
+   "n": 800,
+   "mean": 3.9238,
+   "median": 4.0,
+   "min": 0.0,
+   "max": 10.0
+  },
+  "newton_total": 2441,
+  "newton_per_step": {
+   "n": 800,
+   "mean": 3.0513,
+   "median": 2.0,
+   "min": 1.0,
+   "max": 16.0
+  },
+  "line_search_cutbacks_total": 1063,
+  "rel_final": {
+   "n": 800,
+   "mean": 0.00032604,
+   "median": 0.00022586,
+   "min": 5.833e-06,
+   "max": 0.00099333
+  }
+ },
+ "ksp": {
+  "caps": {
+   "outer": 300,
+   "vel": 200,
+   "pres": 200
+  },
+  "per_nonlinear_iteration": 5580,
+  "outer": {
+   "n": 5580,
+   "mean": 1.0,
+   "median": 1.0,
+   "min": 1.0,
+   "max": 1.0
+  },
+  "vel_last_application": {
+   "n": 5580,
+   "mean": 4.5398,
+   "median": 4.0,
+   "min": 1.0,
+   "max": 14.0
+  },
+  "pres_last_application": {
+   "n": 5580,
+   "mean": 11.839,
+   "median": 11.0,
+   "min": 1.0,
+   "max": 38.0
+  },
+  "cap_hits": {
+   "outer": 0,
+   "vel": 0,
+   "pres": 0
+  },
+  "pres_rtol_read_back": {
+   "0.0035": 1,
+   "0.0273": 1,
+   "0.0283": 1,
+   "0.0313": 1,
+   "0.0314": 1,
+   "0.032": 1,
+   "0.0335": 1,
+   "0.0338": 1,
+   "0.0357": 1,
+   "0.0372": 1,
+   "0.1": 790
+  }
+ },
+ "trench": {
+  "deg_first": -0.449,
+  "deg_min": -20.256,
+  "step_min": 460,
+  "Myr_min": 515.1,
+  "deg_last": -15.354,
+  "rollback_deg": 19.807,
+  "rollback_km": 2227.8,
+  "advance_deg": 4.903,
+  "advance_km": 551.4,
+  "km_per_deg_at_surface": 112.48,
+  "r_o": 2.2222
+ },
+ "slip_max_cm_yr_steps_1_on": {
+  "n": 799,
+  "mean": 1.7998,
+  "median": 1.7506,
+  "min": 0.6476,
+  "max": 3.7439,
+  "step_of_min": 3,
+  "step_of_max": 51,
+  "step_799": 0.736
+ }
+}

@@ -1,0 +1,90 @@
+{
+ "problem": "A (linear, the note's fixture)",
+ "hierarchy": "H0",
+ "levels": [
+  "1/8",
+  "1/16",
+  "1/32",
+  "S in 1/32 (solver mesh)"
+ ],
+ "level_cells": [
+  162,
+  648,
+  2592,
+  6046
+ ],
+ "level_ops_velocity": [
+  {
+   "rows": 586,
+   "nnz_per_row": 13.9
+  },
+  {
+   "rows": 2466,
+   "nnz_per_row": 14.2
+  },
+  {
+   "rows": 10114,
+   "nnz_per_row": 22.8
+  },
+  {
+   "rows": 25208,
+   "nnz_per_row": 24.8
+  }
+ ],
+ "level_smoothers": [
+  {
+   "level": 0,
+   "ksp": "preonly",
+   "pc": "redundant"
+  },
+  {
+   "level": 1,
+   "ksp": "gmres",
+   "pc": "sor"
+  },
+  {
+   "level": 2,
+   "ksp": "gmres",
+   "pc": "sor"
+  },
+  {
+   "level": 3,
+   "ksp": "gmres",
+   "pc": "sor"
+  }
+ ],
+ "mg_env": {
+  "UW_CUSTOM_MG_DISABLE_FAC": "1"
+ },
+ "fac_lu": 0,
+ "n_rungs": 320,
+ "S": 0.0012884705080055188,
+ "h_b": 0.03125,
+ "h_b_over_S": 24.253562503633297,
+ "tolerance": 1e-06,
+ "converged": true,
+ "nonlinear_iterations": 1,
+ "ksp_its": [
+  1
+ ],
+ "vel_its_last": [
+  25
+ ],
+ "pres_its_last": [
+  16
+ ],
+ "velocity_pc": "custom-FMG",
+ "vel_its_last_again": [
+  25
+ ],
+ "vel_applications_again": 18,
+ "vel_its_all_applications_again": 618,
+ "peak_slip": 0.15920953722952952,
+ "t_base_s": 0.62,
+ "t_place_s": 2.72,
+ "t_fmg_s": 0.0,
+ "t_solve_first_s": 9.73,
+ "t_solve_again_s": 8.14,
+ "np": 4,
+ "petsc": "3.25.0"
+}

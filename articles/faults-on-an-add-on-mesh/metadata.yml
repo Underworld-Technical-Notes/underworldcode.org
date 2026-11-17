@@ -4,7 +4,7 @@
 # matches the slug, and that no legacy DOI is ever paired with a new registrant.
 id: UWTN 2026-022
 slug: faults-on-an-add-on-mesh
-title: Faults on an add-on mesh
+title: Faults and patch-refinement of the mesh
 article_type: technical-note
 status: draft
 authors:
@@ -26,5 +26,5 @@ methods:
   - solvers
 ghost_tags:
   - Underworld Code
-figures: 6
+figures: 5
 source: native
