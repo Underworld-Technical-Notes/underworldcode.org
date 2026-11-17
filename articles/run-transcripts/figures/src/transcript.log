@@ -1,0 +1,26 @@
+
+# underworld3 run transcript · annulus_convection · started 2026-11-17T13:55:26+11:00
+# scales: shell_thickness 2200 km | thermal_diffusivity 1e-06 m ** 2/s | mantle_viscosity 1e+22 Pa s | temperature_contrast 2500 K
+  -- solves: AdvDiffusion(T)  [F0, F1]  (the form is in the record; uw.transcript_key renders it)
+  -- solves: Stokes(v)  [F0, F1, PF0]  (the form is in the record; uw.transcript_key renders it)
+# step           t/Myr          dt/Myr    wall/s  outcome    operators, in order
+      0        0.278826        0.278826      1.59  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+      1        0.757079        0.478253      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+      2         1.25707        0.499989      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+      3         1.81021        0.553143      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+      4          2.4258        0.615594      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+      5         3.11739        0.691585      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+      6         3.90209        0.784703      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+      7         4.80972        0.907629      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+      8         5.88455         1.07483      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+      9         7.19788         1.31332      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+     10         8.87422         1.67634      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+     11         11.1497         2.27551      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+     12         14.5488         3.39904      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+     13         20.5101         5.96132      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+     14         752.995         732.485      0.10  ABANDONED  [too big] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+  -- restore from a snapshot; the clock now reads 20.5101 Myr
+  -- rewind to the start of step 13 (t = 14.5488 Myr); 1 step(s) undone
+     13         20.5101         5.96132      0.19  ok         [replay] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+     14         35.1598         14.6497      0.17  ok         [taken twice] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v) > AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+# run ended after 15 recorded step(s) · 2026-11-17T13:55:30+11:00

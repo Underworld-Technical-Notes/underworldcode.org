@@ -1,5 +1,5 @@
-## Key — what each part solved in make_figures
-*run started 2026-09-15T14:32:34+10:00*
+## Key — what each part solved in annulus_convection
+*run started 2026-11-17T13:55:26+11:00*
 
 ### AdvDiffusion(T)
 `SNES_AdvectionDiffusion_Composed`, unknown `T`, 2-D; recorded at step 0
@@ -10,7 +10,7 @@ $$f_0(\phi) = \left[\begin{matrix}a^{\mathrm{AM}}_{0,18} \left({T}_{,0}(\mathbf{
 *Strong residual of the time scheme: time derivative, advection and source.*
 
 where
-- $\Delta t_{18}$ $= 1.147 \times 10^{-6}$ — timestep of this history
+- $\Delta t_{18}$ $= 1.818 \times 10^{-6}$ — timestep of this history
 - $a^{\mathrm{AM}}_{0,18}$ $= \frac{1}{2}$ — Adams-Moulton coefficient 0 of history 18
 - $a^{\mathrm{AM}}_{1,18}$ $= \frac{1}{2}$ — Adams-Moulton coefficient 1 of history 18
 
@@ -31,7 +31,7 @@ Boundary conditions:
 
 Given:
 - `f` $= 0$ — volumetric source term
-- `V_fn` $= \left[\begin{matrix}{v}_{ 0 }(\mathbf{x}) & {v}_{ 1 }(\mathbf{x})\end{matrix}\right]$ — advecting velocity
+- `V_fn` $= \text{(an expression; in the record)}$ — advecting velocity
 - `DiffusionModel.diffusivity` $= 10^{-6}\ \mathrm{m^{2}/s}$ — constitutive parameter
 
 ### Stokes(v)
@@ -60,6 +60,6 @@ Boundary conditions:
 - rotated free-slip on Lower: $\mathbf{u}\cdot\hat{\mathbf{n}} = 0$
 
 Given:
-- `bodyforce` $= \left[\begin{matrix}- \frac{\mathrm{x} \rho_0 \alpha g {T}(\mathbf{x})}{\sqrt{\mathrm{x}^{2} + \mathrm{y}^{2}}}\\- \frac{\mathrm{y} \rho_0 \alpha g {T}(\mathbf{x})}{\sqrt{\mathrm{x}^{2} + \mathrm{y}^{2}}}\end{matrix}\right]$ — body force per unit volume; F0 is its negative
+- `bodyforce` $= \text{(an expression; in the record)}$ — body force per unit volume; F0 is its negative
 - `penalty` $= 0$ — augmented-Lagrangian grad-div penalty (0 = off)
 - `ViscousFlowModel.shear_viscosity_0` $= 10^{22}\ \mathrm{Pa\cdot s}$ — constitutive parameter

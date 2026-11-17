@@ -29,8 +29,69 @@ exports:
     output: run-transcripts.pdf
     article_id: UWTN 2026-019
     article_version: 1.0.0
-    software_version: underworld3 0.0.0
+    software_version: underworld3 development @ a8890101
 ---
+<!--
+REVIEW 2026-11-17 (notes workbench). Checked against underworld3 development
+ee9989fc. The transcript landed in #716 (1b4f3b57, 2026-09-24); the query
+object, describe, the class view and MCP in #790 (1391e4aa, 2026-09-28).
+Changes since that bear on the note: #744 (f414da63: the header prints the
+declared reference quantities; adjoint notes and columns), #845 (05d84a02:
+snapshots keep each solver's warm-start state, so a solve after a restore can
+differ from the never-restored run within solver tolerance; docs/advanced/
+snapshot-restore.md), #1076 (ThinSheet projections in the log, not the chart).
+
+Fixed in the prose today, from the code:
+- the run directory holds no figure (transcript_figure / transcript_diagram
+  draw one from the record afterwards);
+- a transcript is written by a run that takes its steps in model.step()
+  blocks (a bare loop of solves writes none), shown in a code block;
+- t and dt carry the unit of the run's clock;
+- the "!!" line prints the record's name (SNES_Stokes(v)) and |F| as .3g;
+  the log, chart and figure share the user's names, uw.Transcript and the MCP
+  tools use the class names, so "every view" was narrowed;
+- snapshots are in memory only, the last record_limit (8) kept; the
+  on-disk record has none; uw.read_transcript(path) reads the record back;
+- a rewind's reason and numbers are in the record (and backtracks(), the MCP
+  problems tool); the log's note does not print them;
+- transcript_key has its own renderer, not describe's; patterns() uses the
+  chart's rule but is separate code; capped() covers forward solves;
+- the figure's equations use matplotlib mathtext when installed.
+
+Rerun 2026-11-17 on development a8890101 (transcript code identical to
+ee9989fc), serial, wombat scratch build, 41 s: figures/src/annulus_convection.py
+(moved from examples/, now closes the record before rendering, so the
+figures read "complete"; writes replay_check.txt). From that one run: the
+directory listing, the log and chart excerpts, the chart paragraph's numbers
+(dt 0.28 -> 5.96 Myr, 732 Myr rejected, 17 step records -> 5 rows + 2 notes),
+both alt texts, the replay timing (0.19 s vs 0.09 s; a restore discards
+preconditioner set-up, docs/advanced/snapshot-restore.md), and the pin.
+The key's Stokes values are unchanged (0.9712, 1e22, 0).
+Measured: the replayed step 13 is bit-identical to its first take, AND two
+independent serial runs are bit-identical after step 13 (max |dT| = 0), so
+"Restoring is exact where re-running is not ... diverge at 1e-13" was false
+here; the paragraph now claims only the restore. Parallel not measured.
+
+Open, for Louis:
+- On the rotated free-slip path (this note's own run) the fall back to GAMG
+  is a print, "[rotated_bc] WARNING ..." (rotated_bc.py:2472, since bccad29e,
+  2026-10-17), not a Python warning, so the transcript does not record it.
+  The "~~" example (solvers.py:2910's RuntimeWarning) is the unrotated path's
+  and is still right. A library fix, not a prose one.
+- metadata subjects/methods are empty; the vocabulary has no provenance or
+  reproducibility facet.
+- The PDF build (preview checked 2026-11-17, ../underworld-technical-notes-build)
+  prints the figures' solve marks as "?" boxes: transcript_figure's SVG sets
+  them as emoji text (transcript_report.py:45, :776; by design, the PDF
+  writer strokes them), and typst's SVG renderer has no emoji font. A MyST
+  wildcard (figures/x.*) still hands typst the SVG. Fix in the library (stroke
+  the marks in SVG too, then rerun, 41 s) or ship PNGs for print. Emoji also
+  vary by browser and platform on the web. The chart-and-key figure is set at
+  70% width so it fits one page (it was clipped at full width).
+
+Not checked at runtime: the 13 bytes per DOF, the MCP server (the `mcp`
+package is not in pixi.toml).
+-->
 Six months after a result, the questions are always the same: which version of
 the code produced it, what the parameters were, and whether the run did what
 the caption says it did. Underworld 1 could answer all three from one file.
@@ -63,18 +124,25 @@ nobody checks.
 
 ## What a run leaves
 
-Every run that takes a timestep writes a transcript. There is nothing to
+A script says where its steps are, by taking each one inside a step block:
+
+```python
+with model.step(dt, label="convect"):
+    adv.solve(timestep=dt)
+    stokes.solve()
+```
+
+Every run that takes a step this way writes a transcript. There is nothing to
 configure, a run that takes no step writes nothing, and a run under `pytest`
 writes nothing, so the default costs nothing where it would only be noise.
 
 ```
-transcripts/2026-09-15T13-02-27-Ex_Convection_Annulus_Recorded/
-    Ex_Convection_Annulus_Recorded.py    the script that launched it, verbatim
-    launch.json                          argv, interpreter, cwd, version, commit
-    transcript.log                       one aligned line per step — for watching
-    transcript.jsonl                     one JSON object per step — for reading back
-    transcript.svg, transcript.pdf       the run as a figure
-transcripts/latest -> 2026-09-15T13-02-27-Ex_Convection_Annulus_Recorded
+transcripts/2026-11-17T13-55-26-annulus_convection/
+    annulus_convection.py    the script that launched it, verbatim
+    launch.json              argv, interpreter, cwd, version, commit
+    transcript.log           one aligned line per step — for watching
+    transcript.jsonl         one JSON object per step — for reading back
+transcripts/latest -> 2026-11-17T13-55-26-annulus_convection
 ```
 
 The directory is stamped, so this morning's run is still there this afternoon;
@@ -89,30 +157,31 @@ flushed as the step closes, so `tail -f` follows a running job and a job that
 is killed keeps every step it finished.
 
 ```
-# underworld3 run transcript · Ex_Convection_Annulus_Recorded · started 2026-09-15T13:02:27+10:00
-# scales: length 2.2e+06 m | time 4.84e+18 s | mass 1.065e+47 kg | temperature 2500 K
+# underworld3 run transcript · annulus_convection · started 2026-11-17T13:55:26+11:00
+# scales: shell_thickness 2200 km | thermal_diffusivity 1e-06 m ** 2/s | mantle_viscosity 1e+22 Pa s | temperature_contrast 2500 K
   -- solves: AdvDiffusion(T)  [F0, F1]  (the form is in the record; uw.transcript_key renders it)
   -- solves: Stokes(v)  [F0, F1, PF0]  (the form is in the record; uw.transcript_key renders it)
 # step           t/Myr          dt/Myr    wall/s  outcome    operators, in order
-      0        0.175907        0.175907      0.26  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
-      1        0.501546        0.325639      0.06  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
-      2        0.990939        0.489393      0.06  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+      0        0.278826        0.278826      1.59  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+      1        0.757079        0.478253      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
      ...
-     11         9.85635         1.92019      0.06  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
-     12         145.049         135.192      0.06  ABANDONED  [too big] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
-  -- restore from a snapshot; the clock now reads 9.85635 Myr
-  -- rewind to the start of step 11 (t = 7.93616 Myr); 1 step(s) undone
-     11         9.85635         1.92019      0.30  ok         [replay] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
-     12         12.5602         2.70384      0.12  ok         [taken twice] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v) > AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
-# run ended after 13 recorded step(s) · 2026-09-15T13:02:29+10:00
+     11         11.1497         2.27551      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+     12         14.5488         3.39904      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+     13         20.5101         5.96132      0.09  ok         [convect] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+     14         752.995         732.485      0.10  ABANDONED  [too big] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+  -- restore from a snapshot; the clock now reads 20.5101 Myr
+  -- rewind to the start of step 13 (t = 14.5488 Myr); 1 step(s) undone
+     13         20.5101         5.96132      0.19  ok         [replay] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+     14         35.1598         14.6497      0.17  ok         [taken twice] AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v) > AdvDiffusion(T) > shift EulerianSUPG(T) > Stokes(v)
+# run ended after 15 recorded step(s) · 2026-11-17T13:55:30+11:00
 ```
 
 Every column is there because someone watching a run wants it. `t` and `dt`
-are in one unit, chosen once from the run's own scales and named in the
-header, so a reader is not converting between lines. `wall/s` is the first
+are in one unit, the unit of the run's clock, named in the column header, so a
+reader is not converting between lines. `wall/s` is the first
 number to move when a solver gets into trouble — the
-replayed step 11 took 0.30 s against the original's 0.06, because the restore
-discarded the warm start. The label in brackets is the name the script gave
+replayed step 13 took 0.19 s against the original's 0.09, because a restore
+discards each solver's preconditioner set-up and the replay built it again. The label in brackets is the name the script gave
 the step, so a run that does different things at different times says which.
 And the operators are listed in the order they ran, which is the thing a
 caption asserts and a reader cannot otherwise check.
@@ -120,9 +189,9 @@ caption asserts and a reader cannot otherwise check.
 The names are the names the user wrote. The record itself holds the class that
 implemented each operator — `SNES_AdvectionDiffusion_Composed` — but the log
 says `AdvDiffusion(T)`, which is what the script said, and `Stokes(v)`, and
-`shift EulerianSUPG(T)` for the transport history that advanced. The same
-vocabulary is used by every view of the record, so a name learned in the log
-is the name found in the figure.
+`shift EulerianSUPG(T)` for the transport history that advanced. The chart and
+the figure use the same names, so a name learned in the log is the name found
+in the figure.
 
 ## How it went, not just that it ran
 
@@ -131,7 +200,7 @@ not converge is named under its step, with the reason and the work:
 
 ```
       7         2.63841        0.523655      4.81  DIVERGED   [convect] Stokes(v) > ...
-  !! Stokes(v): DIVERGED_LINEAR_SOLVE after 6 its (1200 ksp), |F| 3.11e-04
+  !! SNES_Stokes(v): DIVERGED_LINEAR_SOLVE after 6 its (1200 ksp), |F| 0.000311
 ```
 
 Behind the column, each solve's record carries the converged reason, the
@@ -156,7 +225,7 @@ with the explanation removed.
 A log that repeats itself is a log nobody reads. The step lines repeat because
 each is a fact; everything else is written once, when it happens. A restore
 and a rewind are notes between the steps they sit between, so a log that shows
-step 11, then step 11 again, says what happened in between. Identical warnings
+step 13, then step 13 again, says what happened in between. Identical warnings
 within a step are written once with a count. The one-line-per-step promise
 holds, and the notes are the places to look.
 
@@ -172,22 +241,22 @@ across them.
 ```
  step      t/Myr     dt/Myr │ AdvDiffusion(T) │ EulerianSUPG(T) │    Stokes(v)    │
 ───────────────────────────────────────────────────────────────────────────────────
-    0   0.175907   0.175907 │        1        │        2        │        3        │
-  …11    9.85635    1.92019 │        ↓        │        ↓        │        ↓        │   ×11 unchanged, dt 0.1759 → 1.92
-   12    145.049    135.192 │        1        │        2        │        3        │   ABANDONED
-                            │ restore from a snapshot; the clock now reads 9.85635 Myr
-                            │ rewind to the start of step 11 (t = 7.93616 Myr); 1 step(s) undone
-   11    9.85635    1.92019 │        1        │        2        │        3        │
-   12    12.5602    2.70384 │       1,4       │       2,5       │       3,6       │
+    0   0.278826   0.278826 │        1        │        2        │        3        │
+  …13    20.5101    5.96132 │        ↓        │        ↓        │        ↓        │   ×13 unchanged, dt 0.2788 → 5.961
+   14    752.995    732.485 │        1        │        2        │        3        │   ABANDONED
+                            │ restore from a snapshot; the clock now reads 20.5101 Myr
+                            │ rewind to the start of step 13 (t = 14.5488 Myr); 1 step(s) undone
+   13    20.5101    5.96132 │        1        │        2        │        3        │
+   14    35.1598    14.6497 │       1,4       │       2,5       │       3,6       │
 ```
 
 Each column is a participant, and the digits give the order it ran within the
-step. The collapsed line asserts that steps 1 to 11 were *identical* to step 0
+step. The collapsed line asserts that steps 1 to 13 were *identical* to step 0
 in what ran and in what order, so nothing hides behind it — and it still says
-that `dt` grew from 0.18 to 1.92 Myr across them, because a timestep that
-grew tenfold is a diagnostic. Fifteen records become six rows, and the rows
-that remain are the ones a reader would have picked out: the step that tried
-135 Myr and was rejected, the step taken again, and the last step that ran
+that `dt` grew from 0.28 to 5.96 Myr across them, because a timestep that
+grew twentyfold is a diagnostic. Seventeen step records become five rows and
+two notes, and the rows that remain are the ones a reader would have picked
+out: the step that tried 732 Myr and was rejected, the step taken again, and the last step that ran
 everything twice — `1,4 │ 2,5 │ 3,6` — a predictor-corrector written without
 noticing that the transport history advances on every solve, so the
 temperature advanced two intervals while the clock advanced one.
@@ -199,7 +268,8 @@ examination is easier to read one row at a time.
 
 ```{figure} figures/run-chart-key.svg
 :label: fig-chart
-:alt: The annulus run as a chart. Three columns — AdvDiffusion(T), EulerianSUPG(T), Stokes(v) — and a bar per step in which the marks descend, one line each, joined by a stepped path that runs level and drops halfway between columns; steps 1 to 10 collapsed into one band; step 12 marked abandoned with a rewind arrow back to step 11 and an arrow down to the replayed step 11; the last step's bar twice as tall, its path making two descents. Below, a legend, and a key setting each part's residual forms as equations, the named quantities in them with values and units, and its boundary conditions.
+:width: 70%
+:alt: The annulus run as a chart. Three columns — AdvDiffusion(T), EulerianSUPG(T), Stokes(v) — and a bar per step in which the marks descend, one line each, joined by a stepped path that runs level and drops halfway between columns; steps 1 to 12 collapsed into one band with the first and last t and dt; step 14 marked abandoned, its marks drawn as dashed rings, with a rewind arrow back to step 13 and an arrow down to the replayed step 13; the last step's bar twice as tall, its path making two descents. Below, a legend, and a key setting each part's residual forms as equations, the named quantities in them with values and units, and its boundary conditions.
 
 The same run as a figure. Each step is a bar, and inside it what ran sits one
 line below what ran before, in its own column, joined by a path: the shape of
@@ -215,12 +285,13 @@ the quantities in them.
 The three marks are the three things a solve can do. A page that says every
 solve converged is a page that can be skimmed; a page with one amber mark in
 three hundred is a page that says where to look. The figure is SVG for the
-web and PDF for print, drawn without a plotting dependency, so the record and
-its figure need nothing installed to be looked at.
+web and PDF for print. Underworld3 draws the bars, marks and paths itself, and
+sets the key's equations with matplotlib's mathtext when it is installed, or
+as plain text when it is not, so a figure can be drawn wherever the run was.
 
 ```{figure} figures/run-transcript.svg
 :label: fig-run-transcript
-:alt: The same run with time down the page and dt as a horizontal bar per step, growing from 0.18 to 1.92 Myr; the abandoned step drawn as a dashed bar; the rewind and replay arrows in the gutter; each row lettered by its operator sequence, with the sequences defined once at the foot.
+:alt: The same run with time down the page and dt as a horizontal bar per step on a log scale, growing from 0.28 to 5.96 Myr; the abandoned step, which tried 732 Myr, drawn as a dashed bar; the rewind and replay arrows in the gutter; each row lettered by its operator sequence, with the sequences defined once at the foot.
 
 Time down the page, `dt` across it. Each distinct operator sequence gets a
 letter, defined once at the foot, so the one step that did something different
@@ -259,29 +330,36 @@ off, and it pays off in the record rather than in the source.
 
 ## Reproducing a result from the record
 
-Restoring is exact where re-running is not. Two independent runs of the same
-script on the same machine diverge at the 1e-13 level from the first step,
-because warm starts and preconditioner reuse are solver history that sits
-outside model state. A step restored from the snapshot it began with and taken
-again reproduces its temperature field bit for bit — `max |ΔT| = 0` across
-every step of the run above.
+Restoring is exact. A snapshot holds the fields, the transport history, the
+clock and what each solver carries from one solve to the next, and a restore
+discards each solver's preconditioner set-up, so the solves after it run as
+they would in a run started from the restored state. In the run above, step 13
+taken again after the rewind reproduces its first temperature field bit for
+bit, `max |ΔT| = 0`.
 
-That asymmetry is why a run can keep its own restore points.
+That is why a run can keep its own restore points.
 `model.record_every = 1` keeps the state each step started from — fields,
-transport history and clock together — and `model.rewind()` returns to it;
-`read_transcript()` gives the steps back in order with the interval each
-covered and the operators it applied, and any recorded step can be re-entered
-with `load_state(entry.snapshot)`. A step that misbehaved can be looked at
-twice, which re-running the script cannot give you. Snapshots cost about 13
-bytes per primary degree of freedom per step and are off unless asked for;
-the transcript itself is bytes.
+transport history and clock together — and `model.rewind()` returns to it.
+While the run is live, `model.transcript` lists the recorded steps in order,
+with the interval each covered and the operators it applied, and any step that
+still holds its snapshot can be re-entered with `model.load_state(entry.snapshot)`.
+A step that misbehaved can be looked at twice without running the script
+again up to it. Snapshots cost about 13 bytes per primary degree of freedom
+per step, are off unless asked for, and stay in memory: the last eight are
+kept unless `model.record_limit` says otherwise, and none is written to disk.
+The transcript on disk is bytes, and `uw.read_transcript(path)` reads it back.
 
 A rewind is a decision, and the record now keeps the decision rather than
 only the backtrack. The transcript cannot infer why a run went back, because
 the acceptance test lives in the caller's loop, so the caller says:
-`model.rewind(1, reason="free surface displacement over the limit",
-observed=0.18, threshold=0.10, action="halve dt")`, and the note between the
-steps carries the reason and the numbers. A step stopped by an exception
+
+```python
+model.rewind(1, reason="free surface displacement over the limit",
+             observed=0.18, threshold=0.10, action="halve dt")
+```
+
+The record keeps the reason and the numbers with the rewind, and the log's note between the steps
+marks where it happened. A step stopped by an exception
 records the exception's class and message as the thing that abandoned it.
 And a part is recorded again when a parameter changes between solves, not
 only when its form is rebuilt: a diffusivity set to a new value is a
@@ -311,17 +389,17 @@ t.part("SNES_Stokes#3", at_step=600)   # the equation in force at that step
 t.compare(12, 13)              # operators, outcomes, dt, wall time, completion
 ```
 
-Every answer is the record's own data. A solve is `capped` here exactly when
-the figure marks it amber, because both read the same rule; the chart's
-collapse of repeated steps is `patterns()`, keyed by position in the sequence
-rather than by step index, since after a rewind the run numbers its steps
-again from where it went back to and one index can name several attempts.
+Every answer is the record's own data. A forward solve is `capped` here exactly when
+the figure marks it amber, because both read the same rule. `patterns()`
+collapses repeated steps by the chart's rule, keyed by position in the
+sequence rather than by step index, since after a rewind the run numbers its
+steps again from where it went back to and one index can name several
+attempts.
 
 The query object describes itself in the same shape as everything else in
 the library — kind, name, summary, facts, children — and one renderer sets
 that description as Markdown with mathematics for a notebook, plain text for
-a terminal, a LaTeX fragment for a note, or YAML for a tool. The key in the
-previous section is that renderer applied to the part records. A solver
+a terminal, a LaTeX fragment for a note, or YAML for a tool. A solver
 describes itself the same way, at the moment it solves and, without an
 instance, at the class level: `uw.systems.Stokes.view()` lists the residual
 templates it declares, the terms it is given, the conditions it accepts and

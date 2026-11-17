@@ -1,0 +1,19 @@
+transcript · annulus_convection
+started 2026-11-17T13:55:26+11:00
+scales: shell_thickness 2200 km | thermal_diffusivity 1e-06 m ** 2/s | mantle_viscosity 1e+22 Pa s | temperature_contrast 2500 K
+complete — 15 step(s)
+
+ step      t/Myr     dt/Myr │ AdvDiffusion(T) │ EulerianSUPG(T) │    Stokes(v)    │
+───────────────────────────────────────────────────────────────────────────────────
+    0   0.278826   0.278826 │        1        │        2        │        3        │
+  …13    20.5101    5.96132 │        ↓        │        ↓        │        ↓        │   ×13 unchanged, dt 0.2788 → 5.961
+   14    752.995    732.485 │        1        │        2        │        3        │   ABANDONED
+                            │ restore from a snapshot; the clock now reads 20.5101 Myr
+                            │ rewind to the start of step 13 (t = 14.5488 Myr); 1 step(s) undone
+   13    20.5101    5.96132 │        1        │        2        │        3        │
+   14    35.1598    14.6497 │       1,4       │       2,5       │       3,6       │
+
+17 step(s), 3 part(s): AdvDiffusion(T), EulerianSUPG(T), Stokes(v)
+↓  the steps between did exactly this, unchanged
+·  this part did nothing in that step
+digits are the order the parts ran within the step

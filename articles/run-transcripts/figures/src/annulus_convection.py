@@ -1,25 +1,28 @@
-"""Figures for "A transcript for every run".
+"""Figures and records for UWTN 2026-019, "A Transcript for Every Run".
 
-Runs a short annulus convection model, deliberately rejects one step and
-replays another, and renders the transcript it leaves as a figure. Run it from
-this directory:
+Runs a short annulus convection model, deliberately rejects one step, replays
+another and takes one step that solves everything twice, then renders the
+transcript the run leaves. Run it from this directory:
 
-    python make_figures.py
+    python annulus_convection.py
 
-It writes, beside itself:
+The figures go to the note's figures/ folder:
 
-    run-transcript.svg     the run as a figure (web)
-    run-transcript.pdf     the same, for print
-    run-chart.svg          the same run as a chart (web)
-    run-chart.pdf          the same, for print
-    transcript.log         the text transcript the run wrote
-    transcript.jsonl       the machine-readable transcript
-    chart.txt              the same chart, in text
-    key.md                 what each part solved, as implemented (Markdown + LaTeX)
-    run-chart-key.svg/pdf  the chart with that key on the page
+    run-transcript.svg/pdf   time down the page, dt across it
+    run-chart.svg/pdf        the run as a chart
+    run-chart-key.svg/pdf    the chart with the key on the page
 
+and the run's own records stay here, beside this script:
+
+    transcript.log           the text transcript the run wrote
+    transcript.jsonl         the machine-readable transcript
+    chart.txt                the chart, in text
+    key.md                   what each part solved, as implemented
+    replay_check.txt         the replayed step against its first take
+
+The run directory itself goes under ./transcripts/, which is not kept.
 Everything here is Underworld3's own machinery: the transcript is written
-without being asked, and the figure is rendered from it afterwards.
+without being asked, and the figures are rendered from it afterwards.
 """
 
 import os
@@ -36,6 +39,7 @@ params = uw.Params(
 )
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+FIGURES = os.path.dirname(HERE)          # the note's figures/ folder
 
 # --- the model, in the units it is quoted in -------------------------------
 SHELL_THICKNESS = uw.quantity(2200, "km")
@@ -57,7 +61,7 @@ model.set_reference_quantities(
     temperature_contrast=DELTA_T,
 )
 # The transcript is on by default and lands in a stamped run directory; this
-# script copies the two renderings out beside itself afterwards.
+# script copies the record out beside itself afterwards.
 os.environ.setdefault("UW_TRANSCRIPT", os.path.join(HERE, "transcripts"))
 
 mesh = uw.meshing.Annulus(
@@ -131,6 +135,10 @@ for _ in range(int(params.uw_n_steps)):
         stokes.solve(zero_init_guess=False)
         model.tracker.v_rms = v_rms()
 
+# The temperature at the end of the last ordinary step, to compare with the
+# same step taken again after the rewind below.
+T_first_take = np.array(T.array[:, 0, 0], copy=True)
+
 
 class StepRejected(Exception):
     """Raised inside a step block to abandon it."""
@@ -155,6 +163,12 @@ with model.step(target.dt, label="replay"):
     stokes.solve(zero_init_guess=False)
     model.tracker.v_rms = v_rms()
 
+# Is the replay the step it replaced? Written beside the records.
+dT = float(np.max(np.abs(np.asarray(T.array[:, 0, 0]) - T_first_take)))
+with open(os.path.join(HERE, "replay_check.txt"), "w", encoding="utf-8") as handle:
+    handle.write(f"max |T(replay) - T(first take)| after step {target.index}: {dT:.3e}\n")
+uw.pprint(f"replay: max |dT| = {dT:.3e}", clean_display=False)
+
 # One step with the transport solved twice — a predictor/corrector written
 # without noticing that the history advances on every solve.
 dt = params.uw_dt_fraction * adv.estimate_dt()
@@ -170,18 +184,21 @@ with model.step(dt, label="taken twice"):
 # backtracks — the rows worth looking at — are only in the file.
 import shutil
 
+# Close the record first, so it ends with the run's terminator; otherwise the
+# renderers read it as a run still going, or one that was interrupted.
 run_dir = os.path.dirname(model.transcript_file)
+model.announce_transcript()
 record = os.path.join(run_dir, "transcript.jsonl")
 for name in ("transcript.log", "transcript.jsonl"):
     shutil.copyfile(os.path.join(run_dir, name), os.path.join(HERE, name))
 
 title = "Annulus convection — run transcript"
-uw.transcript_diagram(record, out=os.path.join(HERE, "run-transcript.svg"), title=title)
-uw.transcript_diagram(record, out=os.path.join(HERE, "run-transcript.pdf"), title=title)
+uw.transcript_diagram(record, out=os.path.join(FIGURES, "run-transcript.svg"), title=title)
+uw.transcript_diagram(record, out=os.path.join(FIGURES, "run-transcript.pdf"), title=title)
 
 chart_title = "Annulus convection — transcript"
-uw.transcript_figure(record, out=os.path.join(HERE, "run-chart.svg"), title=chart_title)
-uw.transcript_figure(record, out=os.path.join(HERE, "run-chart.pdf"), title=chart_title)
+uw.transcript_figure(record, out=os.path.join(FIGURES, "run-chart.svg"), title=chart_title)
+uw.transcript_figure(record, out=os.path.join(FIGURES, "run-chart.pdf"), title=chart_title)
 
 chart = uw.transcript_table(record)
 with open(os.path.join(HERE, "chart.txt"), "w", encoding="utf-8") as handle:
@@ -190,8 +207,8 @@ with open(os.path.join(HERE, "chart.txt"), "w", encoding="utf-8") as handle:
 # The key: what each part solved, as implemented — Markdown with LaTeX for the
 # post, and the chart with the key on the page.
 uw.transcript_key(record, out=os.path.join(HERE, "key.md"))
-uw.transcript_figure(record, out=os.path.join(HERE, "run-chart-key.svg"), title=chart_title, key=True)
-uw.transcript_figure(record, out=os.path.join(HERE, "run-chart-key.pdf"), title=chart_title, key=True)
+uw.transcript_figure(record, out=os.path.join(FIGURES, "run-chart-key.svg"), title=chart_title, key=True)
+uw.transcript_figure(record, out=os.path.join(FIGURES, "run-chart-key.pdf"), title=chart_title, key=True)
 
 uw.pprint(chart, clean_display=False)
-uw.pprint(f"figures and transcript written to {HERE}", clean_display=False)
+uw.pprint(f"figures written to {FIGURES}, records to {HERE}", clean_display=False)

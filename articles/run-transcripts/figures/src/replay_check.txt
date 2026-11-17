@@ -1,0 +1,1 @@
+max |T(replay) - T(first take)| after step 13: 0.000e+00
