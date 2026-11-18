@@ -31,7 +31,7 @@ exports:
     template: ../../templates/pdf
     output: moving-the-mesh-without-remaking-it.pdf
     article_id: UWTN 2026-011
-    article_version: 1.2.0
+    article_version: 1.3.0
     software_version: underworld3 0.0.0
 doi: 10.6084/m9.figshare.33241170
 ---
@@ -112,24 +112,56 @@ Much of what makes refinement complex and expensive is then absent by constructi
 What you give up is equally clear, and we will come back to that: a fixed budget
 of nodes can only be redistributed, never increased.
 
-## Equidistribution is not mesh optimisation
+## Equidistribution is the objective, not the method
 
 As with any simple idea, the practical implementation is often full of traps. 
 Redistributing a mesh is a global operation: nodes all need to move in synchrony
-and they cannot overtake each other or the mesh becomes tangled an unusable. 
+and they cannot overtake each other or the mesh becomes tangled and unusable. 
 These are constraints that ultimately limit how much we can improve mesh resolution. 
 
-The algorithm that we need is *equidistribution*: supply a metric $\mathsf{M}(x)$
-— a monitor function saying how much resolution is wanted, and in a tensor
-metric, in which direction — and ask for the map from a fixed computational
-mesh to the physical mesh under which every cell carries the same amount of
-$\mathsf{M}$. That is a Monge–Ampère-style problem, and it is the same target
-the refiner is chasing; the difference is only that the refiner is allowed to
-add nodes and we are not.
+The objective we need is *equidistribution*. Supply a metric $\mathsf{M}(x)$, a
+symmetric positive-definite tensor that says how much resolution is wanted and
+in which direction, and ask for the mesh in which every cell carries the same
+share of it. The share is measured by the metric-volume density
 
-Underworld3 solves it with the Huang–Kamenski moving mesh PDE
-[@Huang_2015], which generates the physical mesh as the image of
-a fixed computational mesh under the inverse coordinate map, minimising
+$$
+\rho = \sqrt{\det \mathsf{M}},
+$$
+
+so that a cell $K$ holds $\int_K \rho\,\mathrm{d}x$ of metric volume, and
+equidistribution asks for that integral to be the same in every cell. It is the
+same objective the refiner is chasing; the difference is only that the refiner
+is allowed to add nodes and we are not.
+
+$\rho$ alone cannot say which way a cell should be stretched. $\mathsf{M}$ and
+$\mathsf{Q}^{T}\mathsf{M}\,\mathsf{Q}$ have the same determinant for any rotation
+$\mathsf{Q}$, so a metric asking for cells thin across a fault and one asking
+for cells thin along it have the same $\rho$. A scalar density sets cell size;
+only the tensor sets direction.
+
+Equidistribution is also not enough to fix the mesh. In one dimension it
+determines the map; in two and three, many maps put the same metric volume in
+every cell, and they differ in how they shear the cells. A method has to add a
+condition that selects one of them, and the condition is what distinguishes
+the methods. Monge–Ampère methods require the map from computational
+coordinates $\xi$ to physical coordinates $x$ to be the gradient of a convex
+potential, $x = \nabla_{\xi}\phi$, the optimal-transport choice. Put that into
+the equidistribution condition $\rho(x)\det(\partial x/\partial\xi) = c$ and it
+becomes
+
+$$
+\rho(\nabla_{\xi}\phi)\,\det D^{2}_{\xi}\phi = c,
+$$
+
+the Monge–Ampère equation [@Budd_2009; @Budd_2009b]. The equation comes from
+the convex-gradient constraint, not from equidistribution, and it is driven by
+$\rho$ alone, so it controls where cells are small but not which way they
+point.
+
+Underworld3 does not solve the Monge–Ampère equation. It uses the
+Huang–Kamenski moving mesh PDE [@Huang_2015], which is the minimisation of a
+mesh-quality functional: the physical mesh is the image of a fixed
+computational mesh under the inverse coordinate map that minimises
 
 $$
 G = \theta \sqrt{\det \mathsf{M}}\; S^{q}
@@ -140,7 +172,12 @@ $$
 with $S = \operatorname{tr}(\mathbb{J}\,\mathsf{M}^{-1}\mathbb{J}^{T})$,
 $\mathbb{J} = \hat{\mathsf{E}}\mathsf{E}^{-1}$ the Jacobian of the map between
 the reference and physical elements, and $r = \det \mathbb{J}$. The first term
-is the shape term, the second the size term.
+is the shape term, the second the size term. The size term is smallest when
+every cell holds the same metric volume, which is equidistribution; the shape
+term is smallest when every cell is equilateral as measured in $\mathsf{M}$,
+which is alignment with the full tensor; $\theta$ weights the two. Where the
+Monge–Ampère approach selects a map by requiring it to be a convex gradient,
+this functional selects it by mesh quality in the metric.
 
 Two properties of that functional are why this is the mover we use and not one
 of the several we retired.
@@ -151,9 +188,9 @@ first. That is a theorem about the functional [@Huang_2017], not a guard
 bolted on afterwards, and it is the difference between a mover you can leave
 running in a time loop and one you have to watch.
 
-**It aligns as well as clusters.** $\mathsf{M}$ is a tensor, so a metric that is
+**It aligns as well as clusters.** The shape term uses all of $\mathsf{M}$, not just $\rho$, so a metric that is
 thin across a fault normal and long along it produces cells that are thin
-across the fault and long along it. An isotropic monitor function can only ask
+across the fault and long along it. A scalar density can only ask
 for smaller cells; a tensor one can ask for the *right* cells, which for a
 sheet-like feature is worth far more than the same node count spent
 isotropically.
@@ -175,7 +212,9 @@ In use it is two calls:
 ```python
 import underworld3 as uw
 
-# A scalar metric from |grad T|. refinement=R asks for cells up to R
+# A scalar density rho from |grad T|. The mover takes a scalar as the
+# isotropic metric M = rho*I: it sets cell size, not direction.
+# refinement=R asks for cells up to R
 # times finer than the BACKGROUND spacing h0, not a finest:coarsest
 # ratio: with coarsening="auto" the sparsest cells relax to h0*R**(1/d),
 # so the full envelope is [h0/R, h0*R**(1/d)].
@@ -192,6 +231,11 @@ uw.meshing.node_redistribution(
     slip_surfaces=True,      # boundary nodes slide tangentially
     skip_threshold=0.9)      # don't move an already-aligned mesh
 ```
+
+A scalar passed to the mover is the metric $\mathsf{M} = \rho\,\mathsf{I}$. In
+two dimensions its metric-volume density $\sqrt{\det \mathsf{M}}$ is $\rho$
+itself; in three it is $\rho^{3/2}$. For a fault or a front that the cells
+should line up with, pass a tensor metric instead.
 
 `accel` selects how the outer iteration is driven. The unaccelerated descent
 above is the setting to reach for when the grading you get is weaker than the
@@ -373,6 +417,15 @@ partition exactly as they were.
 
 ## History
 
+- **1.3.0** — 2026-11-18
+  The section on equidistribution, retitled, now separates the objective from
+  the method: equidistribution is the objective shared with Monge–Ampère
+  methods, the Monge–Ampère equation comes from their convex-gradient
+  constraint, and the Huang–Kamenski mover minimises a mesh-quality functional
+  instead. It introduces the metric-volume density $\rho = \sqrt{\det
+  \mathsf{M}}$, says why a scalar density cannot set alignment, and states what
+  a scalar passed to the mover means. Two references added. The code, results
+  and figures are unchanged.
 - **1.2.0** — 2026-11-16 · [10.6084/m9.figshare.33241170.v3](https://doi.org/10.6084/m9.figshare.33241170.v3)
   The acknowledgement now names the NCI computing time behind the work,
   under the National Computational Merit Allocation Scheme and the ANU Merit
