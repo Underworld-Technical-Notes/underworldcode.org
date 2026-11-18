@@ -18,6 +18,7 @@ import os
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -60,6 +61,7 @@ b.plot(xs, vel_all, ".", ms=2.4, color="#1baf7a", alpha=0.55, label="each linear
 b.plot(steps, vel_mean, "-", lw=1.0, color="#0d6e4b", label="mean over the step")
 b.set_ylim(0, vel_all.max() + 3)
 b.set_ylabel("velocity iterations")
+b.yaxis.set_major_locator(MaxNLocator(integer=True, steps=[1, 2, 5, 10]))
 b.legend(ncol=2, fontsize=8.3, loc="upper right", frameon=False, markerscale=2.5)
 b.set_title("(b) velocity iterations per linear solve (mean %.1f, %d solves)" % (vel_all.mean(), len(vel_all)),
             fontsize=9.5, loc="left")
@@ -67,6 +69,7 @@ b.set_title("(b) velocity iterations per linear solve (mean %.1f, %d solves)" % 
 c.bar(steps, nl, width=0.8, color="#eb6834")
 c.set_ylim(0, nl.max() + 3)
 c.set_ylabel("iterations")
+c.yaxis.set_major_locator(MaxNLocator(integer=True, steps=[1, 2, 5, 10]))
 c.set_title("(c) nonlinear iterations per step", fontsize=9.5, loc="left")
 c.set_xlabel("step")
 c.set_xlim(steps.min() - 1, steps.max() + 1)
