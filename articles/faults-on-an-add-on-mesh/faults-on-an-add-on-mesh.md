@@ -32,7 +32,6 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 development @ a673cd52
 ---
-
 We are going to take a look at how Underworld3 puts a slipping fault into a model without remeshing the whole model each time the fault moves. The mesh has to resolve the velocity discontinuity along the fault while supporting an efficient solve across the domain; the effect of the slipping fault is felt everywhere in the domain.
 
 We divide the mesh in two. A **base** mesh holds the model's fields, particles and multigrid hierarchy. An **add-on** is a copy of its finest level with a narrow band of cells placed along the fault and split so that the two sides can slip. When the fault moves, we rebuild the add-on and reuse the base hierarchy.
