@@ -30,14 +30,14 @@ exports:
     output: faults-on-an-add-on-mesh.pdf
     article_id: UWTN 2026-022
     article_version: 1.0.0
-    software_version: underworld3 development @ 25d62812
+    software_version: underworld3 development @ a673cd52
 ---
 
 We are going to take a look at how Underworld3 puts a slipping fault into a model without remeshing the whole model each time the fault moves. The mesh has to resolve the velocity discontinuity along the fault while supporting an efficient solve across the domain; the effect of the slipping fault is felt everywhere in the domain.
 
 We divide the mesh in two. A **base** mesh holds the model's fields, particles and multigrid hierarchy. An **add-on** is a copy of its finest level with a narrow band of cells placed along the fault and split so that the two sides can slip. When the fault moves, we rebuild the add-on and reuse the base hierarchy.
 
-The fault formulation is described in [Faults: to mesh or not to mesh?](https://www.underworldcode.org/putting-a-fault-in-a-mesh/). Here we concentrate on the solver: how a continuous base hierarchy and a local patch solve handle the discontinuity, and what this costs when a fault moves through a convection model. The underlying full-multigrid setup is described in [UWTN 2026-014](https://www.underworldcode.org/setting-up-full-multigrid/).
+The fault formulation is described in [Faults: to mesh or not to mesh?](https://www.underworldcode.org/putting-a-fault-in-a-mesh/). Here we concentrate on the solver: how a continuous base hierarchy and a local patch solve handle the discontinuity, and what this costs when a fault moves through a convection model. The underlying full-multigrid setup is described in [UWTN 2026-014](https://www.underworldcode.org/setting-up-full-multigrid/). The figures come from earlier development builds, with each run's commit recorded in `figures/src/`.
 
 ## The base mesh and the add-on
 

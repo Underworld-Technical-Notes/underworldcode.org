@@ -140,3 +140,26 @@ operator complexity it is not (19 to 47 ms).
 
 Wall times are from a laptop with two queues at once (eight ranks); compare iteration
 counts and work.
+
+## Rerun on development before release (2026-11-24)
+
+Run approved by Louis to check the simple-shear result on the release's build.
+underworld3 `development` at a673cd52 (PR #1279 merged, 2026-11-21), built into a
+fresh worktree's `default` environment (conda-forge PETSc 3.25.3, OpenMPI, not the
+old `amr-dev` worktree; `pip install .`, not editable), macOS (Wombat-3),
+`OMP_NUM_THREADS=1`, serial. The script is unchanged. Records and logs are in
+`records_dev_a673cd52/`; `records/` is untouched.
+
+    python compare_dev.py records_dev_a673cd52
+
+| arm | velocity its / applications | peak slip | patch blocks |
+|---|---|---|---|
+| A_r80_H0_faclu | 66 / 17 (3.88), as before | 0.15951006, as before | LU |
+| A_r160_H0_faclu | 65 / 17 (3.82), as before | 0.15925955, as before | LU |
+| A_r320_H0_faclu | 67 / 17 (3.94), as before | 0.15920954, as before | LU |
+| A_r80_H0 (no `-uw_fac_lu`) | 66 / 17; was 180 / 17 with ILU(0) | 0.15951006 | LU |
+
+The LU arms reproduce exactly; peak slip agrees to 1e-15. The default arm now matches
+them: #912 (cc839425) made the rotated path install LU on the patch blocks, so
+`-uw_fac_lu 1` is no longer needed on development. The note's ILU(0) row remains the
+measurement of that smoother, taken when it was what the default ran.
