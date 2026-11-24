@@ -32,7 +32,7 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 development @ 25d62812
 ---
-<!-- Historical development and provenance records: drafting-history-before-cull-2026-11-17.md. -->
+<!-- Historical development and provenance records: figures/src/drafting-history-before-cull-2026-11-17.md. -->
 
 In this note we look at how Underworld3 puts a slipping fault into a model without remeshing the whole model each time the fault moves. The mesh must resolve the velocity discontinuity along the fault while supporting an efficient solve across the domain.
 
@@ -126,11 +126,11 @@ On 26 processes, a step took 99 s on average, excluding a further 16 s for check
 
 The add-on was rebuilt on 759 of the 799 steps after the first. On 28 steps the fit found no new position; on 12, placement was refused because the fitted trace reached the boundary. These 40 steps reused the previous mesh. The run averaged seven nonlinear iterations per step; the final velocity and pressure solves of each step averaged 4.5 and 12 iterations respectively. No linear solve reached its iteration limit. Relative tolerances were $10^{-3}$ for Stokes, $10^{-2}$ for pressure ($10^{-4}$ on the first solve) and $3.3 \times 10^{-5}$ for velocity.
 
-```{figure} figures/trench-cost.png
+```{figure} figures/trench-cost-window.png
 :label: fig-trench-cost
-:alt: Four panels against step, 0 to 799. (a) Wall time per step stacked by phase, about 99 s, most of it the Stokes solve, with thin bands for building the add-on, transferring the fields onto it, carrying the solution back to the base, and the rest of the step. (b) The build, transfer and carry-back times per step, about 10 s together, with low points at the 40 steps that kept the previous mesh. (c) The peak slip rate on the fault per step, between 0.65 and 3.74 cm/yr. (d) The band's cells and the cells the add-on adds to the base's finest level, at each of the 759 builds.
+:alt: Three panels against step, 2 to 141. (a) Stokes wall time per nonlinear iteration, scattered between about 6 and 16 seconds around a dashed mean of 11.0 seconds, with no trend. (b) Velocity iterations of every linear solve as points, mostly between 1 and 8, with a line for the mean over each step that stays near 4. (c) Bars of nonlinear iterations per step, between 3 and 19.
 
-The cost of following the trench. (a) Wall time per step, excluding checkpoint writes. (b) Mesh construction and transfers; the low points are the 40 steps that reused the previous mesh. (c) Peak slip rate. (d) Cells in the band and the net number added to the base mesh.
+The solver cost while following the trench, steps 2 to 141 on 26 processes, with the add-on rebuilt at every step. (a) Stokes wall time per nonlinear iteration: 11.0 ± 1.8 s. (b) Velocity iterations of each linear solve, with the mean over each step: 4.2 on average over 1,289 solves. (c) Nonlinear iterations per step, which set the step-to-step variation in cost.
 ```
 
 ## Current limits
