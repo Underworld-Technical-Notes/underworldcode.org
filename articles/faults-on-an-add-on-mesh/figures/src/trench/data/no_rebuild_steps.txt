@@ -1,0 +1,42 @@
+# earth_recipe_movie: the steps that kept the previous step's solver mesh (records solver.kind 'ordinary'), with the rank-0 log line (slurm_resume.out) that says why:
+# the fit's 'keeps its place' from the step before's detection, or a refused placement at the step's own rebuild
+142	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+150	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+152	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+247	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+248	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+249	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+250	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+251	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+252	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+253	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+254	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+255	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+256	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+322	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+323	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+325	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+339	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+340	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+341	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+342	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+343	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+344	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+345	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+346	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+347	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+348	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+349	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+350	crust fault: no slab top reaching the cap from the surface; the fault keeps its place
+513	placement of ['F0'] failed (fault_split: the fault touches the domain boundary. Only strictly interior faults, with both tips inside the mesh, are s) | keeping the previous faults
+515	placement of ['F0'] failed (fault_split: the fault touches the domain boundary. Only strictly interior faults, with both tips inside the mesh, are s) | keeping the previous faults
+516	placement of ['F0'] failed (fault_split: the fault touches the domain boundary. Only strictly interior faults, with both tips inside the mesh, are s) | keeping the previous faults
+548	placement of ['F0'] failed (fault_split: the fault touches the domain boundary. Only strictly interior faults, with both tips inside the mesh, are s) | keeping the previous faults
+570	placement of ['F0'] failed (fault_split: the fault touches the domain boundary. Only strictly interior faults, with both tips inside the mesh, are s) | keeping the previous faults
+580	placement of ['F0'] failed (fault_split: the fault touches the domain boundary. Only strictly interior faults, with both tips inside the mesh, are s) | keeping the previous faults
+582	placement of ['F0'] failed (fault_split: the fault touches the domain boundary. Only strictly interior faults, with both tips inside the mesh, are s) | keeping the previous faults
+606	placement of ['F0'] failed (fault_split: the fault touches the domain boundary. Only strictly interior faults, with both tips inside the mesh, are s) | keeping the previous faults
+636	placement of ['F0'] failed (fault_split: the fault touches the domain boundary. Only strictly interior faults, with both tips inside the mesh, are s) | keeping the previous faults
+638	placement of ['F0'] failed (fault_split: the fault touches the domain boundary. Only strictly interior faults, with both tips inside the mesh, are s) | keeping the previous faults
+640	placement of ['F0'] failed (fault_split: the fault touches the domain boundary. Only strictly interior faults, with both tips inside the mesh, are s) | keeping the previous faults
+677	placement of ['F0'] failed (fault_split: the fault touches the domain boundary. Only strictly interior faults, with both tips inside the mesh, are s) | keeping the previous faults

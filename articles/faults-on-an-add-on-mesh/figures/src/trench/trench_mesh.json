@@ -1,0 +1,265 @@
+{
+ "run": "earth_recipe_movie",
+ "steps": [
+  {
+   "step": 10,
+   "why": "early",
+   "t": 9.820369039059793e-05,
+   "t_Myr": 26.170988878023177,
+   "trench_deg_records": -1.2360914836503265,
+   "trench_deg_state": -1.2360914836503265,
+   "dip_deg": 29.688620392531693,
+   "kind": "rebuild_same_set",
+   "base_cells": 126976,
+   "solver_cells": 127225,
+   "added_cells": 249,
+   "records_levels_cells": [
+    124,
+    496,
+    1984,
+    7936,
+    31744,
+    126976,
+    127225
+   ],
+   "records_band_cells_per_rank_sum": 131,
+   "records_band_ranks": 1,
+   "base_cells_replaced": 127,
+   "new_cells": 376,
+   "band_points": 131,
+   "band_cells": 131,
+   "F0": 46,
+   "F0Plus": 23,
+   "F0Minus": 23,
+   "base_vertices": 64192,
+   "solver_vertices": 64342,
+   "new_vertices": 193,
+   "base_edges": 191168,
+   "base_edges_kept": 190995,
+   "base_edges_changed": 173,
+   "solver_edges": 191568,
+   "solver_edges_not_in_base": 573,
+   "max_dist_changed_base_edge": 0.027335394737489287,
+   "max_dist_changed_base_edge_km": 79.27264473871894,
+   "beyond": {
+    "0.02": {
+     "km": 58.0,
+     "base_edges": 191007,
+     "kept": 190993,
+     "share_kept": 0.9999267042569121
+    },
+    "0.05": {
+     "km": 145.0,
+     "base_edges": 190784,
+     "kept": 190784,
+     "share_kept": 1.0
+    },
+    "0.1": {
+     "km": 290.0,
+     "base_edges": 190343,
+     "kept": 190343,
+     "share_kept": 1.0
+    }
+   }
+  },
+  {
+   "step": 130,
+   "why": "half-way through the rollback",
+   "t": 0.0005620167434623121,
+   "t_Myr": 149.7757760824758,
+   "trench_deg_records": -10.382760214217226,
+   "trench_deg_state": -10.382760214217226,
+   "dip_deg": 24.817674599399158,
+   "kind": "rebuild_same_set",
+   "base_cells": 126976,
+   "solver_cells": 127245,
+   "added_cells": 269,
+   "records_levels_cells": [
+    124,
+    496,
+    1984,
+    7936,
+    31744,
+    126976,
+    127245
+   ],
+   "records_band_cells_per_rank_sum": 144,
+   "records_band_ranks": 1,
+   "base_cells_replaced": 124,
+   "new_cells": 393,
+   "band_points": 148,
+   "band_cells": 144,
+   "F0": 54,
+   "F0Plus": 27,
+   "F0Minus": 27,
+   "base_vertices": 64192,
+   "solver_vertices": 64356,
+   "new_vertices": 207,
+   "base_edges": 191168,
+   "base_edges_kept": 190999,
+   "base_edges_changed": 169,
+   "solver_edges": 191602,
+   "solver_edges_not_in_base": 603,
+   "max_dist_changed_base_edge": 0.03333965071770179,
+   "max_dist_changed_base_edge_km": 96.6849870813352,
+   "beyond": {
+    "0.02": {
+     "km": 58.0,
+     "base_edges": 191016,
+     "kept": 190997,
+     "share_kept": 0.9999005318926163
+    },
+    "0.05": {
+     "km": 145.0,
+     "base_edges": 190785,
+     "kept": 190785,
+     "share_kept": 1.0
+    },
+    "0.1": {
+     "km": 290.0,
+     "base_edges": 190355,
+     "kept": 190355,
+     "share_kept": 1.0
+    }
+   }
+  },
+  {
+   "step": 460,
+   "why": "the furthest rollback",
+   "t": 0.0019329748024149958,
+   "t_Myr": 515.1319859191891,
+   "trench_deg_records": -20.256417413428814,
+   "trench_deg_state": -20.256417413428814,
+   "dip_deg": 23.519376493511977,
+   "kind": "rebuild_same_set",
+   "base_cells": 126976,
+   "solver_cells": 127308,
+   "added_cells": 332,
+   "records_levels_cells": [
+    124,
+    496,
+    1984,
+    7936,
+    31744,
+    126976,
+    127308
+   ],
+   "records_band_cells_per_rank_sum": 174,
+   "records_band_ranks": 1,
+   "base_cells_replaced": 163,
+   "new_cells": 495,
+   "band_points": 174,
+   "band_cells": 174,
+   "F0": 66,
+   "F0Plus": 33,
+   "F0Minus": 33,
+   "base_vertices": 64192,
+   "solver_vertices": 64393,
+   "new_vertices": 256,
+   "base_edges": 191168,
+   "base_edges_kept": 190947,
+   "base_edges_changed": 221,
+   "solver_edges": 191702,
+   "solver_edges_not_in_base": 755,
+   "max_dist_changed_base_edge": 0.03411091021484003,
+   "max_dist_changed_base_edge_km": 98.92163962303609,
+   "beyond": {
+    "0.02": {
+     "km": 58.0,
+     "base_edges": 190948,
+     "kept": 190939,
+     "share_kept": 0.9999528667490626
+    },
+    "0.05": {
+     "km": 145.0,
+     "base_edges": 190686,
+     "kept": 190686,
+     "share_kept": 1.0
+    },
+    "0.1": {
+     "km": 290.0,
+     "base_edges": 190155,
+     "kept": 190155,
+     "share_kept": 1.0
+    }
+   }
+  },
+  {
+   "step": 799,
+   "why": "after the advance, the last step",
+   "t": 0.004137446637067526,
+   "t_Myr": 1102.6171164385844,
+   "trench_deg_records": -15.353712729994186,
+   "trench_deg_state": -15.353712729994186,
+   "dip_deg": 26.109090430206518,
+   "kind": "rebuild_same_set",
+   "base_cells": 126976,
+   "solver_cells": 127248,
+   "added_cells": 272,
+   "records_levels_cells": [
+    124,
+    496,
+    1984,
+    7936,
+    31744,
+    126976,
+    127248
+   ],
+   "records_band_cells_per_rank_sum": 144,
+   "records_band_ranks": 1,
+   "base_cells_replaced": 121,
+   "new_cells": 393,
+   "band_points": 148,
+   "band_cells": 144,
+   "F0": 54,
+   "F0Plus": 27,
+   "F0Minus": 27,
+   "base_vertices": 64192,
+   "solver_vertices": 64357,
+   "new_vertices": 206,
+   "base_edges": 191168,
+   "base_edges_kept": 191003,
+   "base_edges_changed": 165,
+   "solver_edges": 191606,
+   "solver_edges_not_in_base": 603,
+   "max_dist_changed_base_edge": 0.03259670265996977,
+   "max_dist_changed_base_edge_km": 94.53043771391233,
+   "beyond": {
+    "0.02": {
+     "km": 58.0,
+     "base_edges": 191015,
+     "kept": 190998,
+     "share_kept": 0.999911001753789
+    },
+    "0.05": {
+     "km": 145.0,
+     "base_edges": 190794,
+     "kept": 190794,
+     "share_kept": 1.0
+    },
+    "0.1": {
+     "km": 290.0,
+     "base_edges": 190357,
+     "kept": 190357,
+     "share_kept": 1.0
+    }
+   }
+  }
+ ],
+ "window": {
+  "x": [
+   -0.2509022309150331,
+   0.045
+  ],
+  "y": [
+   2.0168298337116313,
+   2.2342222222222228
+  ],
+  "width_km": 858.1164696535959,
+  "height_km": 630.4379266807153
+ },
+ "units": {
+  "length_km": 2900.0,
+  "time_Myr": 266497.0
+ }
+}
