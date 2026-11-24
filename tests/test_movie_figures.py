@@ -55,3 +55,28 @@ def test_the_published_notes_need_no_swap_today():
         text = path.read_text(encoding="utf-8")
         if ".mp4" not in text and ".webm" not in text and ".mov" not in text:
             assert build_pdf.movies_to_stills(text) == text, path
+
+
+def test_the_web_blocks_are_stripped_before_the_swaps_read_the_sources(monkeypatch):
+    """A swap writes back the text it read. Read before the strip, it put the
+    banner and the comments block back into the PDF of every note with a movie
+    (UWTN 2026-011 1.1.0 and 1.2.0). And if a swap fails, the strip is undone."""
+    events = []
+
+    class Stop(Exception):
+        pass
+
+    def fake_run(*command):
+        events.append(command[-1])
+        return 0
+
+    def fake_swaps():
+        events.append("swaps")
+        raise Stop
+
+    monkeypatch.setattr(build_pdf, "run", fake_run)
+    monkeypatch.setattr(build_pdf, "movie_swaps", fake_swaps)
+    with pytest.raises(Stop):
+        build_pdf.main()
+    assert events.index("--remove") < events.index("swaps")
+    assert events[-1] == "--add"

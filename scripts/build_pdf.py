@@ -106,8 +106,8 @@ def movies_to_stills(text, where="?"):
 def movie_swaps():
     """(path, original, for the PDF) for every article with a movie figure.
 
-    Computed before anything is written, so a movie without a still stops the
-    build with every source still as it was."""
+    Computed before any swap is written, so a movie without a still stops the
+    build with every source as it was (main puts the web blocks back)."""
     swaps = []
     for path in sorted(ROOT.glob("articles/*/*.md")):
         original = path.read_text(encoding="utf-8")
@@ -120,9 +120,17 @@ def movie_swaps():
 def main():
     if run(sys.executable, "scripts/sync_archival.py") != 0:
         sys.exit("could not sync the archival metadata")
-    swaps = movie_swaps()
     if run(sys.executable, "scripts/banner_body.py", "--remove") != 0:
         sys.exit("could not strip the web-only banners")
+    # After the strip, never before: a swap holds the text it read and writes
+    # it back for the build, so reading first put the banner and the comments
+    # block back into every note with a movie (UWTN 2026-011 1.1.0 and 1.2.0
+    # were deposited with both).
+    try:
+        swaps = movie_swaps()
+    except BaseException:
+        run(sys.executable, "scripts/banner_body.py", "--add")
+        raise
 
     # A preview needs the PDF of the note under review, not of the other
     # forty-one. Rebuilding all of them costs 75 seconds against 4 for one, and
