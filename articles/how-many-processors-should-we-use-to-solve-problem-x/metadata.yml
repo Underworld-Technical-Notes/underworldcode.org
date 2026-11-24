@@ -12,11 +12,11 @@ authors:
     orcid: 0000-0003-3685-174X
     affiliation: Australian National University
 publication_date: 2025-07-27
-version: 1.0.0
+version: 1.1.0
 legacy_doi: 10.59350/tjm5s-sfs33
 archive_doi: 10.6084/m9.figshare.33193554
-archived_at: 2026-08-10T04:19:43Z
-archived_version: 1.0.0
+archived_at: 2026-11-16T04:08:44Z
+archived_version: 1.1.0
 license: CC-BY-4.0
 canonical_path: /how-many-processors-should-we-use-to-solve-problem-x/
 legacy_paths:
@@ -35,4 +35,4 @@ figures: 2
 source: ghost-migration
 ghost_uuid: 013429d5-0c2d-4a19-88b2-75ad4e40548a
 repository_record_id: 33193554
-archive_published_at: 2026-08-10T04:26:56Z
+archive_published_at: 2026-11-16T04:10:48Z

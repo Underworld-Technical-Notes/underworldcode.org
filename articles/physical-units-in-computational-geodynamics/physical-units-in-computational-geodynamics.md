@@ -19,14 +19,14 @@ keywords:
   - development
 exports:
   - format: typst
-    archived: "2026-08-10T04:19:43Z"
+    archived: "2026-11-16T04:59:47Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/physical-units-in-computational-geodynamics/
     template: ../../templates/pdf
     output: physical-units-in-computational-geodynamics.pdf
     article_id: UWTN 2026-005
-    article_version: 1.0.0
+    article_version: 1.1.0
 parts:
   abstract: "Non-dimensionalisation (rewriting problems to make them re-scalable from lab to the real world) is a specialised task that all modellers confront at some point. It is important for accurate and efficient numerical solutions. Can we take away the pain that comes with the task ?"
 ---
@@ -240,5 +240,22 @@ This does not replace physical intuition. You still need to know that a Rayleigh
 ---
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code: [github.com/underworldcode/underworld3](https://github.com/underworldcode/underworld3)*
+
+## History
+
+- **1.1.0** — 2026-11-16 · [10.6084/m9.figshare.33193587.v3](https://doi.org/10.6084/m9.figshare.33193587.v3)
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193587.v2](https://doi.org/10.6084/m9.figshare.33193587.v2)
+  First published. A first cut, deposited 2026-08-09 as
+  [.v1](https://doi.org/10.6084/m9.figshare.33193587.v1), was replaced the next day
+  after the migration's last repairs.
+
+<!-- uwtn-acknowledgement -->
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
+
+<!-- uwtn-acknowledgement -->
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=physical-units-in-computational-geodynamics">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=physical-units-in-computational-geodynamics">Start one</a></div></div>

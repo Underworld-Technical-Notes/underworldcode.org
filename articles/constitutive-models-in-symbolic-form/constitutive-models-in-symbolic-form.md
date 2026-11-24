@@ -16,14 +16,14 @@ keywords:
   - development
 exports:
   - format: typst
-    archived: "2026-08-10T04:19:43Z"
+    archived: "2026-11-16T05:08:21Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/constitutive-models-in-symbolic-form/
     template: ../../templates/pdf
     output: constitutive-models-in-symbolic-form.pdf
     article_id: UWTN 2026-006
-    article_version: 1.0.0
+    article_version: 1.1.0
 parts:
   abstract: "A constitutive model is a Python class where the relationship between fluxes and gradients is encoded in SymPy. At every stage the mathematics is visible, inspectable, and differentiable. The framework handles Jacobians, C code generation, and PETSc integration. You handle the physics."
 ---
@@ -254,9 +254,22 @@ The boundary between the two is a SymPy Matrix. Everything on one side of that b
 
 In UW2, the physics and numerics were entangled in C. Changing one required understanding both. In UW3, you can write a new rheology in an afternoon, in a notebook, without compiling anything. That is the practical consequence of making constitutive models symbolic objects.
 
+## History
+
+- **1.1.0** — 2026-11-16 · [10.6084/m9.figshare.33193590.v3](https://doi.org/10.6084/m9.figshare.33193590.v3)
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193590.v2](https://doi.org/10.6084/m9.figshare.33193590.v2)
+  First published. A first cut, deposited 2026-08-09 as
+  [.v1](https://doi.org/10.6084/m9.figshare.33193590.v1), was replaced the next day
+  after the migration's last repairs.
+
 <!-- uwtn-acknowledgement -->
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
 
 <!-- uwtn-acknowledgement -->
 

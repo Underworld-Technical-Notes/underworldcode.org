@@ -12,7 +12,7 @@ authors:
     orcid: 0000-0003-3685-174X
     affiliation: Australian National University
 publication_date: 2026-08-13
-version: 1.0.0
+version: 1.2.0
 # The deposit writes archive_doi and repository_record_id when the note is
 # published; leave them out until then. `doi` and `doi_registrant` were here
 # once and are not fields the schema knows -- every note made from this
@@ -36,6 +36,6 @@ banner_credit: "Photo by <a href=\"https://unsplash.com/@waldemarbrandt67w?utm_s
 source: native
 repository_record_id: 33241170
 archive_doi: 10.6084/m9.figshare.33241170
-archived_at: 2026-08-13T11:10:11Z
-archived_version: 1.0.0
-archive_published_at: 2026-08-13T11:11:48Z
+archived_at: 2026-11-16T05:43:30Z
+archived_version: 1.2.0
+archive_published_at: 2026-11-16T05:45:08Z

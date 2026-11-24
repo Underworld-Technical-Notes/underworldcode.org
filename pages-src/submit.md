@@ -76,7 +76,9 @@ the working version. That is deliberate, and it is why the series is on a
 repository that versions.
 
 **Commit your figure sources, not just the pictures.** If a figure is drawn from
-data, the script and the data belong beside it. Sixteen figures in the older
+data, the script and the data belong beside it, in
+`articles/<slug>/figures/src/` — not in `examples/`, which is for what a reader
+runs. Sixteen figures in the older
 material on this site went dark when the server they were linked from was
 retired — and not one of them was recoverable from the Internet Archive. They
 came back only because copies existed elsewhere, which was luck rather than

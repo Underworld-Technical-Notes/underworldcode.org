@@ -24,14 +24,14 @@ keywords:
   - development
 exports:
   - format: typst
-    archived: "2026-08-10T04:19:43Z"
+    archived: "2026-11-16T04:42:22Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/how-underworld3-turns-sympy-into-c/
     template: ../../templates/pdf
     output: how-underworld3-turns-sympy-into-c.pdf
     article_id: UWTN 2026-003
-    article_version: 1.0.0
+    article_version: 1.1.0
 parts:
   abstract: "What actually happens between the moment you write a mathematical expression in underworld3's python layer and the moment PETSc receives a finite element term in the form of compiled C code ?"
 ---
@@ -223,5 +223,22 @@ For geodynamics, where constitutive models are complex, nonlinear, and frequentl
 ---
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code: [github.com/underworldcode/underworld3](https://github.com/underworldcode/underworld3)*
+
+## History
+
+- **1.1.0** — 2026-11-16 · [10.6084/m9.figshare.33193572.v3](https://doi.org/10.6084/m9.figshare.33193572.v3)
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193572.v2](https://doi.org/10.6084/m9.figshare.33193572.v2)
+  First published. A first cut, deposited 2026-08-09 as
+  [.v1](https://doi.org/10.6084/m9.figshare.33193572.v1), was replaced the next day
+  after the migration's last repairs.
+
+<!-- uwtn-acknowledgement -->
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
+
+<!-- uwtn-acknowledgement -->
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=how-underworld3-turns-sympy-into-c">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=how-underworld3-turns-sympy-into-c">Start one</a></div></div>

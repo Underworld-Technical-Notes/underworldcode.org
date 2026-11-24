@@ -17,20 +17,21 @@ license: CC-BY-4.0
 bibliography:
   - references.bib
 banner: figures/banner.jpg
+thumbnail: figures/adaptive-convection-still.png
 keywords:
   - Underworld Code
   - Tricks of the Trade
   - development
 exports:
   - format: typst
-    archived: "2026-08-13T11:10:11Z"
+    archived: "2026-11-16T05:43:30Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/moving-the-mesh-without-remaking-it/
     template: ../../templates/pdf
     output: moving-the-mesh-without-remaking-it.pdf
     article_id: UWTN 2026-011
-    article_version: 1.0.0
+    article_version: 1.2.0
     software_version: underworld3 0.0.0
 doi: 10.6084/m9.figshare.33241170
 ---
@@ -342,7 +343,8 @@ feature, and an isotropic metric in 3D gives them no reason to align.
 
 Convection in an annulus, with the mesh redistributed as the calculation runs.
 
-```{figure} figures/adaptive-convection.gif
+```{figure} figures/adaptive-convection.mp4
+:placeholder: figures/adaptive-convection-still.png
 :alt: Animated cross-section of a convecting annulus. Warm upwellings and cool downwellings develop and migrate, and the triangular mesh visibly tightens around the thermal boundary layers and the plume margins, following them as they move.
 
 Thermal convection in an annulus with a Frank–Kamenetskii viscosity spanning a
@@ -352,7 +354,8 @@ than the background spacing — more than a fixed node budget can deliver, for
 the reason given above. The node count never changes: the mesh tightens onto the boundary
 layers and the plume margins and slackens in the interior, and it keeps doing
 so as those features migrate. Nothing here is remeshed, and the multigrid
-hierarchy the solver uses is the one the mesh started with.
+hierarchy the solver uses is the one the mesh started with. The PDF shows one
+frame of the movie, step 65 of 250; the movie is on the note's record.
 ```
 
 ## Using it
@@ -367,5 +370,26 @@ mesh.relax()
 
 Both keep the vertex count, the degree-of-freedom layout and the parallel
 partition exactly as they were.
+
+## History
+
+- **1.2.0** — 2026-11-16 · [10.6084/m9.figshare.33241170.v3](https://doi.org/10.6084/m9.figshare.33241170.v3)
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.1.0** — 2026-11-12 · [10.6084/m9.figshare.33241170.v2](https://doi.org/10.6084/m9.figshare.33241170.v2)
+  The worked example's animation is now a movie encoded from the run's own
+  frames: all 250 time steps from the first, 864 pixels square and in full
+  colour, in place of a GIF that carried every fourth step at 600 pixels in 96
+  colours. The PDF shows one frame of it. The run, the text and the rest of the
+  caption are unchanged.
+- **1.0.0** — 2026-08-13 · [10.6084/m9.figshare.33241170.v1](https://doi.org/10.6084/m9.figshare.33241170.v1)
+  First published.
+
+<!-- uwtn-acknowledgement -->
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
+
+<!-- uwtn-acknowledgement -->
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=moving-the-mesh-without-remaking-it">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=moving-the-mesh-without-remaking-it">Start one</a></div></div>

@@ -12,7 +12,7 @@ authors:
     orcid: 0000-0001-7919-2575
     affiliation: Curtin University
 publication_date: 2026-04-08
-version: 1.0.0
+version: 1.1.0
 legacy_doi: 10.59350/2390e-w7d86
 archive_doi: 10.6084/m9.figshare.33193587
 license: CC-BY-4.0
@@ -32,6 +32,6 @@ figures: 0
 source: ghost-migration
 ghost_uuid: f8e03b51-3f07-4bfd-92bc-cf4f468b78a9
 repository_record_id: 33193587
-archived_at: 2026-08-10T04:19:43Z
-archived_version: 1.0.0
-archive_published_at: 2026-08-10T04:28:02Z
+archived_at: 2026-11-16T04:59:47Z
+archived_version: 1.1.0
+archive_published_at: 2026-11-16T05:01:42Z
