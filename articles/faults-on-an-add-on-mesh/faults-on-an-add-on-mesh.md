@@ -101,7 +101,7 @@ The simple-shear test. The wall velocity $\mathbf{v} = (y - \tfrac{1}{2},\ 0)$ s
 
 With an exact patch solve, the iteration count stays constant across the tested band ratios in both problems. Incomplete factorisation increases the count, with one yielding-lid solve at each ratio reaching the limit of 200 iterations. SOR alone is also increasingly expensive. Peak slip agrees within solver tolerance across the tests.
 
-The exact patch solve also saves time. In the simple-shear box, a serial solve on the already-assembled operators took 1.5, 1.9 and 3.0 s with LU on the patch, against 3.0, 5.1 and 9.0 s with ILU(0) and 4.2, 6.9 and 11.6 s with SOR alone. These are laptop timings and indicative only; the iteration counts are the firmer measure.
+The exact patch solve also saves time. In the simple-shear box, a serial solve on the already-assembled operators took 0.8, 1.0 and 1.6 s with LU on the patch, against 1.9, 3.1 and 5.5 s with ILU(0) and 2.2, 3.5 and 6.1 s with SOR alone. These are laptop timings and indicative only; the iteration counts are the firmer measure.
 
 For curved free-slip walls, each multigrid level also uses its own wall-normal frame, as described in [UWTN 2026-016](https://www.underworldcode.org/boundary-conditions-on-non-planar-boundaries/).
 

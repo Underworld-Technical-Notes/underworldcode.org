@@ -39,6 +39,7 @@ params = uw.Params(
     uw_tol=1.0e-6,            # Stokes solver tolerance (the note's iterations.png)
     uw_out="records/A.json",  # the JSON record
     uw_fac_lu=0,              # 1: the FAC patch blocks solved by LU, as custom_mg intends
+    uw_fac_ilu=0,             # 1: the FAC patch blocks by ILU(0), unshifted (the old default)
 )
 
 if int(params.uw_fac_lu):
@@ -54,6 +55,29 @@ if int(params.uw_fac_lu):
         return [key for key in _configure_pcmg(*args, **kwargs) if "_sub_1_sub_" not in key]
 
     _custom_mg._configure_pcmg = _keep_block_keys
+
+if int(params.uw_fac_ilu):
+    # The patch blocks as the earlier builds ran them by default (#892): PCASM's own
+    # sub-solve, ILU(0), unshifted, natural ordering. From #912 (cc839425) custom_mg
+    # writes LU, a nonzero shift and qmd ordering for the blocks and puts them on the
+    # live block PCs from the options database, so rewriting those keys straight after
+    # it writes them gives the ILU(0) arm on later builds.
+    from underworld3.utilities import custom_mg as _custom_mg
+    _configure_pcmg_ilu = _custom_mg._configure_pcmg
+
+    def _ilu_blocks(pc, *args, **kwargs):
+        keys = _configure_pcmg_ilu(pc, *args, **kwargs)
+        opts, prefix = PETSc.Options(), pc.getOptionsPrefix() or ""
+        for key in keys or []:
+            if key.endswith("_sub_pc_type"):
+                opts[prefix + key] = "ilu"
+            elif key.endswith("_sub_pc_factor_shift_type"):
+                opts[prefix + key] = "none"
+            elif key.endswith("_sub_pc_factor_mat_ordering_type"):
+                opts[prefix + key] = "natural"
+        return keys
+
+    _custom_mg._configure_pcmg = _ilu_blocks
 
 FAULT = "Fault"
 A, B = np.array([0.30, 0.45]), np.array([0.70, 0.55])
@@ -218,7 +242,7 @@ record = {
     "levels": names,
     "level_cells": [n_cells(m) for m in levels] + [n_cells(mesh)],
     "level_ops_velocity": level_ops,
-    "level_smoothers": smoothers, "mg_env": MG_ENV, "fac_lu": int(params.uw_fac_lu),
+    "level_smoothers": smoothers, "mg_env": MG_ENV, "fac_lu": int(params.uw_fac_lu), "fac_ilu": int(params.uw_fac_ilu),
     "n_rungs": n, "S": S, "h_b": H_B, "h_b_over_S": H_B / S,
     "tolerance": float(params.uw_tol),
     **record_info,

@@ -159,6 +159,23 @@ old `amr-dev` worktree; `pip install .`, not editable), macOS (Wombat-3),
 | A_r320_H0_faclu | 67 / 17 (3.94), as before | 0.15920954, as before | LU |
 | A_r80_H0 (no `-uw_fac_lu`) | 66 / 17; was 180 / 17 with ILU(0) | 0.15951006 | LU |
 
+Asked by the docs hub the same day: the note's ILU(0) row and the timings, at the
+cited build. `-uw_fac_ilu 1` (added to the script) rewrites the patch-block keys
+custom_mg writes to what the earlier builds ran by default: ILU(0), unshifted, natural
+ordering. The SOR-only arms ran with `UW_CUSTOM_MG_DISABLE_FAC=1`, as before.
+
+| ratio 6, 12, 24 | velocity its, was -> now | solve s, was -> now |
+|---|---|---|
+| LU (`_faclu`) | 66, 65, 67 -> same | 1.49, 1.90, 3.05 -> 0.83, 1.02, 1.57 |
+| ILU(0) (`_facilu`; originals are the no-suffix records) | 180, 259, 344 -> same | 2.98, 5.06, 9.04 -> 1.88, 3.14, 5.51 |
+| SOR alone (`_nofac`) | 259, 369, 532 -> same | 4.20, 6.86, 11.57 -> 2.21, 3.46, 6.07 |
+
+Every count and peak slip reproduces, and each arm's blocks ran the solver named. The
+times are all shorter, SOR alone included, which uses no factorisation, so most of the
+change is the build and an otherwise idle machine (the originals ran beside other
+queues); the LU blocks' qmd ordering (#895) may add to it. The ranking is unchanged.
+The note's timing sentence now quotes these a673cd52 times.
+
 The LU arms reproduce exactly; peak slip agrees to 1e-15. The default arm now matches
 them: #912 (cc839425) made the rotated path install LU on the patch blocks, so
 `-uw_fac_lu 1` is no longer needed on development. The note's ILU(0) row remains the
