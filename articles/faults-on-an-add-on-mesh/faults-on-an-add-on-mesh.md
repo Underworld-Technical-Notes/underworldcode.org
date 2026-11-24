@@ -32,9 +32,8 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 development @ 25d62812
 ---
-<!-- Historical development and provenance records: figures/src/drafting-history-before-cull-2026-11-17.md. -->
 
-In this note we look at how Underworld3 puts a slipping fault into a model without remeshing the whole model each time the fault moves. The mesh must resolve the velocity discontinuity along the fault while supporting an efficient solve across the domain.
+We are going to take a look at how Underworld3 puts a slipping fault into a model without remeshing the whole model each time the fault moves. The mesh has to resolve the velocity discontinuity along the fault while supporting an efficient solve across the domain; the effect of the slipping fault is felt everywhere in the domain.
 
 We divide the mesh in two. A **base** mesh holds the model's fields, particles and multigrid hierarchy. An **add-on** is a copy of its finest level with a narrow band of cells placed along the fault and split so that the two sides can slip. When the fault moves, we rebuild the add-on and reuse the base hierarchy.
 
@@ -42,19 +41,19 @@ The fault formulation is described in [Faults: to mesh or not to mesh?](https://
 
 ## The base mesh and the add-on
 
-The base mesh covers the whole domain and is continuous across the fault. It is built and partitioned with a refinement hierarchy. Temperature, material markers and bulk history variables remain on the base; the fault's own history is stored on the fault object.
+The base mesh covers the whole domain and has no representation of the fault. It is built and partitioned with a refinement hierarchy. Temperature, material markers and bulk history variables remain on the base; the fault's own history is stored on the fault object itself and not the extra mesh points.
 
-Underworld fault objects already carry a discretised geometry: points along a trace in two dimensions, or a triangulated surface in three. This supplies the geometry for the add-on. The ladder can be sized to match the fault discretisation or the local base mesh; resampling the fault object is another option. In the test case below, we construct the fault points ourselves and match the ladder to their spacing.
+Underworld fault objects already carry a discretised geometry: points along a trace in two dimensions, or a triangulated surface in three. This supplies the geometry for the add-on: a ladder-like strip of elements that we construct by replicating the fault nodes a small distance on either side of the fault itself.  This ladder can be sized to match the fault discretisation or the local base mesh.  In 3D, the construction is analogous so we'll just call it a ladder as well, though it no longer looks like a physical ladder !
 
-The add-on is a child of the base, built in three steps:
+The add-on mesh is a child of the base, built in three steps:
 
 1. **Copy the base's finest level.** Away from the fault, the add-on retains the base's cells.
-2. **Place the fault as a ladder.** The supplied fault points form the spine. Here they have uniform spacing $S$, and we choose to place a rail a distance $S$ on either side. The resulting two rows of squares are divided into triangles. A margin rung closes each end, and graded triangles connect the band to the remaining base cells.
+2. **Place the fault as a ladder.** The supplied fault points form the spine. Here they have uniform spacing $S$, and we choose to place a rail a distance $S$ on either side. The resulting two rows of squares are divided into triangles. A margin rung closes each end, and graded triangles connect the band to the remaining base cells. 
 3. **Split the spine.** Interior spine vertices are duplicated and the cells on one side are connected to the copies. The fault's constitutive law couples each pair.
 
 For this matched construction, the **band ratio** $h_b/S$ measures the ladder resolution relative to the base's finest cell size.
 
-Our test case is a unit box in simple shear ({numref}`fig-shear-box`). The velocity $\mathbf{v} = (y - \tfrac{1}{2},\ 0)$ is imposed on all four walls, the viscosity is uniform, and a straight frictionless fault runs from $(0.30, 0.45)$ to $(0.70, 0.55)$. The base's finest cells are $h_b = 1/32$. With 80, 160 and 320 points along the fault, $S$ is 0.0052, 0.0026 and 0.0013, and the band ratio is 6, 12 and 24. With 80 points, the case drawn below, the fault adds 906 cells to the base's 2,592. The base cell count stays fixed as the fault resolution increases.
+Our test case is a unit box in simple shear ({numref}`fig-shear-box`). The velocity $\mathbf{v} = (y - \tfrac{1}{2},\ 0)$ is imposed on all four walls, the viscosity is uniform, and a straight frictionless fault runs from $(0.30, 0.45)$ to $(0.70, 0.55)$. The base's finest cells are $h_b = 1/32$. With 80, 160 and 320 points along the fault, $S$ is 0.0052, 0.0026 and 0.0013, and the band ratio is 6, 12 and 24. With 80 points, the case drawn below, the fault adds 906 cells to the base's 2,592. The base cell count stays fixed when the fault resolution increases.
 
 ```{figure} figures/ladder-construction.png
 :alt: Three parts. (a) Mesh edges near the left tip of a straight fault: a tinted band two cells wide, made of squares of side S each divided into two triangles, with the spine along the fault, a rail S either side, a rung across the band at every spine point and a margin rung one spacing beyond the tip, which is marked by an open circle; graded triangles surround the band and grow to the base cell size h_b, marked by a dimension line. (b) The same band after the split: the two copies of the spine drawn apart, one solid and marked plus, one dashed and marked minus, every interior spine vertex doubled and the tip vertex single. (c) Four panels of the multigrid hierarchy, in the same window: the split child, with its band and graded fill tinted; then the base's three levels, whose cells are h_b, 2h_b and 4h_b, with no fault in the mesh and the fault drawn as a hidden line.
@@ -66,7 +65,7 @@ The child becomes the finest multigrid level, above the base's existing levels. 
 
 ## The solve workflow
 
-The fault object supplies the discretised trace. We choose the ladder resolution relative to that trace and the local base mesh, resampling the fault if needed.
+The fault object supplies the discretised trace. We choose the ladder resolution relative to that trace and the local base mesh, resampling the fault if we have to.
 
 The algorithm is:
 
@@ -82,7 +81,7 @@ Bulk history variables remain on the base throughout, and the fault object carri
 
 The velocity solve uses geometric multigrid with the split child above the continuous base levels. Prolongation evaluates the base's finite-element field at the child's nodes. The two copies of a spine vertex therefore receive the same correction: the base can correct their mean velocity, while corrections to the slip must come from the finest-level smoother. With Galerkin coarse operators, $P^T A P$, and restriction $P^T$, the residuals at the paired vertices are summed on transfer to the base.
 
-A pointwise smoother such as SOR reduces slowly varying slip errors along the fault only slowly, particularly as the band is refined. We therefore follow each SOR sweep with an exact solve on a **patch** containing the band, the graded fill, the split vertices and a surrounding layer of base cells. The patch is identified from the mesh transfer and factorised by LU when the preconditioner is set up.
+A pointwise smoother such as SOR is quite slow at reducing broad-scale slip errors along the fault, particularly as the band is refined. We therefore follow each SOR sweep with an exact solve on a **patch** containing the band, the graded fill, the split vertices and a surrounding layer of base cells. The patch is identified from the mesh transfer and factorised by LU when the preconditioner is set up.
 
 We measured velocity iterations in the simple-shear box at band ratios of 6, 12 and 24, and in a yielding-lid convection model at ratios of 8, 16 and 25. The simple-shear problem is linear: one Stokes solve, inside which the velocity block is solved 17 times as the pressure iteration converges. The yielding lid is a 4 × 1 box with a fault through the lid, solved on four processes from rest at a state where the lid is mobilising. Each velocity Krylov iteration uses one full-multigrid cycle.
 
@@ -118,13 +117,11 @@ Our moving-fault example is a subducting plate in a mantle-depth annulus, with f
 The trench run, 3–1,103 Myr. Left: the annulus, with the initial trench at the top and the black arc marking rollback. Right: a view centred on the moving trench, with surface velocity above it. Temperature runs from blue (cold) to red (hot); green marks the melange layer, orange the oceanic crust and black the fault. The PDF shows step 460, at maximum rollback.
 ```
 
-The fault follows the material interface and also defines the surface along which slip occurs. These can drift apart during advection, so we reposition the fault consistently by fitting its trace to the material markers.
+A fault is both a material interface and also the location of discontinuous slip. Numerically, these two can drift apart during advection, so we reposition the model fault consistently by fitting its trace to material markers.
 
 The base's finest cells are about 45 km across, with ladder rungs 22.7 km apart: a band ratio of 2. As the trench moves, we rebuild the child around the fitted trace and reuse the base hierarchy. The trench rolls back 2,228 km by step 460, then advances again before the run ends at step 799. The band adds only 249–332 cells to the base's 126,976 cells. The [mesh movie](figures/trench-movie.mp4) and [four snapshots](figures/trench-mesh.png) show the band following the fault through the fixed base mesh.
 
-On 26 processes, a step took 99 s on average, excluding a further 16 s for checkpoint output. The Stokes solve accounted for 82 s. Building the child took 4.4 s, transferring fields onto it 2.8 s and transferring the solution back 2.7 s: together about 10 per cent of the step.
-
-The add-on was rebuilt on 759 of the 799 steps after the first. On 28 steps the fit found no new position; on 12, placement was refused because the fitted trace reached the boundary. These 40 steps reused the previous mesh. The run averaged seven nonlinear iterations per step; the final velocity and pressure solves of each step averaged 4.5 and 12 iterations respectively. No linear solve reached its iteration limit. Relative tolerances were $10^{-3}$ for Stokes, $10^{-2}$ for pressure ($10^{-4}$ on the first solve) and $3.3 \times 10^{-5}$ for velocity.
+On 26 processes, a step took 99 s on average, excluding a further 16 s for checkpoint output. The Stokes solve accounted for 82 s. Building the child took 4.4 s, transferring fields onto it 2.8 s and transferring the solution back 2.7 s: together about 10 per cent of the step. The run averaged seven nonlinear iterations per step; the final velocity and pressure solves of each step averaged 4.5 and 12 iterations respectively. No linear solve reached its iteration limit. Relative tolerances were $10^{-3}$ for Stokes, $10^{-2}$ for pressure ($10^{-4}$ on the first solve) and $3.3 \times 10^{-5}$ for velocity.
 
 ```{figure} figures/trench-cost-window.png
 :label: fig-trench-cost
@@ -135,7 +132,7 @@ The solver cost while following the trench, steps 2 to 141 on 26 processes, with
 
 ## Current limits
 
-Separate fault ladders must remain apart, so junctions retain a gap between bands. At a domain boundary the split stops short of the wall; the trench example continues it to the surface with a weak zone. The efficiency measurements here are two-dimensional. The cost of factorising a patch around a fault surface in three dimensions remains to be measured.
+Individual fault ladders cannot cross in our formulation, so junctions retain a gap between bands. At a domain boundary the split stops short of the wall; the trench example continues it to the surface with a weak zone. The efficiency measurements here are two-dimensional. The cost of factorising a patch around a fault surface in three dimensions remains to be measured.
 
 <!-- uwtn-acknowledgement -->
 
