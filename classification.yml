@@ -336,3 +336,8 @@ faults-on-an-add-on-mesh:
   article_type: technical-note
   subjects: [earthquakes-faults]
   methods: [meshing, solvers]
+
+symbolic-fem-and-adjoint-forms:
+  article_type: technical-note
+  subjects: []
+  methods: [solvers, symbolic-codegen]

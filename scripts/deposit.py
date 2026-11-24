@@ -720,6 +720,16 @@ def run(slug, provider, live, publish, new_version, delete_draft,
         provider.upload(record_id, pdf)
         steps.append("uploaded %s -- the previewable article" % pdf.name)
 
+    # Each movie goes up as a file of its own, so it plays on the record. The
+    # PDF shows its still and points here; the package below keeps a copy with
+    # the rest of the figures, for whoever rebuilds the note.
+    figures = ARTICLES / slug / "figures"
+    for movie in sorted(figures.glob("*")) if figures.is_dir() else []:
+        if movie.suffix.lower() in (".mp4", ".webm", ".mov"):
+            provider.upload(record_id, movie)
+            steps.append("uploaded %s -- a movie, playable on the record"
+                         % movie.name)
+
     package, _count, digest = archive_package.build(slug, ROOT / "dist")
     file_id = provider.upload(record_id, package)
     steps.append("uploaded %s (sha256 %s) as file %s"

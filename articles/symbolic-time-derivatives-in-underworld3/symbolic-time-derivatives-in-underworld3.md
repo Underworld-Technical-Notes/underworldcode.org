@@ -16,14 +16,14 @@ keywords:
   - development
 exports:
   - format: typst
-    archived: "2026-08-10T04:19:43Z"
+    archived: "2026-11-16T05:17:40Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/symbolic-time-derivatives-in-underworld3/
     template: ../../templates/pdf
     output: symbolic-time-derivatives-in-underworld3.pdf
     article_id: UWTN 2026-007
-    article_version: 1.0.0
+    article_version: 1.1.0
 parts:
   abstract: "In Underworld3, the time derivative is a symbolic object. It appears in the solver's strong form as a SymPy expression, alongside the constitutive stress and the body force."
 doi: 10.6084/m9.figshare.33193596
@@ -201,9 +201,22 @@ In UW3, the time derivative is an object you can create, configure, inspect, and
 
 This is the same design principle we described in the [constitutive models post](/constitutive-models-in-symbolic-form/): separate the physics from the numerics, connect them through symbolic expressions, and make both sides inspectable. For constitutive models, the boundary is the stress tensor. For time derivatives, it is the BDF/AM expression. In both cases, the solver sees a SymPy expression and does not need to know how it was constructed.
 
+## History
+
+- **1.1.0** — 2026-11-16 · [10.6084/m9.figshare.33193596.v3](https://doi.org/10.6084/m9.figshare.33193596.v3)
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193596.v2](https://doi.org/10.6084/m9.figshare.33193596.v2)
+  First published. A first cut, deposited 2026-08-09 as
+  [.v1](https://doi.org/10.6084/m9.figshare.33193596.v1), was replaced the next day
+  after the migration's last repairs.
+
 <!-- uwtn-acknowledgement -->
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
 
 <!-- uwtn-acknowledgement -->
 

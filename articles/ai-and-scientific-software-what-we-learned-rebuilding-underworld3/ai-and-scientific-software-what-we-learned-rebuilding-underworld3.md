@@ -16,14 +16,14 @@ keywords:
   - Auscope
 exports:
   - format: typst
-    archived: "2026-08-10T04:19:43Z"
+    archived: "2026-11-16T04:25:33Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/ai-and-scientific-software-what-we-learned-rebuilding-underworld3/
     template: ../../templates/pdf
     output: ai-and-scientific-software-what-we-learned-rebuilding-underworld3.pdf
     article_id: UWTN 2026-001
-    article_version: 1.0.0
+    article_version: 1.1.0
 parts:
   abstract: "Underworld3 has about 50,000 lines of Python/ Cython wrapping PETSc, SymPy, and a just-in-time compiler. I began a trial of AI coding tools in 2025 and they have gradually become central to the way our team works. This is a story of co-evolution as much as it is about adoption of a new set of tools."
 ---
@@ -185,9 +185,22 @@ We didn't try (for long) to bolt AI tools onto an existing workflow. The code ch
 
 The lesson we'd offer other scientific software teams is simple: if your AI tools are struggling with your code, listen to what that is telling you. The problem is probably real, and fixing it will pay off in ways that go well beyond AI.
 
+## History
+
+- **1.1.0** — 2026-11-16 · [10.6084/m9.figshare.33193560.v3](https://doi.org/10.6084/m9.figshare.33193560.v3)
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193560.v2](https://doi.org/10.6084/m9.figshare.33193560.v2)
+  First published. A first cut, deposited 2026-08-09 as
+  [.v1](https://doi.org/10.6084/m9.figshare.33193560.v1), was replaced the next day
+  after the migration's last repairs.
+
 <!-- uwtn-acknowledgement -->
 
 *The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
 
 <!-- uwtn-acknowledgement -->
 

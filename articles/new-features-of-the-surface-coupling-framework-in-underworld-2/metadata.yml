@@ -9,7 +9,7 @@ authors:
     orcid: 0000-0001-9424-2315
     affiliation: Australian National University
 publication_date: 2025-08-25
-version: 1.0.0
+version: 1.1.0
 legacy_doi: 10.59350/zqv83-gbf84
 archive_doi: 10.6084/m9.figshare.33193557
 license: CC-BY-4.0
@@ -30,6 +30,6 @@ figures: 5
 source: ghost-migration
 ghost_uuid: ba04ae00-5f7f-4655-89ef-c58d6060c9c7
 repository_record_id: 33193557
-archived_at: 2026-08-10T04:19:43Z
-archived_version: 1.0.0
-archive_published_at: 2026-08-10T04:27:06Z
+archived_at: 2026-11-16T04:16:33Z
+archived_version: 1.1.0
+archive_published_at: 2026-11-16T04:18:58Z

@@ -58,6 +58,39 @@ updates to a published article affect only the private copy until an explicit
 publish. That matches the brief: cosmetic web corrections need no deposit, and
 a substantive change is a new version.
 
+### The History section
+
+An updated note says so, in a `## History` section at the end. Never change a
+published note silently: that is the one thing every correction policy agrees
+on, because a reader who has the old text has no way to know it moved.
+
+Each entry is a version, a date, the version DOI, and a sentence on what
+changed:
+
+```markdown
+## History
+
+- **1.1.0** — 2026-09-08 · [10.6084/m9.figshare.33216996.v2](https://doi.org/10.6084/m9.figshare.33216996.v2)
+  Rewritten for the new time-stepping interface: `foo()` replaces `bar()`.
+  The method and the results are unchanged.
+- **1.0.0** — 2026-08-11 · [10.6084/m9.figshare.33216996.v1](https://doi.org/10.6084/m9.figshare.33216996.v1)
+  First published.
+```
+
+**Say what did NOT change.** When an API moved and the physics did not, that
+sentence is what saves a reader from re-reading the note to find out.
+
+**Only deposited versions get an entry.** A typo fix is a patch bump and no
+deposit, so it leaves no trace here; a minor or major bump is a new deposit and
+does. Otherwise the section fills with corrections nobody needs to know about,
+and the ones that matter are lost in them.
+
+**The live page carries the current history; each deposited PDF carries the
+history up to its own version.** That is correct rather than a defect, and it
+is why nothing goes back to amend an older PDF -- a deposited copy is a fixed
+document, and the version DOIs are what connect them. The concept DOI, with no
+`.vN`, always resolves to the newest.
+
 **A superseded guide becomes a new version, not a new article.** This is the
 editorial rule, and it is why the how-tos are deposited at all. The container
 instructions are the case in point: useful to know about, and going out of date.
@@ -85,6 +118,18 @@ lives in one place, so it can be corrected once for every note.
 It is a list rather than a rule inferred from the text, deliberately: a note
 that mentions Underworld3 is not necessarily work the project funded, and
 claiming funding that did not happen is worse than omitting one that did.
+
+A note whose work used NCI computing time under a merit allocation also carries:
+
+> This research was supported by the Australian Government's National
+> Collaborative Research Infrastructure Strategy (NCRIS), with access to
+> computational resources provided by the National Computational Infrastructure
+> (NCI Australia) through the National Computational Merit Allocation Scheme and
+> the ANU Merit Allocation Scheme.
+
+Add its slug to `acknowledgements-nci.yml`. Allocations are granted year by year,
+so a note goes on that list only if it comes from a year with an allocation:
+2025 and 2026 so far. Check the list at each allocation round.
 
 Three of the eleven Underworld3 notes carried this and eight did not, which is
 what an acknowledgement looks like when it depends on an author remembering

@@ -13,14 +13,14 @@ keywords:
   - Underworld Code
 exports:
   - format: typst
-    archived: "2026-08-10T04:19:43Z"
+    archived: "2026-11-16T04:16:33Z"
     series: "Underworld Technical Notes"
     logo: ../../static/uwtn-logo.png
     origin_url: https://www.underworldcode.org/new-features-of-the-surface-coupling-framework-in-underworld-2/
     template: ../../templates/pdf
     output: new-features-of-the-surface-coupling-framework-in-underworld-2.pdf
     article_id: UWTN 2025-004
-    article_version: 1.0.0
+    article_version: 1.1.0
 parts:
   abstract: "Coupling in Underworld 2 Underworld 2's UWGeodynamic module enables the coupling of tectonics and surface processes models, most notably, with Underworld 2 handling the tectonics and Badlands (Salles, Ding, & Brocard, 2018) handling the surface processes. This coupling framework has been employed to study landscape evolution and topography in orogenic regions, including the Three Rivers region in Southeast Tibet (Lu et al., 2019), Southwestern North America (Bahadori et al., 2022), and subduct"
 ---
@@ -100,5 +100,22 @@ This model is adapted from Tutorial 10 in UWGeodynamics, which explores the deve
 - Corcho, A. F. R., Polanco, S., Farrington, R., & Moresi, L. (2025). Subduction system response to ribbon collision: implications on the intra-plate force balance and the style of slab deformation. Authorea Preprints.
 
 - Ghosh, S., Bose, S., Mandal, N., & Laik, A. (2020). Mid-crustal ramping of the Main Himalayan Thrust in Nepal to Bhutan Himalaya: New insights from analogue and numerical experiments. *Tectonophysics*, *782*, 228425.
+
+## History
+
+- **1.1.0** — 2026-11-16 · [10.6084/m9.figshare.33193557.v3](https://doi.org/10.6084/m9.figshare.33193557.v3)
+  The acknowledgement now names the NCI computing time behind the work,
+  under the National Computational Merit Allocation Scheme and the ANU Merit
+  Allocation Scheme. Nothing else changed.
+- **1.0.0** — 2026-08-10 · [10.6084/m9.figshare.33193557.v2](https://doi.org/10.6084/m9.figshare.33193557.v2)
+  First published. A first cut, deposited 2026-08-09 as
+  [.v1](https://doi.org/10.6084/m9.figshare.33193557.v1), was replaced the next day
+  after the migration's last repairs.
+
+<!-- uwtn-acknowledgement -->
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
+
+<!-- uwtn-acknowledgement -->
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=new-features-of-the-surface-coupling-framework-in-underworld-2">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=new-features-of-the-surface-coupling-framework-in-underworld-2">Start one</a></div></div>

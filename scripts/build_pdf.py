@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Build the archival PDFs, and fail if they do not build.
 
-Three things have to happen in order, and the middle one is allowed to fail:
+These things have to happen in order, and the build is allowed to fail:
 
     sync the archival facts into the front matter
     take the web-only banner out       (it belongs on the site, not on page 1)
+    swap each movie for its still      (a PDF cannot play a movie)
     myst build --typst
-    put the banner back                (whether or not the build worked)
+    put the movies and the banner back (whether or not the build worked)
 
 Written as a script rather than a shell one-liner because the exit status has
 to survive the restore step. As a pixi task with `;` between the two, a broken
@@ -20,6 +21,7 @@ Usage:
 
 import os
 import pathlib
+import re
 import subprocess
 import sys
 
@@ -69,9 +71,56 @@ def warm_package_cache():
           "typst package cache NOT warmed (exit %d); the build may race" % status)
 
 
+MOVIE_SUFFIXES = (".mp4", ".webm", ".mov")
+
+# A figure directive, backtick or colon fence, with the option lines under it.
+_FIGURE = re.compile(
+    r"^(?P<fence>`{3,}|:{3,})\{figure\}[ \t]+(?P<src>\S+)[ \t]*\n"
+    r"(?P<opts>(?:[ \t]*:[A-Za-z][\w-]*:.*\n)*)", re.M)
+
+
+def movies_to_stills(text, where="?"):
+    """The source as the PDF should see it: every movie figure shows its still.
+
+    On the site a `{figure}` whose file is an MP4 plays as a video. Typst cannot
+    read a movie, and mystmd 1.10 exports the figure's `:placeholder:` beside the
+    movie rather than instead of it, so the PDF build would fail. Here the
+    still named by `:placeholder:` becomes the figure's file. A movie figure
+    without one is an error: the PDF would have nothing to show.
+    """
+    def swap(match):
+        src = match.group("src")
+        if not src.lower().endswith(MOVIE_SUFFIXES):
+            return match.group(0)
+        options = match.group("opts").splitlines(keepends=True)
+        stills = [o for o in options if o.strip().startswith(":placeholder:")]
+        if not stills:
+            raise SystemExit("%s: the movie figure %s has no :placeholder: still, "
+                             "and a PDF cannot show a movie" % (where, src))
+        still = stills[0].strip()[len(":placeholder:"):].strip()
+        rest = "".join(o for o in options if o not in stills)
+        return "%s{figure} %s\n%s" % (match.group("fence"), still, rest)
+    return _FIGURE.sub(swap, text)
+
+
+def movie_swaps():
+    """(path, original, for the PDF) for every article with a movie figure.
+
+    Computed before anything is written, so a movie without a still stops the
+    build with every source still as it was."""
+    swaps = []
+    for path in sorted(ROOT.glob("articles/*/*.md")):
+        original = path.read_text(encoding="utf-8")
+        for_pdf = movies_to_stills(original, where=str(path.relative_to(ROOT)))
+        if for_pdf != original:
+            swaps.append((path, original, for_pdf))
+    return swaps
+
+
 def main():
     if run(sys.executable, "scripts/sync_archival.py") != 0:
         sys.exit("could not sync the archival metadata")
+    swaps = movie_swaps()
     if run(sys.executable, "scripts/banner_body.py", "--remove") != 0:
         sys.exit("could not strip the web-only banners")
 
@@ -114,17 +163,23 @@ def main():
     #
     # Seen on PR #17, the first build to produce two PDFs at once. It is luck
     # rather than design that the 43-PDF production build has not hit it.
-    warm_package_cache()
     status = 0
-    if len(targets) > 1:
-        status = run("myst", "build", "--typst", targets[0])
-        if status == 0:
-            status = run("myst", "build", "--typst", *targets[1:])
-    else:
-        status = run("myst", "build", "--typst", *targets)
-
-    # Always, so a failed build does not leave every article without its banner.
-    run(sys.executable, "scripts/banner_body.py", "--add")
+    try:
+        for path, _original, for_pdf in swaps:
+            path.write_text(for_pdf, encoding="utf-8")
+        warm_package_cache()
+        if len(targets) > 1:
+            status = run("myst", "build", "--typst", targets[0])
+            if status == 0:
+                status = run("myst", "build", "--typst", *targets[1:])
+        else:
+            status = run("myst", "build", "--typst", *targets)
+    finally:
+        # Always, so a failed build leaves every source as it was: the movies
+        # back in their figures, and every article with its banner.
+        for path, original, _for_pdf in swaps:
+            path.write_text(original, encoding="utf-8")
+        run(sys.executable, "scripts/banner_body.py", "--add")
 
     if status != 0:
         sys.exit("myst build --typst failed (exit %d)" % status)

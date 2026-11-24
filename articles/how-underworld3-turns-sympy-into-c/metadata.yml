@@ -15,7 +15,7 @@ authors:
     orcid: 0000-0003-4515-9296
     affiliation: University of Sydney
 publication_date: 2026-04-01
-version: 1.0.0
+version: 1.1.0
 legacy_doi: 10.59350/kdve8-7es40
 archive_doi: 10.6084/m9.figshare.33193572
 license: CC-BY-4.0
@@ -37,6 +37,6 @@ figures: 1
 source: ghost-migration
 ghost_uuid: ba7cc108-239e-4371-8182-2316f9e2cf7c
 repository_record_id: 33193572
-archived_at: 2026-08-10T04:19:43Z
-archived_version: 1.0.0
-archive_published_at: 2026-08-10T04:27:41Z
+archived_at: 2026-11-16T04:42:22Z
+archived_version: 1.1.0
+archive_published_at: 2026-11-16T04:45:17Z
