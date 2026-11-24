@@ -32,7 +32,6 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 development @ 25d62812
 ---
-
 <!-- Historical development and provenance records: drafting-history-before-cull-2026-11-17.md. -->
 
 In this note we look at how Underworld3 puts a slipping fault into a model without remeshing the whole model each time the fault moves. The mesh must resolve the velocity discontinuity along the fault while supporting an efficient solve across the domain.
@@ -45,7 +44,7 @@ The fault formulation is described in [Faults: to mesh or not to mesh?](https://
 
 The base mesh covers the whole domain and is continuous across the fault. It is built and partitioned with a refinement hierarchy. Temperature, material markers and bulk history variables remain on the base; the fault's own history is stored on the fault object.
 
-Underworld fault objects already carry a discretised geometry: points along a trace in two dimensions, or a triangulated surface in three. This supplies the geometry for the add-on. The ladder can be sized to match the fault discretisation or the local base mesh; resampling the fault object is another option. In the example here, we construct the fault points ourselves and match the ladder to their spacing.
+Underworld fault objects already carry a discretised geometry: points along a trace in two dimensions, or a triangulated surface in three. This supplies the geometry for the add-on. The ladder can be sized to match the fault discretisation or the local base mesh; resampling the fault object is another option. In the test case below, we construct the fault points ourselves and match the ladder to their spacing.
 
 The add-on is a child of the base, built in three steps:
 
@@ -53,19 +52,21 @@ The add-on is a child of the base, built in three steps:
 2. **Place the fault as a ladder.** The supplied fault points form the spine. Here they have uniform spacing $S$, and we choose to place a rail a distance $S$ on either side. The resulting two rows of squares are divided into triangles. A margin rung closes each end, and graded triangles connect the band to the remaining base cells.
 3. **Split the spine.** Interior spine vertices are duplicated and the cells on one side are connected to the copies. The fault's constitutive law couples each pair.
 
-For this matched construction, the **band ratio** $h_b/S$ measures the ladder resolution relative to the base's finest cell size. In the construction below, $h_b = 1/32$ and $S = 0.0052$, giving a ratio of about 6. The fault adds 906 cells to the base's 2,592 cells. The base cell count stays fixed as the fault resolution increases.
+For this matched construction, the **band ratio** $h_b/S$ measures the ladder resolution relative to the base's finest cell size.
+
+Our test case is a unit box in simple shear ({numref}`fig-shear-box`). The velocity $\mathbf{v} = (y - \tfrac{1}{2},\ 0)$ is imposed on all four walls, the viscosity is uniform, and a straight frictionless fault runs from $(0.30, 0.45)$ to $(0.70, 0.55)$. The base's finest cells are $h_b = 1/32$. With 80, 160 and 320 points along the fault, $S$ is 0.0052, 0.0026 and 0.0013, and the band ratio is 6, 12 and 24. With 80 points, the case drawn below, the fault adds 906 cells to the base's 2,592. The base cell count stays fixed as the fault resolution increases.
 
 ```{figure} figures/ladder-construction.png
 :alt: Three parts. (a) Mesh edges near the left tip of a straight fault: a tinted band two cells wide, made of squares of side S each divided into two triangles, with the spine along the fault, a rail S either side, a rung across the band at every spine point and a margin rung one spacing beyond the tip, which is marked by an open circle; graded triangles surround the band and grow to the base cell size h_b, marked by a dimension line. (b) The same band after the split: the two copies of the spine drawn apart, one solid and marked plus, one dashed and marked minus, every interior spine vertex doubled and the tip vertex single. (c) Four panels of the multigrid hierarchy, in the same window: the split child, with its band and graded fill tinted; then the base's three levels, whose cells are h_b, 2h_b and 4h_b, with no fault in the mesh and the fault drawn as a hidden line.
 
-The fault ladder and multigrid hierarchy. (a) The spine follows the fault, with rails a distance $S$ either side and graded triangles connecting the band to the base mesh. (b) The split duplicates interior spine vertices, allowing slip; the tips remain single. (c) The split child sits above the continuous base levels. The tinted cells and a surrounding layer of base cells form the patch solved exactly by the smoother.
+The fault ladder and multigrid hierarchy, for the simple-shear box with 80 points along the fault. (a) The spine follows the fault, with rails a distance $S$ either side and graded triangles connecting the band to the base mesh. (b) The split duplicates interior spine vertices, allowing slip; the tips remain single. (c) The split child sits above the continuous base levels. The tinted cells and a surrounding layer of base cells form the patch solved exactly by the smoother.
 ```
 
 The child becomes the finest multigrid level, above the base's existing levels. Model fields are interpolated onto it for the Stokes solve, and the resulting velocity is transferred back to the base for advection. Rebuilding the child leaves the base mesh and its history variables in place.
 
 ## The solve workflow
 
-The fault object supplies the discretised trace. We choose the ladder resolution relative to that trace and the local base mesh, resampling the fault if needed. For the simple-shear example, the trace is a straight line with uniform spacing $S$, and a band width of $2S$ gives equant ladder cells.
+The fault object supplies the discretised trace. We choose the ladder resolution relative to that trace and the local base mesh, resampling the fault if needed.
 
 The algorithm is:
 
@@ -83,15 +84,25 @@ The velocity solve uses geometric multigrid with the split child above the conti
 
 A pointwise smoother such as SOR reduces slowly varying slip errors along the fault only slowly, particularly as the band is refined. We therefore follow each SOR sweep with an exact solve on a **patch** containing the band, the graded fill, the split vertices and a surrounding layer of base cells. The patch is identified from the mesh transfer and factorised by LU when the preconditioner is set up.
 
-We measured velocity iterations in the simple-shear example at band ratios of 6, 12 and 24, and in a yielding-lid convection model at ratios of 8, 16 and 25. The latter is a 4 × 1 box with a fault through the lid, solved on four processes from rest at a state where the lid is mobilising. Each velocity Krylov iteration uses one full-multigrid cycle.
+We measured velocity iterations in the simple-shear box at band ratios of 6, 12 and 24, and in a yielding-lid convection model at ratios of 8, 16 and 25. The simple-shear problem is linear: one Stokes solve, inside which the velocity block is solved 17 times as the pressure iteration converges. The yielding lid is a 4 × 1 box with a fault through the lid, solved on four processes from rest at a state where the lid is mobilising. Each velocity Krylov iteration uses one full-multigrid cycle.
 
-| Smoother on the child | Simple shear: iterations per velocity solve, ratios 6, 12, 24 | Yielding lid: velocity iterations per Newton iteration, ratios 8, 16, 25 |
+```{figure} figures/shear-box.png
+:label: fig-shear-box
+:width: 60%
+:alt: A unit square. Arrows on the walls show simple shear: along the top wall pointing right, along the bottom wall pointing left, and on the side walls a linear profile that changes direction at mid-height. A short straight fault crosses the middle of the box, rising gently from (0.30, 0.45) to (0.70, 0.55), with its two end points marked and labelled; a narrow tinted band along it marks the ladder.
+
+The simple-shear test. The wall velocity $\mathbf{v} = (y - \tfrac{1}{2},\ 0)$ shears the box; the frictionless fault, drawn with its ladder band exaggerated in width, slips in response.
+```
+
+| Smoother on the child | Simple shear: iterations per velocity solve (mean of 17, serial), ratios 6, 12, 24 | Yielding lid: velocity iterations per Newton iteration, ratios 8, 16, 25 |
 |---|---|---|
-| SOR, then patch LU | 3, 3, 3 | 7, 7, 7 |
-| SOR, then patch ILU(0) | 8, 12, 16 | 28–200, 73–200, 86–200 |
-| SOR | 12, 17, 24 | 161–175 at ratio 16 |
+| SOR, then patch LU | 3.9, 3.8, 3.9 | 7, 7, 7 |
+| SOR, then patch ILU(0) | 10.6, 15.2, 20.2 | 28–200, 73–200, 86–200 |
+| SOR | 15.2, 21.7, 31.3 | 161–175 at ratio 16 |
 
 With an exact patch solve, the iteration count stays constant across the tested band ratios in both problems. Incomplete factorisation increases the count, with one yielding-lid solve at each ratio reaching the limit of 200 iterations. SOR alone is also increasingly expensive. Peak slip agrees within solver tolerance across the tests.
+
+The exact patch solve also saves time. In the simple-shear box, a serial solve on the already-assembled operators took 1.5, 1.9 and 3.0 s with LU on the patch, against 3.0, 5.1 and 9.0 s with ILU(0) and 4.2, 6.9 and 11.6 s with SOR alone. These are laptop timings and indicative only; the iteration counts are the firmer measure.
 
 For curved free-slip walls, each multigrid level also uses its own wall-normal frame, as described in [UWTN 2026-016](https://www.underworldcode.org/boundary-conditions-on-non-planar-boundaries/).
 
@@ -125,5 +136,13 @@ The cost of following the trench. (a) Wall time per step, excluding checkpoint w
 ## Current limits
 
 Separate fault ladders must remain apart, so junctions retain a gap between bands. At a domain boundary the split stops short of the wall; the trench example continues it to the surface with a weak zone. The efficiency measurements here are two-dimensional. The cost of factorising a patch around a fault surface in three dimensions remains to be measured.
+
+<!-- uwtn-acknowledgement -->
+
+*The Underworld project is supported by AuScope and the Australian Government through the National Collaborative Research Infrastructure Strategy (NCRIS). Source code:* [*github.com/underworldcode/underworld3*](https://github.com/underworldcode/underworld3)
+
+*This research was supported by the Australian Government's National Collaborative Research Infrastructure Strategy (NCRIS), with access to computational resources provided by the National Computational Infrastructure (NCI Australia) through the National Computational Merit Allocation Scheme and the ANU Merit Allocation Scheme.*
+
+<!-- uwtn-acknowledgement -->
 
 <div class="uwtn-discuss"><div class="uwtn-discuss-head">Comments</div><div class="uwtn-discuss-body">Discussion of these notes happens in GitHub Discussions, so it stays with the source and is searchable alongside it.</div><div class="uwtn-discuss-links"><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions?discussions_q=faults-on-an-add-on-mesh">Read the discussion</a><a href="https://github.com/Underworld-Technical-Notes/underworldcode.org/discussions/new?category=general&title=faults-on-an-add-on-mesh">Start one</a></div></div>
