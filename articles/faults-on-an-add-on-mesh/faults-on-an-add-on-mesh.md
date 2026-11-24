@@ -14,6 +14,7 @@ authors:
     affiliations:
       - Australian National University
 license: CC-BY-4.0
+banner: figures/banner.jpg
 keywords:
   - Underworld Code
   - Tricks of the Trade
@@ -32,6 +33,7 @@ exports:
     article_version: 1.0.0
     software_version: underworld3 development @ a673cd52
 ---
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by Louis Moresi</div></div>
 
 We are going to take a look at how Underworld3 puts a slipping fault into a model without remeshing the whole model each time the fault moves. The mesh has to resolve the velocity discontinuity along the fault while supporting an efficient solve across the domain; the effect of the slipping fault is felt everywhere in the domain.
 

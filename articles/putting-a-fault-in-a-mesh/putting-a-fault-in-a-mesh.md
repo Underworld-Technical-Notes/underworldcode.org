@@ -17,6 +17,7 @@ authors:
     affiliations:
       - Australian National University
 license: CC-BY-4.0
+banner: figures/banner.jpg
 bibliography:
   - references.bib
 keywords:
@@ -36,6 +37,8 @@ exports:
     software_version: underworld3 0.0.0
 doi: 10.6084/m9.figshare.33944806
 ---
+<div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by Louis Moresi</div></div>
+
 Faults can dominate the dynamic behaviour of Earth systems at scales from the entire planet to a few 10s of metres. They are an extreme example of localisation: feedback between forcing and response that results in self-reinforcing weakening that does not have a brake at the largest scale. Faults are *extreme* in the sense that their natural thickness is orders of magnitude below that of a typical tectonic simulation.
 
 At the tectonic scale, a fault is an infinitesimally thin surface across which the rock moves discontinuously by overcoming a frictional resistance. A finite element mesh (the mesh we use in Underworld) is a mechanism for representing continuous fields and there is not a native mechanism that perfectly represents a fault. 
