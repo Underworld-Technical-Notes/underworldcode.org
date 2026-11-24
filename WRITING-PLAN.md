@@ -108,14 +108,15 @@ cross-link in place.
 
 ### M3. Stack-on-top for faults
 
-Status: draft — UWTN 2026-022, *Faults on an add-on mesh*, on
-`note/faults-on-an-add-on-mesh`. **Deliberately separate from M2.**
+Status: published 2026-11-24 — UWTN 2026-022, *Faults and patch-refinement of
+the mesh* (#92). **Deliberately separate from M2.**
 
-The method, serially: the static base and the ephemeral add-on, refinement from
-the fault's exact distance, conform and split, split add-on multigrid levels,
-moving the fault, warm starts and restarts. Its parallel half is UWTN 2026-018,
-*Faults in parallel: partitioning the add-on once* (draft, on
-`note/faults-in-parallel`).
+The method, serially: a static base holding the fields, particles and multigrid
+hierarchy, and an add-on copy of its finest level with the fault placed as a
+split ladder; the split child above the continuous base levels, with an exact
+patch solve in the smoother; the add-on rebuilt as the fault follows a trench
+through an annulus. Its parallel half is UWTN 2026-018, *Faults in parallel:
+partitioning the add-on once* (draft, on `note/faults-in-parallel`).
 
 This one is about resolving a fault, and it may belong to the meshing paper or
 to the fault paper depending on how each turns out. Keeping it as its own note
@@ -450,7 +451,7 @@ Listed as candidates, not commitments.
 |-------|------|-----|
 | ✓ | M1 MMPDE mover | Published 2026-08-13 (UWTN 2026-011); anchors the meshing paper |
 | 2 | M2 Stacking resolution | Reads as the answer to M1's limitation |
-| 3 | M3 Stack-on-top for faults | Drafted as UWTN 2026-022; its parallel half is UWTN 2026-018 (draft). Absorbs F3 |
+| ✓ | M3 Stack-on-top for faults | Published 2026-11-24 (UWTN 2026-022); its parallel half is UWTN 2026-018 (draft). Absorbs F3 |
 | 4 | F1 The problem and the options | The frame the rest of the fault cluster hangs on |
 | 5 | F2, F4 | One approach each; F2 leans on M1. F3 is absorbed by M3 and 2026-018 |
 | 6 | F5 The comparison | Last, with Thyagarajulu's benchmarks as its evidence |
