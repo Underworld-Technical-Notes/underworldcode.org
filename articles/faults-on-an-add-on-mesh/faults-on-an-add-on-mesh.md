@@ -7,7 +7,7 @@ description: >-
   partition and the coarse multigrid levels; the add-on is a copy of the base's
   finest level with the fault placed into it as a narrow structured band, split
   along the fault, and rebuilt from the base whenever the fault moves.
-date: 2026-10-25
+date: 2026-11-24
 authors:
   - name: Louis Moresi
     orcid: 0000-0003-3685-174X
