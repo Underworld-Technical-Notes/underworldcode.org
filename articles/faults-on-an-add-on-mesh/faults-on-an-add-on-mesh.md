@@ -35,11 +35,11 @@ exports:
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by Louis Moresi</div></div>
 
-We are going to take a look at how Underworld3 puts a slipping fault into a model without remeshing the whole model each time the fault moves. The mesh has to resolve the velocity discontinuity along the fault while supporting an efficient solve across the domain; the effect of the slipping fault is felt everywhere in the domain.
+We are going to take a look at how Underworld3 [@Moresi_2025] puts a slipping fault into a model without remeshing the whole model each time the fault moves. The mesh has to resolve the velocity discontinuity along the fault while supporting an efficient solve across the domain; the effect of the slipping fault is felt everywhere in the domain.
 
 We divide the mesh in two. A **base** mesh holds the model's fields, particles and multigrid hierarchy. An **add-on** is a copy of its finest level with a narrow band of cells placed along the fault and split so that the two sides can slip. When the fault moves, we rebuild the add-on and reuse the base hierarchy.
 
-The fault formulation is described in [Faults: to mesh or not to mesh?](https://www.underworldcode.org/putting-a-fault-in-a-mesh/). Here we concentrate on the solver: how a continuous base hierarchy and a local patch solve handle the discontinuity, and what this costs when a fault moves through a convection model. The underlying full-multigrid setup is described in [UWTN 2026-014](https://www.underworldcode.org/setting-up-full-multigrid/). The figures come from earlier development builds, with each run's commit recorded in `figures/src/`.
+The fault formulation is described in [*Faults: to mesh or not to mesh?*](https://www.underworldcode.org/putting-a-fault-in-a-mesh/) [@Moresi_2026_faults]. That note found split nodes the most efficient representation of a discontinuous, frictional fault, at the cost of cutting the mesh again whenever the fault moves; the add-on keeps that cut local. Here we concentrate on the solver: how a continuous base hierarchy and a local patch solve handle the discontinuity, and what this costs when a fault moves through a convection model. The underlying full-multigrid setup is described in [UWTN 2026-014](https://www.underworldcode.org/setting-up-full-multigrid/) [@Moresi_2026_multigrid]. The figures come from earlier development builds, with each run's commit recorded in `figures/src/`.
 
 ## The base mesh and the add-on
 
@@ -51,7 +51,7 @@ The add-on mesh is a child of the base, built in three steps:
 
 1. **Copy the base's finest level.** Away from the fault, the add-on retains the base's cells.
 2. **Place the fault as a ladder.** The supplied fault points form the spine. Here they have uniform spacing $S$, and we choose to place a rail a distance $S$ on either side. The resulting two rows of squares are divided into triangles. A margin rung closes each end, and graded triangles connect the band to the remaining base cells. 
-3. **Split the spine.** Interior spine vertices are duplicated and the cells on one side are connected to the copies. The fault's constitutive law couples each pair.
+3. **Split the spine.** Interior spine vertices are duplicated and the cells on one side are connected to the copies [@Melosh_1981; @Aagaard_2013]. The fault's constitutive law couples each pair.
 
 For this matched construction, the **band ratio** $h_b/S$ measures the ladder resolution relative to the base's finest cell size.
 
@@ -81,11 +81,11 @@ Bulk history variables remain on the base throughout, and the fault object carri
 
 ## Multigrid with a split finest level
 
-The velocity solve uses geometric multigrid with the split child above the continuous base levels. Prolongation evaluates the base's finite-element field at the child's nodes. The two copies of a spine vertex therefore receive the same correction: the base can correct their mean velocity, while corrections to the slip must come from the finest-level smoother. With Galerkin coarse operators, $P^T A P$, and restriction $P^T$, the residuals at the paired vertices are summed on transfer to the base.
+The velocity solve uses geometric multigrid [@Briggs_2000] with the split child above the continuous base levels. Prolongation evaluates the base's finite-element field at the child's nodes. The two copies of a spine vertex therefore receive the same correction: the base can correct their mean velocity, while corrections to the slip must come from the finest-level smoother. With Galerkin coarse operators, $P^T A P$, and restriction $P^T$, the residuals at the paired vertices are summed on transfer to the base.
 
-A pointwise smoother such as SOR is quite slow at reducing broad-scale slip errors along the fault, particularly as the band is refined. We therefore follow each SOR sweep with an exact solve on a **patch** containing the band, the graded fill, the split vertices and a surrounding layer of base cells. The patch is identified from the mesh transfer and factorised by LU when the preconditioner is set up.
+A pointwise smoother such as SOR is quite slow at reducing broad-scale slip errors along the fault, particularly as the band is refined. We therefore follow each SOR sweep with an exact solve on a **patch** containing the band, the graded fill, the split vertices and a surrounding layer of base cells. Patch smoothers of this kind are well established in multigrid [@Arnold_2000; @Farrell_2021]. The patch is identified from the mesh transfer and factorised by LU when the preconditioner is set up, using PETSc [@Balay_1997].
 
-We measured velocity iterations in the simple-shear box at band ratios of 6, 12 and 24, and in a yielding-lid convection model at ratios of 8, 16 and 25. The simple-shear problem is linear: one Stokes solve, inside which the velocity block is solved 17 times as the pressure iteration converges. The yielding lid is a 4 × 1 box with a fault through the lid, solved on four processes from rest at a state where the lid is mobilising. Each velocity Krylov iteration uses one full-multigrid cycle.
+We measured velocity iterations in the simple-shear box at band ratios of 6, 12 and 24, and in a yielding-lid convection model at ratios of 8, 16 and 25. The simple-shear problem is linear: one Stokes solve, inside which the velocity block is solved 17 times as the pressure iteration converges [@May_2008]. The yielding lid [@Moresi_1998] is a 4 × 1 box with a fault through the lid, solved on four processes from rest at a state where the lid is mobilising. Each velocity Krylov iteration uses one full-multigrid cycle.
 
 ```{figure} figures/shear-box.png
 :label: fig-shear-box
@@ -101,15 +101,15 @@ The simple-shear test. The wall velocity $\mathbf{v} = (y - \tfrac{1}{2},\ 0)$ s
 | SOR, then patch ILU(0) | 10.6, 15.2, 20.2 | 28–200, 73–200, 86–200 |
 | SOR | 15.2, 21.7, 31.3 | 161–175 at ratio 16 |
 
-With an exact patch solve, the iteration count stays constant across the tested band ratios in both problems. Incomplete factorisation increases the count, with one yielding-lid solve at each ratio reaching the limit of 200 iterations. SOR alone is also increasingly expensive. Peak slip agrees within solver tolerance across the tests.
+With an exact patch solve, the iteration count stays constant across the tested band ratios in both problems. Incomplete factorisation [@Saad_2003] increases the count, with one yielding-lid solve at each ratio reaching the limit of 200 iterations. SOR alone is also increasingly expensive. Peak slip agrees within solver tolerance across the tests.
 
 The exact patch solve also saves time. In the simple-shear box, a serial solve on the already-assembled operators took 0.8, 1.0 and 1.6 s with LU on the patch, against 1.9, 3.1 and 5.5 s with ILU(0) and 2.2, 3.5 and 6.1 s with SOR alone. These are laptop timings and indicative only; the iteration counts are the firmer measure.
 
-For curved free-slip walls, each multigrid level also uses its own wall-normal frame, as described in [UWTN 2026-016](https://www.underworldcode.org/boundary-conditions-on-non-planar-boundaries/).
+For curved free-slip walls, each multigrid level also uses its own wall-normal frame, as described in [UWTN 2026-016](https://www.underworldcode.org/boundary-conditions-on-non-planar-boundaries/) [@Moresi_2026_boundaries].
 
 ## Following a trench
 
-Our moving-fault example is a subducting plate in a mantle-depth annulus, with free-slip walls, basal and internal heating, and a continent behind the incoming plate. An 11 km melange layer marks the plate interface [@Sandiford_2019]. A frictionless fault follows its base, with a weak zone continuing the fault to the surface. The melange itself is a passive marker in this run. We use the model here to demonstrate the numerical method; the subduction science is still being developed.
+Our moving-fault example is a subducting plate in a mantle-depth annulus, with free-slip walls, basal and internal heating, and a continent behind the incoming plate. An 11 km melange layer marks the plate interface [@Sandiford_2019]. A frictionless fault follows its base [@Zhong_1995], with a weak zone continuing the fault to the surface. The melange itself is a passive marker in this run. We use the model here to demonstrate the numerical method; the subduction science is still being developed.
 
 ```{figure} figures/annulus-movie.mp4
 :label: fig-annulus-movie
