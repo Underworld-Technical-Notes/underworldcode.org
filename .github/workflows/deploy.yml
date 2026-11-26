@@ -21,10 +21,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -78,6 +75,18 @@ jobs:
         with:
           path: _build/html
 
+  # The deployment is its own job, as in GitHub's starter workflow. In one job,
+  # deploy-pages asked for the artifact 0.3 s after upload-pages-artifact
+  # finalised it and was told there was none (2026-11-24, twice); a re-run then
+  # found both attempts' uploads and refused them as duplicates. A job that
+  # needs the build starts after the upload is complete and listed.
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
       # GitHub's Pages queue intermittently keeps a deployment pending for
       # longer than the action's default patience, which fails the run with a
       # timeout that has nothing to do with the build.
