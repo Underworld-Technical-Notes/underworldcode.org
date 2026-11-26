@@ -24,6 +24,7 @@ bibliography:
 thumbnail: figures/annulus-movie-still.png
 exports:
   - format: typst
+    archived: "2026-11-24T05:58:33Z"
     logo: ../../static/uwtn-logo.png
     series: "Underworld Technical Notes"
     origin_url: https://www.underworldcode.org/faults-on-an-add-on-mesh/
@@ -32,6 +33,7 @@ exports:
     article_id: UWTN 2026-022
     article_version: 1.0.0
     software_version: underworld3 development @ a673cd52
+doi: 10.6084/m9.figshare.35100838
 ---
 <div class="uwtn-banner"><img src="figures/banner.jpg" alt=""><div class="uwtn-credit">Photo by Louis Moresi</div></div>
 
