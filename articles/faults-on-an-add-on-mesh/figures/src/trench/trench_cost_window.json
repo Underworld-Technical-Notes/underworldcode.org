@@ -1,0 +1,40 @@
+{
+ "note": "earth_recipe_movie, np 26, steps 2 to 141 (all rebuilt the faulted mesh)",
+ "steps": 140,
+ "stokes_s_per_step": {
+  "mean": 97.405,
+  "std": 20.977,
+  "min": 40.367,
+  "max": 146.799
+ },
+ "stokes_s_per_nonlinear_iteration": {
+  "mean": 11.044,
+  "std": 1.838,
+  "min": 6.214,
+  "max": 16.431
+ },
+ "stokes_s_per_velocity_iteration": {
+  "mean": 2.541,
+  "std": 0.307,
+  "min": 1.835,
+  "max": 3.455
+ },
+ "nonlinear_iterations_per_step": {
+  "mean": 9.207,
+  "std": 3.081,
+  "min": 3.0,
+  "max": 19.0
+ },
+ "velocity_iterations_per_linear_solve": {
+  "mean": 4.218,
+  "std": 2.226,
+  "min": 1.0,
+  "max": 14.0,
+  "solves": 1289,
+  "p5_p95": [
+   1.0,
+   8.0
+  ]
+ },
+ "corr_stokes_time_vs_nonlinear_iterations": 0.826
+}

@@ -416,7 +416,11 @@ def test_toc_is_generated_and_grouped_by_year():
 # --------------------------------------------------------------------------
 
 def test_banner_credit_survives_the_pdf_round_trip():
-    """Unsplash asks for attribution wherever the photograph appears."""
+    """Unsplash asks for attribution wherever the photograph appears.
+
+    Not every banner is from Unsplash -- the fault notes carry a photograph of
+    Louis's own -- so the check is that the credit in metadata.yml, whatever it
+    is, reaches the body, not that it names Unsplash."""
     banner_body = load("banner_body")
     for path in sorted((ROOT / "articles").glob("*/*.md")):
         text = path.read_text(encoding="utf-8")
@@ -425,7 +429,7 @@ def test_banner_credit_survives_the_pdf_round_trip():
         credit = banner_body.credit_from_metadata(path.parent)
         if credit:
             assert "uwtn-credit" in text, "%s lost its image credit" % path.parent.name
-            assert "unsplash.com" in text
+            assert credit in text, "%s credits someone else" % path.parent.name
 
 
 def test_credits_do_not_still_attribute_ghost():
