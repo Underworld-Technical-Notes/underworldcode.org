@@ -417,7 +417,7 @@ partition exactly as they were.
 
 ## History
 
-- **1.3.0** — 2026-11-18
+- **1.3.0** — 2026-11-27 · [10.6084/m9.figshare.33241170.v4](https://doi.org/10.6084/m9.figshare.33241170.v4)
   The section on equidistribution, retitled, now separates the objective from
   the method: equidistribution is the objective shared with Monge–Ampère
   methods, the Monge–Ampère equation comes from their convex-gradient
